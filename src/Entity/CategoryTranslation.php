@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\CategoryTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: CategoryTranslationRepository::class)]
 class CategoryTranslation
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -15,6 +18,9 @@ class CategoryTranslation
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\Column(length: 255, nullable: false ,options: ['default' => ''])]
+    private string $description = '';
 
     #[ORM\Column(length: 255)]
     private ?string $localeCode = null;
@@ -36,6 +42,18 @@ class CategoryTranslation
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

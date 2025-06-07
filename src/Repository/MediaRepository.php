@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\CategoryTranslation;
+use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CategoryTranslation>
+ * @extends ServiceEntityRepository<Media>
  */
-class CategoryTranslationRepository extends ServiceEntityRepository
+class MediaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CategoryTranslation::class);
+        parent::__construct($registry, Media::class);
     }
 
     //    /**
-    //     * @return CategoryTranslation[] Returns an array of CategoryTranslation objects
+    //     * @return Media[] Returns an array of Media objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
+    //            ->orderBy('m.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?CategoryTranslation
+    //    public function findOneBySomeField($value): ?Media
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

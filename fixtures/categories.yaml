@@ -1,0 +1,58 @@
+App\Entity\Category:
+    dishes:
+    pastry:
+    bakery:
+    starters:
+    desserts:
+        
+App\Entity\CategoryTranslation:
+    dishes_en_GB:
+        localeCode: en_GB
+        name: 'Dishes'
+        description: 'Main courses and substantial meals'
+        category: '@dishes'
+    dishes_fr_FR:
+        localeCode: fr_FR
+        name: 'Plats'
+        description: 'Plats principaux et repas consistants'
+        category: '@dishes'
+    pastry_en_GB:
+        localeCode: en_GB
+        name: 'Pastry'
+        description: 'Sweet or savory baked goods'
+        category: '@pastry'
+    pastry_fr_FR:
+        localeCode: fr_FR
+        name: 'Pâtisserie'
+        description: 'Produits de boulangerie sucrés ou salés'
+        category: '@pastry'
+    bakery_en_GB:
+        localeCode: en_GB
+        name: 'Bakery'
+        description: 'Freshly baked bread and rolls'
+        category: '@bakery'
+    bakery_fr_FR:
+        localeCode: fr_FR
+        name: 'Boulangerie'
+        description: 'Pain et petits pains fraîchement cuits'
+        category: '@bakery'
+    starters_en_GB:
+        localeCode: en_GB
+        name: 'Starters'
+        description: 'Starters and Appetizers to begin a meal'
+        category: '@starters'
+    starters_fr_FR:
+        localeCode: fr_FR
+        name: 'Entrées'
+        description: 'Entrées et Apéritifs pour commencer un repas'
+        category: '@starters'
+    desserts_en_GB:
+        localeCode: en_GB
+        name: 'Desserts'
+        description: 'Sweet dishes served at the end of a meal'
+        category: '@desserts'
+    desserts_fr_FR:
+        localeCode: fr_FR
+        name: 'Desserts'
+        description: 'Plats sucrés servis à la fin d’un repas'
+        category: '@desserts'

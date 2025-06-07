@@ -24,12 +24,24 @@ class Post
     /**
      * @var Collection<int, PostTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'post', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: PostTranslation::class,
+        mappedBy: 'post',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $translations;
+
+    /**
+     * @var Collection<int, PostTag>
+     */
+    #[ORM\OneToMany(targetEntity: PostTag::class, mappedBy: 'post')]
+    private Collection $tags;
 
     public function __construct()
     {
         $this->translations = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,6 +85,36 @@ class Post
             // set the owning side to null (unless already changed)
             if ($translations->getPost() === $this) {
                 $translations->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(PostTag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(PostTag $tag): static
+    {
+        if ($this->tags->removeElement($tag)) {
+            // set the owning side to null (unless already changed)
+            if ($tag->getPost() === $this) {
+                $tag->setPost(null);
             }
         }
 

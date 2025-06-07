@@ -28,7 +28,8 @@
         "symfony/yaml": "7.1.*",
         "symfonycasts/tailwind-bundle": "^0.5.3",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.6"
     },
     "config": {
         "allow-plugins": {
@@ -84,6 +85,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "friendsofphp/php-cs-fixer": "^3.59",
+        "hautelook/alice-bundle": "^2.15",
         "phpmd/phpmd": "^2.15",
         "phpstan/phpstan": "^1.11",
         "phpunit/phpunit": "^9.5",

@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\PostTagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+#[ORM\Entity(repositoryClass: PostTagRepository::class)]
+class PostTag
 {
     use TimestampableEntity;
 
@@ -19,10 +19,18 @@ class Category
     private ?int $id = null;
 
     /**
-     * @var Collection<int, CategoryTranslation>
+     * @var Collection<int, PostTagTranslation>
      */
-    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'category', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: PostTagTranslation::class,
+        mappedBy: 'postTag',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $translations;
+
+    #[ORM\ManyToOne(inversedBy: 'tags')]
+    private ?Post $post = null;
 
     public function __construct()
     {
@@ -35,31 +43,43 @@ class Category
     }
 
     /**
-     * @return Collection<int, CategoryTranslation>
+     * @return Collection<int, PostTagTranslation>
      */
     public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    public function addTranslation(CategoryTranslation $translation): static
+    public function addTranslation(PostTagTranslation $translation): static
     {
         if (!$this->translations->contains($translation)) {
             $this->translations->add($translation);
-            $translation->setCategory($this);
+            $translation->setPostTag($this);
         }
 
         return $this;
     }
 
-    public function removeTranslation(CategoryTranslation $translation): static
+    public function removeTranslation(PostTagTranslation $translation): static
     {
         if ($this->translations->removeElement($translation)) {
             // set the owning side to null (unless already changed)
-            if ($translation->getCategory() === $this) {
-                $translation->setCategory(null);
+            if ($translation->getPostTag() === $this) {
+                $translation->setPostTag(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): static
+    {
+        $this->post = $post;
 
         return $this;
     }

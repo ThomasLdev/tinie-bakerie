@@ -1,0 +1,72 @@
+App\Entity\Post:
+    post_1:
+        category: '@dishes'
+    post_2:
+        category: '@pastry'
+    post_3:
+        category: '@bakery'
+    post_4:
+        category: '@starters'
+    post_5:
+        category: '@desserts'
+        
+App\Entity\PostTranslation:
+    post_1_en_GB:
+        localeCode: en_GB
+        title: 'Spaghetti Bolognese'
+        post: '@post_1'
+    post_1_fr_FR:
+        localeCode: fr_FR
+        title: 'Spaghetti Bolognaise'
+        post: '@post_1'
+    post_2_en_GB:
+        localeCode: en_GB
+        title: 'Chocolate Croissant'
+        post: '@post_2'
+    post_2_fr_FR:
+        localeCode: fr_FR
+        title: 'Croissant au Chocolat'
+        post: '@post_2'
+    post_3_en_GB:
+        localeCode: en_GB
+        title: 'Fresh Bread Loaf'
+        post: '@post_3'
+    post_3_fr_FR:
+        localeCode: fr_FR
+        title: 'Pain Frais'
+        post: '@post_3'
+    post_4_en_GB:
+        localeCode: en_GB
+        title: 'Caesar Salad'
+        post: '@post_4'
+    post_4_fr_FR:
+        localeCode: fr_FR
+        title: 'Salade César'
+        post: '@post_4'
+    post_5_en_GB:
+        localeCode: en_GB
+        title: 'Apple Pie'
+        post: '@post_5'
+    post_5_fr_FR:
+        localeCode: fr_FR
+        title: 'Tarte aux Pommes'
+        post: '@post_5'
+
+App\Entity\PostTranslationSection:
+    post_1_en_GB_section_1:
+        localeCode: en_GB
+        media: '/media/post/post_1_en_GB_section_1.jpg'
+        translation: '@post_1_en_GB'
+    post_1_en_GB_section_2:
+        localeCode: en_GB
+        media: ''
+        translation: '@post_1_en_GB'
+    post_1_fr_FR_section_1:
+        localeCode: fr_FR
+        translation: '@post_1_fr_FR'
+    post_2_en_GB_section_1:
+        localeCode: en_GB
+        translation: '@post_2_en_GB'
+    post_2_fr_FR_section_1:
+        localeCode: fr_FR
+        translation: '@post_2_fr_FR'
