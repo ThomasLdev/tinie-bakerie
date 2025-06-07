@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PostController!{% endblock %}
+
+{% block body %}
+    {% if post is defined and post is not same as null %}
+        <h1>post title</h1>
+    {% endif %}
+{% endblock %}
