@@ -1,0 +1,16 @@
+<div>
+    {% if section is defined and section is not same as null %}
+        {% set media = section.media %}
+        {% set translation = media.translations|first %}
+
+        {% if media.mediaType is same as constant('App\\Services\\PostTranslation\\Enum\\PostTranslationSectionMediaType::Image') %}
+            <img src="{{ asset('upload/post_translation_section/' ~ media.mediaName) }}"
+                 alt="{{ translation.alt }}"
+                 title="{{ translation.title }}"
+                 width="300px"
+            />
+        {% elseif media.type is same as constant('App\\Services\\PostTranslation\\Enum\\PostTranslationSectionMediaType::Video') %}
+            <video src=""></video>
+        {% endif %}
+    {% endif %}
+</div>

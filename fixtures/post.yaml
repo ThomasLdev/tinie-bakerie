@@ -17,59 +17,59 @@ App\Entity\Post:
         imageFile: <file('post-5.webp')>
         
 App\Entity\PostTranslation:
-    post_1_en_GB:
-        localeCode: en_GB
+    post_1_en:
+        locale: en
         title: 'Spaghetti Bolognese'
         post: '@post_1'
-    post_1_fr_FR:
-        localeCode: fr_FR
+    post_1_fr:
+        locale: fr
         title: 'Spaghetti Bolognaise'
         post: '@post_1'
-    post_2_en_GB:
-        localeCode: en_GB
+    post_2_en:
+        locale: en
         title: 'Chocolate Croissant'
         post: '@post_2'
-    post_2_fr_FR:
-        localeCode: fr_FR
+    post_2_fr:
+        locale: fr
         title: 'Croissant au Chocolat'
         post: '@post_2'
-    post_3_en_GB:
-        localeCode: en_GB
+    post_3_en:
+        locale: en
         title: 'Fresh Bread Loaf'
         post: '@post_3'
-    post_3_fr_FR:
-        localeCode: fr_FR
+    post_3_fr:
+        locale: fr
         title: 'Pain Frais'
         post: '@post_3'
-    post_4_en_GB:
-        localeCode: en_GB
+    post_4_en:
+        locale: en
         title: 'Caesar Salad'
         post: '@post_4'
-    post_4_fr_FR:
-        localeCode: fr_FR
+    post_4_fr:
+        locale: fr
         title: 'Salade César'
         post: '@post_4'
-    post_5_en_GB:
-        localeCode: en_GB
+    post_5_en:
+        locale: en
         title: 'Apple Pie'
         post: '@post_5'
-    post_5_fr_FR:
-        localeCode: fr_FR
+    post_5_fr:
+        locale: fr
         title: 'Tarte aux Pommes'
         post: '@post_5'
         
 App\Entity\PostTranslationSection:
-    post_1_en_GB_section_1:
+    post_1_en_section_1:
         text: 'A classic Italian dish made with spaghetti and a rich meat sauce.'
-        translation: '@post_1_en_GB'
+        translation: '@post_1_en'
         position: 1
         type: <sectionType('text_plain')>
-    post_1_en_GB_section_2:
-        translation: '@post_1_en_GB'
+    post_1_en_section_2:
+        translation: '@post_1_en'
         position: 2
         type: <sectionType('media_plain')>
-        media: '@post_1_en_GB_section_2_media'
-    post_1_en_GB_section_3:
+        media: '@post_1_en_section_2_media'
+    post_1_en_section_3:
         text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
               <li>400g spaghetti</li>
               <li>2 tbsp olive oil</li>
@@ -85,20 +85,20 @@ App\Entity\PostTranslationSection:
               <li>Fresh basil, to serve</li>
               <li>Grated Parmesan cheese, to serve</li>
             </ul>'
-        translation: '@post_1_en_GB'
+        translation: '@post_1_en'
         position: 3
         type: <sectionType('text_plain')>
-    post_1_fr_FR_section_1:
+    post_1_fr_section_1:
         text: 'Un plat italien classique composé de spaghetti et d''une riche sauce à la viande.'
-        translation: '@post_1_fr_FR'
+        translation: '@post_1_fr'
         position: 1
         type: <sectionType('text_plain')>
-    post_1_fr_FR_section_2:
-        translation: '@post_1_fr_FR'
+    post_1_fr_section_2:
+        translation: '@post_1_fr'
         position: 2
         type: <sectionType('media_plain')>
-        media: '@post_1_fr_FR_section_2_media'
-    post_1_fr_FR_section_3:
+        media: '@post_1_fr_section_2_media'
+    post_1_fr_section_3:
         text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
             <li>400g de spaghetti</li>
             <li>2 cuil. à soupe d''huile d''olive</li>
@@ -114,24 +114,24 @@ App\Entity\PostTranslationSection:
             <li>Basilic frais, pour servir</li>
             <li>Parmesan râpé, pour servir</li>
           </ul>'
-        translation: '@post_1_fr_FR'
+        translation: '@post_1_fr'
         position: 3
         type: <sectionType('text_plain')>
         
 App\Entity\PostTranslationSectionMedia:
-    post_1_en_GB_section_2_media:
-        mediaFile: <file('post_1_section_2.webp')>
+    post_1_en_section_2_media:
+        mediaFile: <file('post-1-section-2.webp')>
         mediaType: <sectionMediaType('image')>
-    post_1_fr_FR_section_2_media:
-        mediaFile: <file('post_1_section_2.webp')>
+    post_1_fr_section_2_media:
+        mediaFile: <file('post-1-section-2.webp')>
         mediaType: <sectionMediaType('image')>
         
 App\Entity\PostTranslationSectionMediaTranslation:
-    post_1_en_GB_section_2_media_translation:
+    post_1_en_section_2_media_translation:
         title: 'Spaghetti Bolognese Image'
         alt: 'A delicious plate of spaghetti bolognese'
-        media: '@post_1_en_GB_section_2_media'
-    post_1_fr_FR_section_2_media_translation:
+        media: '@post_1_en_section_2_media'
+    post_1_fr_section_2_media_translation:
         title: 'Image de Spaghetti Bolognaise'
         alt: 'Une délicieuse assiette de spaghetti bolognaise'
-        media: '@post_1_fr_FR_section_2_media'
+        media: '@post_1_fr_section_2_media'

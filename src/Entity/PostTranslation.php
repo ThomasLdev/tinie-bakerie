@@ -40,6 +40,7 @@ class PostTranslation
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
+    #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
     public function __construct()
@@ -118,3 +119,4 @@ class PostTranslation
         return $this;
     }
 }
+

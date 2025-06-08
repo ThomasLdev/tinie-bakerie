@@ -32,6 +32,7 @@ class Post
         targetEntity: PostTranslation::class,
         mappedBy: 'post',
         cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
         orphanRemoval: true
     )]
     private Collection $translations;
@@ -153,15 +154,5 @@ class Post
         $this->tags->removeElement($tag);
 
         return $this;
-    }
-
-    public function getSlug(string $locale): ?string
-    {
-        foreach ($this->translations as $translation) {
-            if ($translation->getLocale() === $locale) {
-                return $translation->getSlug();
-            }
-        }
-        return null;
     }
 }

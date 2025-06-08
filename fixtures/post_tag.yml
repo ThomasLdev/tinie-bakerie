@@ -7,27 +7,27 @@ App\Entity\PostTag:
         color: '#3357FF'
         
 App\Entity\PostTagTranslation:
-        post_tag_1_en_GB:
-            localeCode: en_GB
+        post_tag_1_en:
+            locale: en
             name: 'Discover'
             postTag: '@post_tag_1'
-        post_tag_1_fr_FR:
-            localeCode: fr_FR
+        post_tag_1_fr:
+            locale: fr
             name: 'Découvrir'
             postTag: '@post_tag_1'
-        post_tag_2_en_GB:
-            localeCode: en_GB
+        post_tag_2_en:
+            locale: en
             name: 'Yummy'
             postTag: '@post_tag_2'
-        post_tag_2_fr_FR:
-            localeCode: fr_FR
+        post_tag_2_fr:
+            locale: fr
             name: 'Délicieux'
             postTag: '@post_tag_2'
-        post_tag_3_en_GB:
-            localeCode: en_GB
+        post_tag_3_en:
+            locale: en
             name: 'Vegan'
             postTag: '@post_tag_3'
-        post_tag_3_fr_FR:
-            localeCode: fr_FR
+        post_tag_3_fr:
+            locale: fr
             name: 'Végétalien'
             postTag: '@post_tag_3'

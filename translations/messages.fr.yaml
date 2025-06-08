@@ -1,0 +1,5 @@
+app:
+    post:
+        show:
+            created_at: 'Créé le : '
+            updated_at: 'Modifié le : '

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures\Provider;
 
-use App\Entity\Enum\PostTranslationSectionMediaType;
+use App\Services\PostTranslation\Enum\PostTranslationSectionMediaType;
 use Faker\Provider\Base as BaseProvider;
 use InvalidArgumentException;
 use ValueError;

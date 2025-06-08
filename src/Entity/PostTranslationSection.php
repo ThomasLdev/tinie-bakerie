@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Enum\PostTranslationSectionType;
 use App\Repository\PostTranslationSectionRepository;
+use App\Services\PostTranslation\Enum\PostTranslationSectionType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;

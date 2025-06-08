@@ -21,7 +21,12 @@ class Category
     /**
      * @var Collection<int, CategoryTranslation>
      */
-    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'category', orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: CategoryTranslation::class,
+        mappedBy: 'category',
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true
+    )]
     private Collection $translations;
 
     /**

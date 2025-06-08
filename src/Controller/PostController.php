@@ -2,35 +2,45 @@
 
 namespace App\Controller;
 
-use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use App\Services\Post\PostDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(name: 'app_post_')]
+#[Route('{_locale}', name: 'app_post_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
 final class PostController extends AbstractController
 {
-    #[Route('/post', name: 'index', methods: ['GET'])]
-    public function index(PostRepository $postRepository): Response
+    public function __construct(private readonly PostRepository $repository)
+    {
+    }
+
+    #[Route(['en' => '/post', 'fr' => '/article'], name: 'index', methods: ['GET'])]
+    public function index(string $_locale): Response
     {
         return $this->render('post/index.html.twig', [
-            'posts' => $postRepository->findAll(),
+            'posts' => $this->repository->findAllByLocale($_locale),
         ]);
     }
 
     #[Route(
-        '{_locale}/post/{slugCategory}/{slugPost}',
+        [
+            'en' => '/post/{slugCategory}/{slugPost}',
+            'fr' => '/article/{slugCategory}/{slugPost}'
+        ],
         name: 'show',
-        requirements: ['_locale' => 'en|fr'],
-        defaults: ['_locale' => 'en'],
         methods: ['GET']
     )]
-    public function show(#[MapEntity(mapping: ['slugPost' => 'slug'])] PostTranslation $postTranslation): Response
+    public function show(string $slugCategory, string $slugPost, string $_locale): Response
     {
+        $postDTO = $this->repository->findOneBySlugAndLocale($slugPost, $_locale);
+
+        if (!$postDTO instanceof PostDTO || $postDTO->category->getSlug() !== $slugCategory) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('post/show.html.twig', [
-            'postTranslation' => $postTranslation,
+            'post' => $postDTO,
         ]);
     }
 }

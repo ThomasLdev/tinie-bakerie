@@ -25,6 +25,7 @@ class PostTag
         targetEntity: PostTagTranslation::class,
         mappedBy: 'postTag',
         cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
         orphanRemoval: true
     )]
     private Collection $translations;

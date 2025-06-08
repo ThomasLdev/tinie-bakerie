@@ -6,53 +6,53 @@ App\Entity\Category:
     desserts:
         
 App\Entity\CategoryTranslation:
-    dishes_en_GB:
-        localeCode: en_GB
+    dishes_en:
+        locale: en
         name: 'Dishes'
         description: 'Main courses and substantial meals'
         category: '@dishes'
-    dishes_fr_FR:
-        localeCode: fr_FR
+    dishes_fr:
+        locale: fr
         name: 'Plats'
         description: 'Plats principaux et repas consistants'
         category: '@dishes'
-    pastry_en_GB:
-        localeCode: en_GB
+    pastry_en:
+        locale: en
         name: 'Pastry'
         description: 'Sweet or savory baked goods'
         category: '@pastry'
-    pastry_fr_FR:
-        localeCode: fr_FR
+    pastry_fr:
+        locale: fr
         name: 'Pâtisserie'
         description: 'Produits de boulangerie sucrés ou salés'
         category: '@pastry'
-    bakery_en_GB:
-        localeCode: en_GB
+    bakery_en:
+        locale: en
         name: 'Bakery'
         description: 'Freshly baked bread and rolls'
         category: '@bakery'
-    bakery_fr_FR:
-        localeCode: fr_FR
+    bakery_fr:
+        locale: fr
         name: 'Boulangerie'
         description: 'Pain et petits pains fraîchement cuits'
         category: '@bakery'
-    starters_en_GB:
-        localeCode: en_GB
+    starters_en:
+        locale: en
         name: 'Starters'
         description: 'Starters and Appetizers to begin a meal'
         category: '@starters'
-    starters_fr_FR:
-        localeCode: fr_FR
+    starters_fr:
+        locale: fr
         name: 'Entrées'
         description: 'Entrées et Apéritifs pour commencer un repas'
         category: '@starters'
-    desserts_en_GB:
-        localeCode: en_GB
+    desserts_en:
+        locale: en
         name: 'Desserts'
         description: 'Sweet dishes served at the end of a meal'
         category: '@desserts'
-    desserts_fr_FR:
-        localeCode: fr_FR
+    desserts_fr:
+        locale: fr
         name: 'Desserts'
         description: 'Plats sucrés servis à la fin d’un repas'
         category: '@desserts'

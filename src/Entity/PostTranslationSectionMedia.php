@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Enum\PostTranslationSectionMediaType;
 use App\Repository\MediaRepository;
+use App\Services\PostTranslation\Enum\PostTranslationSectionMediaType;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
