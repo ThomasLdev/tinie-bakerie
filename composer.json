@@ -2,7 +2,7 @@
     "name": "symfony/skeleton",
     "type": "project",
     "license": "MIT",
-    "description": "A minimal Symfony project recommended to create bare bones applications",
+    "description": "Tinie Bakerie blog system",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -96,7 +96,6 @@
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*",
-        "zenstruck/foundry": "^2.6"
+        "symfony/web-profiler-bundle": "7.1.*"
     }
 }
