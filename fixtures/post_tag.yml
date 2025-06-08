@@ -1,0 +1,33 @@
+App\Entity\PostTag:
+    post_tag_1:
+        color: '#FF5733'
+    post_tag_2:
+        color: '#33FF57'
+    post_tag_3:
+        color: '#3357FF'
+        
+App\Entity\PostTagTranslation:
+        post_tag_1_en_GB:
+            localeCode: en_GB
+            name: 'Discover'
+            postTag: '@post_tag_1'
+        post_tag_1_fr_FR:
+            localeCode: fr_FR
+            name: 'Découvrir'
+            postTag: '@post_tag_1'
+        post_tag_2_en_GB:
+            localeCode: en_GB
+            name: 'Yummy'
+            postTag: '@post_tag_2'
+        post_tag_2_fr_FR:
+            localeCode: fr_FR
+            name: 'Délicieux'
+            postTag: '@post_tag_2'
+        post_tag_3_en_GB:
+            localeCode: en_GB
+            name: 'Vegan'
+            postTag: '@post_tag_3'
+        post_tag_3_fr_FR:
+            localeCode: fr_FR
+            name: 'Végétalien'
+            postTag: '@post_tag_3'

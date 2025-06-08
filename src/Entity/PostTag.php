@@ -29,12 +29,19 @@ class PostTag
     )]
     private Collection $translations;
 
-    #[ORM\ManyToOne(inversedBy: 'tags')]
-    private ?Post $post = null;
+    /**
+     * @var Collection<int, Post>
+     */
+    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
+    private Collection $posts;
+
+    #[ORM\Column(length: 255)]
+    private string $color = '#000000';
 
     public function __construct()
     {
         $this->translations = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,14 +79,41 @@ class PostTag
         return $this;
     }
 
-    public function getPost(): ?Post
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
     {
-        return $this->post;
+        return $this->posts;
     }
 
-    public function setPost(?Post $post): static
+    public function addPost(Post $post): static
     {
-        $this->post = $post;
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): static
+    {
+        if ($this->posts->removeElement($post)) {
+            $post->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

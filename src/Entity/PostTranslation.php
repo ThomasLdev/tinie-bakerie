@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\LocalizedEntity;
 use App\Repository\PostTranslationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +13,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: PostTranslationRepository::class)]
 class PostTranslation
 {
-    use TimestampableEntity;
+    use TimestampableEntity, LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,9 +22,6 @@ class PostTranslation
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $localeCode = null;
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,18 +60,6 @@ class PostTranslation
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getLocaleCode(): ?string
-    {
-        return $this->localeCode;
-    }
-
-    public function setLocaleCode(string $localeCode): static
-    {
-        $this->localeCode = $localeCode;
 
         return $this;
     }

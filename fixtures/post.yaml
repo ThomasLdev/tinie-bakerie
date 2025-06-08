@@ -2,6 +2,7 @@ App\Entity\Post:
     post_1:
         category: '@dishes'
         imageFile: <file('post-1.webp')>
+        tags: ['@post_tag_1', '@post_tag_2']
     post_2:
         category: '@pastry'
         imageFile: <file('post-2.webp')>
@@ -57,21 +58,6 @@ App\Entity\PostTranslation:
         title: 'Tarte aux Pommes'
         post: '@post_5'
         
-App\Entity\PostTranslationSectionMediaTranslation:
-    post_1_en_GB_section_2_media_translation:
-        title: 'Spaghetti Bolognese Image'
-        alt: 'A delicious plate of spaghetti bolognese'
-        media: '@post_1_en_GB_section_2_media'
-    post_1_fr_FR_section_2_media_translation:
-        title: 'Image de Spaghetti Bolognaise'
-        alt: 'Une délicieuse assiette de spaghetti bolognaise'
-        media: '@post_1_en_GB_section_2_media'
-
-App\Entity\PostTranslationSectionMedia:
-    post_1_en_GB_section_2_media:
-        mediaFile: <file('post_1_en_GB_section_2.webp')>
-        mediaType: <sectionMediaType('image')>
-        
 App\Entity\PostTranslationSection:
     post_1_en_GB_section_1:
         text: 'A classic Italian dish made with spaghetti and a rich meat sauce.'
@@ -102,5 +88,50 @@ App\Entity\PostTranslationSection:
         translation: '@post_1_en_GB'
         position: 3
         type: <sectionType('text_plain')>
-#    post_1_fr_FR_section_1:
-#        translation: '@post_1_fr_FR'
+    post_1_fr_FR_section_1:
+        text: 'Un plat italien classique composé de spaghetti et d''une riche sauce à la viande.'
+        translation: '@post_1_fr_FR'
+        position: 1
+        type: <sectionType('text_plain')>
+    post_1_fr_FR_section_2:
+        translation: '@post_1_fr_FR'
+        position: 2
+        type: <sectionType('media_plain')>
+        media: '@post_1_fr_FR_section_2_media'
+    post_1_fr_FR_section_3:
+        text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
+            <li>400g de spaghetti</li>
+            <li>2 cuil. à soupe d''huile d''olive</li>
+            <li>1 oignon, finement haché</li>
+            <li>2 gousses d''ail, émincées</li>
+            <li>400g de boeuf haché</li>
+            <li>400g de tomates en conserve</li>
+            <li>2 cuil. à soupe de concentré de tomates</li>
+            <li>1 carotte, râpée</li>
+            <li>1 branche de céleri, coupée</li>
+            <li>1 cuil. à café d''origan séché</li>
+            <li>Sel et poivre, selon le goût</li>
+            <li>Basilic frais, pour servir</li>
+            <li>Parmesan râpé, pour servir</li>
+          </ul>'
+        translation: '@post_1_fr_FR'
+        position: 3
+        type: <sectionType('text_plain')>
+        
+App\Entity\PostTranslationSectionMedia:
+    post_1_en_GB_section_2_media:
+        mediaFile: <file('post_1_section_2.webp')>
+        mediaType: <sectionMediaType('image')>
+    post_1_fr_FR_section_2_media:
+        mediaFile: <file('post_1_section_2.webp')>
+        mediaType: <sectionMediaType('image')>
+        
+App\Entity\PostTranslationSectionMediaTranslation:
+    post_1_en_GB_section_2_media_translation:
+        title: 'Spaghetti Bolognese Image'
+        alt: 'A delicious plate of spaghetti bolognese'
+        media: '@post_1_en_GB_section_2_media'
+    post_1_fr_FR_section_2_media_translation:
+        title: 'Image de Spaghetti Bolognaise'
+        alt: 'Une délicieuse assiette de spaghetti bolognaise'
+        media: '@post_1_fr_FR_section_2_media'

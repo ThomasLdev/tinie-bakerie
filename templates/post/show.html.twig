@@ -3,7 +3,8 @@
 {% block title %}Hello PostController!{% endblock %}
 
 {% block body %}
-    {% if post is defined and post is not same as null %}
-        <h1>post title</h1>
+    {% if postTranslation is defined and postTranslation is not same as null %}
+        <h1>{{ postTranslation.title }}</h1>
+        <img src="{{ asset('upload/post_thumbnail/' ~ postTranslation.post.imageName) }}" alt="">
     {% endif %}
 {% endblock %}

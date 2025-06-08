@@ -3,13 +3,9 @@
 {% block title %}Hello PostController!{% endblock %}
 
 {% block body %}
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/PostController.php</code></li>
-        <li>Your template at <code>/app/templates/post/index.html.twig</code></li>
-    </ul>
-</div>
+    {% if posts is defined and posts is not empty %}
+        {% for post in posts %}
+            <a href="{{ path('app_post_show', {'slugCategory': post.category.slug, 'slugPost': post.slug}) }}"></a>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\LocalizedEntity;
 use App\Repository\PostTagTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PostTagTranslationRepository::class)]
 class PostTagTranslation
 {
+    use TimestampableEntity, LocalizedEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\LocalizedEntity;
 use App\Repository\CategoryTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: CategoryTranslationRepository::class)]
+#[ORM\UniqueConstraint(columns: ['slug', 'locale'])]
 class CategoryTranslation
 {
-    use TimestampableEntity;
+    use TimestampableEntity, LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,12 +25,13 @@ class CategoryTranslation
     #[ORM\Column(length: 255, nullable: false ,options: ['default' => ''])]
     private string $description = '';
 
-    #[ORM\Column(length: 255)]
-    private ?string $localeCode = null;
-
     #[ORM\ManyToOne(inversedBy: 'translations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\Column(length: 255)]
+    #[Slug(fields: ['name'])]
+    private ?string $slug = null;
 
     public function getId(): ?int
     {
@@ -58,18 +62,6 @@ class CategoryTranslation
         return $this;
     }
 
-    public function getLocaleCode(): ?string
-    {
-        return $this->localeCode;
-    }
-
-    public function setLocaleCode(string $localeCode): static
-    {
-        $this->localeCode = $localeCode;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -78,6 +70,18 @@ class CategoryTranslation
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

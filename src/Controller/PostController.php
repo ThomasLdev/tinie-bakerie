@@ -2,20 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/post/', name: 'app_post_')]
+#[Route(name: 'app_post_')]
 final class PostController extends AbstractController
 {
-    public function __construct(private readonly PostRepository $postRepository)
-    {
-    }
-
-    #[Route('/', name: 'index', methods: ['GET'])]
+    #[Route('/post', name: 'index', methods: ['GET'])]
     public function index(PostRepository $postRepository): Response
     {
         return $this->render('post/index.html.twig', [
@@ -23,11 +20,17 @@ final class PostController extends AbstractController
         ]);
     }
 
-    #[Route('{slug}', name: 'show', requirements: ['slug' => '[a-z0-9_-]+'], methods: ['GET'])]
-    public function show(Request $request): Response
+    #[Route(
+        '{_locale}/post/{slugCategory}/{slugPost}',
+        name: 'show',
+        requirements: ['_locale' => 'en|fr'],
+        defaults: ['_locale' => 'en'],
+        methods: ['GET']
+    )]
+    public function show(#[MapEntity(mapping: ['slugPost' => 'slug'])] PostTranslation $postTranslation): Response
     {
         return $this->render('post/show.html.twig', [
-            'post' => $this->postRepository,
+            'postTranslation' => $postTranslation,
         ]);
     }
 }

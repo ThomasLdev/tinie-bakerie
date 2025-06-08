@@ -36,17 +36,17 @@ class Post
     )]
     private Collection $translations;
 
-    /**
-     * @var Collection<int, PostTag>
-     */
-    #[ORM\OneToMany(targetEntity: PostTag::class, mappedBy: 'post')]
-    private Collection $tags;
-
     #[Vich\UploadableField(mapping: 'post_thumbnail', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
+
+    /**
+     * @var Collection<int, PostTag>
+     */
+    #[ORM\ManyToMany(targetEntity: PostTag::class, inversedBy: 'posts', cascade: ['persist'])]
+    private Collection $tags;
 
     public function __construct()
     {
@@ -101,36 +101,6 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection<int, PostTag>
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function addTag(PostTag $tag): static
-    {
-        if (!$this->tags->contains($tag)) {
-            $this->tags->add($tag);
-            $tag->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTag(PostTag $tag): static
-    {
-        if ($this->tags->removeElement($tag)) {
-            // set the owning side to null (unless already changed)
-            if ($tag->getPost() === $this) {
-                $tag->setPost(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getImageFile(): ?File
     {
         return $this->imageFile;
@@ -159,5 +129,39 @@ class Post
         $this->imageName = $imageName;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, PostTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(PostTag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(PostTag $tag): static
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getSlug(string $locale): ?string
+    {
+        foreach ($this->translations as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation->getSlug();
+            }
+        }
+        return null;
     }
 }
