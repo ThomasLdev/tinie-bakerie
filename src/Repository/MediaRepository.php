@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Media;
+use App\Entity\PostTranslationSectionMedia;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Media>
+ * @extends ServiceEntityRepository<PostTranslationSectionMedia>
  */
 class MediaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Media::class);
+        parent::__construct($registry, PostTranslationSectionMedia::class);
     }
 
     //    /**

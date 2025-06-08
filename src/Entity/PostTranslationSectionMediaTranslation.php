@@ -4,17 +4,17 @@ namespace App\Entity;
 
 use App\Repository\MediaTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MediaTranslationRepository::class)]
-class MediaTranslation
+class PostTranslationSectionMediaTranslation
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $localeCode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $alt = null;
@@ -24,23 +24,11 @@ class MediaTranslation
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Media $media = null;
+    private ?PostTranslationSectionMedia $media = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getLocaleCode(): ?string
-    {
-        return $this->localeCode;
-    }
-
-    public function setLocaleCode(string $localeCode): static
-    {
-        $this->localeCode = $localeCode;
-
-        return $this;
     }
 
     public function getAlt(): ?string
@@ -67,12 +55,12 @@ class MediaTranslation
         return $this;
     }
 
-    public function getMedia(): ?Media
+    public function getMedia(): ?PostTranslationSectionMedia
     {
         return $this->media;
     }
 
-    public function setMedia(?Media $media): static
+    public function setMedia(?PostTranslationSectionMedia $media): static
     {
         $this->media = $media;
 

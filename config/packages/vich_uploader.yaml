@@ -4,6 +4,10 @@ vich_uploader:
         type: attribute
     mappings:
         post_thumbnail:
-            uri_prefix: /images/post/thumbnail
-            upload_destination: '%kernel.project_dir%/public/upload/post'
+            uri_prefix: /post/thumbnail
+            upload_destination: '%kernel.project_dir%/public/upload/post_thumbnail'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        post_translation_section_media:
+            uri_prefix: /post/translation_section
+            upload_destination: '%kernel.project_dir%/public/upload/post_translation_section'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

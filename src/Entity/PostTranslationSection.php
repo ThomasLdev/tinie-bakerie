@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\PostTranslationSectionType;
+use App\Entity\Enum\PostTranslationSectionType;
 use App\Repository\PostTranslationSectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -36,7 +36,7 @@ class PostTranslationSection
     private PostTranslationSectionType $type;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Media $media = null;
+    private ?PostTranslationSectionMedia $media = null;
 
     public function getId(): ?int
     {
@@ -91,12 +91,12 @@ class PostTranslationSection
         return $this;
     }
 
-    public function getMedia(): ?Media
+    public function getMedia(): ?PostTranslationSectionMedia
     {
         return $this->media;
     }
 
-    public function setMedia(?Media $media): static
+    public function setMedia(?PostTranslationSectionMedia $media): static
     {
         $this->media = $media;
 

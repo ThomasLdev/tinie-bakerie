@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Processor;
 
 use App\Entity\User;
 use Fidry\AliceDataFixtures\ProcessorInterface;

@@ -1,14 +1,19 @@
 App\Entity\Post:
     post_1:
         category: '@dishes'
+        imageFile: <file('post-1.webp')>
     post_2:
         category: '@pastry'
+        imageFile: <file('post-2.webp')>
     post_3:
         category: '@bakery'
+        imageFile: <file('post-3.webp')>
     post_4:
         category: '@starters'
+        imageFile: <file('post-4.webp')>
     post_5:
         category: '@desserts'
+        imageFile: <file('post-5.webp')>
         
 App\Entity\PostTranslation:
     post_1_en_GB:
@@ -51,22 +56,51 @@ App\Entity\PostTranslation:
         localeCode: fr_FR
         title: 'Tarte aux Pommes'
         post: '@post_5'
+        
+App\Entity\PostTranslationSectionMediaTranslation:
+    post_1_en_GB_section_2_media_translation:
+        title: 'Spaghetti Bolognese Image'
+        alt: 'A delicious plate of spaghetti bolognese'
+        media: '@post_1_en_GB_section_2_media'
+    post_1_fr_FR_section_2_media_translation:
+        title: 'Image de Spaghetti Bolognaise'
+        alt: 'Une délicieuse assiette de spaghetti bolognaise'
+        media: '@post_1_en_GB_section_2_media'
 
+App\Entity\PostTranslationSectionMedia:
+    post_1_en_GB_section_2_media:
+        mediaFile: <file('post_1_en_GB_section_2.webp')>
+        mediaType: <sectionMediaType('image')>
+        
 App\Entity\PostTranslationSection:
     post_1_en_GB_section_1:
-        localeCode: en_GB
-        media: '/media/post/post_1_en_GB_section_1.jpg'
+        text: 'A classic Italian dish made with spaghetti and a rich meat sauce.'
         translation: '@post_1_en_GB'
+        position: 1
+        type: <sectionType('text_plain')>
     post_1_en_GB_section_2:
-        localeCode: en_GB
-        media: ''
         translation: '@post_1_en_GB'
-    post_1_fr_FR_section_1:
-        localeCode: fr_FR
-        translation: '@post_1_fr_FR'
-    post_2_en_GB_section_1:
-        localeCode: en_GB
-        translation: '@post_2_en_GB'
-    post_2_fr_FR_section_1:
-        localeCode: fr_FR
-        translation: '@post_2_fr_FR'
+        position: 2
+        type: <sectionType('media_plain')>
+        media: '@post_1_en_GB_section_2_media'
+    post_1_en_GB_section_3:
+        text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
+              <li>400g spaghetti</li>
+              <li>2 tbsp olive oil</li>
+              <li>1 onion, finely chopped</li>
+              <li>2 garlic cloves, minced</li>
+              <li>400g ground beef</li>
+              <li>400g canned tomatoes</li>
+              <li>2 tbsp tomato paste</li>
+              <li>1 carrot, grated</li>
+              <li>1 celery stalk, chopped</li>
+              <li>1 tsp dried oregano</li>
+              <li>Salt and pepper, to taste</li>
+              <li>Fresh basil, to serve</li>
+              <li>Grated Parmesan cheese, to serve</li>
+            </ul>'
+        translation: '@post_1_en_GB'
+        position: 3
+        type: <sectionType('text_plain')>
+#    post_1_fr_FR_section_1:
+#        translation: '@post_1_fr_FR'
