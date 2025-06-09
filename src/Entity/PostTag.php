@@ -16,7 +16,7 @@ class PostTag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     /**
      * @var Collection<int, PostTagTranslation>
@@ -47,7 +47,7 @@ class PostTag
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     /**
@@ -86,25 +86,6 @@ class PostTag
     public function getPosts(): Collection
     {
         return $this->posts;
-    }
-
-    public function addPost(Post $post): static
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->addTag($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): static
-    {
-        if ($this->posts->removeElement($post)) {
-            $post->removeTag($this);
-        }
-
-        return $this;
     }
 
     public function getColor(): string

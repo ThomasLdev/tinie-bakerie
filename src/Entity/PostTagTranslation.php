@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Trait\LocalizedEntity;
+use App\Entity\Traits\LocalizedEntity;
 use App\Repository\PostTagTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -15,7 +15,7 @@ class PostTagTranslation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -26,7 +26,7 @@ class PostTagTranslation
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     public function getName(): ?string

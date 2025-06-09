@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
-use App\Services\PostTranslation\Enum\PostTranslationSectionMediaType;
+use App\Services\Media\MediaType;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,14 +14,14 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Vich\Uploadable]
-class PostTranslationSectionMedia
+class PostSectionMedia
 {
     use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[Vich\UploadableField(mapping: 'post_translation_section_media', fileNameProperty: 'mediaName')]
     private ?File $mediaFile = null;
@@ -30,17 +30,17 @@ class PostTranslationSectionMedia
     private ?string $mediaName = null;
 
     /**
-     * @var Collection<int, PostTranslationSectionMediaTranslation>
+     * @var Collection<int, PostSectionMediaTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostTranslationSectionMediaTranslation::class, mappedBy: 'media', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PostSectionMediaTranslation::class, mappedBy: 'media', orphanRemoval: true)]
     private Collection $translations;
 
     #[ORM\Column(
         type: 'string',
-        enumType: PostTranslationSectionMediaType::class,
-        options: ['default' => PostTranslationSectionMediaType::Image, 'nullable' => false]
+        enumType: MediaType::class,
+        options: ['default' => MediaType::Image, 'nullable' => false]
     )]
-    private PostTranslationSectionMediaType $mediaType;
+    private MediaType $mediaType;
 
     public function __construct()
     {
@@ -49,7 +49,7 @@ class PostTranslationSectionMedia
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     public function getMediaFile(): ?File
@@ -83,14 +83,14 @@ class PostTranslationSectionMedia
     }
 
     /**
-     * @return Collection<int, PostTranslationSectionMediaTranslation>
+     * @return Collection<int, PostSectionMediaTranslation>
      */
     public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    public function addTranslation(PostTranslationSectionMediaTranslation $translation): static
+    public function addTranslation(PostSectionMediaTranslation $translation): static
     {
         if (!$this->translations->contains($translation)) {
             $this->translations->add($translation);
@@ -100,7 +100,7 @@ class PostTranslationSectionMedia
         return $this;
     }
 
-    public function removeTranslation(PostTranslationSectionMediaTranslation $translation): static
+    public function removeTranslation(PostSectionMediaTranslation $translation): static
     {
         if ($this->translations->removeElement($translation)) {
             // set the owning side to null (unless already changed)
@@ -112,12 +112,12 @@ class PostTranslationSectionMedia
         return $this;
     }
 
-    public function getMediaType(): PostTranslationSectionMediaType
+    public function getMediaType(): MediaType
     {
         return $this->mediaType;
     }
 
-    public function setMediaType(PostTranslationSectionMediaType $mediaType): static
+    public function setMediaType(MediaType $mediaType): static
     {
         $this->mediaType = $mediaType;
 

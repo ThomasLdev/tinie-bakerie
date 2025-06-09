@@ -17,8 +17,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class CreateUploadDirsCommand extends Command
 {
     private const array UPLOAD_DIRS = [
-        '/public/upload/post_thumbnail',
-        '/public/upload/post_translation_section',
+        '/public/upload/post',
+        '/public/upload/post_section',
+        '/public/upload/category',
     ];
 
     private const int DEFAULT_PERMISSIONS = 0755;

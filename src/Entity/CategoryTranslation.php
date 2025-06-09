@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Trait\LocalizedEntity;
+use App\Entity\Traits\LocalizedEntity;
 use App\Repository\CategoryTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Slug;
@@ -17,10 +17,10 @@ class CategoryTranslation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(length: 255, nullable: false, options: ['default' => ''])]
+    private string $name = '';
 
     #[ORM\Column(length: 255, nullable: false ,options: ['default' => ''])]
     private string $description = '';
@@ -35,10 +35,10 @@ class CategoryTranslation
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -79,7 +79,7 @@ class CategoryTranslation
         return $this->slug;
     }
 
-    public function setSlug(?string $slug): static
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 

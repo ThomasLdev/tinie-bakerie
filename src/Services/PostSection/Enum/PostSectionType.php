@@ -2,7 +2,7 @@
 
 namespace App\Services\PostTranslation\Enum;
 
-enum PostTranslationSectionType: string
+enum PostSectionType: string
 {
     CASE MediaPlain = 'media_plain';
 

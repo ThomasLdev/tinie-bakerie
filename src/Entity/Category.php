@@ -16,7 +16,7 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     /**
      * @var Collection<int, CategoryTranslation>
@@ -24,26 +24,44 @@ class Category
     #[ORM\OneToMany(
         targetEntity: CategoryTranslation::class,
         mappedBy: 'category',
+        cascade: ['persist', 'remove'],
         fetch: 'EXTRA_LAZY',
-        orphanRemoval: true
+        orphanRemoval: true,
     )]
     private Collection $translations;
 
     /**
      * @var Collection<int, Post>
      */
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'category')]
+    #[ORM\OneToMany(
+        targetEntity: Post::class,
+        mappedBy: 'category',
+        fetch:  'EXTRA_LAZY',
+    )]
     private Collection $posts;
+
+    /**
+     * @var Collection<int, CategoryMedia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: CategoryMedia::class,
+        mappedBy: 'category',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    private Collection $media;
 
     public function __construct()
     {
         $this->translations = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     /**
@@ -84,13 +102,33 @@ class Category
         return $this->posts;
     }
 
-    public function getSlug(string $locale): ?string
+    /**
+     * @return Collection<int, CategoryMedia>
+     */
+    public function getMedia(): Collection
     {
-        foreach ($this->translations as $translation) {
-            if ($translation->getLocale() === $locale) {
-                return $translation->getSlug();
+        return $this->media;
+    }
+
+    public function addMedium(CategoryMedia $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(CategoryMedia $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getCategory() === $this) {
+                $medium->setCategory(null);
             }
         }
-        return null;
+
+        return $this;
     }
 }

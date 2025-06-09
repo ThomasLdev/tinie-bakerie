@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\PostSectionMediaTranslation;
+use App\Entity\CategoryMedia;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PostSectionMediaTranslation>
+ * @extends ServiceEntityRepository<CategoryMedia>
  */
-class MediaTranslationRepository extends ServiceEntityRepository
+class CategoryMediaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PostSectionMediaTranslation::class);
+        parent::__construct($registry, CategoryMedia::class);
     }
 
     //    /**
-    //     * @return MediaTranslation[] Returns an array of MediaTranslation objects
+    //     * @return CategoryMedia[] Returns an array of CategoryMedia objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
+    //            ->orderBy('c.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?MediaTranslation
+    //    public function findOneBySomeField($value): ?CategoryMedia
     //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

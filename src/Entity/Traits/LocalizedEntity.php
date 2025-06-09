@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Entity\Trait;
+namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 
 trait LocalizedEntity
 {
-    #[ORM\Column(length: 255)]
-    private ?string $locale = null;
+    #[ORM\Column(length: 2, nullable: false, options: ['default' => 'en'])]
+    private string $locale = 'en';
 
-    public function getLocale(): ?string
+    public function getLocale(): string
     {
         return $this->locale;
     }

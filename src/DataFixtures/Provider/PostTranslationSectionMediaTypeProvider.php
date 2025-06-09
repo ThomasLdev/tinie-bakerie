@@ -2,21 +2,21 @@
 
 namespace App\DataFixtures\Provider;
 
-use App\Services\PostTranslation\Enum\PostTranslationSectionMediaType;
+use App\Services\Media\MediaType;
 use Faker\Provider\Base as BaseProvider;
 use InvalidArgumentException;
 use ValueError;
 
 class PostTranslationSectionMediaTypeProvider extends BaseProvider
 {
-    public function sectionMediaType(?string $specificValue = null): PostTranslationSectionMediaType
+    public function sectionMediaType(?string $specificValue = null): MediaType
     {
         if (null === $specificValue) {
             throw new InvalidArgumentException('Specific value cannot be null.');
         }
 
         try {
-            return PostTranslationSectionMediaType::from($specificValue);
+            return MediaType::from($specificValue);
         } catch (ValueError) {
             throw new InvalidArgumentException(sprintf('Invalid section type: %s', $specificValue));
         }

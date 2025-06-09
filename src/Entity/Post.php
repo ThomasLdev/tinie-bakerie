@@ -3,16 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[Vich\Uploadable]
 class Post
 {
     use TimestampableEntity;
@@ -20,14 +16,11 @@ class Post
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
-    /**
-     * @var Collection<int, PostTranslation>
-     */
     #[ORM\OneToMany(
         targetEntity: PostTranslation::class,
         mappedBy: 'post',
@@ -37,27 +30,53 @@ class Post
     )]
     private Collection $translations;
 
-    #[Vich\UploadableField(mapping: 'post_thumbnail', fileNameProperty: 'imageName')]
-    private ?File $imageFile = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?string $imageName = null;
-
     /**
      * @var Collection<int, PostTag>
      */
-    #[ORM\ManyToMany(targetEntity: PostTag::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[ORM\ManyToMany(
+        targetEntity: PostTag::class,
+        inversedBy: 'posts',
+        cascade: ['persist'],
+        fetch: 'EXTRA_LAZY',
+    )]
     private Collection $tags;
+
+    /**
+     * @var Collection<int, PostMedia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: PostMedia::class,
+        mappedBy: 'post',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    private Collection $media;
+
+    /**
+     * @var Collection<int, PostSection>
+     */
+    #[ORM\OneToMany(
+        targetEntity: PostSection::class,
+        mappedBy: 'post',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $sections;
 
     public function __construct()
     {
         $this->translations = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->media = new ArrayCollection();
+        $this->sections = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     public function getCategory(): ?Category
@@ -72,9 +91,6 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection<int, PostTranslation>
-     */
     public function getTranslations(): Collection
     {
         return $this->translations;
@@ -102,36 +118,6 @@ class Post
         return $this;
     }
 
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageFile(?File $imageFile = null): static
-    {
-        $this->imageFile = $imageFile;
-
-        if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new DateTimeImmutable();
-        }
-
-        return $this;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
-    }
-
-    public function setImageName(?string $imageName): static
-    {
-        $this->imageName = $imageName;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, PostTag>
      */
@@ -152,6 +138,66 @@ class Post
     public function removeTag(PostTag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostMedia>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(PostMedia $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(PostMedia $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getPost() === $this) {
+                $medium->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostSection>
+     */
+    public function getSections(): Collection
+    {
+        return $this->sections;
+    }
+
+    public function addSection(PostSection $section): static
+    {
+        if (!$this->sections->contains($section)) {
+            $this->sections->add($section);
+            $section->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSection(PostSection $section): static
+    {
+        if ($this->sections->removeElement($section)) {
+            // set the owning side to null (unless already changed)
+            if ($section->getPost() === $this) {
+                $section->setPost(null);
+            }
+        }
 
         return $this;
     }
