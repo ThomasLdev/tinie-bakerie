@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
-use App\Services\Media\MediaType;
+use App\Services\Media\Enum\MediaType;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,7 +23,7 @@ class PostSectionMedia
     #[ORM\Column]
     private int $id;
 
-    #[Vich\UploadableField(mapping: 'post_translation_section_media', fileNameProperty: 'mediaName')]
+    #[Vich\UploadableField(mapping: 'post_section_media', fileNameProperty: 'mediaName')]
     private ?File $mediaFile = null;
 
     #[ORM\Column(nullable: true)]

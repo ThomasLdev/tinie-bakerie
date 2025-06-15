@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostTranslationSectionRepository;
-use App\Services\PostTranslation\Enum\PostSectionType;
+use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,9 +20,6 @@ class PostSection
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
-    private string $text = '';
-
     #[ORM\ManyToOne(inversedBy: 'sections')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post = null;
@@ -33,9 +30,9 @@ class PostSection
     #[ORM\Column(
         type: 'string',
         enumType: PostSectionType::class,
-        options: ['default' => PostSectionType::TextPlain, 'nullable' => false]
+        options: ['default' => PostSectionType::Default, 'nullable' => false]
     )]
-    private PostSectionType $type;
+    private PostSectionType $type = PostSectionType::Default;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?PostSectionMedia $media = null;
@@ -60,18 +57,6 @@ class PostSection
     public function getId(): ?int
     {
         return $this->id ?? null;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function setText(string $text): static
-    {
-        $this->text = $text;
-
-        return $this;
     }
 
     public function getPost(): ?Post

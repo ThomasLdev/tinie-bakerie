@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Services\PostTranslation\Enum;
+namespace App\Services\PostSection\Enum;
 
 enum PostSectionType: string
 {
-    CASE MediaPlain = 'media_plain';
+    CASE Default = 'default';
 
-    CASE TextPlain = 'text_plain';
+    CASE TwoColumns = 'two_columns';
 
-    CASE TextLeftWithMedia = 'text_left_with_media';
-
-    CASE TextRightWithMedia = 'text_right_with_media';
+    CASE TwoColumnsMediaLeft = 'two_columns_media_left';
 }

@@ -1,137 +1,59 @@
 App\Entity\Post:
     post_1:
         category: '@dishes'
-        imageFile: <file('post-1.webp')>
+        media: ['@post_1_media']
         tags: ['@post_tag_1', '@post_tag_2']
+        sections: ['@post_1_section_1', '@post_1_section_2']
+        translations: ['@post_1_translation_en', '@post_1_translation_fr']
     post_2:
         category: '@pastry'
-        imageFile: <file('post-2.webp')>
+        media: ['@post_2_media']
+        tags: ['@post_tag_1', '@post_tag_3']
+        translations: ['@post_2_translation_en', '@post_2_translation_fr']
     post_3:
         category: '@bakery'
-        imageFile: <file('post-3.webp')>
+        media: ['@post_3_media']
+        tags: ['@post_tag_1']
+        translations: ['@post_3_translation_en', '@post_3_translation_fr']
     post_4:
         category: '@starters'
-        imageFile: <file('post-4.webp')>
+        media: ['@post_4_media']
+        tags: ['@post_tag_2']
+        translations: ['@post_4_translation_en', '@post_4_translation_fr']
     post_5:
         category: '@desserts'
-        imageFile: <file('post-5.webp')>
-        
+        media: ['@post_5_media']
+        tags: ['@post_tag_2', '@post_tag_3']
+        translations: ['@post_5_translation_en', '@post_5_translation_fr']
+
 App\Entity\PostTranslation:
-    post_1_en:
-        locale: en
+    post_1_translation_en:
         title: 'Spaghetti Bolognese'
-        post: '@post_1'
-    post_1_fr:
-        locale: fr
+        locale: en
+    post_1_translation_fr:
         title: 'Spaghetti Bolognaise'
-        post: '@post_1'
-    post_2_en:
-        locale: en
-        title: 'Chocolate Croissant'
-        post: '@post_2'
-    post_2_fr:
         locale: fr
-        title: 'Croissant au Chocolat'
-        post: '@post_2'
-    post_3_en:
+    post_2_translation_en:
+        title: 'Chocolate Bread'
         locale: en
-        title: 'Fresh Bread Loaf'
-        post: '@post_3'
-    post_3_fr:
+    post_2_translation_fr:
+        title: 'Pain au Chocolat'
         locale: fr
+    post_3_translation_en:
+        title: 'Fresh Bread'
+        locale: en
+    post_3_translation_fr:
         title: 'Pain Frais'
-        post: '@post_3'
-    post_4_en:
-        locale: en
+        locale: fr
+    post_4_translation_en:
         title: 'Caesar Salad'
-        post: '@post_4'
-    post_4_fr:
-        locale: fr
-        title: 'Salade César'
-        post: '@post_4'
-    post_5_en:
         locale: en
-        title: 'Apple Pie'
-        post: '@post_5'
-    post_5_fr:
+    post_4_translation_fr:
+        title: 'Salade César'
         locale: fr
-        title: 'Tarte aux Pommes'
-        post: '@post_5'
-        
-App\Entity\PostTranslationSection:
-    post_1_en_section_1:
-        text: 'A classic Italian dish made with spaghetti and a rich meat sauce.'
-        translation: '@post_1_en'
-        position: 1
-        type: <sectionType('text_plain')>
-    post_1_en_section_2:
-        translation: '@post_1_en'
-        position: 2
-        type: <sectionType('media_plain')>
-        media: '@post_1_en_section_2_media'
-    post_1_en_section_3:
-        text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
-              <li>400g spaghetti</li>
-              <li>2 tbsp olive oil</li>
-              <li>1 onion, finely chopped</li>
-              <li>2 garlic cloves, minced</li>
-              <li>400g ground beef</li>
-              <li>400g canned tomatoes</li>
-              <li>2 tbsp tomato paste</li>
-              <li>1 carrot, grated</li>
-              <li>1 celery stalk, chopped</li>
-              <li>1 tsp dried oregano</li>
-              <li>Salt and pepper, to taste</li>
-              <li>Fresh basil, to serve</li>
-              <li>Grated Parmesan cheese, to serve</li>
-            </ul>'
-        translation: '@post_1_en'
-        position: 3
-        type: <sectionType('text_plain')>
-    post_1_fr_section_1:
-        text: 'Un plat italien classique composé de spaghetti et d''une riche sauce à la viande.'
-        translation: '@post_1_fr'
-        position: 1
-        type: <sectionType('text_plain')>
-    post_1_fr_section_2:
-        translation: '@post_1_fr'
-        position: 2
-        type: <sectionType('media_plain')>
-        media: '@post_1_fr_section_2_media'
-    post_1_fr_section_3:
-        text: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
-            <li>400g de spaghetti</li>
-            <li>2 cuil. à soupe d''huile d''olive</li>
-            <li>1 oignon, finement haché</li>
-            <li>2 gousses d''ail, émincées</li>
-            <li>400g de boeuf haché</li>
-            <li>400g de tomates en conserve</li>
-            <li>2 cuil. à soupe de concentré de tomates</li>
-            <li>1 carotte, râpée</li>
-            <li>1 branche de céleri, coupée</li>
-            <li>1 cuil. à café d''origan séché</li>
-            <li>Sel et poivre, selon le goût</li>
-            <li>Basilic frais, pour servir</li>
-            <li>Parmesan râpé, pour servir</li>
-          </ul>'
-        translation: '@post_1_fr'
-        position: 3
-        type: <sectionType('text_plain')>
-        
-App\Entity\PostTranslationSectionMedia:
-    post_1_en_section_2_media:
-        mediaFile: <file('post-1-section-2.webp')>
-        mediaType: <sectionMediaType('image')>
-    post_1_fr_section_2_media:
-        mediaFile: <file('post-1-section-2.webp')>
-        mediaType: <sectionMediaType('image')>
-        
-App\Entity\PostTranslationSectionMediaTranslation:
-    post_1_en_section_2_media_translation:
-        title: 'Spaghetti Bolognese Image'
-        alt: 'A delicious plate of spaghetti bolognese'
-        media: '@post_1_en_section_2_media'
-    post_1_fr_section_2_media_translation:
-        title: 'Image de Spaghetti Bolognaise'
-        alt: 'Une délicieuse assiette de spaghetti bolognaise'
-        media: '@post_1_fr_section_2_media'
+    post_5_translation_en:
+        title: 'Colorful Fruit Tart'
+        locale: en
+    post_5_translation_fr:
+        title: 'Tarte aux fruits colorés'
+        locale: fr

@@ -2,7 +2,7 @@
 
 namespace App\Services\Post;
 
-use App\Entity\CategoryTranslation;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 
 class PostDTO
@@ -11,11 +11,12 @@ class PostDTO
         public int $id,
         public string $title,
         public string $slug,
-        public ?CategoryTranslation $category,
-        public string $imageName,
+        public string $categoryName,
+        public string $categorySlug,
+        public Collection $media,
         public Collection $tags,
         public Collection $sections,
-        public \DateTime $createdAt,
-        public \DateTime $updatedAt,
+        public DateTime $createdAt,
+        public DateTime $updatedAt,
     ) {}
 }

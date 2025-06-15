@@ -38,6 +38,7 @@
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
+.php-cs-fixer.cache
 
 # Build data
 /build/
@@ -51,15 +52,10 @@
 # Embedded web-server pid file
 /.web-server-pid
 .idea
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-###< symfony/phpunit-bridge ###
-
 /assets/vendor
 /tools/*/vendor
 .phpunit.cache
-.php-cs-fixer.cache
+.phpunit.result.cache
 
 ###> phpstan/phpstan ###
 phpstan.neon

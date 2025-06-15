@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures\Provider;
 
-use App\Services\Media\MediaType;
+use App\Services\Media\Enum\MediaType;
 use Faker\Provider\Base as BaseProvider;
 use InvalidArgumentException;
 use ValueError;

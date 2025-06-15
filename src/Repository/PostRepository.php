@@ -35,9 +35,10 @@ class PostRepository extends ServiceEntityRepository
     public function findOneBySlugAndLocale(string $slug, string $locale): ?PostDTO
     {
         $data = $this->createQueryBuilder('p')
-            ->addSelect('pt', 'ptSections', 't', 'tt', 'c', 'ct')
+            ->addSelect('pt', 'ps', 't', 'tt', 'c', 'ct', 'pm')
             ->innerJoin('p.translations', 'pt', 'WITH', 'pt.locale = :locale')
-            ->leftJoin('pt.sections', 'ptSections')
+            ->leftJoin('p.sections', 'ps')
+            ->leftJoin('p.media', 'pm')
             ->leftJoin('p.tags', 't')
             ->leftJoin('t.translations', 'tt', 'WITH', 'tt.locale = :locale')
             ->leftJoin('p.category', 'c')

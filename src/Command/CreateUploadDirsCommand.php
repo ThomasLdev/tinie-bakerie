@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -39,14 +40,17 @@ class CreateUploadDirsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+
         $clearDirectories = $input->getOption('clear');
 
-        foreach (self::UPLOAD_DIRS as $dir) {
+        foreach ($io->progressIterate(self::UPLOAD_DIRS) as $dir) {
             $fullPath = $this->projectDir . $dir;
 
             if (!$this->filesystem->exists($fullPath)) {
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
-                $output->writeln("Created directory: $dir");
+
+                $io->info("Created directory: $dir");
 
                 continue;
             }
@@ -54,9 +58,12 @@ class CreateUploadDirsCommand extends Command
             if ($clearDirectories && $this->filesystem->exists($fullPath)) {
                 $this->filesystem->remove($fullPath);
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
-                $output->writeln("Cleared and recreated directory: $dir");
+
+                $io->info("Cleared and recreated directory: $dir");
             }
         }
+
+        $io->success('Upload directories have been created successfully.');
 
         return Command::SUCCESS;
     }

@@ -35,7 +35,7 @@ final class PostController extends AbstractController
     {
         $postDTO = $this->repository->findOneBySlugAndLocale($slugPost, $_locale);
 
-        if (!$postDTO instanceof PostDTO || $postDTO->category->getSlug() !== $slugCategory) {
+        if (!$postDTO instanceof PostDTO || $postDTO->categorySlug !== $slugCategory) {
             throw $this->createNotFoundException();
         }
 

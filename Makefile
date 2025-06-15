@@ -49,6 +49,12 @@ fixtures:
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction
 
+doctrine-diff:
+	@$(PHP_CONT) bin/console doctrine:migrations:diff
+
+doctrine-migrate:
+	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
+
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'

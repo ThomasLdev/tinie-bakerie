@@ -25,7 +25,7 @@ class PostMedia
     #[ORM\Column(length: 255)]
     private ?string $mediaName = null;
 
-    #[Vich\UploadableField(mapping: 'post_thumbnail', fileNameProperty: 'mediaName')]
+    #[Vich\UploadableField(mapping: 'post_media', fileNameProperty: 'mediaName')]
     private ?File $mediaFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]

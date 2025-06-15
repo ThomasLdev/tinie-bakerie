@@ -6,7 +6,9 @@
     <description>My custom ruleset that combines various standard PHPMD rules</description>
 
     <!-- Include whole rulesets -->
-    <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/cleancode.xml"/>
+    <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/cleancode.xml">
+        <exclude name="StaticAccess"/>
+    </rule>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/codesize.xml"/>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/controversial.xml"/>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/design.xml"/>

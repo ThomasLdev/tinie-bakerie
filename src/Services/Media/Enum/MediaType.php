@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Media;
+namespace App\Services\Media\Enum;
 
 enum MediaType: string
 {

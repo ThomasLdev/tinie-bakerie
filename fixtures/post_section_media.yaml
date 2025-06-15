@@ -1,0 +1,13 @@
+App\Entity\PostSectionMedia:
+    post_1_section_2_media:
+        mediaFile: <file('post-1-section-2.webp')>
+        mediaType: <sectionMediaType('image')>
+        translations: ['@post_1_section_2_media_translation_en', '@post_1_section_2_media_translation_fr']
+
+App\Entity\PostSectionMediaTranslation:
+    post_1_section_2_media_translation_en:
+        title: 'Spaghetti Bolognese Image'
+        alt: 'A delicious plate of spaghetti bolognese'
+    post_1_section_2_media_translation_fr:
+        title: 'Image de Spaghetti Bolognaise'
+        alt: 'Une délicieuse assiette de spaghetti bolognaise'

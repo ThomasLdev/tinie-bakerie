@@ -9,15 +9,17 @@ class PostDTOFactory
     public static function create(Post $post): PostDTO
     {
         $translation = $post->getTranslations()->first();
+        $categoryTranslation = $post->getCategory()?->getTranslations()->first();
 
         return new PostDTO(
             $post->getId(),
             $translation->getTitle(),
             $translation->getSlug(),
-            $post->getCategory()?->getTranslations()->first(),
-            $post->getImageName(),
+            $categoryTranslation?->getName(),
+            $categoryTranslation?->getSlug(),
+            $post->getMedia(),
             $post->getTags(),
-            $translation->getSections(),
+            $post->getSections(),
             $post->getCreatedAt(),
             $post->getUpdatedAt()
         );

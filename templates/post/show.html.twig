@@ -1,16 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ post.category.name }} - {{ post.title }}{% endblock %}
+{% block title %}{{ post.categoryName }} - {{ post.title }}{% endblock %}
 
 {% block body %}
     {% if post is defined and post is not same as null %}
+        {% set mainMedia = post.media|first %}
+
         <h1>{{ post.title }}</h1>
-        <img src="{{ asset('upload/post_thumbnail/' ~ post.imageName) }}" alt="{{ post.title }}" width="300px">
+        <p>Category : {{ post.categoryName }}</p>
+        <img src="{{ asset('upload/post/' ~ mainMedia.mediaName) }}" alt="{{ post.title }}" width="300px">
 
         {% if post.sections is not empty %}
             {% for section in post.sections %}
                 <section>
-                    {% include '/post/sections/' ~ section.type.value ~ '.html.twig' %}
+                    {% include '/post/sections/_' ~ section.type.value ~ '.html.twig' %}
                 </section>
             {% endfor %}
         {% endif %}

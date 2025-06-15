@@ -84,7 +84,7 @@ class Post
         return $this->category;
     }
 
-    public function setCategory(?Category $category): static
+    public function setCategory(Category $category): static
     {
         $this->category = $category;
 
@@ -106,7 +106,7 @@ class Post
         return $this;
     }
 
-    public function removePostTranslation(PostTranslation $translations): static
+    public function removeTranslation(PostTranslation $translations): static
     {
         if ($this->translations->removeElement($translations)) {
             // set the owning side to null (unless already changed)
