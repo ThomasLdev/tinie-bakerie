@@ -2,8 +2,8 @@
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
-
-    # Note that the session will be started ONLY if you read or write from it.
+    set_locale_from_accept_language: true
+    set_content_language_from_locale: true
     session: true
 
     #esi: true

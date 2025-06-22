@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translator\TranslationInterface;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-class Post
+class Post implements TranslatableEntityInterface
 {
     use TimestampableEntity;
 
@@ -89,6 +90,11 @@ class Post
         $this->category = $category;
 
         return $this;
+    }
+
+    public function getTranslation(): TranslationInterface
+    {
+        return $this->translations->first() ?? new PostTranslation();
     }
 
     public function getTranslations(): Collection

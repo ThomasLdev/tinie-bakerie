@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Services\Post;
+namespace App\Services\Post\Model;
 
 use App\Entity\Post;
 
-class PostDTOFactory
+class ViewPostFactory
 {
-    public static function create(Post $post): PostDTO
+    public static function create(Post $post): ViewPost
     {
         $translation = $post->getTranslations()->first();
         $categoryTranslation = $post->getCategory()?->getTranslations()->first();
 
-        return new PostDTO(
-            $post->getId(),
+        return new ViewPost(
             $translation->getTitle(),
             $translation->getSlug(),
             $categoryTranslation?->getName(),

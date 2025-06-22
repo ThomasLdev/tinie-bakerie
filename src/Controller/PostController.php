@@ -3,12 +3,12 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
-use App\Services\Post\PostDTO;
+use App\Services\Post\Model\ViewPost;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('{_locale}', name: 'app_post_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
+#[Route('{_locale<%app.supported_locales%>}', name: 'app_post_')]
 final class PostController extends AbstractController
 {
     public function __construct(private readonly PostRepository $repository)
@@ -19,7 +19,7 @@ final class PostController extends AbstractController
     public function index(string $_locale): Response
     {
         return $this->render('post/index.html.twig', [
-            'posts' => $this->repository->findAllByLocale($_locale),
+            'posts' => $this->repository->findAllByLocale(),
         ]);
     }
 
@@ -31,11 +31,11 @@ final class PostController extends AbstractController
         name: 'show',
         methods: ['GET']
     )]
-    public function show(string $slugCategory, string $slugPost, string $_locale): Response
+    public function show(string $slugCategory, string $slugPost): Response
     {
-        $postDTO = $this->repository->findOneBySlugAndLocale($slugPost, $_locale);
+        $postDTO = $this->repository->findOneBySlugAndLocale($slugPost);
 
-        if (!$postDTO instanceof PostDTO || $postDTO->categorySlug !== $slugCategory) {
+        if (!$postDTO instanceof ViewPost || $postDTO->categorySlug !== $slugCategory) {
             throw $this->createNotFoundException();
         }
 
