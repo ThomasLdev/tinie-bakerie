@@ -68,6 +68,7 @@ phpstan.neon
 
 ###> tinie-bakerie - upload system ###
 public/upload/*
+public/coverage/*
 ###< tinie-bakerie - upload system ###
 
 .env.*

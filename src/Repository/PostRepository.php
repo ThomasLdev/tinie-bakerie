@@ -11,6 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -27,6 +28,8 @@ class PostRepository extends ServiceEntityRepository
 
     /**
      * @return ArrayCollection<array-key, ViewPostList>
+     *
+     * @throws ExceptionInterface
      */
     public function findAllByLocale(): ArrayCollection
     {

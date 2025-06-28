@@ -25,13 +25,7 @@ readonly class ViewPostListCollectionFactory
         $collection = new ArrayCollection();
 
         foreach ($data as $item) {
-            $viewPostList = $this->denormalizer->denormalize($item, ViewPostList::class);
-
-            if (!$viewPostList instanceof ViewPostList) {
-                continue;
-            }
-
-            $collection->add($viewPostList);
+            $collection->add($this->denormalizer->denormalize($item, ViewPostList::class));
         }
 
         return $collection;

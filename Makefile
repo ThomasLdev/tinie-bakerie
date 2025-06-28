@@ -46,7 +46,7 @@ test: ## Start tests with phpunit, pass the parameter "c=" to add options to php
 	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
 
 create-upload-dirs: ## Create upload directories
-	@$(PHP_CONT) bin/console app:create-upload-dirs
+	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 
 fixtures: create-upload-dirs
 	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction
@@ -104,6 +104,9 @@ doctrine-validate-schema:
 
 phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit
+
+coverage:
+	@$(PHP_CONT) vendor/bin/phpunit --coverage-html public/coverage
 
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
