@@ -34,7 +34,7 @@ class HomepageControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         $client->request('GET', '/', [], [], [
-            'HTTP_ACCEPT_LANGUAGE' => 'fr'
+            'HTTP_ACCEPT_LANGUAGE' => 'fr',
         ]);
 
         self::assertResponseRedirects('/fr/');
