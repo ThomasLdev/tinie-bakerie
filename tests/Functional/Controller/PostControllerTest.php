@@ -25,13 +25,16 @@ class PostControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/en/post/category-slug/post-slug');
+        $crawler = $client->request('GET', '/en/post/bakery/fresh-bread');
 
         self::assertResponseIsSuccessful();
-        $crawler->filter('html:contains("Post slug")');
 
-        $client->request('GET', '/fr/article/category-slug/post-slug');
+        $crawler->filter('html:contains("Fresh Bread")');
+
+        $crawler = $client->request('GET', '/fr/article/boulangerie/pain-frais');
 
         self::assertResponseIsSuccessful();
+
+        $crawler->filter('html:contains("Pain Frais")');
     }
 }
