@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Repository\PostTagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PostTagRepository::class)]
-class PostTag
+class PostTag implements TranslatableEntityInterface
 {
     use TimestampableEntity;
 

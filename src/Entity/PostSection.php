@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Repository\PostTranslationSectionRepository;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PostTranslationSectionRepository::class)]
-class PostSection
+class PostSection implements TranslatableEntityInterface
 {
     use TimestampableEntity;
 

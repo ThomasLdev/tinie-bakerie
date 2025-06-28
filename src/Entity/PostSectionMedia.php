@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Repository\MediaRepository;
 use App\Services\Media\Enum\MediaType;
 use DateTimeImmutable;
@@ -14,7 +15,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Vich\Uploadable]
-class PostSectionMedia
+class PostSectionMedia implements TranslatableEntityInterface
 {
     use TimestampableEntity;
 

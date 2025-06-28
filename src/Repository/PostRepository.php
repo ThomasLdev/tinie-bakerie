@@ -21,7 +21,7 @@ class PostRepository extends ServiceEntityRepository
     public function findAllByLocale(): array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.imageName, pt.title as postTitle, pt.slug AS postSlug, c.id AS categoryId, ct.slug AS categorySlug')
+            ->select('p.id, pt.title as postTitle, pt.slug AS postSlug, c.id AS categoryId, ct.slug AS categorySlug')
             ->join('p.translations', 'pt')
             ->leftJoin('p.category', 'c')
             ->leftJoin('c.translations', 'ct')

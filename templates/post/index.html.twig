@@ -6,14 +6,14 @@
     {% if posts is defined and posts is not empty %}
         <div class="flex flex-col justify-center">
             {% for post in posts %}
-                {% set mainMedia = post.media|first %}
+{#                {% set mainMedia = post.media|first %}#}
 
                 <a href="{{ path('app_post_show', {'slugCategory': post.categorySlug, 'slugPost': post.postSlug}) }}">
-                    <img
-                        src="{{ asset('upload/post_thumbnail/' ~ mainMedia.mediaName) }}"
-                        alt="{{ post.postTitle }}"
-                        width="300px"
-                    >
+{#                    <img#}
+{#                        src="{{ asset('upload/post_thumbnail/' ~ mainMedia.mediaName) }}"#}
+{#                        alt="{{ post.postTitle }}"#}
+{#                        width="300px"#}
+{#                    >#}
                     {{ post.postTitle }}
                 </a>
             {% endfor %}

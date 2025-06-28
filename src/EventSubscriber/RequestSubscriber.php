@@ -23,13 +23,22 @@ readonly class RequestSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        $request = $event->getRequest();
+        $locale = $request->getLocale();
+
+        // Set the locale filter parameter for Doctrine
+        $this->setLocaleFilterParameter($locale);
+
+        // Set the locale in the request attributes
+        $request->attributes->set('_locale', $locale);
+    }
+
+    private function setLocaleFilterParameter(string $locale): void
+    {
         $this->managerRegistry
             ->getManager()
             ->getFilters()
             ->enable('locale_filter')
-            ->setParameter(
-                'currentLocale',
-                $event->getRequest()->attributes->get('_locale')
-            );
+            ->setParameter('currentLocale', $locale);
     }
 }

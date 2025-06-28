@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translator\TranslationInterface;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post implements TranslatableEntityInterface
@@ -92,7 +92,7 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
-    public function getTranslation(): TranslationInterface
+    public function getTranslation(): PostTranslation
     {
         return $this->translations->first() ?? new PostTranslation();
     }

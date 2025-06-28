@@ -2,17 +2,14 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\PostTranslationInterface;
-use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Repository\PostTranslationRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PostTranslationRepository::class)]
-class PostTranslation implements TranslatableEntityInterface, PostTranslationInterface
+class PostTranslation
 {
     use TimestampableEntity, LocalizedEntity;
 

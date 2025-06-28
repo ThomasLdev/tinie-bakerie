@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\TranslatableEntityInterface;
 use App\Repository\PostMediaRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PostMediaRepository::class)]
 #[Vich\Uploadable]
-class PostMedia
+class PostMedia implements TranslatableEntityInterface
 {
     use TimestampableEntity;
 
