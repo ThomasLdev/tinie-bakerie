@@ -6,7 +6,7 @@ use App\Entity\Post;
 use App\Services\ViewModelFactoryInterface;
 use DateTime;
 
-class ViewPostFactory implements ViewModelFactoryInterface
+readonly class ViewPostFactory implements ViewModelFactoryInterface
 {
     public function create(Post $entity): ViewPost
     {
