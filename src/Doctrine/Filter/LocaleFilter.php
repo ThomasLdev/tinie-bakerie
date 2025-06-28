@@ -5,6 +5,7 @@ namespace App\Doctrine\Filter;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
+use InvalidArgumentException;
 
 class LocaleFilter extends SQLFilter
 {
@@ -19,7 +20,7 @@ class LocaleFilter extends SQLFilter
 
         try {
             $locale = $this->getParameter('currentLocale');
-        } catch (\InvalidArgumentException) {
+        } catch (InvalidArgumentException) {
             return '';
         }
 

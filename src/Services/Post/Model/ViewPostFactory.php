@@ -4,6 +4,7 @@ namespace App\Services\Post\Model;
 
 use App\Entity\Post;
 use App\Services\ViewModelFactoryInterface;
+use DateTime;
 
 readonly class ViewPostFactory implements ViewModelFactoryInterface
 {
@@ -20,8 +21,8 @@ readonly class ViewPostFactory implements ViewModelFactoryInterface
             $entity->getMedia(),
             $entity->getTags(),
             $entity->getSections(),
-            $entity->getCreatedAt() ?? new \DateTime(),
-            $entity->getUpdatedAt() ?? new \DateTime()
+            $entity->getCreatedAt() ?? new DateTime(),
+            $entity->getUpdatedAt() ?? new DateTime()
         );
     }
 }

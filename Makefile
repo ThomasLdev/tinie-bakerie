@@ -82,7 +82,10 @@ phpmd:
 	@$(PHP_CONT) vendor/bin/phpmd src text phpmd.xml
 
 phpcs:
-	@$(PHP_CONT) vendor/bin/php-cs-fixer fix src
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --verbose
+
+phpcs-dry:
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --dry-run --verbose
 
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates

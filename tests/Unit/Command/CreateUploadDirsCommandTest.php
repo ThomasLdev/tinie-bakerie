@@ -42,7 +42,7 @@ class CreateUploadDirsCommandTest extends KernelTestCase
                     '/public/upload/post_section',
                 ],
                 'arguments' => [],
-            ]
+            ],
         ];
     }
 
@@ -51,9 +51,8 @@ class CreateUploadDirsCommandTest extends KernelTestCase
         string $expected,
         array $existingDirectories,
         array $directoriesToCreate,
-        array $arguments
-    ): void
-    {
+        array $arguments,
+    ): void {
         self::bootKernel();
 
         $commandTester = new CommandTester($this->command);
@@ -70,6 +69,7 @@ class CreateUploadDirsCommandTest extends KernelTestCase
                 if (in_array($dir, $directoriesToCreate, true)) {
                     return true;
                 }
+
                 return false;
             });
 

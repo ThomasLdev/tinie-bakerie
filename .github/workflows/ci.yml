@@ -50,7 +50,7 @@ jobs:
       - name: Run PHPMD
         run: make phpmd
       - name: Run PHP CS Fixer
-        run: make phpcs
+        run: make phpcs-dry
       - name: Run Twig CS
         run: make twig-linter
       - name: Run PHPUnit
