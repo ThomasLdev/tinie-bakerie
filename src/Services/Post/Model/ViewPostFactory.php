@@ -10,14 +10,14 @@ class ViewPostFactory implements ViewModelFactoryInterface
 {
     public function create(Post $entity): ViewPost
     {
-        $translation = $entity->getTranslations()->first();
-        $categoryTranslation = $entity->getCategory()?->getTranslations()->first();
+        $translation = $entity->getTranslations()->first() ?: null;
+        $categoryTranslation = $entity->getCategory()?->getTranslations()->first() ?: null;
 
         return new ViewPost(
-            $translation->getTitle(),
-            $translation->getSlug(),
-            $categoryTranslation?->getName(),
-            $categoryTranslation?->getSlug(),
+            $translation?->getTitle() ?? '',
+            $translation?->getSlug() ?? '',
+            $categoryTranslation?->getName() ?? '',
+            $categoryTranslation?->getSlug() ?? '',
             $entity->getMedia(),
             $entity->getTags(),
             $entity->getSections(),
@@ -26,4 +26,3 @@ class ViewPostFactory implements ViewModelFactoryInterface
         );
     }
 }
-

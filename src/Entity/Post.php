@@ -22,6 +22,7 @@ class Post implements TranslatableEntityInterface
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
+    /** @var Collection<int,PostTranslation> */
     #[ORM\OneToMany(
         targetEntity: PostTranslation::class,
         mappedBy: 'post',
@@ -92,11 +93,7 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
-    public function getTranslation(): PostTranslation
-    {
-        return $this->translations->first() ?? new PostTranslation();
-    }
-
+    /** @return Collection<int,PostTranslation> */
     public function getTranslations(): Collection
     {
         return $this->translations;
