@@ -4,43 +4,52 @@ namespace App\Controller;
 
 use App\Repository\PostRepository;
 use App\Services\Post\Model\ViewPost;
+use App\Services\Post\Model\ViewPostList;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('{_locale<%app.supported_locales%>}', name: 'app_post_')]
+#[Route('{_locale<%app.supported_locales%>}')]
 final class PostController extends AbstractController
 {
     public function __construct(private readonly PostRepository $repository)
     {
     }
 
-    #[Route(['en' => '/post', 'fr' => '/article'], name: 'index', methods: ['GET'])]
-    public function index(string $_locale): Response
+    /**
+     * @return array<'posts', ArrayCollection<array-key,ViewPostList>>
+     */
+    #[Route(['en' => '/post', 'fr' => '/article'], methods: ['GET'])]
+    #[Template('post/index.html.twig')]
+    public function index(): array
     {
-        return $this->render('post/index.html.twig', [
+        return [
             'posts' => $this->repository->findAllByLocale(),
-        ]);
+        ];
     }
 
+    /**
+     * @return array<'post', ViewPost>
+     */
     #[Route(
         [
             'en' => '/post/{slugCategory}/{slugPost}',
             'fr' => '/article/{slugCategory}/{slugPost}'
         ],
-        name: 'show',
         methods: ['GET']
     )]
-    public function show(string $slugCategory, string $slugPost): Response
+    #[Template('post/show.html.twig')]
+    public function show(string $slugCategory, string $slugPost): array
     {
-        $postDTO = $this->repository->findOneBySlugAndLocale($slugPost);
+        $viewPost = $this->repository->findOneBySlugAndLocale($slugPost);
 
-        if (!$postDTO instanceof ViewPost || $postDTO->categorySlug !== $slugCategory) {
+        if ($slugCategory !== $viewPost->categorySlug) {
             throw $this->createNotFoundException();
         }
 
-        return $this->render('post/show.html.twig', [
-            'post' => $postDTO,
-        ]);
+        return [
+            'post' => $viewPost,
+        ];
     }
 }

@@ -9,7 +9,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomePageController extends AbstractController
 {
-    #[Route('{_locale<%app.supported_locales%>}/', name: 'app_page_home_index')]
+    /**
+     * @return array<string, mixed>
+     */
+    #[Route('{_locale<%app.supported_locales%>}/')]
     #[Template('page/home/index.html.twig')]
     public function index(): array
     {
@@ -19,6 +22,6 @@ class HomePageController extends AbstractController
     #[Route('/')]
     public function indexNoLocale(): Response
     {
-        return $this->redirectToRoute('app_page_home_index', ['_locale' => 'en']);
+        return $this->redirectToRoute('app_page_homepage_index', ['_locale' => 'en']);
     }
 }

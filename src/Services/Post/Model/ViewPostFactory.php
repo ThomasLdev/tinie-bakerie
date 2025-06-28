@@ -3,24 +3,26 @@
 namespace App\Services\Post\Model;
 
 use App\Entity\Post;
+use App\Services\ViewModelFactoryInterface;
+use DateTime;
 
-class ViewPostFactory
+class ViewPostFactory implements ViewModelFactoryInterface
 {
-    public static function create(Post $post): ViewPost
+    public function create(Post $entity): ViewPost
     {
-        $translation = $post->getTranslations()->first();
-        $categoryTranslation = $post->getCategory()?->getTranslations()->first();
+        $translation = $entity->getTranslations()->first();
+        $categoryTranslation = $entity->getCategory()?->getTranslations()->first();
 
         return new ViewPost(
             $translation->getTitle(),
             $translation->getSlug(),
             $categoryTranslation?->getName(),
             $categoryTranslation?->getSlug(),
-            $post->getMedia(),
-            $post->getTags(),
-            $post->getSections(),
-            $post->getCreatedAt(),
-            $post->getUpdatedAt()
+            $entity->getMedia(),
+            $entity->getTags(),
+            $entity->getSections(),
+            $entity->getCreatedAt() ?? new DateTime(),
+            $entity->getUpdatedAt() ?? new DateTime()
         );
     }
 }

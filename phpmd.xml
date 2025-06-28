@@ -12,6 +12,9 @@
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/codesize.xml"/>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/controversial.xml"/>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/design.xml"/>
-    <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/naming.xml"/>
+    <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/naming.xml">
+        <exclude name="ShortVariable"/>
+        <exclude name="CamelCaseParameterName"/>
+    </rule>
     <rule ref="vendor/phpmd/phpmd/src/main/resources/rulesets/unusedcode.xml"/>
 </ruleset>

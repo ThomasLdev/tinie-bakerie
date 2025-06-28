@@ -2,14 +2,14 @@
 
 namespace App\EventSubscriber;
 
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 readonly class RequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private ManagerRegistry $managerRegistry,
+        private EntityManagerInterface $entityManager,
     )
     {
     }
@@ -35,8 +35,7 @@ readonly class RequestSubscriber implements EventSubscriberInterface
 
     private function setLocaleFilterParameter(string $locale): void
     {
-        $this->managerRegistry
-            ->getManager()
+        $this->entityManager
             ->getFilters()
             ->enable('locale_filter')
             ->setParameter('currentLocale', $locale);

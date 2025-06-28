@@ -25,7 +25,7 @@ readonly class UserProcessor implements ProcessorInterface
         }
 
         $object->setPassword(
-            $this->passwordHasher->hashPassword($object, $object->getPlainPassword())
+            $this->passwordHasher->hashPassword($object, $object->getPlainPassword() ?? '')
         );
     }
 

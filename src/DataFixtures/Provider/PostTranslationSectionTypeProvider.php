@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures\Provider;
 
-use App\Services\PostTranslation\Enum\PostSectionType;
+use App\Services\PostSection\Enum\PostSectionType;
 use Faker\Provider\Base as BaseProvider;
 use InvalidArgumentException;
 use ValueError;

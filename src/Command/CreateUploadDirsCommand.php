@@ -55,7 +55,7 @@ class CreateUploadDirsCommand extends Command
                 continue;
             }
 
-            if ($clearDirectories && $this->filesystem->exists($fullPath)) {
+            if ($clearDirectories) {
                 $this->filesystem->remove($fullPath);
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
 
