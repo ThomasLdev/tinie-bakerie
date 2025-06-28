@@ -4,9 +4,9 @@ namespace App\Services\PostSection\Enum;
 
 enum PostSectionType: string
 {
-    CASE Default = 'default';
+    case Default = 'default';
 
-    CASE TwoColumns = 'two_columns';
+    case TwoColumns = 'two_columns';
 
-    CASE TwoColumnsMediaLeft = 'two_columns_media_left';
+    case TwoColumnsMediaLeft = 'two_columns_media_left';
 }

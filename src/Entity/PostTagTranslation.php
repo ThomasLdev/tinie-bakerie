@@ -10,7 +10,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: PostTagTranslationRepository::class)]
 class PostTagTranslation
 {
-    use TimestampableEntity, LocalizedEntity;
+    use TimestampableEntity;
+    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

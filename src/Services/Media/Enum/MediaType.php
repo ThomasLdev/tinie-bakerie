@@ -4,7 +4,7 @@ namespace App\Services\Media\Enum;
 
 enum MediaType: string
 {
-    Case Image = 'image';
+    case Image = 'image';
 
-    Case Video = 'video';
+    case Video = 'video';
 }

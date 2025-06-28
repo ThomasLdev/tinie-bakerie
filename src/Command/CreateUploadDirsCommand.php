@@ -8,8 +8,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:create-upload-dirs',
@@ -32,9 +32,8 @@ class CreateUploadDirsCommand extends Command
 
     public function __construct(
         private readonly Filesystem $filesystem,
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir
-    )
-    {
+        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
+    ) {
         parent::__construct();
     }
 
@@ -45,7 +44,7 @@ class CreateUploadDirsCommand extends Command
         $clearDirectories = $input->getOption('clear');
 
         foreach ($io->progressIterate(self::UPLOAD_DIRS) as $dir) {
-            $fullPath = $this->projectDir . $dir;
+            $fullPath = $this->projectDir.$dir;
 
             if (!$this->filesystem->exists($fullPath)) {
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);

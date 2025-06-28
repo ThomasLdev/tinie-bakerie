@@ -11,7 +11,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: CategoryMediaTranslationRepository::class)]
 class CategoryMediaTranslation
 {
-    use TimestampableEntity, LocalizedEntity, MediaAccessibilityProperties;
+    use TimestampableEntity;
+    use LocalizedEntity;
+    use MediaAccessibilityProperties;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

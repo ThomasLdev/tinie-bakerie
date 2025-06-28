@@ -10,7 +10,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: MediaTranslationRepository::class)]
 class PostSectionMediaTranslation
 {
-    use TimestampableEntity, MediaAccessibilityProperties;
+    use TimestampableEntity;
+    use MediaAccessibilityProperties;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

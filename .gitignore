@@ -70,3 +70,5 @@ phpstan.neon
 public/upload/post_thumbnail/*
 public/upload/post_translation_section/*
 ###< tinie-bakerie - upload system ###
+
+.env.*

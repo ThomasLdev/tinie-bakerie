@@ -10,13 +10,14 @@ readonly class ViewPostListCollectionFactory
 {
     public function __construct(
         private DenormalizerInterface $denormalizer,
-    )
-    {
+    ) {
     }
 
     /**
      * @param array<array-key, mixed> $data
+     *
      * @return ArrayCollection<array-key, ViewPostList>
+     *
      * @throws ExceptionInterface
      */
     public function create(array $data): ArrayCollection

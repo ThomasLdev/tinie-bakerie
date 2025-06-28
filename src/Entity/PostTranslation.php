@@ -11,7 +11,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: PostTranslationRepository::class)]
 class PostTranslation
 {
-    use TimestampableEntity, LocalizedEntity;
+    use TimestampableEntity;
+    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -70,4 +71,3 @@ class PostTranslation
         return $this;
     }
 }
-

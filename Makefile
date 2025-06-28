@@ -11,7 +11,7 @@ SYMFONY  = $(PHP) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up start down logs sh composer vendor sf cc test fixtures
+.PHONY        : help build up start down logs sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -86,6 +86,8 @@ phpcs:
 
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
+
+quality: phpstan phpmd phpcs twig-linter
 
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 

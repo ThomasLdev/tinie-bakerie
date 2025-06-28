@@ -37,7 +37,7 @@ class Category implements TranslatableEntityInterface
     #[ORM\OneToMany(
         targetEntity: Post::class,
         mappedBy: 'category',
-        fetch:  'EXTRA_LAZY',
+        fetch: 'EXTRA_LAZY',
     )]
     private Collection $posts;
 

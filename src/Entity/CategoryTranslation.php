@@ -12,7 +12,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\UniqueConstraint(columns: ['slug', 'locale'])]
 class CategoryTranslation
 {
-    use TimestampableEntity, LocalizedEntity;
+    use TimestampableEntity;
+    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,7 +23,7 @@ class CategoryTranslation
     #[ORM\Column(length: 255, nullable: false, options: ['default' => ''])]
     private string $name = '';
 
-    #[ORM\Column(length: 255, nullable: false ,options: ['default' => ''])]
+    #[ORM\Column(length: 255, nullable: false, options: ['default' => ''])]
     private string $description = '';
 
     #[ORM\ManyToOne(inversedBy: 'translations')]

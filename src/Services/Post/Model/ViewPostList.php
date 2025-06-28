@@ -12,7 +12,6 @@ class ViewPostList implements EntityModelInterface
         public string $postSlug = '',
         public ?int $categoryId = null,
         public string $categorySlug = '',
-    )
-    {
+    ) {
     }
 }

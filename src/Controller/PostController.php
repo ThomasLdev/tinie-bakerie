@@ -35,7 +35,7 @@ final class PostController extends AbstractController
     #[Route(
         [
             'en' => '/post/{slugCategory}/{slugPost}',
-            'fr' => '/article/{slugCategory}/{slugPost}'
+            'fr' => '/article/{slugCategory}/{slugPost}',
         ],
         methods: ['GET']
     )]
