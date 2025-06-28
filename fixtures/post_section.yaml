@@ -1,0 +1,48 @@
+App\Entity\PostSection:
+    post_1_section_1:
+        translations: ['@post_1_section_1_en', '@post_1_section_1_fr']
+        position: 1
+    post_1_section_2:
+        translations: ['@post_1_section_2_en', '@post_1_section_2_fr']
+        position: 2
+        media: '@post_1_section_2_media'
+
+App\Entity\PostSectionTranslation:
+    post_1_section_1_en:
+        locale: en
+        content: 'A classic Italian dish made with spaghetti and a rich meat sauce.'
+    post_1_section_1_fr:
+        locale: fr
+        content: 'Un plat italien classique composé de spaghetti et d''une riche sauce à la viande.'
+    post_1_section_2_en:
+        locale: en
+        content: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
+            <li>400g spaghetti</li>
+            <li>2 tbsp olive oil</li>
+            <li>1 onion, finely chopped</li>
+            <li>2 garlic cloves, minced</li>
+            <li>400g ground beef</li>
+            <li>400g canned tomatoes</li>
+            <li>2 tbsp tomato paste</li>
+            <li>1 carrot, grated</li>
+            <li>1 celery stalk, chopped</li>
+            <li>1 tsp dried oregano</li>
+            <li>Salt and pepper to taste</li>
+            <li>Fresh basil for serving</li>
+            <li>Grated Parmesan for serving</li>
+          </ul>'
+    post_1_section_2_fr:
+        locale: fr
+        content: '<ul style="list-style: disc; padding-left: 1.5em; font-family: Arial, sans-serif; font-size: 1em; color: #333;">
+            <li>400g de spaghetti</li>
+            <li>2 cuil. à soupe d''huile d''olive</li>
+            <li>1 oignon, finement haché</li>
+            <li>2 gousses d''ail, émincées</li>
+            <li>400g de boeuf haché</li>
+            <li>400g de tomates en conserve</li>
+            <li>2 cuil. à soupe de concentré de tomates</li>
+            <li>1 carotte, râpée</li>
+            <li>1 branche de céleri, coupée</li>
+            <li>1 cuil. à café d''origan séché</li>
+            <li>Sel et poivre, selon le goût</li>
+            <li>Basilic frais, pour servir</li>'

@@ -2,15 +2,36 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomePageController extends AbstractController
 {
-    #[Route('/', name: 'app_index')]
-    public function index(): Response
+    /**
+     * @return array<string, mixed>
+     */
+    #[Route('{_locale<%app.supported_locales%>}/')]
+    #[Template('page/home/index.html.twig')]
+    public function index(): array
     {
-        return $this->render('index.html.twig');
+        return [];
+    }
+
+    #[Route('/')]
+    public function indexNoLocale(
+        Request $request,
+        #[Autowire(param: 'app.supported_locales')] string $supportedLocales,
+        #[Autowire(param: 'default_locale')] string $defaultLocale,
+    ): Response {
+        return $this->redirectToRoute(
+            'app_homepage_index',
+            [
+                '_locale' => $request->getPreferredLanguage(explode('|', $supportedLocales)) ?? $defaultLocale,
+            ]
+        );
     }
 }

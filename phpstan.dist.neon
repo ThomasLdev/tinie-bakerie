@@ -1,4 +1,6 @@
 parameters:
+    ignoreErrors:
+        - '#Property App\\Entity\\.*::\$id is never written, only read.#'
     level: 9
     paths:
         - bin/
