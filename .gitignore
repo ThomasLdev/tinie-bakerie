@@ -67,8 +67,7 @@ phpstan.neon
 ###< friendsofphp/php-cs-fixer ###
 
 ###> tinie-bakerie - upload system ###
-public/upload/post_thumbnail/*
-public/upload/post_translation_section/*
+public/upload/*
 ###< tinie-bakerie - upload system ###
 
 .env.*

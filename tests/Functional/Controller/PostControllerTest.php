@@ -15,5 +15,9 @@ class PostControllerTest extends WebTestCase
         $client->request('GET', '/en/post');
 
         self::assertResponseIsSuccessful();
+
+        $client->request('GET', '/fr/article');
+
+        self::assertResponseIsSuccessful();
     }
 }

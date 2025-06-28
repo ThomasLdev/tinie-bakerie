@@ -45,9 +45,14 @@ test: ## Start tests with phpunit, pass the parameter "c=" to add options to php
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
 
-fixtures:
-	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
+create-upload-dirs: ## Create upload directories
+	@$(PHP_CONT) bin/console app:create-upload-dirs
+
+fixtures: create-upload-dirs
 	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction
+
+fixtures-test: create-upload-dirs
+	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction --env=test
 
 doctrine-diff:
 	@$(PHP_CONT) bin/console doctrine:migrations:diff
@@ -103,7 +108,7 @@ phpunit:
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-phpunit-functional:
+phpunit-functional: fixtures-test
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 tailwind:
