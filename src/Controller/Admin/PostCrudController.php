@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Post;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 
 class PostCrudController extends AbstractCrudController
@@ -17,6 +18,7 @@ class PostCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id'),
+            BooleanField::new('enabled'),
         ];
     }
 }

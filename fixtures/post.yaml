@@ -5,26 +5,31 @@ App\Entity\Post:
         tags: ['@post_tag_1', '@post_tag_2']
         sections: ['@post_1_section_1', '@post_1_section_2']
         translations: ['@post_1_translation_en', '@post_1_translation_fr']
+        enabled: true
     post_2:
         category: '@pastry'
         media: ['@post_2_media']
         tags: ['@post_tag_1', '@post_tag_3']
         translations: ['@post_2_translation_en', '@post_2_translation_fr']
+        enabled: true
     post_3:
         category: '@bakery'
         media: ['@post_3_media']
         tags: ['@post_tag_1']
         translations: ['@post_3_translation_en', '@post_3_translation_fr']
+        enabled: true
     post_4:
         category: '@starters'
         media: ['@post_4_media']
         tags: ['@post_tag_2']
         translations: ['@post_4_translation_en', '@post_4_translation_fr']
+        enabled: true
     post_5:
         category: '@desserts'
         media: ['@post_5_media']
         tags: ['@post_tag_2', '@post_tag_3']
         translations: ['@post_5_translation_en', '@post_5_translation_fr']
+        enabled: false
 
 App\Entity\PostTranslation:
     post_1_translation_en:

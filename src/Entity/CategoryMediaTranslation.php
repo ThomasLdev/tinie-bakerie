@@ -21,7 +21,7 @@ class CategoryMediaTranslation
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?CategoryMedia $categoryMedia = null;
 
     public function getId(): ?int

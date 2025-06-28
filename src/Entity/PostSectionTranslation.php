@@ -23,7 +23,7 @@ class PostSectionTranslation
     private string $content = '';
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?PostSection $postSection = null;
 
     public function getId(): ?int

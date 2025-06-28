@@ -21,12 +21,12 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('App');
+            ->setTitle('Tinie Bakerie');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToUrl('Website', 'fa fa-home', '/');
         yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Post::class);
     }
 }

@@ -23,7 +23,7 @@ class PostTranslation
     private string $title = '';
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Post $post = null;
 
     #[ORM\Column(length: 255)]

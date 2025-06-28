@@ -68,6 +68,9 @@ class Post implements TranslatableEntityInterface
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $enabled = true;
+
     public function __construct()
     {
         $this->translations = new ArrayCollection();
@@ -201,6 +204,18 @@ class Post implements TranslatableEntityInterface
                 $section->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

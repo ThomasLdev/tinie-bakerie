@@ -22,7 +22,7 @@ class PostSection implements TranslatableEntityInterface
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'sections')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Post $post = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]

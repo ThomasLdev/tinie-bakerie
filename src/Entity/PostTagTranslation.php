@@ -22,7 +22,7 @@ class PostTagTranslation
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?PostTag $postTag = null;
 
     public function getId(): ?int

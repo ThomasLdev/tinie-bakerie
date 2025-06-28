@@ -27,7 +27,7 @@ class CategoryTranslation
     private string $description = '';
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
