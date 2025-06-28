@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Controller;
 
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +28,7 @@ class HomePageController extends AbstractController
         #[Autowire(param: 'default_locale')] string $defaultLocale,
     ): Response {
         return $this->redirectToRoute(
-            'app_page_homepage_index',
+            'app_homepage_index',
             [
                 '_locale' => $request->getPreferredLanguage(explode('|', $supportedLocales)) ?? $defaultLocale,
             ]
