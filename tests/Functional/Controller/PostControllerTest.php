@@ -20,4 +20,18 @@ class PostControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
     }
+
+    public function testShow(): void
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/en/post/category-slug/post-slug');
+
+        self::assertResponseIsSuccessful();
+        $crawler->filter('html:contains("Post slug")');
+
+        $client->request('GET', '/fr/article/category-slug/post-slug');
+
+        self::assertResponseIsSuccessful();
+    }
 }
