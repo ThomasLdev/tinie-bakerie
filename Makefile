@@ -92,16 +92,19 @@ twig-linter:
 
 quality: phpstan phpmd phpcs twig-linter
 
+doctrine-validate-schema:
+	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
+
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
 phpunit:
-	@$(PHP_CONT) bin/phpunit
+	@$(PHP_CONT) vendor/bin/phpunit
 
 phpunit-unit:
-	@$(PHP_CONT) bin/phpunit --testsuite UnitTests
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
 phpunit-functional:
-	@$(PHP_CONT) bin/phpunit --testsuite FunctionalTests
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 tailwind:
 	@$(PHP_CONT) bin/console tailwind:build
