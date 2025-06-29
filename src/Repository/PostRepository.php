@@ -38,6 +38,7 @@ class PostRepository extends ServiceEntityRepository
             ->join('p.translations', 'pt')
             ->leftJoin('p.category', 'c')
             ->leftJoin('c.translations', 'ct')
+            ->where('p.enabled = true')
             ->getQuery()
             ->getResult()
         ;
@@ -61,6 +62,7 @@ class PostRepository extends ServiceEntityRepository
             ->leftJoin('p.category', 'c')
             ->leftJoin('c.translations', 'ct')
             ->where('pt.slug = :slug')
+            ->andWhere('p.enabled = true')
             ->setParameter('slug', $slug)
             ->getQuery()
             ->getOneOrNullResult();

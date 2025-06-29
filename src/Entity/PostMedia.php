@@ -30,7 +30,7 @@ class PostMedia implements TranslatableEntityInterface
     private ?File $mediaFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Post $post = null;
 
     /**

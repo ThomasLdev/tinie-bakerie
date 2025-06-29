@@ -68,6 +68,9 @@ class Post implements TranslatableEntityInterface
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $enabled = true;
+
     public function __construct()
     {
         $this->translations = new ArrayCollection();
@@ -91,6 +94,22 @@ class Post implements TranslatableEntityInterface
         $this->category = $category;
 
         return $this;
+    }
+
+    public function getAdminName(): string
+    {
+        return $this->getTranslation('fr')?->getTitle() ?? 'Unnamed Post';
+    }
+
+    public function getTranslation(string $locale): ?PostTranslation
+    {
+        foreach ($this->translations as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
     }
 
     /** @return Collection<int,PostTranslation> */
@@ -201,6 +220,18 @@ class Post implements TranslatableEntityInterface
                 $section->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

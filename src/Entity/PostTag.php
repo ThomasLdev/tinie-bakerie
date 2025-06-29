@@ -46,9 +46,30 @@ class PostTag implements TranslatableEntityInterface
         $this->posts = new ArrayCollection();
     }
 
+    public function getAdminName(): string
+    {
+        return $this->__toString();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getTranslation('fr')?->getName() ?? 'Unnamed Tag';
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;
+    }
+
+    public function getTranslation(string $locale): ?PostTagTranslation
+    {
+        foreach ($this->translations as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -21,7 +21,7 @@ class PostMediaTranslation
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'translations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?PostMedia $postMedia = null;
 
     public function getId(): ?int
