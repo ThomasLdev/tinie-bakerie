@@ -34,8 +34,13 @@ readonly class RequestSubscriber implements EventSubscriberInterface
             $request->setLocale($locale);
         }
 
-        $this->setLocaleFilterParameter($locale);
         $request->attributes->set('_locale', $locale);
+
+        if (!str_contains('/admin', $request->getRequestUri())) {
+            return;
+        }
+
+        $this->setLocaleFilterParameter($locale);
     }
 
     private function setLocaleFilterParameter(string $locale): void

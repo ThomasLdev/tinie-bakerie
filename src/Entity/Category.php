@@ -65,6 +65,22 @@ class Category implements TranslatableEntityInterface
         return $this->id ?? null;
     }
 
+    public function getAdminName(): string
+    {
+        return $this->getTranslation('fr')?->getName() ?? 'Unnamed Category';
+    }
+
+    public function getTranslation(string $locale): ?CategoryTranslation
+    {
+        foreach ($this->translations as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return Collection<int, CategoryTranslation>
      */

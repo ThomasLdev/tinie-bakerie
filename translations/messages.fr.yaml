@@ -1,5 +1,17 @@
 app:
     post:
-        show:
-            created_at: 'Créé le : '
-            updated_at: 'Modifié le : '
+        translations: 'Traductions'
+        label: 'Article'
+        plural: 'Articles'
+        created_at: 'Créé le'
+        updated_at: 'Modifié le'
+        enabled: 'Publié'
+        title: 'Titre'
+        tags: 'Étiquettes'
+    category:
+        label: 'Catégorie'
+        title: 'Titre'
+        created_at: 'Créé le'
+            
+admin:
+    website: 'Site web'

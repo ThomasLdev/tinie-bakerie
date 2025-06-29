@@ -96,6 +96,22 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
+    public function getAdminName(): string
+    {
+        return $this->getTranslation('fr')?->getTitle() ?? 'Unnamed Post';
+    }
+
+    public function getTranslation(string $locale): ?PostTranslation
+    {
+        foreach ($this->translations as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
     /** @return Collection<int,PostTranslation> */
     public function getTranslations(): Collection
     {
