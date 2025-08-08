@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -10,7 +9,6 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 readonly class RequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
         #[Autowire(param: 'default_locale')] private string $defaultLocale,
     ) {
@@ -34,15 +32,6 @@ readonly class RequestSubscriber implements EventSubscriberInterface
             $request->setLocale($locale);
         }
 
-        $this->setLocaleFilterParameter($locale);
         $request->attributes->set('_locale', $locale);
-    }
-
-    private function setLocaleFilterParameter(string $locale): void
-    {
-        $this->entityManager
-            ->getFilters()
-            ->enable('locale_filter')
-            ->setParameter('currentLocale', $locale);
     }
 }

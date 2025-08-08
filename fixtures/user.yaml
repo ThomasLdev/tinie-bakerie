@@ -1,4 +1,0 @@
-App\Entity\User:
-    user1:
-        email: john@example.com
-        plainPassword: password123

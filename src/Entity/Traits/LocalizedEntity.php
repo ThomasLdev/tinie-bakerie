@@ -2,22 +2,22 @@
 
 namespace App\Entity\Traits;
 
-use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 trait LocalizedEntity
 {
-    #[ORM\Column(length: 2, nullable: false, options: ['default' => 'en'])]
-    private string $locale = 'en';
+    #[Gedmo\Locale]
+    private ?string $locale = null;
 
-    public function getLocale(): string
-    {
-        return $this->locale;
-    }
-
-    public function setLocale(string $locale): static
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
     }
 }

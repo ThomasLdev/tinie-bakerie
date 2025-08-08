@@ -6,7 +6,6 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
-import { initFlowbite } from 'flowbite';
 
 document.addEventListener('turbo:render', () => {
   initFlowbite();

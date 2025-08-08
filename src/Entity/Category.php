@@ -2,34 +2,26 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\CategoryRepository;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\SluggableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category implements TranslatableEntityInterface
+#[ORM\Entity]
+class Category
 {
     use TimestampableEntity;
+    use LocalizedEntity;
+    use SluggableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    /**
-     * @var Collection<int, CategoryTranslation>
-     */
-    #[ORM\OneToMany(
-        targetEntity: CategoryTranslation::class,
-        mappedBy: 'category',
-        cascade: ['persist', 'remove'],
-        fetch: 'EXTRA_LAZY',
-        orphanRemoval: true,
-    )]
-    private Collection $translations;
 
     /**
      * @var Collection<int, Post>
@@ -41,58 +33,22 @@ class Category implements TranslatableEntityInterface
     )]
     private Collection $posts;
 
-    /**
-     * @var Collection<int, CategoryMedia>
-     */
-    #[ORM\OneToMany(
-        targetEntity: CategoryMedia::class,
-        mappedBy: 'category',
-        cascade: ['persist', 'remove'],
-        fetch: 'EXTRA_LAZY',
-        orphanRemoval: true,
-    )]
-    private Collection $media;
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING)]
+    private string $title;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
+    private string $description = '';
 
     public function __construct()
     {
-        $this->translations = new ArrayCollection();
         $this->posts = new ArrayCollection();
-        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id ?? null;
-    }
-
-    /**
-     * @return Collection<int, CategoryTranslation>
-     */
-    public function getTranslations(): Collection
-    {
-        return $this->translations;
-    }
-
-    public function addTranslation(CategoryTranslation $translation): static
-    {
-        if (!$this->translations->contains($translation)) {
-            $this->translations->add($translation);
-            $translation->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTranslation(CategoryTranslation $translation): static
-    {
-        if ($this->translations->removeElement($translation)) {
-            // set the owning side to null (unless already changed)
-            if ($translation->getCategory() === $this) {
-                $translation->setCategory(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -103,32 +59,26 @@ class Category implements TranslatableEntityInterface
         return $this->posts;
     }
 
-    /**
-     * @return Collection<int, CategoryMedia>
-     */
-    public function getMedia(): Collection
+    public function getTitle(): string
     {
-        return $this->media;
+        return $this->title;
     }
 
-    public function addMedium(CategoryMedia $medium): static
+    public function setTitle(string $title): self
     {
-        if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
-            $medium->setCategory($this);
-        }
+        $this->title = $title;
 
         return $this;
     }
 
-    public function removeMedium(CategoryMedia $medium): static
+    public function getDescription(): string
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getCategory() === $this) {
-                $medium->setCategory(null);
-            }
-        }
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

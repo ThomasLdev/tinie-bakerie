@@ -16,7 +16,7 @@
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.1",
         "runtime/frankenphp-symfony": "^0.2.0",
-        "stof/doctrine-extensions-bundle": "^1.13",
+        "stof/doctrine-extensions-bundle": "^1.14",
         "symfony/asset": "7.1.*",
         "symfony/asset-mapper": "7.1.*",
         "symfony/dotenv": "7.1.*",
@@ -69,8 +69,7 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "importmap:install": "symfony-cmd",
-            "app:create-upload-dirs": "symfony-cmd"
+            "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -92,7 +91,6 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "friendsofphp/php-cs-fixer": "^3.59",
-        "hautelook/alice-bundle": "^2.15",
         "mockery/mockery": "^1.6",
         "phpmd/phpmd": "^2.15",
         "phpstan/phpstan": "^1.11",
@@ -102,6 +100,7 @@
         "symfony/css-selector": "7.1.*",
         "symfony/maker-bundle": "^1.63",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*",
+        "zenstruck/foundry": "^2.6"
     }
 }

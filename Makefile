@@ -49,7 +49,7 @@ create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 
 fixtures: create-upload-dirs
-	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction
+	@$(PHP_CONT) bin/console doctrine:fixtures:load
 
 fixtures-test: create-upload-dirs
 	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction --env=test
@@ -106,7 +106,7 @@ phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit
 
 coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --coverage-html public/coverage
+	@$(PHP_CONT) vendor/bin/phpunit --coverage-html tests/coverage
 
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests

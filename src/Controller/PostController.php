@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
-use App\Services\Post\Model\ViewPost;
-use App\Services\Post\Model\ViewPostList;
+use App\Services\Post\ListPostModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,19 +17,19 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'posts', ArrayCollection<array-key,ViewPostList>>
+     * @return array<'posts', ArrayCollection<array-key,ListPostModel>>
      */
     #[Route(['en' => '/post', 'fr' => '/article'], methods: ['GET'])]
     #[Template('post/index.html.twig')]
     public function index(): array
     {
         return [
-            'posts' => $this->repository->findAllByLocale(),
+            'posts' => $this->repository->forListing(),
         ];
     }
 
     /**
-     * @return array<'post', ViewPost>
+     * @return array<'post', array<array-key, PostModel>>
      */
     #[Route(
         [
