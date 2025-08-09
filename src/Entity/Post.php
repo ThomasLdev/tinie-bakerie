@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
 use DateTimeImmutable;
@@ -14,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
-class Post
+class Post implements LocalizedEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;
@@ -45,6 +46,18 @@ class Post
         fetch: 'EXTRA_LAZY',
     )]
     private Collection $tags;
+
+    /**
+     * @var Collection<int,PostMedia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: PostMedia::class,
+        mappedBy: 'post',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    private Collection $media;
 
     public function __construct()
     {
@@ -85,7 +98,7 @@ class Post
         return $this->category;
     }
 
-    public function setCategory(Category $category): static
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
@@ -93,7 +106,7 @@ class Post
     }
 
     /**
-     * @param array<array-key, Tag> $tags
+     * @param array<array-key,Tag> $tags
      */
     public function setTags(array $tags): self
     {
@@ -112,7 +125,7 @@ class Post
         return $this->tags;
     }
 
-    public function addTag(Tag $tag): static
+    public function addTag(Tag $tag): self
     {
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
@@ -121,9 +134,51 @@ class Post
         return $this;
     }
 
-    public function removeTag(Tag $tag): static
+    public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @param array<array-key,PostMedia> $media
+     */
+    public function setMedia(array $media): self
+    {
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,PostMedia>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(PostMedia $medium): self
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(PostMedia $medium): self
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getPost() === $this) {
+                $medium->setPost(null);
+            }
+        }
 
         return $this;
     }

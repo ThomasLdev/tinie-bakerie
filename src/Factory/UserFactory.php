@@ -27,16 +27,12 @@ final class UserFactory extends PersistentProxyObjectFactory{
         return User::class;
     }
 
-        /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
-    protected function defaults(): array|callable    {
+    protected function defaults(): array|callable
+    {
         return [
             'createdAt' => self::faker()->dateTime(),
-            'email' => self::faker()->text(180),
-            'password' => self::faker()->text(),
+            'email' => self::faker()->email(),
+            'plainPassword' => self::faker()->password(),
             'roles' => [],
             'updatedAt' => self::faker()->dateTime(),
         ];

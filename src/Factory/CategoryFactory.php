@@ -3,19 +3,18 @@
 namespace App\Factory;
 
 use App\Entity\Category;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\String\Slugger\AsciiSlugger;
+use App\Factory\Trait\SluggableEntityFactory;
+use App\Services\Fixtures\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
  * @extends PersistentProxyObjectFactory<Category>
  */
-final class CategoryFactory extends PersistentProxyObjectFactory{
+final class CategoryFactory extends PersistentProxyObjectFactory {
+    use SluggableEntityFactory;
+
     public function __construct(
-        #[Autowire(param: 'app.supported_locales')] private readonly string $supportedLocales,
-        #[Autowire(param: 'default_locale')] private readonly string $defaultLocale,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatableEntityPropertySetter $propertySetter,
     )
     {
         parent::__construct();
@@ -26,10 +25,11 @@ final class CategoryFactory extends PersistentProxyObjectFactory{
         return Category::class;
     }
 
-    protected function defaults(): array|callable    {
+    protected function defaults(): array|callable
+    {
         return [
             'createdAt' => self::faker()->dateTime(),
-            'description' => self::faker()->text(),
+            'description' => self::faker()->text(100),
             'title' => self::faker()->word(),
             'updatedAt' => self::faker()->dateTime(),
         ];
@@ -39,26 +39,16 @@ final class CategoryFactory extends PersistentProxyObjectFactory{
     {
         return $this
             ->afterInstantiate(function(Category $category) {
-                $slugger = new AsciiSlugger();
-                $category->setSlug($slugger->slug($category->getTitle())->lower());
+                $category->setSlug($this->createSlug($category->getTitle()));
 
-                $this->entityManager->persist($category);
-                $this->entityManager->flush();
-
-                foreach(explode('|', $this->supportedLocales) as $locale) {
-                    if ($locale === $this->defaultLocale) {
-                        continue;
-                    }
-
-                    $category
-                        ->setLocale($locale)
-                        ->setTitle(self::faker()->word() . ' ' . $locale)
-                        ->setSlug($slugger->slug($category->getTitle())->lower())
-                    ;
-
-                    $this->entityManager->persist($category);
-                    $this->entityManager->flush();
-                }
+                $this->propertySetter->processTranslations(
+                    $category,
+                    [
+                        'title' => fn($locale) => $category->getTitle() . ' ' . $locale,
+                        'slug' => fn($locale, $category) => $this->createSlug($category->getTitle() . ' ' . $locale),
+                        'description' => fn($locale) => $category->getDescription() . ' ' . $locale,
+                    ]
+                );
             });
     }
 }

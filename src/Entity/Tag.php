@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity]
-class Tag
+class Tag implements LocalizedEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;

@@ -2,14 +2,16 @@
 
 namespace App\Factory;
 
-use App\Entity\Tag;
+use App\Entity\PostMedia;
 use App\Services\Fixtures\TranslatableEntityPropertySetter;
+use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Tag>
+ * @extends PersistentProxyObjectFactory<PostMedia>
  */
-final class TagFactory extends PersistentProxyObjectFactory{
+final class PostMediaFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
     )
@@ -19,28 +21,30 @@ final class TagFactory extends PersistentProxyObjectFactory{
 
     public static function class(): string
     {
-        return Tag::class;
+        return PostMedia::class;
     }
 
     protected function defaults(): array|callable
     {
         return [
-            'color' => self::faker()->hexColor(),
+            'alt' => self::faker()->text(10),
             'createdAt' => self::faker()->dateTime(),
+            'mediaName' => self::faker()->text(10),
+            'title' => self::faker()->text(10),
             'updatedAt' => self::faker()->dateTime(),
-            'title' => self::faker()->word(),
-            'activatedAt' => self::faker()->boolean(90) ? self::faker()->dateTime() : null,
+            'type' => self::faker()->randomElement([MediaType::Image, MediaType::Video]),
         ];
     }
 
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Tag $tag) {
+            ->afterInstantiate(function(PostMedia $postMedia) {
                 $this->propertySetter->processTranslations(
-                    $tag,
+                    $postMedia,
                     [
-                        'title' => fn($locale) => $tag->getTitle() . ' ' . $locale,
+                        'title' => fn($locale) => $postMedia->getTitle() . ' ' . $locale,
+                        'alt' => fn($locale) => $postMedia->getAlt() . ' ' . $locale,
                     ]
                 );
             })

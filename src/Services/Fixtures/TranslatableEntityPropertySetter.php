@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Fixtures;
+
+use App\Entity\Contracts\LocalizedEntityInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+readonly class TranslatableEntityPropertySetter
+{
+    public function __construct(
+        #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
+        #[Autowire(param: 'default_locale')] private string $defaultLocale,
+        private EntityManagerInterface $entityManager,)
+    {
+    }
+
+    /**
+     * Process translations for a translatable entity.
+     *
+     * @param LocalizedEntityInterface $entity The entity to translate
+     * @param array $translatableFields Map of field names to callbacks that generate translated content
+     */
+    public function processTranslations(LocalizedEntityInterface $entity, array $translatableFields): void
+    {
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        foreach(explode('|', $this->supportedLocales) as $locale) {
+            if ($locale === $this->defaultLocale) {
+                continue;
+            }
+
+            $entity->setLocale($locale);
+
+            foreach ($translatableFields as $field => $callback) {
+                $setter = 'set' . ucfirst($field);
+                $value = $callback($locale, $entity);
+                $entity->$setter($value);
+            }
+
+            $this->entityManager->flush();
+        }
+    }
+}
