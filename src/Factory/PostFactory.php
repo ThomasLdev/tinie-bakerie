@@ -35,6 +35,7 @@ final class PostFactory extends PersistentProxyObjectFactory{
             'publishedAt' => self::faker()->boolean() ? self::faker()->dateTime() : null,
             'locale' => $this->defaultLocale,
             'category' => null,
+            'tags' => [],
         ];
     }
 

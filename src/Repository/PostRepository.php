@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Post;
-use App\Services\Post\ListPostModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,15 +19,22 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<array-key, ListPostModel>
+     * @return array<array-key,Post>
      */
-    public function forListing(): array
+    public function getPublished(): array
     {
-        $query = $this->createQueryBuilder('p')
-            ->select('NEW App\Services\Post\ListPostModel(p.title, p.publishedAt, p.createdAt, p.updatedAt)')
-            ->getQuery()
-            ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class)
-        ;
+        $qb = $this->createQueryBuilder('p')
+            ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt}')
+            ->addSelect('PARTIAL t.{id, title, color}')
+            ->addSelect('PARTIAL c.{id, title}')
+            ->leftJoin('p.tags', 't')
+            ->leftJoin('p.category', 'c')
+            ->where('p.publishedAt IS NOT NULL')
+            ->orderBy('p.publishedAt', 'DESC');
+
+        $query = $qb->getQuery();
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
+        $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return $query->getResult();
     }

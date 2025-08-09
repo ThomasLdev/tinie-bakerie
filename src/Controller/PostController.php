@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
-use App\Services\Post\ListPostModel;
+use App\Services\Post\Model\ListPostModel;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,7 @@ final class PostController extends AbstractController
     public function index(): array
     {
         return [
-            'posts' => $this->repository->forListing(),
+            'posts' => $this->repository->getPublished(),
         ];
     }
 

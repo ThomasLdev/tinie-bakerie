@@ -2,16 +2,15 @@
 
 namespace App\Factory;
 
-use App\Entity\Category;
+use App\Entity\Tag;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Category>
+ * @extends PersistentProxyObjectFactory<Tag>
  */
-final class CategoryFactory extends PersistentProxyObjectFactory{
+final class TagFactory extends PersistentProxyObjectFactory{
     public function __construct(
         #[Autowire(param: 'app.supported_locales')] private readonly string $supportedLocales,
         #[Autowire(param: 'default_locale')] private readonly string $defaultLocale,
@@ -23,26 +22,25 @@ final class CategoryFactory extends PersistentProxyObjectFactory{
 
     public static function class(): string
     {
-        return Category::class;
+        return Tag::class;
     }
 
-    protected function defaults(): array|callable    {
+    protected function defaults(): array|callable
+    {
         return [
+            'color' => self::faker()->hexColor(),
             'createdAt' => self::faker()->dateTime(),
-            'description' => self::faker()->text(),
-            'title' => self::faker()->word(),
             'updatedAt' => self::faker()->dateTime(),
+            'title' => self::faker()->word(),
+            'activatedAt' => self::faker()->boolean(90) ? self::faker()->dateTime() : null,
         ];
     }
 
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Category $category) {
-                $slugger = new AsciiSlugger();
-                $category->setSlug($slugger->slug($category->getTitle())->lower());
-
-                $this->entityManager->persist($category);
+            ->afterInstantiate(function(Tag $tag) {
+                $this->entityManager->persist($tag);
                 $this->entityManager->flush();
 
                 foreach(explode('|', $this->supportedLocales) as $locale) {
@@ -50,15 +48,15 @@ final class CategoryFactory extends PersistentProxyObjectFactory{
                         continue;
                     }
 
-                    $category
+                    $tag
                         ->setLocale($locale)
                         ->setTitle(self::faker()->word() . ' ' . $locale)
-                        ->setSlug($slugger->slug($category->getTitle())->lower())
                     ;
 
-                    $this->entityManager->persist($category);
+                    $this->entityManager->persist($tag);
                     $this->entityManager->flush();
                 }
-            });
+            })
+        ;
     }
 }

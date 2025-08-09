@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -31,6 +33,22 @@ class Post
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
+
+    /**
+     * @var Collection<int, Tag>
+     */
+    #[ORM\ManyToMany(
+        targetEntity: Tag::class,
+        inversedBy: 'posts',
+        cascade: ['persist'],
+        fetch: 'EXTRA_LAZY',
+    )]
+    private Collection $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -69,6 +87,42 @@ class Post
     public function setCategory(Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @param array<array-key, Tag> $tags
+     */
+    public function setTags(array $tags): self
+    {
+        foreach ($tags as $tag) {
+            $this->addTag($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }
