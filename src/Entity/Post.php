@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+#[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
 class Post
 {

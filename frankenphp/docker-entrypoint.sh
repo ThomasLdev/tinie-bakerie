@@ -1,10 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "Starting FrankenPHP entrypoint script..."
-
 if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
-	echo "Running FrankenPHP entrypoint tasks..."
 
 	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
 		composer install --prefer-dist --no-progress --no-interaction
@@ -40,7 +37,6 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
 			echo "Loading migrations and fixtures into app_test database..."
 			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing --env=test
-			php bin/console hautelook:fixtures:load --no-interaction --env=test
 		fi
 	fi
 

@@ -1,7 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-    #csrf_protection: true
+    csrf_protection: true
+    enabled_locales: ['en', 'fr']
     set_locale_from_accept_language: true
     set_content_language_from_locale: true
     session: true

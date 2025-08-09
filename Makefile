@@ -49,10 +49,10 @@ create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 
 fixtures: create-upload-dirs
-	@$(PHP_CONT) bin/console doctrine:fixtures:load
+	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction
 
 fixtures-test: create-upload-dirs
-	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction --env=test
+	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction --env=test
 
 doctrine-diff:
 	@$(PHP_CONT) bin/console doctrine:migrations:diff
