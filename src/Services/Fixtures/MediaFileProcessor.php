@@ -10,16 +10,27 @@ use Gedmo\Uploadable\MimeType\MimeTypeGuesser;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-readonly class MediaFileProcessor
+class MediaFileProcessor
 {
-    public function __construct(private Filesystem $filesystem)
+    private const string FOLDER_PATH = __DIR__ . '/media/';
+
+    private bool $imageOnly = false;
+
+    public function __construct(private readonly Filesystem $filesystem)
     {
     }
 
-    public function process(MediaEntityInterface $entity, string $folderPath): void
+    public function hasImageOnly(): self
     {
-        $fileName = $this->getRandomFileName($folderPath);
-        $sourceFilePath = sprintf(__DIR__ . '/media/%s/%s', $folderPath, $fileName);
+        $this->imageOnly = true;
+
+        return $this;
+    }
+
+    public function process(MediaEntityInterface $entity): void
+    {
+        $fileName = $this->getRandomFileName();
+        $sourceFilePath = sprintf('%s/%s', self::FOLDER_PATH, $fileName);
         $tempFilePath = sprintf('%s/%s-%s', sys_get_temp_dir(), uniqid('', true), $fileName);
         $this->filesystem->copy($sourceFilePath, $tempFilePath);
 
@@ -36,14 +47,17 @@ readonly class MediaFileProcessor
         $entity->setMediaFile($file);
     }
 
-    private function getRandomFileName(string $folderPath): string
+    private function getRandomFileName(): string
     {
-        $mediaDir = __DIR__ . '/media/' . $folderPath;
-        $files = array_diff(scandir($mediaDir), ['.', '..']);
-        $files = array_filter($files, static fn($file) => is_file($mediaDir . '/' . $file));
+        $files = array_diff(scandir(self::FOLDER_PATH), ['.', '..']);
+        $files = array_filter($files, static fn($file) => is_file(self::FOLDER_PATH . '/' . $file));
 
         if (empty($files)) {
-            throw new \RuntimeException('No media files found in fixtures/media/posts directory');
+            throw new \RuntimeException('No media files found in ./media/ directory');
+        }
+
+        if ($this->imageOnly) {
+            $files = array_filter($files, fn($file) => $this->getFileType($file) === MediaType::Image);
         }
 
         return $files[array_rand($files)];

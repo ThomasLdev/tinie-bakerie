@@ -34,6 +34,18 @@ class Category implements LocalizedEntityInterface
     )]
     private Collection $posts;
 
+    /**
+     * @var Collection<int,CategoryMedia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: CategoryMedia::class,
+        mappedBy: 'category',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    private Collection $media;
+
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING)]
     private string $title;
@@ -45,6 +57,7 @@ class Category implements LocalizedEntityInterface
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +93,48 @@ class Category implements LocalizedEntityInterface
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @param array<array-key,CategoryMedia> $media
+     */
+    public function setMedia(array $media): self
+    {
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,CategoryMedia>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(CategoryMedia $medium): self
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(CategoryMedia $medium): self
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getCategory() === $this) {
+                $medium->setCategory(null);
+            }
+        }
 
         return $this;
     }

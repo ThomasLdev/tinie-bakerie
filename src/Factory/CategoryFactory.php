@@ -32,6 +32,7 @@ final class CategoryFactory extends PersistentProxyObjectFactory {
             'description' => self::faker()->text(100),
             'title' => self::faker()->word(),
             'updatedAt' => self::faker()->dateTime(),
+            'media' => [],
         ];
     }
 

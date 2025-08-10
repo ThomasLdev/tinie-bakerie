@@ -5,6 +5,19 @@
 {% block body %}
     {% if post is defined and post is not same as null %}
         <h1>{{ post.title }}</h1>
+
+        {% for medium in post.media %}
+            {% set src = vich_uploader_asset(medium) %}
+
+            {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
+            {% else %}
+                <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
+                    <source src="{{ src }}" type="video/mp4">
+                </video>
+            {% endif %}
+        {% endfor %}
+
         <div>
             {% for tag in post.tags %}
                 <span style="background-color: {{ tag.color }}">
