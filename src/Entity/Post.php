@@ -62,6 +62,7 @@ class Post implements LocalizedEntityInterface
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int

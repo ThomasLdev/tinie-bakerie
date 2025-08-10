@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\PostMedia;
+use App\Services\Fixtures\MediaFileProcessor;
 use App\Services\Fixtures\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -14,6 +15,7 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
 {
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
+        private readonly MediaFileProcessor $mediaFileProcessor,
     )
     {
         parent::__construct();
@@ -29,10 +31,10 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
         return [
             'alt' => self::faker()->text(10),
             'createdAt' => self::faker()->dateTime(),
-            'mediaName' => self::faker()->text(10),
+            'mediaName' => '',
             'title' => self::faker()->text(10),
             'updatedAt' => self::faker()->dateTime(),
-            'type' => self::faker()->randomElement([MediaType::Image, MediaType::Video]),
+            'type' => MediaType::Image,
         ];
     }
 
@@ -40,6 +42,7 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
     {
         return $this
             ->afterInstantiate(function(PostMedia $postMedia) {
+                $this->mediaFileProcessor->process($postMedia, 'posts');
                 $this->propertySetter->processTranslations(
                     $postMedia,
                     [
@@ -47,6 +50,8 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
                         'alt' => fn($locale) => $postMedia->getAlt() . ' ' . $locale,
                     ]
                 );
+
+
             })
         ;
     }

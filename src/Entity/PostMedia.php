@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\MediaEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\MediaAccessibility;
 use App\Services\Media\Enum\MediaType;
@@ -14,7 +15,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity]
 #[Vich\Uploadable]
-class PostMedia implements LocalizedEntityInterface
+class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;
@@ -25,14 +26,14 @@ class PostMedia implements LocalizedEntityInterface
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
     private ?string $mediaName = null;
 
     #[Vich\UploadableField(mapping: 'post_media', fileNameProperty: 'mediaName')]
     private ?File $mediaFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Post $post;
 
     #[ORM\Column(enumType: MediaType::class)]
@@ -48,7 +49,7 @@ class PostMedia implements LocalizedEntityInterface
         return $this->mediaName;
     }
 
-    public function setMediaName(string $mediaName): self
+    public function setMediaName(?string $mediaName): self
     {
         $this->mediaName = $mediaName;
 

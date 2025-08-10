@@ -20,6 +20,18 @@
                             </span>
                         {% endfor %}
                     </div>
+
+                    {% for medium in post.media %}
+                        {% set src = vich_uploader_asset(medium) %}
+
+                        {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                            <img src="{{ src }}" alt="{{ medium.alt }}" width="50">
+                        {% else %}
+                            <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="50">
+                                <source src="{{ src }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>
