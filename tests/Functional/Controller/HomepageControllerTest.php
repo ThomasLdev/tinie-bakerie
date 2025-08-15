@@ -19,10 +19,15 @@ class HomepageControllerTest extends BaseControllerTestCase
     {
         return [
             'en' => [
-                'uri' => '/en',
+                [
+                    'uri' => '/en',
+                ],
+
             ],
             'fr' => [
-                'uri' => '/fr',
+                [
+                    'uri' => '/fr',
+                ]
             ],
         ];
     }
@@ -47,9 +52,9 @@ class HomepageControllerTest extends BaseControllerTestCase
     }
 
     #[DataProvider('getHomepageControllerData')]
-    public function testIndex(string $uri): void
+    public function testIndex(array $data): void
     {
-        $this->client->request(Request::METHOD_GET, $uri);
+        $this->client->request(Request::METHOD_GET, $data['uri']);
 
         self::assertResponseIsSuccessful();
     }
