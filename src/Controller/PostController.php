@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Repository\PostRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route([
-    'en' => '{_locale<%app.supported_locales%>}/posts/',
-    'fr' => '{_locale<%app.supported_locales%>}/articles/',
+    'en' => '{_locale<%app.supported_locales%>}/posts',
+    'fr' => '{_locale<%app.supported_locales%>}/articles',
 ])]
 final class PostController extends AbstractController
 {
@@ -34,7 +33,7 @@ final class PostController extends AbstractController
     /**
      * @return array<'post',mixed>
      */
-    #[Route(['en' => '{categorySlug}/{postSlug}', 'fr' => '{categorySlug}/{postSlug}'], methods: ['GET'])]
+    #[Route(['en' => '/{categorySlug}/{postSlug}', 'fr' => '/{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]
     public function show(string $categorySlug, string $postSlug): array
     {

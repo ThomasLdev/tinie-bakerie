@@ -108,7 +108,7 @@ coverage:
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-phpunit-functional: fixtures-test
+phpunit-functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 tailwind:

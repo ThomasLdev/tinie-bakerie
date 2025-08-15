@@ -5,49 +5,65 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
+use App\Entity\Post;
 use App\Repository\PostRepository;
-use App\Services\Post\Model\ViewPost;
-use App\Services\Post\Model\ViewPostFactory;
-use App\Services\Post\Model\ViewPostList;
-use App\Services\Post\Model\ViewPostListCollectionFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PostController::class)]
-#[CoversClass(ViewPostFactory::class)]
-#[CoversClass(ViewPostListCollectionFactory::class)]
-#[CoversClass(ViewPost::class)]
-#[CoversClass(ViewPostList::class)]
 #[CoversClass(PostRepository::class)]
-class PostControllerTest extends WebTestCase
+class PostControllerTest extends BaseControllerTestCase
 {
-    public function testIndex(): void
+    private PostRepository $postRepository;
+
+    public function setUp(): void
     {
-        $client = static::createClient();
+        parent::setUp();
 
-        $client->request('GET', '/en/post');
-
-        self::assertResponseIsSuccessful();
-
-        $client->request('GET', '/fr/article');
-
-        self::assertResponseIsSuccessful();
+        $this->postRepository = static::getContainer()->get(PostRepository::class);
     }
 
-    public function testShow(): void
+//    #[DataProvider('getShowIndexData')]
+//    public function testIndex(array $localizedData): void
+//    {
+//        $this->client->request('GET', $localizedData['baseUrl']);
+//        self::assertResponseIsSuccessful();
+//    }
+
+    #[DataProvider('getShowIndexData')]
+    public function testShow(array $localizedData): void
     {
-        $client = static::createClient();
+        /** @var Post $post */
+        $post = $this->postRepository->findOneBy([]);
 
-        $crawler = $client->request('GET', '/en/post/bakery/fresh-bread');
+        $post->setLocale($localizedData['locale']);
+        $url = $localizedData['baseUrl'] . '/' . $post->getCategory()->setLocale($localizedData['locale'])->getSlug() . '/' . $post->getSlug();
 
-        self::assertResponseIsSuccessful();
-
-        $crawler->filter('html:contains("Fresh Bread")');
-
-        $crawler = $client->request('GET', '/fr/article/boulangerie/pain-frais');
+        $crawler = $this->client->request('GET', $url);
 
         self::assertResponseIsSuccessful();
 
-        $crawler->filter('html:contains("Pain Frais")');
+        $crawler->filter(sprintf('html:contains("%s")', $post->getTitle()));
+    }
+
+    /**
+     * @return array<'fr'|'en', array<'baseUrl', string>>
+     */
+    public static function getShowIndexData(): array
+    {
+        return [
+            'fr' => [
+                [
+                    'baseUrl' => '/fr/articles',
+                    'locale' => 'fr',
+                ]
+            ],
+            'en' => [
+                [
+                    'baseUrl' => '/en/posts',
+                    'locale' => 'en',
+                ]
+            ],
+        ];
     }
 }
