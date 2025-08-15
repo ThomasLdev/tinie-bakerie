@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Trait\MediaFixtures;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
 use App\Factory\PostFactory;
@@ -12,20 +13,27 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    use MediaFixtures;
+
     public function load(ObjectManager $manager): void
     {
-        CategoryFactory::createMany(5, static function () {
+        CategoryFactory::createMany(5, function() {
             return [
-                'media' => CategoryMediaFactory::createRange(1, 3),
+                'media' => CategoryMediaFactory::createRange(1, 3, function () {
+                    return $this->getRandomFileData();
+                }),
             ];
         });
+
         TagFactory::createMany(15);
 
-        PostFactory::createMany(40, static function () {
+        PostFactory::createMany(30, function () {
             return [
                 'category' => CategoryFactory::random(),
                 'tags' => TagFactory::randomRange(1, 3),
-                'media' => PostMediaFactory::createRange(1, 3),
+                'media' => PostMediaFactory::createRange(1, 3, function () {
+                    return $this->getRandomFileData();
+                }),
             ];
         });
     }

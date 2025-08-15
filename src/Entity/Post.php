@@ -59,10 +59,24 @@ class Post implements LocalizedEntityInterface
     )]
     private Collection $media;
 
+    /**
+     * @var Collection<int,PostSection>
+     */
+    #[ORM\OneToMany(
+        targetEntity: PostSection::class,
+        mappedBy: 'post',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $sections;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->sections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -178,6 +192,48 @@ class Post implements LocalizedEntityInterface
             // set the owning side to null (unless already changed)
             if ($medium->getPost() === $this) {
                 $medium->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<array-key,PostSection> $sections
+     */
+    public function setSections(array $sections): self
+    {
+        foreach ($sections as $section) {
+            $this->addSection($section);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostSection>
+     */
+    public function getSections(): Collection
+    {
+        return $this->sections;
+    }
+
+    public function addSection(PostSection $section): self
+    {
+        if (!$this->sections->contains($section)) {
+            $this->sections->add($section);
+            $section->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSection(PostSection $section): self
+    {
+        if ($this->sections->removeElement($section)) {
+            // set the owning side to null (unless already changed)
+            if ($section->getPost() === $this) {
+                $section->setPost(null);
             }
         }
 

@@ -25,6 +25,7 @@ readonly class TranslatableEntityPropertySetter
      */
     public function processTranslations(LocalizedEntityInterface $entity, array $translatableFields): void
     {
+        // The default locale data has been set by the factory, just persist it
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
@@ -41,6 +42,8 @@ readonly class TranslatableEntityPropertySetter
                 $entity->$setter($value);
             }
 
+
+            // Persist the entity with the translated properties for the current locale
             $this->entityManager->flush();
         }
     }

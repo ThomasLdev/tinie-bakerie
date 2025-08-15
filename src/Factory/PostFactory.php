@@ -35,6 +35,7 @@ final class PostFactory extends PersistentProxyObjectFactory{
             'category' => null,
             'tags' => [],
             'media' => [],
+            'sections' => [],
         ];
     }
 

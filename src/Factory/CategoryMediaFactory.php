@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\CategoryMedia;
-use App\Services\Fixtures\MediaFileProcessor;
 use App\Services\Fixtures\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -11,10 +10,10 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<CategoryMedia>
  */
-final class CategoryMediaFactory extends PersistentProxyObjectFactory{
+final class CategoryMediaFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-        private readonly MediaFileProcessor $mediaFileProcessor,
     )
     {
         parent::__construct();
@@ -34,6 +33,7 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory{
             'title' => self::faker()->text(10),
             'updatedAt' => self::faker()->dateTime(),
             'type' => MediaType::Image,
+            'mediaFile' => null
         ];
     }
 
@@ -41,7 +41,6 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory{
     {
         return $this
             ->afterInstantiate(function(CategoryMedia $media) {
-                $this->mediaFileProcessor->hasImageOnly()->process($media);
                 $this->propertySetter->processTranslations(
                     $media,
                     [
