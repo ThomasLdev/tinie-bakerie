@@ -9,6 +9,7 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
@@ -21,29 +22,6 @@ class PostControllerTest extends BaseControllerTestCase
         parent::setUp();
 
         $this->postRepository = static::getContainer()->get(PostRepository::class);
-    }
-
-//    #[DataProvider('getShowIndexData')]
-//    public function testIndex(array $localizedData): void
-//    {
-//        $this->client->request('GET', $localizedData['baseUrl']);
-//        self::assertResponseIsSuccessful();
-//    }
-
-    #[DataProvider('getShowIndexData')]
-    public function testShow(array $localizedData): void
-    {
-        /** @var Post $post */
-        $post = $this->postRepository->findOneBy([]);
-
-        $post->setLocale($localizedData['locale']);
-        $url = $localizedData['baseUrl'] . '/' . $post->getCategory()->setLocale($localizedData['locale'])->getSlug() . '/' . $post->getSlug();
-
-        $crawler = $this->client->request('GET', $url);
-
-        self::assertResponseIsSuccessful();
-
-        $crawler->filter(sprintf('html:contains("%s")', $post->getTitle()));
     }
 
     /**
@@ -65,5 +43,28 @@ class PostControllerTest extends BaseControllerTestCase
                 ]
             ],
         ];
+    }
+
+    #[DataProvider('getShowIndexData')]
+    public function testIndex(array $localizedData): void
+    {
+        $this->client->request(Request::METHOD_GET, $localizedData['baseUrl']);
+        self::assertResponseIsSuccessful();
+    }
+
+    #[DataProvider('getShowIndexData')]
+    public function testShow(array $localizedData): void
+    {
+        /** @var Post $post */
+        $post = $this->postRepository->findOneBy([]);
+
+        $post->setLocale($localizedData['locale']);
+        $url = sprintf('%s/%s/%s', $localizedData['baseUrl'], $post->getCategory()->getSlug(), $post->getSlug());
+
+        $crawler = $this->client->request(Request::METHOD_GET, $url);
+
+        self::assertResponseIsSuccessful();
+
+        $crawler->filter(sprintf('html:contains("%s")', $post->getTitle()));
     }
 }
