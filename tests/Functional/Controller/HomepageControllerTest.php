@@ -58,8 +58,8 @@ class HomepageControllerTest extends BaseControllerTestCase
     public function testNoLocaleIndex(array $localizedData): void
     {
         $this->client->request(
-            method: Request::METHOD_GET,
-            uri: $localizedData['uri'],
+            Request::METHOD_GET,
+            $localizedData['uri'],
             server: [
                 'HTTP_ACCEPT_LANGUAGE' => $localizedData['browserLanguage'] ?? '',
             ]);

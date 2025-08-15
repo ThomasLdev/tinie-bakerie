@@ -76,6 +76,8 @@ jobs:
         run: make tailwind
       - name: Doctrine Schema Validator
         run: make doctrine-validate-schema
+      - name: Run Fixtures
+        run: make fixtures-test
       - name: Run PHPUnit Functional Suite
         run: make phpunit-functional
   lint:
