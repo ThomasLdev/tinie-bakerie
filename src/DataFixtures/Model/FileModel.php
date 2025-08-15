@@ -13,8 +13,7 @@ readonly class FileModel
         private string $name,
         private UploadedFile $file,
         private MediaType $type,
-    )
-    {
+    ) {
     }
 
     public function getName(): string

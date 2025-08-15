@@ -14,8 +14,7 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory
 {
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -24,7 +23,10 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory
         return CategoryMedia::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'alt' => self::faker()->text(10),
@@ -33,19 +35,19 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory
             'title' => self::faker()->text(10),
             'updatedAt' => self::faker()->dateTime(),
             'type' => MediaType::Image,
-            'mediaFile' => null
+            'mediaFile' => null,
         ];
     }
 
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(CategoryMedia $media) {
+            ->afterInstantiate(function (CategoryMedia $media) {
                 $this->propertySetter->processTranslations(
                     $media,
                     [
-                        'title' => fn($locale) => $media->getTitle() . ' ' . $locale,
-                        'alt' => fn($locale) => $media->getAlt() . ' ' . $locale,
+                        'title' => fn ($locale) => $media->getTitle().' '.$locale,
+                        'alt' => fn ($locale) => $media->getAlt().' '.$locale,
                     ]
                 );
             })

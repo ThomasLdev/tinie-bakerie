@@ -10,13 +10,13 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<Post>
  */
-final class PostFactory extends PersistentProxyObjectFactory{
+final class PostFactory extends PersistentProxyObjectFactory
+{
     use SluggableEntityFactory;
 
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -25,7 +25,10 @@ final class PostFactory extends PersistentProxyObjectFactory{
         return Post::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'title' => self::faker()->unique()->text(15),
@@ -44,14 +47,14 @@ final class PostFactory extends PersistentProxyObjectFactory{
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Post $post) {
+            ->afterInstantiate(function (Post $post) {
                 $post->setSlug($this->createSlug($post->getTitle()));
 
                 $this->propertySetter->processTranslations(
                     $post,
                     [
-                        'title' => fn($locale) => $post->getTitle() . ' ' . $locale,
-                        'slug' => fn($locale, $post) => $this->createSlug($post->getTitle() . ' ' . $locale),
+                        'title' => fn ($locale) => $post->getTitle().' '.$locale,
+                        'slug' => fn ($locale, $post) => $this->createSlug($post->getTitle().' '.$locale),
                     ]
                 );
             });

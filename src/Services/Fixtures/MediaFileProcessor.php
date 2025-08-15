@@ -18,10 +18,8 @@ readonly class MediaFileProcessor
 
     public function process(MediaEntityInterface $entity, FileModel $fileModel): void
     {
-//        $entity->setMediaName($fileModel->getFileName());
-//        $entity->setType($this->getFileType($fileModel->getFileName()));
-//        $entity->setMediaFile($this->getUploadedFile($fileModel));
+        //        $entity->setMediaName($fileModel->getFileName());
+        //        $entity->setType($this->getFileType($fileModel->getFileName()));
+        //        $entity->setMediaFile($this->getUploadedFile($fileModel));
     }
-
-
 }

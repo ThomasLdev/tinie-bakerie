@@ -19,7 +19,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        CategoryFactory::createMany(5, function() {
+        CategoryFactory::createMany(5, function () {
             return [
                 'media' => CategoryMediaFactory::createRange(1, 3, function () {
                     return $this->getRandomFileData();

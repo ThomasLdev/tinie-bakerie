@@ -6,6 +6,7 @@ namespace App\DataFixtures\Trait;
 
 use App\DataFixtures\Model\FileModel;
 use App\Services\Media\Enum\MediaType;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -15,15 +16,18 @@ trait MediaFixtures
 {
     private const string FOLDER_PATH = '/assets/fixtures/media/';
 
+    /** @var array<array-key, string> */
     private array $files = [];
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] private readonly string $rootDir = '',
-        private readonly Filesystem $filesystem
-    )
-    {
+        private readonly Filesystem $filesystem,
+        #[Autowire('%kernel.project_dir%')] private readonly string $rootDir,
+    ) {
     }
 
+    /**
+     * @return array{mediaName: string, mediaFile: UploadedFile, type: MediaType}
+     */
     public function getRandomFileData(): array
     {
         $media = $this->createRandomFileModel();
@@ -42,23 +46,24 @@ trait MediaFixtures
 
         return new FileModel(
             $file,
-            $this->getUploadedFile($file, $this->rootDir . self::FOLDER_PATH . $file),
+            $this->getUploadedFile($file, $this->rootDir.self::FOLDER_PATH.$file),
             $this->getFileType($file)
         );
     }
 
+    /** @return array<array-key, string> */
     private function getFiles(): array
     {
         if ([] !== $this->files) {
             return $this->files;
         }
 
-        $fullPath = $this->rootDir . self::FOLDER_PATH;
+        $fullPath = $this->rootDir.self::FOLDER_PATH;
         $files = array_diff(scandir($fullPath), ['.', '..']);
-        $files = array_filter($files, static fn($fileName) => is_file($fullPath . $fileName));
+        $files = array_filter($files, static fn ($fileName) => is_file($fullPath.$fileName));
 
         if ([] === $files) {
-            throw new \RuntimeException(sprintf('No media files found in %s directory', $fullPath));
+            throw new RuntimeException(sprintf('No media files found in %s directory', $fullPath));
         }
 
         return $files;
@@ -69,19 +74,19 @@ trait MediaFixtures
         $tempFilePath = sprintf(
             '%s/%s-%s',
             sys_get_temp_dir(),
-            md5($fileName . microtime()),
+            md5($fileName.microtime()),
             $fileName
         );
 
         if (!file_exists($fileFullPath) || !is_readable($fileFullPath)) {
-            throw new \RuntimeException(sprintf('Source file "%s" does not exist or is not readable', $fileFullPath));
+            throw new RuntimeException(sprintf('Source file "%s" does not exist or is not readable', $fileFullPath));
         }
 
         $this->filesystem->copy($fileFullPath, $tempFilePath, true);
         $this->filesystem->chmod($tempFilePath, 0644);
 
         if (!file_exists($tempFilePath) || !is_readable($tempFilePath)) {
-            throw new \RuntimeException(sprintf('Failed to create temporary file at "%s"', $tempFilePath));
+            throw new RuntimeException(sprintf('Failed to create temporary file at "%s"', $tempFilePath));
         }
 
         return new UploadedFile(
@@ -103,7 +108,7 @@ trait MediaFixtures
         $mimeType = new MimeTypes()->guessMimeType($filePath);
 
         if (null === $mimeType) {
-            throw new \RuntimeException(sprintf('Could not guess MIME type for file "%s"', $filePath));
+            throw new RuntimeException(sprintf('Could not guess MIME type for file "%s"', $filePath));
         }
 
         return $mimeType;

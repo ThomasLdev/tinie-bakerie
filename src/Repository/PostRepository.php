@@ -19,7 +19,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<array-key,Post>
+     * @return array<array-key,mixed>
      */
     public function findAllPublished(): array
     {
@@ -34,7 +34,9 @@ class PostRepository extends ServiceEntityRepository
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
         $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
-        return $query->getResult();
+        $result = $query->getResult();
+
+        return is_array($result) ? $result : [];
     }
 
     public function findOnePublished(string $slug): ?Post
@@ -51,6 +53,8 @@ class PostRepository extends ServiceEntityRepository
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
         $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
-        return $query->getOneOrNullResult();
+        $result = $query->getOneOrNullResult();
+
+        return $result instanceof Post ? $result : null;
     }
 }

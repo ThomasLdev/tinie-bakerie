@@ -10,13 +10,13 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<Category>
  */
-final class CategoryFactory extends PersistentProxyObjectFactory {
+final class CategoryFactory extends PersistentProxyObjectFactory
+{
     use SluggableEntityFactory;
 
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -25,7 +25,10 @@ final class CategoryFactory extends PersistentProxyObjectFactory {
         return Category::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'createdAt' => self::faker()->dateTime(),
@@ -39,15 +42,15 @@ final class CategoryFactory extends PersistentProxyObjectFactory {
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Category $category) {
+            ->afterInstantiate(function (Category $category) {
                 $category->setSlug($this->createSlug($category->getTitle()));
 
                 $this->propertySetter->processTranslations(
                     $category,
                     [
-                        'title' => fn($locale) => $category->getTitle() . ' ' . $locale,
-                        'slug' => fn($locale, $category) => $this->createSlug($category->getTitle() . ' ' . $locale),
-                        'description' => fn($locale) => $category->getDescription() . ' ' . $locale,
+                        'title' => fn ($locale) => $category->getTitle().' '.$locale,
+                        'slug' => fn ($locale, $category) => $this->createSlug($category->getTitle().' '.$locale),
+                        'description' => fn ($locale) => $category->getDescription().' '.$locale,
                     ]
                 );
             });

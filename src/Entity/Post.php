@@ -84,7 +84,7 @@ class Post implements LocalizedEntityInterface
         return $this->id ?? null;
     }
 
-    public function setTitle($title): self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 

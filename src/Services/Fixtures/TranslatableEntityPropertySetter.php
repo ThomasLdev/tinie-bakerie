@@ -13,15 +13,15 @@ readonly class TranslatableEntityPropertySetter
     public function __construct(
         #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
         #[Autowire(param: 'default_locale')] private string $defaultLocale,
-        private EntityManagerInterface $entityManager,)
+        private EntityManagerInterface $entityManager, )
     {
     }
 
     /**
      * Process translations for a translatable entity.
      *
-     * @param LocalizedEntityInterface $entity The entity to translate
-     * @param array $translatableFields Map of field names to callbacks that generate translated content
+     * @param LocalizedEntityInterface $entity             The entity to translate
+     * @param array<string, callable>  $translatableFields Map of field names to callbacks that generate translated content
      */
     public function processTranslations(LocalizedEntityInterface $entity, array $translatableFields): void
     {
@@ -29,7 +29,7 @@ readonly class TranslatableEntityPropertySetter
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        foreach(explode('|', $this->supportedLocales) as $locale) {
+        foreach (explode('|', $this->supportedLocales) as $locale) {
             if ($locale === $this->defaultLocale) {
                 continue;
             }
@@ -37,11 +37,10 @@ readonly class TranslatableEntityPropertySetter
             $entity->setLocale($locale);
 
             foreach ($translatableFields as $field => $callback) {
-                $setter = 'set' . ucfirst($field);
+                $setter = 'set'.ucfirst($field);
                 $value = $callback($locale, $entity);
                 $entity->$setter($value);
             }
-
 
             // Persist the entity with the translated properties for the current locale
             $this->entityManager->flush();

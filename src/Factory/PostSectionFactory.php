@@ -10,11 +10,11 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<PostSection>
  */
-final class PostSectionFactory extends PersistentProxyObjectFactory{
+final class PostSectionFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -23,7 +23,10 @@ final class PostSectionFactory extends PersistentProxyObjectFactory{
         return PostSection::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'createdAt' => self::faker()->dateTime(),
@@ -39,11 +42,11 @@ final class PostSectionFactory extends PersistentProxyObjectFactory{
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function(PostSection $postSection): void {
+             ->afterInstantiate(function (PostSection $postSection): void {
                  $this->propertySetter->processTranslations(
                      $postSection,
                      [
-                         'content' => fn($locale) => $postSection->getContent() . ' ' . $locale,
+                         'content' => fn ($locale) => $postSection->getContent().' '.$locale,
                      ]
                  );
              })

@@ -9,11 +9,11 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<Tag>
  */
-final class TagFactory extends PersistentProxyObjectFactory{
+final class TagFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -22,7 +22,10 @@ final class TagFactory extends PersistentProxyObjectFactory{
         return Tag::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'color' => self::faker()->hexColor(),
@@ -36,11 +39,11 @@ final class TagFactory extends PersistentProxyObjectFactory{
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Tag $tag) {
+            ->afterInstantiate(function (Tag $tag) {
                 $this->propertySetter->processTranslations(
                     $tag,
                     [
-                        'title' => fn($locale) => $tag->getTitle() . ' ' . $locale,
+                        'title' => fn ($locale) => $tag->getTitle().' '.$locale,
                     ]
                 );
             })

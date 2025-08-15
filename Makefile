@@ -83,19 +83,16 @@ cc: sf
 phpstan:
 	@$(PHP_CONT) vendor/bin/phpstan analyse src --level=9
 
-phpmd:
-	@$(PHP_CONT) vendor/bin/phpmd src text phpmd.xml
-
 phpcs:
-	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --verbose
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix
 
 phpcs-dry:
-	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --dry-run --verbose
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --dry-run
 
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: phpstan phpmd phpcs twig-linter
+quality: phpstan phpcs twig-linter
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate

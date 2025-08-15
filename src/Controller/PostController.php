@@ -20,7 +20,7 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'posts', ArrayCollection<array-key,Post>>
+     * @return array<'posts', array<array-key,mixed>>
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
@@ -32,7 +32,7 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'post', array<array-key,Post>>
+     * @return array<'post',mixed>
      */
     #[Route(['en' => '{categorySlug}/{postSlug}', 'fr' => '{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]

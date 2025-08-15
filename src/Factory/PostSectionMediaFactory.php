@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\PostSectionMedia;
-use App\Services\Fixtures\MediaFileProcessor;
 use App\Services\Fixtures\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -11,12 +10,11 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<PostSectionMedia>
  */
-final class PostSectionMediaFactory extends PersistentProxyObjectFactory{
+final class PostSectionMediaFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly TranslatableEntityPropertySetter $propertySetter,
-        private readonly MediaFileProcessor $mediaFileProcessor,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -25,7 +23,10 @@ final class PostSectionMediaFactory extends PersistentProxyObjectFactory{
         return PostSectionMedia::class;
     }
 
-    protected function defaults(): array|callable
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaults(): array
     {
         return [
             'alt' => self::faker()->text(),
@@ -39,12 +40,12 @@ final class PostSectionMediaFactory extends PersistentProxyObjectFactory{
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function(PostSectionMedia $postSectionMedia): void {
+             ->afterInstantiate(function (PostSectionMedia $postSectionMedia): void {
                  $this->propertySetter->processTranslations(
                      $postSectionMedia,
                      [
-                         'title' => fn($locale) => $postSectionMedia->getTitle() . ' ' . $locale,
-                         'alt' => fn($locale) => $postSectionMedia->getAlt() . ' ' . $locale,
+                         'title' => fn ($locale) => $postSectionMedia->getTitle().' '.$locale,
+                         'alt' => fn ($locale) => $postSectionMedia->getAlt().' '.$locale,
                      ]
                  );
              })
