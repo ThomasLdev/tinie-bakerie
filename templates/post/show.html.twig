@@ -27,15 +27,12 @@
         </div>
 
         <p>Category : {{ post.category.title }}</p>
-{#        <img src="{{ asset('upload/post/' ~ mainMedia.mediaName) }}" alt="{{ post.title }}" width="300px">#}
 
-{#        {% if post.sections is not empty %}#}
-{#            {% for section in post.sections %}#}
-{#                <section>#}
-{#                    {% include '/post/sections/_' ~ section.type.value ~ '.html.twig' %}#}
-{#                </section>#}
-{#            {% endfor %}#}
-{#        {% endif %}#}
+        {% if post.sections is not empty %}
+            {% for section in post.sections %}
+                {% include '/post/sections/_' ~ section.type.value ~ '.html.twig' %}
+            {% endfor %}
+        {% endif %}
 
         <p>{{ 'app.post.show.created_at'|trans ~ post.createdAt|date }}</p>
         <p>{{ 'app.post.show.updated_at'|trans ~ post.updatedAt|date }}</p>

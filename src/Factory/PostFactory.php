@@ -28,11 +28,10 @@ final class PostFactory extends PersistentProxyObjectFactory{
     protected function defaults(): array|callable
     {
         return [
-            'title' => self::faker()->text(15),
+            'title' => self::faker()->unique()->text(15),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
             'publishedAt' => self::faker()->boolean() ? self::faker()->dateTime() : null,
-            'category' => null,
             'tags' => [],
             'media' => [],
             'sections' => [],

@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Services\PostSection\Enum\PostSectionType;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -22,7 +24,7 @@ class PostSection implements LocalizedEntityInterface
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'sections')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     private ?Post $post = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
@@ -35,12 +37,26 @@ class PostSection implements LocalizedEntityInterface
     )]
     private PostSectionType $type = PostSectionType::Default;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?PostSectionMedia $media = null;
+    /**
+     * @var Collection<int,PostSectionMedia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: PostSectionMedia::class,
+        mappedBy: 'postSection',
+        cascade: ['persist', 'remove'],
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+    )]
+    private Collection $media;
 
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
     private string $content = '';
+
+    public function __construct()
+    {
+        $this->media = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -83,14 +99,44 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
-    public function getMedia(): ?PostSectionMedia
+    /**
+     * @param array<array-key,PostSectionMedia> $media
+     */
+    public function setMedia(array $media): self
+    {
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,PostSectionMedia>
+     */
+    public function getMedia(): Collection
     {
         return $this->media;
     }
 
-    public function setMedia(?PostSectionMedia $media): static
+    public function addMedium(PostSectionMedia $medium): self
     {
-        $this->media = $media;
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPostSection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(PostSectionMedia $medium): self
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getPostSection() === $this) {
+                $medium->setPostSection(null);
+            }
+        }
 
         return $this;
     }

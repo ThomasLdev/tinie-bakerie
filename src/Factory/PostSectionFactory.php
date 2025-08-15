@@ -28,11 +28,11 @@ final class PostSectionFactory extends PersistentProxyObjectFactory{
         return [
             'createdAt' => self::faker()->dateTime(),
             'position' => self::faker()->randomNumber(),
-            'post' => PostFactory::new(),
+            'post' => null,
             'type' => self::faker()->randomElement(PostSectionType::cases()),
             'updatedAt' => self::faker()->dateTime(),
             'content' => self::faker()->text(150),
-            'media' => PostSectionMediaFactory::createOne(),
+            'media' => [],
         ];
     }
 

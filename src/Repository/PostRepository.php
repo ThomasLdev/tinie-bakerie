@@ -25,9 +25,7 @@ class PostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
-            ->addSelect('PARTIAL t.{id, title, color}')
             ->addSelect('PARTIAL c.{id, title, slug}')
-            ->leftJoin('p.tags', 't')
             ->leftJoin('p.category', 'c')
             ->where('p.publishedAt IS NOT NULL')
             ->orderBy('p.publishedAt', 'DESC');
@@ -43,9 +41,7 @@ class PostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
-            ->addSelect('PARTIAL t.{id, title, color}')
             ->addSelect('PARTIAL c.{id, title, slug}')
-            ->leftJoin('p.tags', 't')
             ->leftJoin('p.category', 'c')
             ->where('p.slug = :slug')
             ->andWhere('p.publishedAt IS NOT NULL')
