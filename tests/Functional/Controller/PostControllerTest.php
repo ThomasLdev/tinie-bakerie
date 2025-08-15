@@ -34,13 +34,13 @@ class PostControllerTest extends BaseControllerTestCase
                 [
                     'baseUrl' => '/fr/articles',
                     'locale' => 'fr',
-                ]
+                ],
             ],
             'en' => [
                 [
                     'baseUrl' => '/en/posts',
                     'locale' => 'en',
-                ]
+                ],
             ],
         ];
     }

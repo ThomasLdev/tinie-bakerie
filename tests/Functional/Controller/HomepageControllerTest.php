@@ -61,8 +61,8 @@ class HomepageControllerTest extends BaseControllerTestCase
             method: Request::METHOD_GET,
             uri: $localizedData['uri'],
             server: [
-            'HTTP_ACCEPT_LANGUAGE' => $localizedData['browserLanguage'] ?? '',
-        ]);
+                'HTTP_ACCEPT_LANGUAGE' => $localizedData['browserLanguage'] ?? '',
+            ]);
 
         self::assertResponseRedirects($localizedData['expectedRedirect']);
 
