@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 #[CoversClass(PostController::class)]
@@ -62,7 +63,7 @@ class PostControllerTest extends BaseControllerTestCase
         $post = $this->postRepository->findRandomPublished();
 
         if (!$post instanceof Post) {
-            throw new \RuntimeException('No post found for testing.');
+            throw new RuntimeException('No post found for testing.');
         }
 
         $post->setLocale($locale);

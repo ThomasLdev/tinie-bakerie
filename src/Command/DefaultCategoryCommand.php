@@ -23,8 +23,7 @@ class DefaultCategoryCommand extends Command
         private readonly EntityManagerInterface $entityManager,
         #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
         #[Autowire(param: 'default_locale')] private string $defaultLocale,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -53,14 +52,14 @@ class DefaultCategoryCommand extends Command
         $this->entityManager->persist($defaultCategory);
         $this->entityManager->flush();
 
-        foreach(explode('|', $this->supportedLocales) as $supportedLocale) {
+        foreach (explode('|', $this->supportedLocales) as $supportedLocale) {
             if ($supportedLocale === $this->defaultLocale) {
                 continue;
             }
 
             $defaultCategory
                 ->setLocale($supportedLocale)
-                ->setTitle('Default' . ' ' . $supportedLocale)
+                ->setTitle('Default '.$supportedLocale)
                 ->setSlug($slugger->slug($defaultCategory->getTitle())->lower()->toString())
             ;
 
