@@ -37,7 +37,7 @@
 
 # PHPUnit
 /app/phpunit.xml
-/phpunit.xml
+/phpunit.xml.dist
 .php-cs-fixer.cache
 
 # Build data

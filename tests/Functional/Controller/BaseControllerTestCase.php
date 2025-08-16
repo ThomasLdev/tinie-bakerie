@@ -13,9 +13,15 @@ class BaseControllerTestCase extends WebTestCase
 
     public function setUp(): void
     {
-        $this->client = static::createClient(server: [
+        $this->client = static::createClient(
+            options: [
+                'environment' => 'test',
+                'debug' => false
+            ],
+            server: [
             'HTTP_HOST' => 'local.tinie-bakerie.com',
             'HTTPS' => 'on',
-        ]);
+            ]
+        );
     }
 }

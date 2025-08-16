@@ -7,6 +7,8 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\PostController;
 use App\Entity\Post;
 use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,12 +17,15 @@ use Symfony\Component\HttpFoundation\Request;
 #[CoversClass(PostRepository::class)]
 class PostControllerTest extends BaseControllerTestCase
 {
+    private EntityManagerInterface $entityManager;
+
     private PostRepository $postRepository;
 
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
         $this->postRepository = static::getContainer()->get(PostRepository::class);
     }
 
@@ -31,37 +36,44 @@ class PostControllerTest extends BaseControllerTestCase
     {
         return [
             'fr' => [
-                [
-                    'baseUrl' => '/fr/articles',
-                    'locale' => 'fr',
-                ],
+                '/fr/articles',
+                'fr',
             ],
             'en' => [
-                [
-                    'baseUrl' => '/en/posts',
-                    'locale' => 'en',
-                ],
+                '/en/posts',
+                'en',
             ],
         ];
     }
 
     #[DataProvider('getShowIndexData')]
-    public function testIndex(array $localizedData): void
+    public function testIndex(string $baseUrl): void
     {
-        $this->client->request(Request::METHOD_GET, $localizedData['baseUrl']);
+        $this->client->request(Request::METHOD_GET, $baseUrl);
         self::assertResponseIsSuccessful();
     }
 
+    /**
+     * @throws ORMException
+     */
     #[DataProvider('getShowIndexData')]
-    public function testShow(array $localizedData): void
+    public function testShow(string $baseUrl, string $locale): void
     {
-        /** @var Post $post */
-        $post = $this->postRepository->findOneBy([]);
+        $post = $this->postRepository->findRandomPublished();
 
-        $post->setLocale($localizedData['locale']);
-        $url = sprintf('%s/%s/%s', $localizedData['baseUrl'], $post->getCategory()->getSlug(), $post->getSlug());
+        if (!$post instanceof Post) {
+            throw new \RuntimeException('No post found for testing.');
+        }
 
-        $crawler = $this->client->request(Request::METHOD_GET, $url);
+        $post->setLocale($locale);
+        $this->entityManager->refresh($post);
+        $category = $post->getCategory()->setLocale($locale);
+        $this->entityManager->refresh($category);
+
+        $crawler = $this->client->request(
+            Request::METHOD_GET,
+            sprintf('%s/%s/%s', $baseUrl, $category->getSlug(), $post->getSlug())
+        );
 
         self::assertResponseIsSuccessful();
 

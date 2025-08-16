@@ -19,15 +19,10 @@ class HomepageControllerTest extends BaseControllerTestCase
     {
         return [
             'en' => [
-                [
-                    'uri' => '/en',
-                ],
-
+                '/en',
             ],
             'fr' => [
-                [
-                    'uri' => '/fr',
-                ]
+                '/fr',
             ],
         ];
     }
@@ -39,38 +34,38 @@ class HomepageControllerTest extends BaseControllerTestCase
     {
         return [
             'no locale default value' => [
-                'uri' => '/',
-                'browserLanguage' => 'en',
-                'expectedRedirect' => '/en',
+                '/',
+                'en',
+                '/en',
             ],
             'no locale, preferred fr' => [
-                'uri' => '/',
-                'browserLanguage' => 'fr',
-                'expectedRedirect' => '/fr',
+                '/',
+                'fr',
+                '/fr',
             ],
         ];
     }
 
     #[DataProvider('getHomepageControllerData')]
-    public function testIndex(array $data): void
+    public function testIndex(string $uri): void
     {
-        $this->client->request(Request::METHOD_GET, $data['uri']);
+        $this->client->request(Request::METHOD_GET, $uri);
 
         self::assertResponseIsSuccessful();
     }
 
     #[DataProvider('getHomepageControllerRedirectData')]
-    public function testNoLocaleIndex(array $localizedData): void
+    public function testNoLocaleIndex(string $uri, string $browserLocale, string $expected): void
     {
         $this->client->request(
             Request::METHOD_GET,
-            $localizedData['uri'], [], [],
+            $uri, [], [],
             [
-                'HTTP_ACCEPT_LANGUAGE' => $localizedData['browserLanguage'] ?? '',
+                'HTTP_ACCEPT_LANGUAGE' => $browserLocale,
             ]
         );
 
-        self::assertResponseRedirects($localizedData['expectedRedirect']);
+        self::assertResponseRedirects($expected);
 
         $this->client->followRedirect();
 

@@ -37,7 +37,7 @@ final class PostController extends AbstractController
     #[Template('post/show.html.twig')]
     public function show(string $categorySlug, string $postSlug): array
     {
-        $post = $this->repository->findOnePublished($postSlug);
+        $post = $this->repository->findOnePublishedBySlug($postSlug);
 
         if (!$post instanceof Post) {
             throw $this->createNotFoundException();
