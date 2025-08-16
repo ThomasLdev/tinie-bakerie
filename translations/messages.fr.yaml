@@ -1,5 +1,6 @@
 app:
     post:
+        index: 'Voir tous les articles'
         show:
             created_at: 'Créé le : '
             updated_at: 'Modifié le : '

@@ -1,24 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ post.categoryName }} - {{ post.title }}{% endblock %}
+{% block title %}{{ post.category.title }} - {{ post.title }}{% endblock %}
 
 {% block body %}
     {% if post is defined and post is not same as null %}
-        {% set mainMedia = post.media|first %}
-
         <h1>{{ post.title }}</h1>
-        <p>Category : {{ post.categoryName }}</p>
-        <img src="{{ asset('upload/post/' ~ mainMedia.mediaName) }}" alt="{{ post.title }}" width="300px">
+
+        {% for medium in post.media %}
+            {% set src = vich_uploader_asset(medium) %}
+
+            {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
+            {% else %}
+                <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
+                    <source src="{{ src }}" type="video/mp4">
+                </video>
+            {% endif %}
+        {% endfor %}
+
+        <div>
+            {% for tag in post.tags %}
+                <span style="background-color: {{ tag.color }}">
+                    {{ tag.title }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <p>Category : {{ post.category.title }}</p>
 
         {% if post.sections is not empty %}
             {% for section in post.sections %}
-                <section>
-                    {% include '/post/sections/_' ~ section.type.value ~ '.html.twig' %}
-                </section>
+                {% include '/post/sections/_' ~ section.type.value ~ '.html.twig' %}
             {% endfor %}
         {% endif %}
 
         <p>{{ 'app.post.show.created_at'|trans ~ post.createdAt|date }}</p>
         <p>{{ 'app.post.show.updated_at'|trans ~ post.updatedAt|date }}</p>
+        <a href="{{ path('app_post_index') }}">Back to posts</a>
     {% endif %}
 {% endblock %}

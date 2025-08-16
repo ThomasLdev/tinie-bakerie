@@ -6,43 +6,68 @@ namespace App\Tests\Functional\Controller;
 
 use App\Controller\HomePageController;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 #[CoversClass(HomePageController::class)]
-class HomepageControllerTest extends WebTestCase
+class HomepageControllerTest extends BaseControllerTestCase
 {
-    public function testIndex(): void
+    /**
+     * @return array<string, array<string, string>>
+     */
+    public static function getHomepageControllerData(): array
     {
-        $client = static::createClient();
+        return [
+            'en' => [
+                '/en',
+            ],
+            'fr' => [
+                '/fr',
+            ],
+        ];
+    }
 
-        $client->request('GET', '/en/');
+    /**
+     * @return array<string, array<string, string>>
+     */
+    public static function getHomepageControllerRedirectData(): array
+    {
+        return [
+            'no locale default value' => [
+                '/',
+                'en',
+                '/en',
+            ],
+            'no locale, preferred fr' => [
+                '/',
+                'fr',
+                '/fr',
+            ],
+        ];
+    }
 
-        self::assertResponseIsSuccessful();
-
-        $client->request('GET', '/fr/');
+    #[DataProvider('getHomepageControllerData')]
+    public function testIndex(string $uri): void
+    {
+        $this->client->request(Request::METHOD_GET, $uri);
 
         self::assertResponseIsSuccessful();
     }
 
-    public function testNoLocaleIndex(): void
+    #[DataProvider('getHomepageControllerRedirectData')]
+    public function testNoLocaleIndex(string $uri, string $browserLocale, string $expected): void
     {
-        $client = static::createClient();
+        $this->client->request(
+            Request::METHOD_GET,
+            $uri, [], [],
+            [
+                'HTTP_ACCEPT_LANGUAGE' => $browserLocale,
+            ]
+        );
 
-        $client->request('GET', '/');
+        self::assertResponseRedirects($expected);
 
-        self::assertResponseRedirects('/en/');
-
-        $client->followRedirect();
-
-        self::assertResponseIsSuccessful();
-
-        $client->request('GET', '/', [], [], [
-            'HTTP_ACCEPT_LANGUAGE' => 'fr',
-        ]);
-
-        self::assertResponseRedirects('/fr/');
-
-        $client->followRedirect();
+        $this->client->followRedirect();
 
         self::assertResponseIsSuccessful();
     }

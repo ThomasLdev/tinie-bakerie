@@ -2,34 +2,27 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\CategoryRepository;
+use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\SluggableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category implements TranslatableEntityInterface
+#[ORM\Entity]
+class Category implements LocalizedEntityInterface
 {
     use TimestampableEntity;
+    use LocalizedEntity;
+    use SluggableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    /**
-     * @var Collection<int, CategoryTranslation>
-     */
-    #[ORM\OneToMany(
-        targetEntity: CategoryTranslation::class,
-        mappedBy: 'category',
-        cascade: ['persist', 'remove'],
-        fetch: 'EXTRA_LAZY',
-        orphanRemoval: true,
-    )]
-    private Collection $translations;
 
     /**
      * @var Collection<int, Post>
@@ -42,7 +35,7 @@ class Category implements TranslatableEntityInterface
     private Collection $posts;
 
     /**
-     * @var Collection<int, CategoryMedia>
+     * @var Collection<int,CategoryMedia>
      */
     #[ORM\OneToMany(
         targetEntity: CategoryMedia::class,
@@ -53,9 +46,16 @@ class Category implements TranslatableEntityInterface
     )]
     private Collection $media;
 
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING)]
+    private string $title;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
+    private string $description = '';
+
     public function __construct()
     {
-        $this->translations = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->media = new ArrayCollection();
     }
@@ -66,36 +66,6 @@ class Category implements TranslatableEntityInterface
     }
 
     /**
-     * @return Collection<int, CategoryTranslation>
-     */
-    public function getTranslations(): Collection
-    {
-        return $this->translations;
-    }
-
-    public function addTranslation(CategoryTranslation $translation): static
-    {
-        if (!$this->translations->contains($translation)) {
-            $this->translations->add($translation);
-            $translation->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTranslation(CategoryTranslation $translation): static
-    {
-        if ($this->translations->removeElement($translation)) {
-            // set the owning side to null (unless already changed)
-            if ($translation->getCategory() === $this) {
-                $translation->setCategory(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Post>
      */
     public function getPosts(): Collection
@@ -103,15 +73,51 @@ class Category implements TranslatableEntityInterface
         return $this->posts;
     }
 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     /**
-     * @return Collection<int, CategoryMedia>
+     * @param array<array-key,CategoryMedia> $media
+     */
+    public function setMedia(array $media): self
+    {
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,CategoryMedia>
      */
     public function getMedia(): Collection
     {
         return $this->media;
     }
 
-    public function addMedium(CategoryMedia $medium): static
+    public function addMedium(CategoryMedia $medium): self
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
@@ -121,7 +127,7 @@ class Category implements TranslatableEntityInterface
         return $this;
     }
 
-    public function removeMedium(CategoryMedia $medium): static
+    public function removeMedium(CategoryMedia $medium): self
     {
         if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)

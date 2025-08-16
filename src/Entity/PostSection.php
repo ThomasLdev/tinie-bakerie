@@ -2,19 +2,21 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\PostTranslationSectionRepository;
+use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Traits\LocalizedEntity;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: PostTranslationSectionRepository::class)]
-class PostSection implements TranslatableEntityInterface
+#[ORM\Entity]
+class PostSection implements LocalizedEntityInterface
 {
     use TimestampableEntity;
+    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,7 +24,7 @@ class PostSection implements TranslatableEntityInterface
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'sections')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn]
     private ?Post $post = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
@@ -35,24 +37,25 @@ class PostSection implements TranslatableEntityInterface
     )]
     private PostSectionType $type = PostSectionType::Default;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?PostSectionMedia $media = null;
-
     /**
-     * @var Collection<int, PostSectionTranslation>
+     * @var Collection<int,PostSectionMedia>
      */
     #[ORM\OneToMany(
-        targetEntity: PostSectionTranslation::class,
+        targetEntity: PostSectionMedia::class,
         mappedBy: 'postSection',
         cascade: ['persist', 'remove'],
         fetch: 'EXTRA_LAZY',
         orphanRemoval: true,
     )]
-    private Collection $translations;
+    private Collection $media;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
+    private string $content = '';
 
     public function __construct()
     {
-        $this->translations = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,44 +99,56 @@ class PostSection implements TranslatableEntityInterface
         return $this;
     }
 
-    public function getMedia(): ?PostSectionMedia
+    /**
+     * @param array<array-key,PostSectionMedia> $media
+     */
+    public function setMedia(array $media): self
     {
-        return $this->media;
-    }
-
-    public function setMedia(?PostSectionMedia $media): static
-    {
-        $this->media = $media;
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, PostSectionTranslation>
+     * @return Collection<int,PostSectionMedia>
      */
-    public function getTranslations(): Collection
+    public function getMedia(): Collection
     {
-        return $this->translations;
+        return $this->media;
     }
 
-    public function addTranslation(PostSectionTranslation $translation): static
+    public function addMedium(PostSectionMedia $medium): self
     {
-        if (!$this->translations->contains($translation)) {
-            $this->translations->add($translation);
-            $translation->setPostSection($this);
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPostSection($this);
         }
 
         return $this;
     }
 
-    public function removeTranslation(PostSectionTranslation $translation): static
+    public function removeMedium(PostSectionMedia $medium): self
     {
-        if ($this->translations->removeElement($translation)) {
+        if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)
-            if ($translation->getPostSection() === $this) {
-                $translation->setPostSection(null);
+            if ($medium->getPostSection() === $this) {
+                $medium->setPostSection(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(string $content): self
+    {
+        $this->content = $content;
 
         return $this;
     }

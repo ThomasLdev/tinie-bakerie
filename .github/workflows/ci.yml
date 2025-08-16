@@ -21,7 +21,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker images
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           pull: true
           load: true
@@ -59,7 +59,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker images
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           pull: true
           load: true
@@ -76,6 +76,8 @@ jobs:
         run: make tailwind
       - name: Doctrine Schema Validator
         run: make doctrine-validate-schema
+      - name: Run Fixtures
+        run: make fixtures-test
       - name: Run PHPUnit Functional Suite
         run: make phpunit-functional
   lint:

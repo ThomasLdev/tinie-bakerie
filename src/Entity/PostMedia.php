@@ -2,53 +2,42 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\PostMediaRepository;
+use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\MediaEntityInterface;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\MediaAccessibility;
+use App\Services\Media\Enum\MediaType;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: PostMediaRepository::class)]
+#[ORM\Entity]
 #[Vich\Uploadable]
-class PostMedia implements TranslatableEntityInterface
+class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
+    use LocalizedEntity;
+    use MediaAccessibility;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
     private ?string $mediaName = null;
 
     #[Vich\UploadableField(mapping: 'post_media', fileNameProperty: 'mediaName')]
     private ?File $mediaFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $post = null;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Post $post;
 
-    /**
-     * @var Collection<int, PostMediaTranslation>
-     */
-    #[ORM\OneToMany(
-        targetEntity: PostMediaTranslation::class,
-        mappedBy: 'postMedia',
-        cascade: ['persist', 'remove'],
-        fetch: 'EXTRA_LAZY',
-        orphanRemoval: true,
-    )]
-    private Collection $translations;
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
-    }
+    #[ORM\Column(enumType: MediaType::class)]
+    private MediaType $type;
 
     public function getId(): ?int
     {
@@ -60,7 +49,7 @@ class PostMedia implements TranslatableEntityInterface
         return $this->mediaName;
     }
 
-    public function setMediaName(string $mediaName): static
+    public function setMediaName(?string $mediaName): self
     {
         $this->mediaName = $mediaName;
 
@@ -72,7 +61,7 @@ class PostMedia implements TranslatableEntityInterface
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $mediaFile = null): static
+    public function setMediaFile(?File $mediaFile = null): self
     {
         $this->mediaFile = $mediaFile;
 
@@ -90,39 +79,21 @@ class PostMedia implements TranslatableEntityInterface
         return $this->post;
     }
 
-    public function setPost(?Post $post): static
+    public function setPost(?Post $post): self
     {
         $this->post = $post;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, PostMediaTranslation>
-     */
-    public function getTranslations(): Collection
+    public function getType(): MediaType
     {
-        return $this->translations;
+        return $this->type;
     }
 
-    public function addTranslation(PostMediaTranslation $translation): static
+    public function setType(MediaType $type): self
     {
-        if (!$this->translations->contains($translation)) {
-            $this->translations->add($translation);
-            $translation->setPostMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTranslation(PostMediaTranslation $translation): static
-    {
-        if ($this->translations->removeElement($translation)) {
-            // set the owning side to null (unless already changed)
-            if ($translation->getPostMedia() === $this) {
-                $translation->setPostMedia(null);
-            }
-        }
+        $this->type = $type;
 
         return $this;
     }

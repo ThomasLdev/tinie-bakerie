@@ -49,10 +49,10 @@ create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 
 fixtures: create-upload-dirs
-	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction
+	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction
 
 fixtures-test: create-upload-dirs
-	@$(PHP_CONT) bin/console hautelook:fixtures:load --no-interaction --env=test
+	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction --env=test
 
 doctrine-diff:
 	@$(PHP_CONT) bin/console doctrine:migrations:diff
@@ -83,19 +83,16 @@ cc: sf
 phpstan:
 	@$(PHP_CONT) vendor/bin/phpstan analyse src --level=9
 
-phpmd:
-	@$(PHP_CONT) vendor/bin/phpmd src text phpmd.xml
-
 phpcs:
-	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --verbose
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix
 
 phpcs-dry:
-	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --dry-run --verbose
+	@$(PHP_CONT) vendor/bin/php-cs-fixer fix --dry-run
 
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: phpstan phpmd phpcs twig-linter
+quality: phpstan phpcs twig-linter
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
@@ -106,12 +103,12 @@ phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit
 
 coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --coverage-html public/coverage
+	@$(PHP_CONT) vendor/bin/phpunit --coverage-html tests/coverage
 
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-phpunit-functional: fixtures-test
+phpunit-functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 tailwind:

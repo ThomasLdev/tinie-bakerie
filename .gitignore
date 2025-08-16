@@ -37,7 +37,7 @@
 
 # PHPUnit
 /app/phpunit.xml
-/phpunit.xml
+/phpunit.xml.dist
 .php-cs-fixer.cache
 
 # Build data
@@ -68,7 +68,7 @@ phpstan.neon
 
 ###> tinie-bakerie - upload system ###
 public/upload/*
-public/coverage/*
+public/coverage
 ###< tinie-bakerie - upload system ###
 
 .env.*

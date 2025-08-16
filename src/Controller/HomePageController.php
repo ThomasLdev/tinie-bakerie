@@ -14,7 +14,7 @@ class HomePageController extends AbstractController
     /**
      * @return array<string, mixed>
      */
-    #[Route('{_locale<%app.supported_locales%>}/')]
+    #[Route('{_locale<%app.supported_locales%>}')]
     #[Template('page/home/index.html.twig')]
     public function index(): array
     {

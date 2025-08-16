@@ -2,55 +2,58 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\MediaRepository;
+use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\MediaEntityInterface;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\MediaAccessibility;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[ORM\Entity]
 #[Vich\Uploadable]
-class PostSectionMedia implements TranslatableEntityInterface
+class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
+    use LocalizedEntity;
+    use MediaAccessibility;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[Vich\UploadableField(mapping: 'post_section_media', fileNameProperty: 'mediaName')]
-    private ?File $mediaFile = null;
-
     #[ORM\Column(nullable: true)]
     private ?string $mediaName = null;
 
-    /**
-     * @var Collection<int, PostSectionMediaTranslation>
-     */
-    #[ORM\OneToMany(targetEntity: PostSectionMediaTranslation::class, mappedBy: 'media', orphanRemoval: true)]
-    private Collection $translations;
+    #[Vich\UploadableField(mapping: 'post_section_media', fileNameProperty: 'mediaName')]
+    private ?File $mediaFile = null;
 
-    #[ORM\Column(
-        type: 'string',
-        enumType: MediaType::class,
-        options: ['default' => MediaType::Image, 'nullable' => false]
-    )]
-    private MediaType $mediaType;
+    #[ORM\ManyToOne(inversedBy: 'media')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?PostSection $postSection;
 
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
-    }
+    #[ORM\Column(enumType: MediaType::class)]
+    private MediaType $type;
 
     public function getId(): ?int
     {
         return $this->id ?? null;
+    }
+
+    public function getMediaName(): ?string
+    {
+        return $this->mediaName;
+    }
+
+    public function setMediaName(?string $mediaName): self
+    {
+        $this->mediaName = $mediaName;
+
+        return $this;
     }
 
     public function getMediaFile(): ?File
@@ -58,11 +61,11 @@ class PostSectionMedia implements TranslatableEntityInterface
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $imageFile = null): static
+    public function setMediaFile(?File $mediaFile = null): self
     {
-        $this->mediaFile = $imageFile;
+        $this->mediaFile = $mediaFile;
 
-        if (null !== $imageFile) {
+        if (null !== $mediaFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new DateTime();
@@ -71,56 +74,26 @@ class PostSectionMedia implements TranslatableEntityInterface
         return $this;
     }
 
-    public function getMediaName(): ?string
+    public function getPostSection(): ?PostSection
     {
-        return $this->mediaName;
+        return $this->postSection;
     }
 
-    public function setMediaName(?string $mediaName): static
+    public function setPostSection(?PostSection $postSection): self
     {
-        $this->mediaName = $mediaName;
+        $this->postSection = $postSection;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, PostSectionMediaTranslation>
-     */
-    public function getTranslations(): Collection
+    public function getType(): MediaType
     {
-        return $this->translations;
+        return $this->type;
     }
 
-    public function addTranslation(PostSectionMediaTranslation $translation): static
+    public function setType(MediaType $type): self
     {
-        if (!$this->translations->contains($translation)) {
-            $this->translations->add($translation);
-            $translation->setMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTranslation(PostSectionMediaTranslation $translation): static
-    {
-        if ($this->translations->removeElement($translation)) {
-            // set the owning side to null (unless already changed)
-            if ($translation->getMedia() === $this) {
-                $translation->setMedia(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getMediaType(): MediaType
-    {
-        return $this->mediaType;
-    }
-
-    public function setMediaType(MediaType $mediaType): static
-    {
-        $this->mediaType = $mediaType;
+        $this->type = $type;
 
         return $this;
     }

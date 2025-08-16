@@ -2,41 +2,45 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\TranslatableEntityInterface;
-use App\Repository\PostRepository;
+use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\SluggableEntity;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: PostRepository::class)]
-class Post implements TranslatableEntityInterface
+#[ORM\UniqueConstraint('post_title_unique', ['title'])]
+#[ORM\Entity]
+class Post implements LocalizedEntityInterface
 {
     use TimestampableEntity;
+    use LocalizedEntity;
+    use SluggableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING)]
+    private string $title;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $publishedAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
-    /** @var Collection<int,PostTranslation> */
-    #[ORM\OneToMany(
-        targetEntity: PostTranslation::class,
-        mappedBy: 'post',
-        cascade: ['persist', 'remove'],
-        fetch: 'EXTRA_LAZY',
-        orphanRemoval: true
-    )]
-    private Collection $translations;
-
     /**
-     * @var Collection<int, PostTag>
+     * @var Collection<int, Tag>
      */
     #[ORM\ManyToMany(
-        targetEntity: PostTag::class,
+        targetEntity: Tag::class,
         inversedBy: 'posts',
         cascade: ['persist'],
         fetch: 'EXTRA_LAZY',
@@ -44,7 +48,7 @@ class Post implements TranslatableEntityInterface
     private Collection $tags;
 
     /**
-     * @var Collection<int, PostMedia>
+     * @var Collection<int,PostMedia>
      */
     #[ORM\OneToMany(
         targetEntity: PostMedia::class,
@@ -56,7 +60,7 @@ class Post implements TranslatableEntityInterface
     private Collection $media;
 
     /**
-     * @var Collection<int, PostSection>
+     * @var Collection<int,PostSection>
      */
     #[ORM\OneToMany(
         targetEntity: PostSection::class,
@@ -70,7 +74,6 @@ class Post implements TranslatableEntityInterface
 
     public function __construct()
     {
-        $this->translations = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->sections = new ArrayCollection();
@@ -81,55 +84,63 @@ class Post implements TranslatableEntityInterface
         return $this->id ?? null;
     }
 
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getPublishedAt(): ?DateTimeImmutable
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?DateTimeImmutable $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(Category $category): static
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    /** @return Collection<int,PostTranslation> */
-    public function getTranslations(): Collection
+    /**
+     * @param array<array-key,Tag> $tags
+     */
+    public function setTags(array $tags): self
     {
-        return $this->translations;
-    }
-
-    public function addTranslation(PostTranslation $translations): static
-    {
-        if (!$this->translations->contains($translations)) {
-            $this->translations->add($translations);
-            $translations->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTranslation(PostTranslation $translations): static
-    {
-        if ($this->translations->removeElement($translations)) {
-            // set the owning side to null (unless already changed)
-            if ($translations->getPost() === $this) {
-                $translations->setPost(null);
-            }
+        foreach ($tags as $tag) {
+            $this->addTag($tag);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, PostTag>
+     * @return Collection<int, Tag>
      */
     public function getTags(): Collection
     {
         return $this->tags;
     }
 
-    public function addTag(PostTag $tag): static
+    public function addTag(Tag $tag): self
     {
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
@@ -138,7 +149,7 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
-    public function removeTag(PostTag $tag): static
+    public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
 
@@ -146,14 +157,26 @@ class Post implements TranslatableEntityInterface
     }
 
     /**
-     * @return Collection<int, PostMedia>
+     * @param array<array-key,PostMedia> $media
+     */
+    public function setMedia(array $media): self
+    {
+        foreach ($media as $medium) {
+            $this->addMedium($medium);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,PostMedia>
      */
     public function getMedia(): Collection
     {
         return $this->media;
     }
 
-    public function addMedium(PostMedia $medium): static
+    public function addMedium(PostMedia $medium): self
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
@@ -163,13 +186,25 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
-    public function removeMedium(PostMedia $medium): static
+    public function removeMedium(PostMedia $medium): self
     {
         if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)
             if ($medium->getPost() === $this) {
                 $medium->setPost(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<array-key,PostSection> $sections
+     */
+    public function setSections(array $sections): self
+    {
+        foreach ($sections as $section) {
+            $this->addSection($section);
         }
 
         return $this;
@@ -183,7 +218,7 @@ class Post implements TranslatableEntityInterface
         return $this->sections;
     }
 
-    public function addSection(PostSection $section): static
+    public function addSection(PostSection $section): self
     {
         if (!$this->sections->contains($section)) {
             $this->sections->add($section);
@@ -193,7 +228,7 @@ class Post implements TranslatableEntityInterface
         return $this;
     }
 
-    public function removeSection(PostSection $section): static
+    public function removeSection(PostSection $section): self
     {
         if ($this->sections->removeElement($section)) {
             // set the owning side to null (unless already changed)

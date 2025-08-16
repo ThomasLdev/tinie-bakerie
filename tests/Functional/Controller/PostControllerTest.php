@@ -5,49 +5,79 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
+use App\Entity\Post;
 use App\Repository\PostRepository;
-use App\Services\Post\Model\ViewPost;
-use App\Services\Post\Model\ViewPostFactory;
-use App\Services\Post\Model\ViewPostList;
-use App\Services\Post\Model\ViewPostListCollectionFactory;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\Request;
 
 #[CoversClass(PostController::class)]
-#[CoversClass(ViewPostFactory::class)]
-#[CoversClass(ViewPostListCollectionFactory::class)]
-#[CoversClass(ViewPost::class)]
-#[CoversClass(ViewPostList::class)]
 #[CoversClass(PostRepository::class)]
-class PostControllerTest extends WebTestCase
+class PostControllerTest extends BaseControllerTestCase
 {
-    public function testIndex(): void
+    private EntityManagerInterface $entityManager;
+
+    private PostRepository $postRepository;
+
+    public function setUp(): void
     {
-        $client = static::createClient();
+        parent::setUp();
 
-        $client->request('GET', '/en/post');
+        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $this->postRepository = static::getContainer()->get(PostRepository::class);
+    }
 
-        self::assertResponseIsSuccessful();
+    /**
+     * @return array<'fr'|'en', array<'baseUrl', string>>
+     */
+    public static function getShowIndexData(): array
+    {
+        return [
+            'fr' => [
+                '/fr/articles',
+                'fr',
+            ],
+            'en' => [
+                '/en/posts',
+                'en',
+            ],
+        ];
+    }
 
-        $client->request('GET', '/fr/article');
-
+    #[DataProvider('getShowIndexData')]
+    public function testIndex(string $baseUrl): void
+    {
+        $this->client->request(Request::METHOD_GET, $baseUrl);
         self::assertResponseIsSuccessful();
     }
 
-    public function testShow(): void
+    /**
+     * @throws ORMException
+     */
+    #[DataProvider('getShowIndexData')]
+    public function testShow(string $baseUrl, string $locale): void
     {
-        $client = static::createClient();
+        $post = $this->postRepository->findRandomPublished();
 
-        $crawler = $client->request('GET', '/en/post/bakery/fresh-bread');
+        if (!$post instanceof Post) {
+            throw new RuntimeException('No post found for testing.');
+        }
+
+        $post->setLocale($locale);
+        $this->entityManager->refresh($post);
+        $category = $post->getCategory()->setLocale($locale);
+        $this->entityManager->refresh($category);
+
+        $crawler = $this->client->request(
+            Request::METHOD_GET,
+            sprintf('%s/%s/%s', $baseUrl, $category->getSlug(), $post->getSlug())
+        );
 
         self::assertResponseIsSuccessful();
 
-        $crawler->filter('html:contains("Fresh Bread")');
-
-        $crawler = $client->request('GET', '/fr/article/boulangerie/pain-frais');
-
-        self::assertResponseIsSuccessful();
-
-        $crawler->filter('html:contains("Pain Frais")');
+        $crawler->filter(sprintf('html:contains("%s")', $post->getTitle()));
     }
 }
