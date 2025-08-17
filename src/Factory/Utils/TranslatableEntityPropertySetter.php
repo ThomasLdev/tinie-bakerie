@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Fixtures;
+namespace App\Factory\Utils;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
 use Doctrine\ORM\EntityManagerInterface;

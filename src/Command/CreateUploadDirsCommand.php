@@ -8,20 +8,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:create-upload-dirs',
-    description: 'Create required upload directories'
+    description: 'Create required upload directories for vich upload bundle'
 )]
 class CreateUploadDirsCommand extends Command
 {
-    private const array UPLOAD_DIRS = [
-        '/public/upload/post',
-        '/public/upload/post_section',
-        '/public/upload/category',
-    ];
+    private const string CONFIGURATION_KEY = 'vich_uploader.mappings';
 
     private const int DEFAULT_PERMISSIONS = 0755;
 
@@ -32,7 +28,7 @@ class CreateUploadDirsCommand extends Command
 
     public function __construct(
         private readonly Filesystem $filesystem,
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
+        private readonly ParameterBagInterface $parameterBag,
     ) {
         parent::__construct();
     }
@@ -43,13 +39,28 @@ class CreateUploadDirsCommand extends Command
 
         $clearDirectories = $input->getOption('clear');
 
-        foreach ($io->progressIterate(self::UPLOAD_DIRS) as $dir) {
-            $fullPath = $this->projectDir.$dir;
+        $mappings = $this->parameterBag->get(self::CONFIGURATION_KEY);
+
+        if (!is_array($mappings) || [] === $mappings) {
+            $io->error('No upload mappings found in the configuration.');
+
+            return Command::FAILURE;
+        }
+
+        /** @var array<array-key,string> $mapping */
+        foreach ($io->progressIterate($mappings) as $mapping) {
+            $fullPath = $mapping['upload_destination'] ?? '';
+
+            if ('' === $fullPath) {
+                $io->error('Upload destination is not defined in the mapping configuration.');
+
+                return Command::FAILURE;
+            }
 
             if (!$this->filesystem->exists($fullPath)) {
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
 
-                $io->info("Created directory: $dir");
+                $io->info("Created directory: $fullPath");
 
                 continue;
             }
@@ -58,7 +69,7 @@ class CreateUploadDirsCommand extends Command
                 $this->filesystem->remove($fullPath);
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
 
-                $io->info("Cleared and recreated directory: $dir");
+                $io->info("Cleared directory: $fullPath");
             }
         }
 
