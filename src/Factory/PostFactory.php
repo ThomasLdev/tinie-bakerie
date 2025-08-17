@@ -4,7 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Post;
 use App\Factory\Trait\SluggableEntityFactory;
-use App\Services\Fixtures\TranslatableEntityPropertySetter;
+use App\Factory\Utils\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**

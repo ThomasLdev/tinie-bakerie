@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
-use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
@@ -33,21 +32,70 @@ class PostControllerTest extends BaseControllerTestCase
     /**
      * @return array<'fr'|'en', array<'baseUrl', string>>
      */
-    public static function getShowIndexData(): array
+    public static function getPostControllerIndexData(): array
     {
         return [
-            'fr' => [
+            'fr index post page' => [
                 '/fr/articles',
-                'fr',
             ],
-            'en' => [
+            'en index post page' => [
                 '/en/posts',
-                'en',
             ],
         ];
     }
 
-    #[DataProvider('getShowIndexData')]
+    /**
+     * @return array<'fr'|'en', array<'baseUrl', string>>
+     */
+    public static function getPostControllerShowData(): array
+    {
+        return [
+            'fr with found post' => [
+                '/fr/articles',
+                'fr',
+                true,
+                true,
+                Response::HTTP_OK,
+            ],
+            'en with found post' => [
+                '/en/posts',
+                'en',
+                true,
+                true,
+                Response::HTTP_OK,
+            ],
+            'fr without post' => [
+                '/fr/articles',
+                'fr',
+                false,
+                false,
+                Response::HTTP_NOT_FOUND,
+            ],
+            'en without post' => [
+                '/en/posts',
+                'en',
+                false,
+                false,
+                Response::HTTP_NOT_FOUND,
+            ],
+            'fr with post bad category slug' => [
+                '/fr/articles',
+                'fr',
+                true,
+                false,
+                Response::HTTP_NOT_FOUND,
+            ],
+            'en with post bad category slug' => [
+                '/en/posts',
+                'en',
+                true,
+                false,
+                Response::HTTP_NOT_FOUND,
+            ],
+        ];
+    }
+
+    #[DataProvider('getPostControllerIndexData')]
     public function testIndex(string $baseUrl): void
     {
         $this->client->request(Request::METHOD_GET, $baseUrl);
@@ -57,27 +105,46 @@ class PostControllerTest extends BaseControllerTestCase
     /**
      * @throws ORMException
      */
-    #[DataProvider('getShowIndexData')]
-    public function testShow(string $baseUrl, string $locale): void
-    {
-        $post = $this->postRepository->findRandomPublished();
+    #[DataProvider('getPostControllerShowData')]
+    public function testShow(
+        string $baseUrl,
+        string $locale,
+        bool $shouldFindPost,
+        bool $shouldHaveCategory,
+        int $expectedStatusCode,
+    ): void {
+        $post = $shouldFindPost ? $this->postRepository->findRandomPublished() : null;
+        $postSlug = 'bad-post-slug';
+        $categorySlug = 'bad-category-slug';
 
-        if (!$post instanceof Post) {
-            throw new RuntimeException('No post found for testing.');
+        if ($shouldFindPost) {
+            $post->setLocale($locale);
+            $this->entityManager->refresh($post);
+            $postSlug = $post->getSlug();
         }
 
-        $post->setLocale($locale);
-        $this->entityManager->refresh($post);
-        $category = $post->getCategory()->setLocale($locale);
-        $this->entityManager->refresh($category);
+        if ($shouldFindPost && $shouldHaveCategory) {
+            $category = $post->getCategory()->setLocale($locale);
+            $this->entityManager->refresh($category);
+            $categorySlug = $category->getSlug();
+        }
 
         $crawler = $this->client->request(
             Request::METHOD_GET,
-            sprintf('%s/%s/%s', $baseUrl, $category->getSlug(), $post->getSlug())
+            sprintf('%s/%s/%s', $baseUrl, $categorySlug, $postSlug)
         );
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame($expectedStatusCode);
 
-        $crawler->filter(sprintf('html:contains("%s")', $post->getTitle()));
+        if (Response::HTTP_NOT_FOUND === $expectedStatusCode) {
+            return;
+        }
+
+        $title = $crawler
+            ->filter(sprintf('html:contains("%s")', $post->getTitle()))
+            ->getNode(0)
+            ->textContent;
+
+        self::assertStringContainsString($post->getTitle(), $title);
     }
 }

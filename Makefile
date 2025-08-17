@@ -103,7 +103,7 @@ phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit
 
 coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --coverage-html tests/coverage
+	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage
 
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests

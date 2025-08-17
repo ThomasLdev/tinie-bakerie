@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[CoversClass(CreateUploadDirsCommand::class)]
@@ -24,24 +25,42 @@ class CreateUploadDirsCommandTest extends KernelTestCase
                 'expected' => 'OK',
                 'existingDirectories' => [],
                 'directoriesToCreate' => [
-                    '/public/upload/category',
-                    '/public/upload/post',
-                    '/public/upload/post_section',
+                    '/app/public/upload/category',
+                    '/app/public/upload/post',
+                    '/app/public/upload/post_section',
                 ],
                 'arguments' => [],
             ],
             'create directories when some exist' => [
                 'expected' => 'OK',
                 'existingDirectories' => [
-                    '/public/upload/post',
-                    '/public/upload/post_section',
+                    '/app/public/upload/post',
+                    '/app/public/upload/post_section',
                 ],
                 'directoriesToCreate' => [
-                    '/public/upload/category',
-                    '/public/upload/post',
-                    '/public/upload/post_section',
+                    '/app/public/upload/category',
                 ],
                 'arguments' => [],
+            ],
+            'do not create directories when all exist' => [
+                'expected' => 'OK',
+                'existingDirectories' => [
+                    '/app/public/upload/category',
+                    '/app/public/upload/post',
+                    '/app/public/upload/post_section',
+                ],
+                'directoriesToCreate' => [],
+                'arguments' => [],
+            ],
+            'clear directories with clear option' => [
+                'expected' => 'OK',
+                'existingDirectories' => [
+                    '/app/public/upload/category',
+                    '/app/public/upload/post',
+                    '/app/public/upload/post_section',
+                ],
+                'directoriesToCreate' => [],
+                'arguments' => ['--clear' => true],
             ],
         ];
     }
@@ -57,34 +76,73 @@ class CreateUploadDirsCommandTest extends KernelTestCase
 
         $commandTester = new CommandTester($this->command);
 
-        $this->fileSystem->shouldReceive('exists')
+        $this->setupExistsMock($existingDirectories);
+
+        if ([] !== $arguments) {
+            $this->setupClearMocks($existingDirectories);
+        } else {
+            $this->setupCreateMocks($directoriesToCreate);
+        }
+
+        $commandTester->execute($arguments);
+        $commandTester->assertCommandIsSuccessful();
+
+        $this->assertStringContainsString($expected, $commandTester->getDisplay());
+    }
+
+    private function setupExistsMock(array $existingDirectories): void
+    {
+        $this->fileSystem
+            ->shouldReceive('exists')
+            ->with(Mockery::any())
+            ->andReturnUsing(function ($dir) use ($existingDirectories) {
+                return in_array($dir, $existingDirectories, true);
+            });
+    }
+
+    private function setupCreateMocks(array $directoriesToCreate): void
+    {
+        if ([] === $directoriesToCreate) {
+            $this->fileSystem
+                ->shouldReceive('mkdir')
+                ->never();
+        } else {
+            $this->fileSystem
+                ->shouldReceive('mkdir')
+                ->times(count($directoriesToCreate))
+                ->with(Mockery::any(), Mockery::any())
+                ->andReturnUsing(function ($dir) use ($directoriesToCreate) {
+                    return in_array($dir, $directoriesToCreate, true);
+                });
+        }
+    }
+
+    private function setupClearMocks(array $existingDirectories): void
+    {
+        $this->fileSystem
+            ->shouldReceive('remove')
+            ->times(count($existingDirectories))
             ->with(Mockery::any())
             ->andReturnUsing(function ($dir) use ($existingDirectories) {
                 return in_array($dir, $existingDirectories, true);
             });
 
-        $this->fileSystem->shouldReceive('mkdir')
+        $this->fileSystem
+            ->shouldReceive('mkdir')
+            ->times(count($existingDirectories))
             ->with(Mockery::any(), Mockery::any())
-            ->andReturnUsing(function ($dir) use ($directoriesToCreate) {
-                if (in_array($dir, $directoriesToCreate, true)) {
-                    return true;
-                }
-
-                return false;
+            ->andReturnUsing(function ($dir) use ($existingDirectories) {
+                return in_array($dir, $existingDirectories, true);
             });
-
-        $commandTester->execute($arguments);
-
-        $commandTester->assertCommandIsSuccessful();
-        $output = $commandTester->getDisplay();
-
-        $this->assertStringContainsString($expected, $output);
     }
 
     protected function setUp(): void
     {
         $this->fileSystem = Mockery::mock(Filesystem::class);
-        $this->command = new CreateUploadDirsCommand($this->fileSystem, '/tmp/test_project_dir');
+        $this->command = new CreateUploadDirsCommand(
+            $this->fileSystem,
+            self::getContainer()->get(ParameterBagInterface::class)
+        );
 
         parent::setUp();
     }
