@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Repository\PostRepository;
+use App\Services\Post\Cache\PostCache;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route([
@@ -14,7 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 ])]
 final class PostController extends AbstractController
 {
-    public function __construct(private readonly PostRepository $repository)
+    public function __construct(
+        private readonly PostCache $cache,
+    )
     {
     }
 
@@ -23,10 +26,10 @@ final class PostController extends AbstractController
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
-    public function index(): array
+    public function index(Request $request): array
     {
         return [
-            'posts' => $this->repository->findAllPublished(),
+            'posts' => $this->cache->getLocalizedCachedPosts($request->getLocale()),
         ];
     }
 
@@ -35,9 +38,9 @@ final class PostController extends AbstractController
      */
     #[Route(['en' => '/{categorySlug}/{postSlug}', 'fr' => '/{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]
-    public function show(string $categorySlug, string $postSlug): array
+    public function show(string $categorySlug, string $postSlug, Request $request): array
     {
-        $post = $this->repository->findOnePublishedBySlug($postSlug);
+        $post = $this->cache->getLocalizedCachedPost($request->getLocale(), $postSlug);
 
         if (!$post instanceof Post) {
             throw $this->createNotFoundException();

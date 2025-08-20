@@ -8,6 +8,7 @@ services:
       - ./:/app
       - ./frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
+      - ./var/cache:/app/var/cache
     environment:
       SERVER_NAME: ${SERVER_NAME:-local.tinie-bakerie.com}, php:80
       MERCURE_EXTRA_DIRECTIVES: demo
