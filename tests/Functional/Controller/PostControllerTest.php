@@ -9,6 +9,7 @@ use App\Repository\PostRepository;
 use App\Services\Post\Cache\PostCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,7 @@ class PostControllerTest extends BaseControllerTestCase
         $this->postRepository = static::getContainer()->get(PostRepository::class);
     }
 
-    public static function getPostControllerIndexData(): \Generator
+    public static function getPostControllerIndexData(): Generator
     {
         yield 'fr index post page' => [
             '/fr/articles',
@@ -43,7 +44,7 @@ class PostControllerTest extends BaseControllerTestCase
         ];
     }
 
-    public static function getPostControllerShowData(): \Generator
+    public static function getPostControllerShowData(): Generator
     {
         yield 'fr with found post' => [
             '/fr/articles',

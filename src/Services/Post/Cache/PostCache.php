@@ -22,7 +22,7 @@ readonly class PostCache
     }
 
     /**
-     * @return array<array-key,Post>
+     * @return array<array-key,mixed>
      */
     public function getLocalizedCachedPosts(string $locale): array
     {

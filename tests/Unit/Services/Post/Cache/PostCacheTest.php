@@ -8,6 +8,8 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use App\Services\Post\Cache\PostCache;
 use Exception;
+use Generator;
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,68 +21,68 @@ class PostCacheTest extends MockeryTestCase
 {
     protected function setUp(): void
     {
-        $this->repository = \Mockery::mock(PostRepository::class);
-        $this->cache = \Mockery::mock(CacheInterface::class);
+        $this->repository = Mockery::mock(PostRepository::class);
+        $this->cache = Mockery::mock(CacheInterface::class);
         $this->postCache = new PostCache($this->cache, $this->repository);
     }
 
-    public static function getLocalizedCachedPostsData(): \Generator
+    public static function getLocalizedCachedPostsData(): Generator
     {
         $validResponse = [new Post(), new Post()];
 
         yield 'Get cached posts hits for english locale' => [
             $validResponse,
             'en',
-            null
+            null,
         ];
 
         yield 'Get cached posts hits for french locale' => [
             $validResponse,
             'fr',
-            null
+            null,
         ];
 
         yield 'Get cached posts exception for english locale' => [
             $validResponse,
             'en',
-            new Exception()
+            new Exception(),
         ];
 
         yield 'Get cached posts exception for french locale' => [
             $validResponse,
             'fr',
-            new Exception()
+            new Exception(),
         ];
     }
 
-    public static function getLocalizedCachedPostData(): \Generator
+    public static function getLocalizedCachedPostData(): Generator
     {
         yield 'Get cached post hit fore english locale' => [
             new Post(),
             'post-1-en',
             'en',
-            null
+            null,
         ];
 
         yield 'Get cached post hit fore french locale' => [
             new Post(),
             'post-1-fr',
             'fr',
-            null
+            null,
         ];
 
         yield 'Get cached post exception fore english locale' => [
             new Post(),
             'post-1-en',
             'en',
-            new Exception()
+            new Exception(),
         ];
 
         yield 'Get cached post exception fore french locale' => [
             new Post(),
             'post-1-fr',
             'fr',
-            new Exception()
+            new Exception(),
         ];
     }
 
@@ -91,17 +93,18 @@ class PostCacheTest extends MockeryTestCase
             $this->cache
                 ->shouldReceive('get')
                 ->once()
-                ->with('posts_index_'.$locale, \Mockery::any())
+                ->with('posts_index_'.$locale, Mockery::any())
                 ->andThrow($exception);
         } else {
             $this->cache
                 ->shouldReceive('get')
                 ->once()
-                ->with('posts_index_'.$locale, \Mockery::on(static function ($callback) use ($expected) {
-                    $item = \Mockery::mock(ItemInterface::class);
+                ->with('posts_index_'.$locale, Mockery::on(static function ($callback) use ($expected) {
+                    $item = Mockery::mock(ItemInterface::class);
                     $item->shouldReceive('expiresAfter')->once();
 
                     $result = $callback($item);
+
                     return $result === $expected;
                 }))
                 ->andReturn($expected);
@@ -122,7 +125,7 @@ class PostCacheTest extends MockeryTestCase
             $this->cache
                 ->shouldReceive('get')
                 ->once()
-                ->with(sprintf('posts_show_%s_%s', $locale, $slug), \Mockery::any())
+                ->with(sprintf('posts_show_%s_%s', $locale, $slug), Mockery::any())
                 ->andThrow($exception);
         } else {
             $this->cache
@@ -130,11 +133,12 @@ class PostCacheTest extends MockeryTestCase
                 ->once()
                 ->with(
                     sprintf('posts_show_%s_%s', $locale, $slug),
-                    \Mockery::on(static function ($callback) use ($expected) {
-                        $item = \Mockery::mock(ItemInterface::class);
+                    Mockery::on(static function ($callback) use ($expected) {
+                        $item = Mockery::mock(ItemInterface::class);
                         $item->shouldReceive('expiresAfter')->once();
 
                         $result = $callback($item);
+
                         return $result === $expected;
                     }))
                 ->andReturn($expected);
