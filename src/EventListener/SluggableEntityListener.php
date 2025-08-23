@@ -34,7 +34,7 @@ readonly class SluggableEntityListener {
      */
     public function postPersist(SluggableEntityInterface $entity): void
     {
-        $this->updateSlugsForAllLocales($entity);
+//        $this->updateSlugsForAllLocales($entity);
     }
 
     /**
@@ -46,7 +46,7 @@ readonly class SluggableEntityListener {
             return;
         }
 
-        $this->updateSlugsForAllLocales($entity);
+//        $this->updateSlugsForAllLocales($entity);
     }
 
     /**
@@ -54,25 +54,22 @@ readonly class SluggableEntityListener {
      */
     private function updateSlugsForAllLocales(SluggableEntityInterface $entity): void
     {
-        $currentLocale = $this->translatableListener->getListenerLocale();
+//        $currentLocale = $this->translatableListener->getListenerLocale();
         $slugger = new AsciiSlugger();
 
         foreach (explode('|', $this->supportedLocales) as $locale) {
             $this->translatableListener->setTranslatableLocale($locale);
-
-            if ($entity->getId()) {
-                $this->entityManager->refresh($entity);
-            }
+//            $this->entityManager->refresh($entity);
 
             $entity->setSlug($slugger->slug($entity->getTitle())->lower()->toString());
         }
 
-        $this->translatableListener->setTranslatableLocale($currentLocale);
-
-        // Refresh to get back to the original locale state
-        if ($entity->getId()) {
-            $this->entityManager->refresh($entity);
-        }
+//        $this->translatableListener->setTranslatableLocale($currentLocale);
+//
+//        // Refresh to get back to the original locale state
+//        if ($entity->getId()) {
+//            $this->entityManager->refresh($entity);
+//        }
 
         $this->entityManager->flush();
     }
