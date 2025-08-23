@@ -9,6 +9,7 @@ use App\Repository\PostRepository;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Throwable;
 
 readonly class PostCache
 {
@@ -21,7 +22,7 @@ readonly class PostCache
     }
 
     /**
-     * @return array<array-key,mixed>
+     * @return array<array-key,Post>
      */
     public function getLocalizedCachedPosts(string $locale): array
     {
@@ -31,7 +32,7 @@ readonly class PostCache
 
                 return $this->repository->findAllPublished();
             });
-        } catch (InvalidArgumentException) {
+        } catch (Throwable) {
             return $this->repository->findAllPublished();
         }
     }
@@ -46,7 +47,7 @@ readonly class PostCache
 
                     return $this->repository->findOnePublishedBySlug($postSlug);
                 });
-        } catch (InvalidArgumentException) {
+        } catch (Throwable) {
             return $this->repository->findOnePublishedBySlug($postSlug);
         }
     }

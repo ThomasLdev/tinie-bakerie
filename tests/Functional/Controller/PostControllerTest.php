@@ -6,15 +6,18 @@ namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
 use App\Repository\PostRepository;
+use App\Services\Post\Cache\PostCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Cache\CacheInterface;
 
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
+#[CoversClass(PostCache::class)]
 class PostControllerTest extends BaseControllerTestCase
 {
     private EntityManagerInterface $entityManager;
@@ -29,75 +32,75 @@ class PostControllerTest extends BaseControllerTestCase
         $this->postRepository = static::getContainer()->get(PostRepository::class);
     }
 
-    /**
-     * @return array<'fr'|'en', array<'baseUrl', string>>
-     */
-    public static function getPostControllerIndexData(): array
+    public static function getPostControllerIndexData(): \Generator
     {
-        return [
-            'fr index post page' => [
-                '/fr/articles',
-            ],
-            'en index post page' => [
-                '/en/posts',
-            ],
+        yield 'fr index post page' => [
+            '/fr/articles',
+        ];
+
+        yield 'en index post page' => [
+            '/en/posts',
         ];
     }
 
-    /**
-     * @return array<'fr'|'en', array<'baseUrl', string>>
-     */
-    public static function getPostControllerShowData(): array
+    public static function getPostControllerShowData(): \Generator
     {
-        return [
-            'fr with found post' => [
-                '/fr/articles',
-                'fr',
-                true,
-                true,
-                Response::HTTP_OK,
-            ],
-            'en with found post' => [
-                '/en/posts',
-                'en',
-                true,
-                true,
-                Response::HTTP_OK,
-            ],
-            'fr without post' => [
-                '/fr/articles',
-                'fr',
-                false,
-                false,
-                Response::HTTP_NOT_FOUND,
-            ],
-            'en without post' => [
-                '/en/posts',
-                'en',
-                false,
-                false,
-                Response::HTTP_NOT_FOUND,
-            ],
-            'fr with post bad category slug' => [
-                '/fr/articles',
-                'fr',
-                true,
-                false,
-                Response::HTTP_NOT_FOUND,
-            ],
-            'en with post bad category slug' => [
-                '/en/posts',
-                'en',
-                true,
-                false,
-                Response::HTTP_NOT_FOUND,
-            ],
+        yield 'fr with found post' => [
+            '/fr/articles',
+            'fr',
+            true,
+            true,
+            Response::HTTP_OK,
+        ];
+
+        yield 'en with found post' => [
+            '/en/posts',
+            'en',
+            true,
+            true,
+            Response::HTTP_OK,
+        ];
+
+        yield 'fr without post' => [
+            '/fr/articles',
+            'fr',
+            false,
+            false,
+            Response::HTTP_NOT_FOUND,
+        ];
+
+        yield 'en without post' => [
+            '/en/posts',
+            'en',
+            false,
+            false,
+            Response::HTTP_NOT_FOUND,
+        ];
+
+        yield 'fr with post bad category slug' => [
+            '/fr/articles',
+            'fr',
+            true,
+            false,
+            Response::HTTP_NOT_FOUND,
+        ];
+
+        yield 'en with post bad category slug' => [
+            '/en/posts',
+            'en',
+            true,
+            false,
+            Response::HTTP_NOT_FOUND,
         ];
     }
 
     #[DataProvider('getPostControllerIndexData')]
     public function testIndex(string $baseUrl): void
     {
+        $cache = static::getContainer()->get(CacheInterface::class);
+        $cache->delete('posts_index_fr');
+        $cache->delete('posts_index_en');
+
         $this->client->request(Request::METHOD_GET, $baseUrl);
         self::assertResponseIsSuccessful();
     }
@@ -116,6 +119,9 @@ class PostControllerTest extends BaseControllerTestCase
         $post = $shouldFindPost ? $this->postRepository->findRandomPublished() : null;
         $postSlug = 'bad-post-slug';
         $categorySlug = 'bad-category-slug';
+
+        $cache = static::getContainer()->get(CacheInterface::class);
+        $cache->delete('posts_show_fr_'.$postSlug);
 
         if ($shouldFindPost) {
             $post->setLocale($locale);
