@@ -72,3 +72,4 @@ public/coverage
 ###< tinie-bakerie - upload system ###
 
 .env.*
+compose.override.yaml

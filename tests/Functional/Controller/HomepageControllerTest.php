@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\HomePageController;
+use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,37 +13,29 @@ use Symfony\Component\HttpFoundation\Request;
 #[CoversClass(HomePageController::class)]
 class HomepageControllerTest extends BaseControllerTestCase
 {
-    /**
-     * @return array<string, array<string, string>>
-     */
-    public static function getHomepageControllerData(): array
+    public static function getHomepageControllerData(): Generator
     {
-        return [
-            'en' => [
-                '/en',
-            ],
-            'fr' => [
-                '/fr',
-            ],
+        yield 'get homepage controller for en locale' => [
+            '/en',
+        ];
+
+        yield 'get homepage controller for fr locale' => [
+            '/fr',
         ];
     }
 
-    /**
-     * @return array<string, array<string, string>>
-     */
-    public static function getHomepageControllerRedirectData(): array
+    public static function getHomepageControllerRedirectData(): Generator
     {
-        return [
-            'no locale default value' => [
-                '/',
-                'en',
-                '/en',
-            ],
-            'no locale, preferred fr' => [
-                '/',
-                'fr',
-                '/fr',
-            ],
+        yield 'no locale default value' => [
+            '/',
+            'en',
+            '/en',
+        ];
+
+        yield 'no locale, preferred fr' => [
+            '/',
+            'fr',
+            '/fr',
         ];
     }
 
