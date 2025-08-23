@@ -4,11 +4,16 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Form\TranslationEmbedType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Generator;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class PostCrudController extends AbstractCrudController
 {
@@ -19,37 +24,50 @@ class PostCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // Global fields
+        if (Crud::PAGE_INDEX === $pageName) {
+            return $this->getIndexFields();
+        }
+
+        return $this->getFormFields();
+    }
+
+    private function getIndexFields(): Generator
+    {
         yield DateField::new('publishedAt', 'admin.post.published_at');
 
-        // Index
-        yield TextField::new('title', 'admin.post.title')
-            ->hideOnForm();
-        yield ArrayField::new('tags', 'admin.post.tags')
-            ->hideOnForm();
+        yield TextField::new('title', 'admin.post.title');
+
+        yield ArrayField::new('tags', 'admin.post.tags');
+
         yield AssociationField::new('category', 'admin.category.title')
             ->formatValue(function (Category $category) {
                 return $category->getTitle();
-            })
-            ->hideOnForm();
-        yield DateField::new('createdAt', 'admin.post.created_at')
-            ->hideOnForm();
-        yield DateField::new('updatedAt', 'admin.post.updated_at')
-            ->hideOnForm();
+            });
 
-        // Edit
-        yield TextField::new('title', 'admin.post.title')
-            ->setFormTypeOption('attr', ['placeholder' => 'admin.post.title_placeholder']);
-        yield TextField::new('slug', 'admin.post.slug')
-            ->setFormTypeOption('attr', ['disabled' => 'true'])
-            ->setFormTypeOption('empty_data', '')
-            ->hideOnIndex();
+        yield DateField::new('createdAt', 'admin.post.created_at');
+
+        yield DateField::new('updatedAt', 'admin.post.updated_at');
+    }
+
+    private function getFormFields(): Generator
+    {
         yield AssociationField::new('tags', 'admin.post.tags')
             ->setFormTypeOption('choice_label', 'title')
-            ->setFormTypeOption('by_reference', false)
-            ->hideOnIndex();
+            ->setFormTypeOption('by_reference', false);
+
         yield AssociationField::new('category', 'admin.category.title')
-            ->setFormTypeOption('choice_label', 'title')
-            ->hideOnIndex();
+            ->setFormTypeOption('choice_label', 'title');
+
+        yield FormField::addTab('Titre')
+            ->setFormType(TranslationEmbedType::class)
+            ->setFormTypeOptions([
+                'properties' => [
+                    'title' => [
+                        "label" => 'Titre',
+                        'formType' => TextType::class,
+                        'rows' => 6,
+                    ],
+                ],
+            ]);
     }
 }
