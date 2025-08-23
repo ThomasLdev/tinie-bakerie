@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\SluggableEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
 use DateTimeImmutable;
@@ -15,7 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface
+class Post implements LocalizedEntityInterface, SluggableEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;

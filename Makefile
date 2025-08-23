@@ -24,8 +24,7 @@ build: ## Builds the Docker images
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
 
-start: up
-	@$(PHP_CONT) php bin/console tailwind:build
+start: up assets-install
 
 build: build up ## Build and start the containers
 
@@ -60,6 +59,8 @@ doctrine-diff:
 doctrine-migrate:
 	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
 
+assets-install: tailwind
+	@$(PHP_CONT) bin/console assets:install
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'

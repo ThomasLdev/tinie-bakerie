@@ -41,6 +41,11 @@ class Tag implements LocalizedEntityInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $activatedAt = null;
 
+    public function __toString(): string
+    {
+        return $this->getTitle();
+    }
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();

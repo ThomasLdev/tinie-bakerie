@@ -10,7 +10,7 @@ trait SluggableEntity
 {
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING)]
-    private string $slug;
+    private string $slug = '';
 
     public function getSlug(): string
     {
