@@ -10,21 +10,25 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-readonly class PostCache {
+readonly class PostCache
+{
     private const int CACHE_TTL = 3600; // 1 hour
 
     public function __construct(
         private CacheInterface $cache,
         private PostRepository $repository,
-    )
-    {
+    ) {
     }
 
+    /**
+     * @return array<array-key,mixed>
+     */
     public function getLocalizedCachedPosts(string $locale): array
     {
         try {
-            return $this->cache->get('posts_index_' . $locale, function (ItemInterface $item) {
+            return $this->cache->get('posts_index_'.$locale, function (ItemInterface $item) {
                 $item->expiresAfter(self::CACHE_TTL);
+
                 return $this->repository->findAllPublished();
             });
         } catch (InvalidArgumentException) {
@@ -39,8 +43,9 @@ readonly class PostCache {
                 sprintf('posts_show_%s_%s', $locale, $postSlug),
                 function (ItemInterface $item) use ($postSlug) {
                     $item->expiresAfter(self::CACHE_TTL);
+
                     return $this->repository->findOnePublishedBySlug($postSlug);
-            });
+                });
         } catch (InvalidArgumentException) {
             return $this->repository->findOnePublishedBySlug($postSlug);
         }

@@ -17,8 +17,7 @@ final class PostController extends AbstractController
 {
     public function __construct(
         private readonly PostCache $cache,
-    )
-    {
+    ) {
     }
 
     /**
