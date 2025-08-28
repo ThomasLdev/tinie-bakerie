@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 
@@ -24,15 +26,16 @@ class PostRepository extends ServiceEntityRepository
     public function findAllPublished(): array
     {
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
+            ->select('PARTIAL p.{id, title, active, createdAt, updatedAt, slug}')
             ->addSelect('PARTIAL c.{id, title, slug}')
             ->addSelect('PARTIAL t.{id, title, color}')
             ->addSelect('PARTIAL pm.{id, mediaName, alt, type, title}')
             ->leftJoin('p.category', 'c')
             ->leftJoin('p.tags', 't')
             ->leftJoin('p.media', 'pm')
-            ->where('p.publishedAt IS NOT NULL')
-            ->orderBy('p.publishedAt', 'DESC');
+            ->where('p.active = :active ')
+            ->setParameter('active', true)
+            ->orderBy('p.title', 'ASC');
 
         $query = $qb->getQuery();
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
@@ -46,18 +49,23 @@ class PostRepository extends ServiceEntityRepository
     public function findOnePublishedBySlug(string $slug): ?Post
     {
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
+            ->select('PARTIAL p.{id, title, active, createdAt, updatedAt, slug}')
             ->addSelect('PARTIAL c.{id, title, slug}')
             ->addSelect('PARTIAL t.{id, title, color}')
             ->addSelect('PARTIAL pm.{id, mediaName, alt, type, title}')
             ->addSelect('PARTIAL ps.{id, position, content, type}')
+            ->addSelect('PARTIAL psm.{id, mediaName, alt, type, title}')
             ->leftJoin('p.category', 'c')
             ->leftJoin('p.tags', 't')
             ->leftJoin('p.media', 'pm')
             ->leftJoin('p.sections', 'ps')
+            ->leftJoin('ps.media', 'psm')
             ->where('p.slug = :slug')
-            ->andWhere('p.publishedAt IS NOT NULL')
-            ->setParameter('slug', $slug);
+            ->andWhere('p.active = :active ')
+            ->setParameters(new ArrayCollection([
+                new Parameter('slug', $slug),
+                new Parameter('active',true)
+            ]));
 
         $query = $qb->getQuery();
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
@@ -71,7 +79,8 @@ class PostRepository extends ServiceEntityRepository
     public function findRandomPublished(): ?Post
     {
         $qb = $this->createQueryBuilder('p')
-            ->where('p.publishedAt IS NOT NULL')
+            ->where('p.active = :active ')
+            ->setParameter('active', true)
             ->setMaxResults(1)
         ;
 

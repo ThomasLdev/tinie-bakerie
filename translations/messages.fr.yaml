@@ -13,7 +13,7 @@ admin:
         slug: 'Slug (crée automatiquement)'
         tags: 'Étiquettes'
         plural: 'Articles'
-        published_at: 'Actif'
+        active: 'Actif'
         created_at: 'Créé le'
         updated_at: 'Modifié le'
     category:

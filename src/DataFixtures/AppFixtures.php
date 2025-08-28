@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\DataFixtures\Trait\MediaFixtures;
+use App\Services\Media\Fixtures\MediaLoader;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
 use App\Factory\PostFactory;
@@ -15,14 +15,18 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    use MediaFixtures;
+    public function __construct(
+        private readonly MediaLoader $mediaLoader,
+    )
+    {
+    }
 
     public function load(ObjectManager $manager): void
     {
         CategoryFactory::createMany(5, function () {
             return [
                 'media' => CategoryMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
+                    return $this->mediaLoader->getRandomMedia();
                 }),
             ];
         });
@@ -34,7 +38,7 @@ class AppFixtures extends Fixture
                 'category' => CategoryFactory::random(),
                 'tags' => TagFactory::randomRange(1, 3),
                 'media' => PostMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
+                    return $this->mediaLoader->getRandomMedia();
                 }),
             ];
         });
@@ -42,7 +46,7 @@ class AppFixtures extends Fixture
         PostSectionFactory::createMany(40, function () {
             return [
                 'media' => PostSectionMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
+                    return $this->mediaLoader->getRandomMedia();
                 }),
                 'post' => PostFactory::random(),
             ];

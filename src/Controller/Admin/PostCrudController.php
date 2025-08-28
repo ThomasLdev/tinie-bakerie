@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -33,7 +34,7 @@ class PostCrudController extends AbstractCrudController
 
     private function getIndexFields(): Generator
     {
-        yield DateField::new('publishedAt', 'admin.post.published_at');
+        yield BooleanField::new('active', 'admin.post.active');
 
         yield TextField::new('title', 'admin.post.title');
 
@@ -68,6 +69,12 @@ class PostCrudController extends AbstractCrudController
                         'rows' => 6,
                     ],
                 ],
+            ]);
+
+        yield AssociationField::new('sections', 'admin.post.sections')
+            ->setFormTypeOptions([
+                'by_reference' => false,
+                'choice_label' => 'id',
             ]);
     }
 }

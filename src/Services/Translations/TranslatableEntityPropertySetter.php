@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Factory\Utils;
+namespace App\Services\Translations;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,10 +18,7 @@ readonly class TranslatableEntityPropertySetter
     }
 
     /**
-     * Process translations for a translatable entity.
-     *
-     * @param LocalizedEntityInterface $entity             The entity to translate
-     * @param array<string, callable>  $translatableFields Map of field names to callbacks that generate translated content
+     * @param array<string, callable> $translatableFields
      */
     public function processTranslations(LocalizedEntityInterface $entity, array $translatableFields): void
     {
@@ -42,7 +39,6 @@ readonly class TranslatableEntityPropertySetter
                 $entity->$setter($value);
             }
 
-            // Persist the entity with the translated properties for the current locale
             $this->entityManager->flush();
         }
     }

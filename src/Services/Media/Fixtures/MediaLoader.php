@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\DataFixtures\Trait;
+namespace App\Services\Media\Fixtures;
 
-use App\DataFixtures\Model\FileModel;
+use App\Services\Media\Model\FileModel;
 use App\Services\Media\Enum\MediaType;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mime\MimeTypes;
 
-trait MediaFixtures
+class MediaLoader
 {
     private const string FOLDER_PATH = '/assets/fixtures/media/';
 
@@ -28,7 +28,7 @@ trait MediaFixtures
     /**
      * @return array{mediaName: string, mediaFile: UploadedFile, type: MediaType}
      */
-    public function getRandomFileData(): array
+    public function getRandomMedia(): array
     {
         $media = $this->createRandomFileModel();
 

@@ -3,7 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\PostSectionMedia;
-use App\Factory\Utils\TranslatableEntityPropertySetter;
+use App\Services\Translations\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 

@@ -3,7 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Tag;
-use App\Factory\Utils\TranslatableEntityPropertySetter;
+use App\Services\Translations\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**

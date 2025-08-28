@@ -3,7 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\PostSection;
-use App\Factory\Utils\TranslatableEntityPropertySetter;
+use App\Services\Translations\TranslatableEntityPropertySetter;
 use App\Services\PostSection\Enum\PostSectionType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 

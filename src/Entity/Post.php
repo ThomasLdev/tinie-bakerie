@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Contracts\SluggableEntityInterface;
+use App\Entity\Traits\ActivableEntityTrait;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,6 +21,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     use TimestampableEntity;
     use LocalizedEntity;
     use SluggableEntity;
+    use ActivableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,9 +31,6 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING)]
     private string $title;
-
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $publishedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
@@ -95,18 +93,6 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    public function getPublishedAt(): ?DateTimeImmutable
-    {
-        return $this->publishedAt;
-    }
-
-    public function setPublishedAt(?DateTimeImmutable $publishedAt): self
-    {
-        $this->publishedAt = $publishedAt;
-
-        return $this;
     }
 
     public function getCategory(): ?Category
