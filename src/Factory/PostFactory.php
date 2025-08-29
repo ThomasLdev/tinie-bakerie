@@ -33,6 +33,9 @@ final class PostFactory extends PersistentProxyObjectFactory
     {
         return [
             'title' => self::faker()->unique()->text(15),
+            'metaTitle' => self::faker()->unique()->text(10),
+            'metaDescription' => self::faker()->unique()->text(30),
+            'excerpt' => self::faker()->unique()->text(10),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
             'active' => self::faker()->boolean(80),
@@ -53,6 +56,9 @@ final class PostFactory extends PersistentProxyObjectFactory
                     PostTranslation::class,
                     [
                         'title' => fn ($locale) => sprintf('%s %s', $post->getTitle(), $locale),
+                        'metaTitle' => fn ($locale) => sprintf('%s %s', $post->getMetaTitle(), $locale),
+                        'metaDescription' => fn ($locale) => sprintf('%s %s', $post->getMetaDescription(), $locale),
+                        'excerpt' => fn ($locale) => sprintf('%s %s', $post->getExcerpt(), $locale),
                         'slug' => fn ($locale) => $this->createSlug(sprintf('%s %s', $post->getTitle(), $locale)),
                     ]
                 );

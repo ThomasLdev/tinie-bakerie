@@ -4,22 +4,25 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
-use App\Form\PostSectionFormType;
-use App\Form\TranslationEmbedType;
+use App\Form\Field\PostTranslationsField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Generator;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PostCrudController extends AbstractCrudController
 {
+    public function __construct(
+        #[Autowire(param: 'app.non_default_locale')] private readonly array $nonDefaultLocale,
+    )
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Post::class;
@@ -32,6 +35,17 @@ class PostCrudController extends AbstractCrudController
         }
 
         return $this->getFormFields();
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Post')
+            ->setEntityLabelInPlural('Posts')
+            ->setPageTitle('index', 'Posts')
+            ->setPageTitle('new', 'Create Post')
+            ->setPageTitle('edit', 'Edit Post')
+            ->setPageTitle('detail', 'Post Details');
     }
 
     private function getIndexFields(): Generator
@@ -63,34 +77,40 @@ class PostCrudController extends AbstractCrudController
         yield AssociationField::new('category')
             ->setFormTypeOption('choice_label', 'title');
 
-        yield FormField::addTab('Titre')
-            ->setFormType(TranslationEmbedType::class)
-            ->setColumns(12)
-            ->setFormTypeOptions([
-                'properties' => [
-                    'title' => [
-                        "label" => 'Titre',
-                        'fieldType' => TextType::class,
-                        'rows' => 6,
-                    ],
-                ],
-            ]);
+        yield TextField::new('title', 'admin.global.title')
+            ->setRequired(true)
+        ;
 
-        yield CollectionField::new('sections', 'admin.post.sections')
-            ->setEntryType(PostSectionFormType::class)
-            ->setColumns(12)
-            ->setFormTypeOptions([
-                'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
-                'attr' => [
-                    'rows' => 12
-                ]
-            ])
-            ->allowAdd()
-            ->allowDelete()
-            ->renderExpanded();
+        yield TextField::new('metaTitle', 'admin.global.meta_title')
+            ->setRequired(false)
+        ;
+
+        yield TextField::new('metaDescription', 'admin.global.meta_description')
+            ->setRequired(false)
+        ;
+
+        yield TextField::new('excerpt', 'admin.global.excerpt')
+            ->setRequired(false)
+        ;
+
+        yield PostTranslationsField::new('translations', '')
+            ->setLocales($this->nonDefaultLocale);
+
+//        yield CollectionField::new('sections', 'admin.post.sections')
+//            ->setEntryType(PostSectionFormType::class)
+//            ->setColumns(12)
+//            ->setFormTypeOptions([
+//                'by_reference' => false,
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'delete_empty' => true,
+//                'prototype' => true,
+//                'attr' => [
+//                    'rows' => 12
+//                ]
+//            ])
+//            ->allowAdd()
+//            ->allowDelete()
+//            ->renderExpanded();
     }
 }

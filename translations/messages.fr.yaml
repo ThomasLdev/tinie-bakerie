@@ -9,6 +9,9 @@ admin:
         created_at: 'Créé le'
         updated_at: 'Modifié le'
         title: 'Titre'
+        meta_title: 'Meta Titre'
+        meta_description: 'Meta Description'
+        excerpt: 'Extrait'
     website:
         label: 'Site Web'
     post:

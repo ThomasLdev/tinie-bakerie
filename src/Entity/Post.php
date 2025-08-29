@@ -299,7 +299,10 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int, PostTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }

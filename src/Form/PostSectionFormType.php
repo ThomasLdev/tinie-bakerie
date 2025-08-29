@@ -46,6 +46,11 @@ class PostSectionFormType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'required' => true,
+            ])
+            ->add('content', TextareaType::class, [
+                'label' => 'Content',
+                'required' => true,
+                'attr' => ['rows' => 12]
             ]);
 
 
