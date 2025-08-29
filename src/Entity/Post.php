@@ -13,7 +13,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
+#[Gedmo\TranslationEntity(class: PostTranslation::class)]
 #[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
 class Post implements LocalizedEntityInterface, SluggableEntityInterface
@@ -27,10 +29,6 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
@@ -71,28 +69,42 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $readingTime = 0;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING)]
+    private string $title;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $metaDescription = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING, length: 60, options: ['default' => ''])]
+    private string $metaTitle = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $excerpt = '';
+
+    /**
+     * @var Collection<int, PostTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->sections = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id ?? null;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
     }
 
     public function getCategory(): ?Category
@@ -226,4 +238,80 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
 
         return $this;
     }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(string $metaDescription): self
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->metaTitle;
+    }
+
+    public function setMetaTitle(string $metaTitle): self
+    {
+        $this->metaTitle = $metaTitle;
+
+        return $this;
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->excerpt;
+    }
+
+    public function setExcerpt(string $excerpt): self
+    {
+        $this->excerpt = $excerpt;
+
+        return $this;
+    }
+
+    public function getReadingTime(): int
+    {
+        return $this->readingTime;
+    }
+
+    public function setReadingTime(int $readingTime): self
+    {
+        $this->readingTime = $readingTime;
+
+        return $this;
+    }
+
+    public function getTranslations(): ArrayCollection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
+
+        return $this;
+    }
 }
+

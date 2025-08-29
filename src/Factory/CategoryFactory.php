@@ -3,8 +3,9 @@
 namespace App\Factory;
 
 use App\Entity\Category;
+use App\Entity\CategoryTranslation;
 use App\Factory\Trait\SluggableEntityFactory;
-use App\Services\Translations\TranslatableEntityPropertySetter;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -47,10 +48,13 @@ final class CategoryFactory extends PersistentProxyObjectFactory
 
                 $this->propertySetter->processTranslations(
                     $category,
+                    CategoryTranslation::class,
                     [
-                        'title' => fn ($locale) => $category->getTitle().' '.$locale,
-                        'slug' => fn ($locale, $category) => $this->createSlug($category->getTitle().' '.$locale),
-                        'description' => fn ($locale) => $category->getDescription().' '.$locale,
+                        'title' => fn ($locale) => sprintf('%s %s', $category->getTitle(), $locale),
+                        'slug' => fn ($locale) => $this->createSlug(
+                            sprintf('%s %s', $category->getTitle(), $locale)
+                        ),
+                        'description' => fn ($locale) => sprintf('%s %s', $category->getDescription(), $locale),
                     ]
                 );
             });

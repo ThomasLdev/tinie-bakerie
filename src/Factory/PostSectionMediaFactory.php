@@ -3,7 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\PostSectionMedia;
-use App\Services\Translations\TranslatableEntityPropertySetter;
+use App\Entity\PostSectionMediaTranslation;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -43,9 +44,10 @@ final class PostSectionMediaFactory extends PersistentProxyObjectFactory
              ->afterInstantiate(function (PostSectionMedia $postSectionMedia): void {
                  $this->propertySetter->processTranslations(
                      $postSectionMedia,
+                     PostSectionMediaTranslation::class,
                      [
-                         'title' => fn ($locale) => $postSectionMedia->getTitle().' '.$locale,
-                         'alt' => fn ($locale) => $postSectionMedia->getAlt().' '.$locale,
+                         'title' => fn ($locale) => sprintf('%s %s',$postSectionMedia->getTitle(), $locale),
+                         'alt' => fn ($locale) => sprintf('%s %s',$postSectionMedia->getAlt(), $locale),
                      ]
                  );
              })

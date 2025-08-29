@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Media\Fixtures;
+namespace App\Services\Fixtures\Media;
 
-use App\Services\Media\Model\FileModel;
+use App\Services\Fixtures\Media\Model\FileModel;
 use App\Services\Media\Enum\MediaType;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;

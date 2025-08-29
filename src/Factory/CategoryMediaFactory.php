@@ -3,7 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\CategoryMedia;
-use App\Services\Translations\TranslatableEntityPropertySetter;
+use App\Entity\CategoryMediaTranslation;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -45,9 +46,10 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory
             ->afterInstantiate(function (CategoryMedia $media) {
                 $this->propertySetter->processTranslations(
                     $media,
+                    CategoryMediaTranslation::class,
                     [
-                        'title' => fn ($locale) => $media->getTitle().' '.$locale,
-                        'alt' => fn ($locale) => $media->getAlt().' '.$locale,
+                        'title' => fn ($locale) => sprintf('%s %s', $media->getTitle(), $locale),
+                        'alt' => fn ($locale) => sprintf('%s %s', $media->getAlt(), $locale),
                     ]
                 );
             })

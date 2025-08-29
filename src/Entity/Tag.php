@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 #[ORM\Entity]
 class Tag implements LocalizedEntityInterface
@@ -41,6 +42,12 @@ class Tag implements LocalizedEntityInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $activatedAt = null;
 
+    /**
+     * @var Collection<int, TagTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __toString(): string
     {
         return $this->getTitle();
@@ -49,6 +56,7 @@ class Tag implements LocalizedEntityInterface
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,6 +104,21 @@ class Tag implements LocalizedEntityInterface
     public function setActivatedAt(?DateTimeImmutable $activatedAt): self
     {
         $this->activatedAt = $activatedAt;
+
+        return $this;
+    }
+
+    public function getTranslations(): ArrayCollection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
 
         return $this;
     }

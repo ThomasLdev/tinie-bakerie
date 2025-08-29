@@ -8,8 +8,11 @@ use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\MediaAccessibility;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -38,6 +41,17 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
 
     #[ORM\Column(enumType: MediaType::class)]
     private MediaType $type;
+
+    /**
+     * @var Collection<int, CategoryMediaTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: CategoryMediaTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,6 +108,21 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     public function setType(MediaType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getTranslations(): ArrayCollection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Services\Media\Fixtures\MediaLoader;
+use App\Services\Fixtures\Media\MediaLoader;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
 use App\Factory\PostFactory;

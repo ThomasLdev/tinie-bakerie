@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -28,5 +29,6 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToUrl('admin.website.label', 'fa fa-home', '/');
         yield MenuItem::linkToCrud('admin.post.plural', 'fas fa-newspaper', Post::class);
+        yield MenuItem::linkToCrud('admin.category.plural', 'fas fa-layer-group', Category::class);
     }
 }

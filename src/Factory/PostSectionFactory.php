@@ -3,7 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\PostSection;
-use App\Services\Translations\TranslatableEntityPropertySetter;
+use App\Entity\PostSectionTranslation;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use App\Services\PostSection\Enum\PostSectionType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -45,8 +46,9 @@ final class PostSectionFactory extends PersistentProxyObjectFactory
              ->afterInstantiate(function (PostSection $postSection): void {
                  $this->propertySetter->processTranslations(
                      $postSection,
+                     PostSectionTranslation::class,
                      [
-                         'content' => fn ($locale) => $postSection->getContent().' '.$locale,
+                         'content' => fn ($locale) => sprintf('%s %s',$postSection->getContent(), $locale),
                      ]
                  );
              })

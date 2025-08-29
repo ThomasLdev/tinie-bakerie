@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 #[ORM\Entity]
 class PostSection implements LocalizedEntityInterface
@@ -53,9 +54,16 @@ class PostSection implements LocalizedEntityInterface
     #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
     private string $content = '';
 
+    /**
+     * @var Collection<int, PostSectionTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __construct()
     {
         $this->media = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,6 +157,21 @@ class PostSection implements LocalizedEntityInterface
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getTranslations(): ArrayCollection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
 
         return $this;
     }

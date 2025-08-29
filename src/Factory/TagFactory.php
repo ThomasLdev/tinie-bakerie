@@ -3,7 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\Tag;
-use App\Services\Translations\TranslatableEntityPropertySetter;
+use App\Entity\TagTranslation;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -42,8 +43,9 @@ final class TagFactory extends PersistentProxyObjectFactory
             ->afterInstantiate(function (Tag $tag) {
                 $this->propertySetter->processTranslations(
                     $tag,
+                    TagTranslation::class,
                     [
-                        'title' => fn ($locale) => $tag->getTitle().' '.$locale,
+                        'title' => fn ($locale) => sprintf('%s %s',$tag->getTitle(), $locale),
                     ]
                 );
             })

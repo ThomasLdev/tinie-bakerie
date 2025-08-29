@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Media\Model;
+namespace App\Services\Fixtures\Media\Model;
 
 use App\Services\Media\Enum\MediaType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
