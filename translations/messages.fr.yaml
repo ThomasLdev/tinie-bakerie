@@ -4,3 +4,23 @@ app:
         show:
             created_at: 'Créé le : '
             updated_at: 'Modifié le : '
+admin:
+    global:
+        created_at: 'Créé le'
+        updated_at: 'Modifié le'
+        title: 'Titre'
+        meta_title: 'Meta Titre'
+        meta_description: 'Meta Description'
+        excerpt: 'Extrait'
+    website:
+        label: 'Site Web'
+    post:
+        title: 'Titre'
+        title_placeholder: "Titre de l'article (doit être unique)"
+        slug: 'Slug (crée automatiquement)'
+        tags: 'Étiquettes'
+        plural: 'Articles'
+        active: 'Actif'
+    category:
+        plural: 'Catégories'
+        title: 'Catégorie'

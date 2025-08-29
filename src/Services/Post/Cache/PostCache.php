@@ -23,32 +23,27 @@ readonly class PostCache
 
     /**
      * @return array<array-key,mixed>
+     *
+     * @throws InvalidArgumentException
      */
     public function getLocalizedCachedPosts(string $locale): array
     {
-        try {
-            return $this->cache->get('posts_index_'.$locale, function (ItemInterface $item) {
-                $item->expiresAfter(self::CACHE_TTL);
-
-                return $this->repository->findAllPublished();
-            });
-        } catch (Throwable) {
+        return $this->cache->get('posts_index_'.$locale, function (ItemInterface $item) {
+            $item->expiresAfter(self::CACHE_TTL);
             return $this->repository->findAllPublished();
-        }
+        });
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function getLocalizedCachedPost(string $locale, string $postSlug): ?Post
     {
-        try {
-            return $this->cache->get(
-                sprintf('posts_show_%s_%s', $locale, $postSlug),
-                function (ItemInterface $item) use ($postSlug) {
-                    $item->expiresAfter(self::CACHE_TTL);
-
-                    return $this->repository->findOnePublishedBySlug($postSlug);
-                });
-        } catch (Throwable) {
-            return $this->repository->findOnePublishedBySlug($postSlug);
-        }
+        return $this->cache->get(
+            sprintf('posts_show_%s_%s', $locale, $postSlug),
+            function (ItemInterface $item) use ($postSlug) {
+                $item->expiresAfter(self::CACHE_TTL);
+                return $this->repository->findOnePublishedBySlug($postSlug);
+            });
     }
 }

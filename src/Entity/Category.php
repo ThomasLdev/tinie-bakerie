@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\SluggableEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,9 +12,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
+#[Gedmo\TranslationEntity(class: CategoryTranslation::class)]
+#[ORM\UniqueConstraint('category_title_unique', ['title'])]
 #[ORM\Entity]
-class Category implements LocalizedEntityInterface
+class Category implements LocalizedEntityInterface, SluggableEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;
@@ -54,10 +58,29 @@ class Category implements LocalizedEntityInterface
     #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
     private string $description = '';
 
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $metaDescription = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING, length: 60, options: ['default' => ''])]
+    private string $metaTitle = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $excerpt = '';
+
+    /**
+     * @var Collection<int, CategoryTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,6 +157,57 @@ class Category implements LocalizedEntityInterface
             if ($medium->getCategory() === $this) {
                 $medium->setCategory(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(string $metaDescription): self
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->metaTitle;
+    }
+
+    public function setMetaTitle(string $metaTitle): self
+    {
+        $this->metaTitle = $metaTitle;
+
+        return $this;
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->excerpt;
+    }
+
+    public function setExcerpt(string $excerpt): self
+    {
+        $this->excerpt = $excerpt;
+
+        return $this;
+    }
+
+    public function getTranslations(): ArrayCollection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
         }
 
         return $this;

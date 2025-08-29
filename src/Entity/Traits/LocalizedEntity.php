@@ -7,16 +7,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait LocalizedEntity
 {
     #[Gedmo\Locale]
-    private ?string $locale = null;
+    private $locale; // @phpstan-ignore-line Let Gedmo handle the type
 
-    public function setLocale(string $locale): self
+    public function setTranslatableLocale(string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getLocale(): ?string
+    public function getTranslatableLocale(): ?string
     {
         return $this->locale;
     }

@@ -3,8 +3,9 @@
 namespace App\Factory;
 
 use App\Entity\Post;
+use App\Entity\PostTranslation;
 use App\Factory\Trait\SluggableEntityFactory;
-use App\Factory\Utils\TranslatableEntityPropertySetter;
+use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -32,18 +33,18 @@ final class PostFactory extends PersistentProxyObjectFactory
     {
         return [
             'title' => self::faker()->unique()->text(15),
+            'metaTitle' => self::faker()->unique()->text(10),
+            'metaDescription' => self::faker()->unique()->text(30),
+            'excerpt' => self::faker()->unique()->text(10),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
-            'publishedAt' => self::faker()->boolean() ? self::faker()->dateTime() : null,
+            'active' => self::faker()->boolean(80),
             'tags' => [],
             'media' => [],
             'sections' => [],
         ];
     }
 
-    /**
-     * Flush the default locale, then set the locale and update the translatable properties.
-     */
     protected function initialize(): static
     {
         return $this
@@ -52,9 +53,13 @@ final class PostFactory extends PersistentProxyObjectFactory
 
                 $this->propertySetter->processTranslations(
                     $post,
+                    PostTranslation::class,
                     [
-                        'title' => fn ($locale) => $post->getTitle().' '.$locale,
-                        'slug' => fn ($locale, $post) => $this->createSlug($post->getTitle().' '.$locale),
+                        'title' => fn ($locale) => sprintf('%s %s', $post->getTitle(), $locale),
+                        'metaTitle' => fn ($locale) => sprintf('%s %s', $post->getMetaTitle(), $locale),
+                        'metaDescription' => fn ($locale) => sprintf('%s %s', $post->getMetaDescription(), $locale),
+                        'excerpt' => fn ($locale) => sprintf('%s %s', $post->getExcerpt(), $locale),
+                        'slug' => fn ($locale) => $this->createSlug(sprintf('%s %s', $post->getTitle(), $locale)),
                     ]
                 );
             });

@@ -3,35 +3,32 @@
 namespace App\Entity;
 
 use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\SluggableEntityInterface;
+use App\Entity\Traits\ActivableEntityTrait;
 use App\Entity\Traits\LocalizedEntity;
 use App\Entity\Traits\SluggableEntity;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
+#[Gedmo\TranslationEntity(class: PostTranslation::class)]
 #[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface
+class Post implements LocalizedEntityInterface, SluggableEntityInterface
 {
     use TimestampableEntity;
     use LocalizedEntity;
     use SluggableEntity;
+    use ActivableEntityTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
-
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $publishedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
@@ -72,40 +69,42 @@ class Post implements LocalizedEntityInterface
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $readingTime = 0;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING)]
+    private string $title;
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $metaDescription = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::STRING, length: 60, options: ['default' => ''])]
+    private string $metaTitle = '';
+
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $excerpt = '';
+
+    /**
+     * @var Collection<int, PostTranslation>
+     */
+    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->sections = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id ?? null;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getPublishedAt(): ?DateTimeImmutable
-    {
-        return $this->publishedAt;
-    }
-
-    public function setPublishedAt(?DateTimeImmutable $publishedAt): self
-    {
-        $this->publishedAt = $publishedAt;
-
-        return $this;
     }
 
     public function getCategory(): ?Category
@@ -239,4 +238,83 @@ class Post implements LocalizedEntityInterface
 
         return $this;
     }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(string $metaDescription): self
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->metaTitle;
+    }
+
+    public function setMetaTitle(string $metaTitle): self
+    {
+        $this->metaTitle = $metaTitle;
+
+        return $this;
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->excerpt;
+    }
+
+    public function setExcerpt(string $excerpt): self
+    {
+        $this->excerpt = $excerpt;
+
+        return $this;
+    }
+
+    public function getReadingTime(): int
+    {
+        return $this->readingTime;
+    }
+
+    public function setReadingTime(int $readingTime): self
+    {
+        $this->readingTime = $readingTime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostTranslation>
+     */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(AbstractPersonalTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
+
+        return $this;
+    }
 }
+

@@ -1,0 +1,5 @@
+easyadmin:
+    resource: .
+    type: easyadmin.routes
+    defaults:
+        _locale: '%default_locale%'
