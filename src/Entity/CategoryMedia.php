@@ -124,9 +124,9 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     }
 
     /**
-     * @return ArrayCollection<int,CategoryMediaTranslation>
+     * @return Collection<int,CategoryMediaTranslation>
      */
-    public function getTranslations(): ArrayCollection
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }

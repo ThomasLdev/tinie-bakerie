@@ -120,7 +120,10 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int,PostMediaTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
@@ -136,5 +139,23 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         }
 
         return $this;
+    }
+
+    public function getAlt(): string
+    {
+        return $this->getLocalizedTranslation()->getAlt();
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()->getTitle();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): PostMediaTranslation
+    {
+        return $this->getTranslations()->first();
     }
 }

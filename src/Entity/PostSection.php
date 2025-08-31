@@ -50,7 +50,7 @@ class PostSection implements LocalizedEntityInterface
     /**
      * @var Collection<int, PostSectionTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
     public function __construct()
@@ -154,7 +154,10 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int,PostSectionTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
@@ -170,5 +173,18 @@ class PostSection implements LocalizedEntityInterface
         }
 
         return $this;
+    }
+
+    public function getContent(): string
+    {
+        return $this->getLocalizedTranslation()->getContent();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): PostSectionTranslation
+    {
+        return $this->getTranslations()->first();
     }
 }

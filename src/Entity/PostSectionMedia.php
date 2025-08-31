@@ -44,7 +44,11 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
     /**
      * @var Collection<int, PostSectionMediaTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostSectionMediaTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: PostSectionMediaTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'])
+    ]
     private Collection $translations;
 
     public function __construct()
@@ -123,7 +127,10 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int,PostSectionMediaTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
@@ -139,5 +146,23 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         }
 
         return $this;
+    }
+
+    public function getAlt(): string
+    {
+        return $this->getLocalizedTranslation()->getAlt();
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()->getTitle();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): PostSectionMediaTranslation
+    {
+        return $this->getTranslations()->first();
     }
 }

@@ -17,11 +17,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PostCrudController extends AbstractCrudController
 {
-    public function __construct(
-        #[Autowire(param: 'app.non_default_locale')] private readonly array $nonDefaultLocale,
-    )
-    {
-    }
+//    public function __construct(
+//        #[Autowire(param: 'app.non_default_locale')] private readonly array $nonDefaultLocale,
+//    )
+//    {
+//    }
 
     public static function getEntityFqcn(): string
     {
@@ -56,10 +56,10 @@ class PostCrudController extends AbstractCrudController
 
         yield ArrayField::new('tags', 'admin.post.tags');
 
-        yield AssociationField::new('category', 'admin.category.title')
-            ->formatValue(function (Category $category) {
-                return $category->getTitle();
-            });
+//        yield AssociationField::new('category', 'admin.category.title')
+//            ->formatValue(function (Category $category) {
+//                return $category->getTitle();
+//            });
 
         yield DateField::new('createdAt', 'admin.global.created_at');
 
@@ -93,8 +93,8 @@ class PostCrudController extends AbstractCrudController
             ->setRequired(false)
         ;
 
-        yield PostTranslationsField::new('translations', '')
-            ->setLocales($this->nonDefaultLocale);
+//        yield PostTranslationsField::new('translations', '')
+//            ->setLocales($this->nonDefaultLocale);
 
 //        yield CollectionField::new('sections', 'admin.post.sections')
 //            ->setEntryType(PostSectionFormType::class)

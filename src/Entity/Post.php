@@ -259,5 +259,23 @@ class Post implements LocalizedEntityInterface
 
         return $this;
     }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()->getTitle();
+    }
+
+    public function getSlug(): string
+    {
+        return $this->getLocalizedTranslation()->getSlug();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): PostTranslation
+    {
+        return $this->getTranslations()->first();
+    }
 }
 

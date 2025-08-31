@@ -4,6 +4,7 @@ namespace App\Services\Filter;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
+use App\Entity\Contracts\EntityTranslation;
 
 class LocaleFilter extends SQLFilter
 {
@@ -11,6 +12,10 @@ class LocaleFilter extends SQLFilter
 
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
+        if (!$targetEntity->reflClass->implementsInterface(EntityTranslation::class)) {
+            return '';
+        }
+
         if (!$targetEntity->hasField(self::PARAMETER_NAME)) {
             return '';
         }

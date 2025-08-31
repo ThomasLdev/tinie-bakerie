@@ -34,7 +34,7 @@ class Tag implements LocalizedEntityInterface
     /**
      * @var Collection<int, TagTranslation>
      */
-    #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
     public function __construct()
@@ -80,7 +80,10 @@ class Tag implements LocalizedEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int, TagTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
@@ -96,5 +99,18 @@ class Tag implements LocalizedEntityInterface
         }
 
         return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()->getTitle();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): TagTranslation
+    {
+        return $this->getTranslations()->first();
     }
 }

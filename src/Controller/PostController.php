@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Repository\PostRepository;
 use App\Services\Post\Cache\PostCache;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,11 +19,14 @@ final class PostController extends AbstractController
 {
     public function __construct(
         private readonly PostCache $cache,
+        private readonly PostRepository $repository,
     ) {
     }
 
     /**
      * @return array<'posts', array<array-key,mixed>>
+     *
+     * @throws InvalidArgumentException
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
@@ -40,6 +45,8 @@ final class PostController extends AbstractController
     public function show(string $categorySlug, string $postSlug, Request $request): array
     {
         $post = $this->cache->getLocalizedCachedPost($request->getLocale(), $postSlug);
+
+//        $post = $this->repository->findOneActive($postSlug);
 
         if (!$post instanceof Post) {
             throw $this->createNotFoundException();

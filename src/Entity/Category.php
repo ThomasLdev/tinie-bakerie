@@ -121,7 +121,10 @@ class Category implements LocalizedEntityInterface
         return $this;
     }
 
-    public function getTranslations(): ArrayCollection
+    /**
+     * @return Collection<int,CategoryTranslation>
+     */
+    public function getTranslations(): Collection
     {
         return $this->translations;
     }
@@ -137,5 +140,23 @@ class Category implements LocalizedEntityInterface
         }
 
         return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()->getTitle();
+    }
+
+    public function getSlug(): string
+    {
+        return $this->getLocalizedTranslation()->getSlug();
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): CategoryTranslation
+    {
+        return $this->getTranslations()->first();
     }
 }

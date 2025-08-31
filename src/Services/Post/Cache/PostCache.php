@@ -15,11 +15,8 @@ readonly class PostCache
 {
     private const int CACHE_TTL = 3600; // 1 hour
 
-    public function __construct(
-        private CacheInterface $cache,
-        private PostRepository $repository,
-        #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
-    ) {
+    public function __construct(private CacheInterface $cache, private PostRepository $repository)
+    {
     }
 
     /**
@@ -31,7 +28,7 @@ readonly class PostCache
     {
         return $this->cache->get('posts_index_'.$locale, function (ItemInterface $item) {
             $item->expiresAfter(self::CACHE_TTL);
-            return $this->repository->findAllPublished();
+            return $this->repository->findAllActive();
         });
     }
 
@@ -44,24 +41,24 @@ readonly class PostCache
             sprintf('posts_show_%s_%s', $locale, $postSlug),
             function (ItemInterface $item) use ($postSlug) {
                 $item->expiresAfter(self::CACHE_TTL);
-                return $this->repository->findOnePublishedBySlug($postSlug);
+                return $this->repository->findOneActive($postSlug);
             });
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function removeItem(array $slugs): void
-    {
-        foreach (explode('|', $this->supportedLocales) as $locale) {
-            $keys = [
-                'posts_index_'.$locale,
-                sprintf('posts_show_%s_%s', $locale, $slugs[$locale])
-            ];
-
-            foreach ($keys as $key) {
-                $this->cache->delete($key);
-            }
-        }
-    }
+//    /**
+//     * @throws InvalidArgumentException
+//     */
+//    public function removeItem(array $slugs): void
+//    {
+//        foreach (explode('|', $this->supportedLocales) as $locale) {
+//            $keys = [
+//                'posts_index_'.$locale,
+//                sprintf('posts_show_%s_%s', $locale, $slugs[$locale])
+//            ];
+//
+//            foreach ($keys as $key) {
+//                $this->cache->delete($key);
+//            }
+//        }
+//    }
 }
