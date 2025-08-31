@@ -5,11 +5,15 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Entity\Post;
 use App\Form\Field\PostTranslationsField;
+use App\Form\PostSectionType;
+use App\Form\PostTranslationFormType;
+use App\Form\PostTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Generator;
@@ -34,7 +38,7 @@ class PostCrudController extends AbstractCrudController
             return $this->getIndexFields();
         }
 
-        return $this->getFormFields();
+        return $this->getFormFields($pageName);
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -66,7 +70,7 @@ class PostCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(): Generator
+    private function getFormFields(string $pageName): Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
 
@@ -74,43 +78,50 @@ class PostCrudController extends AbstractCrudController
             ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('by_reference', false);
 
-        yield AssociationField::new('category')
+        yield AssociationField::new('category', 'admin.category.title')
             ->setFormTypeOption('choice_label', 'title');
 
-        yield TextField::new('title', 'admin.global.title')
-            ->setRequired(true)
+        $translations = CollectionField::new('translations', 'admin.global.translations')
+            ->setEntryType(PostTranslationType::class)
+            ->setFormTypeOptions([
+                'by_reference' => true,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded()
         ;
 
-        yield TextField::new('metaTitle', 'admin.global.meta_title')
-            ->setRequired(false)
-        ;
+        if (Crud::PAGE_EDIT === $pageName) {
+            $translations
+                ->setFormTypeOptions(
+                    [
+                        'by_reference' => true,
+                        'allow_add' => false,
+                        'allow_delete' => false,
+                        'prototype' => true,
+                    ]
+                )
+                ->allowAdd(false)
+                ->allowDelete(false)
+            ;
+        }
 
-        yield TextField::new('metaDescription', 'admin.global.meta_description')
-            ->setRequired(false)
-        ;
+        yield $translations;
 
-        yield TextField::new('excerpt', 'admin.global.excerpt')
-            ->setRequired(false)
-        ;
-
-//        yield PostTranslationsField::new('translations', '')
-//            ->setLocales($this->nonDefaultLocale);
-
-//        yield CollectionField::new('sections', 'admin.post.sections')
-//            ->setEntryType(PostSectionFormType::class)
-//            ->setColumns(12)
-//            ->setFormTypeOptions([
-//                'by_reference' => false,
-//                'allow_add' => true,
-//                'allow_delete' => true,
-//                'delete_empty' => true,
-//                'prototype' => true,
-//                'attr' => [
-//                    'rows' => 12
-//                ]
-//            ])
-//            ->allowAdd()
-//            ->allowDelete()
-//            ->renderExpanded();
+        yield CollectionField::new('sections', 'admin.post_section.title')
+            ->setEntryType(PostSectionType::class)
+            ->setFormTypeOptions([
+                'by_reference' => true,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'prototype' => true,
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded();
     }
 }

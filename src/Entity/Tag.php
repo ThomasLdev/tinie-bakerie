@@ -43,6 +43,11 @@ class Tag implements LocalizedEntityInterface
         $this->translations = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getTitle();
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;

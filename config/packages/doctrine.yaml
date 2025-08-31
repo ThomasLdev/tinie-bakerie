@@ -18,7 +18,6 @@ doctrine:
         filters:
             locale_filter:
                 class: App\Services\Filter\LocaleFilter
-                enabled: true
         mappings:
             App:
                 type: attribute

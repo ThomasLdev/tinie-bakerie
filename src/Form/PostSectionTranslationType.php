@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\PostTranslation;
+use App\Entity\PostSectionTranslation;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostTranslationType extends AbstractType
+class PostSectionTranslationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -19,10 +20,9 @@ class PostTranslationType extends AbstractType
                 'label' => 'admin.global.locale',
                 'disabled' => true,
                 'attr' => ['class' => 'form-control'],
-                'required' => true,
             ])
-            ->add('title', TextType::class, [
-                'label' => 'admin.global.title',
+            ->add('content', TextareaType::class, [
+                'label' => 'admin.post_section.content',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
             ])
@@ -32,7 +32,7 @@ class PostTranslationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PostTranslation::class,
+            'data_class' => PostSectionTranslation::class,
         ]);
     }
 }

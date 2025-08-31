@@ -25,12 +25,17 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $locale = $event->getRequest()->getLocale();
+        $request = $event->getRequest();
+
+        if (str_contains($request->getPathInfo(), '/admin')) {
+            return;
+        }
 
         $this->entityManager
             ->getFilters()
-            ->getFilter('locale_filter')
-            ->setParameter('locale', $locale)
+            ->enable('locale_filter')
+            ->setParameter('locale', $request->getLocale()
+            )
         ;
     }
 }

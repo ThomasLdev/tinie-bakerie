@@ -12,6 +12,8 @@ admin:
         meta_title: 'Meta Titre'
         meta_description: 'Meta Description'
         excerpt: 'Extrait'
+        locale: 'Langue'
+        translations: 'Traductions'
     website:
         label: 'Site Web'
     post:
@@ -24,3 +26,6 @@ admin:
     category:
         plural: 'Catégories'
         title: 'Catégorie'
+    post_section:
+        title: 'Sections'
+        content: 'Contenu'
