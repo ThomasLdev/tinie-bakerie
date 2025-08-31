@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Contracts\EntityTranslation;
+use App\Entity\Contracts\HasSluggableTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Traits\ActivableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface
+class Post implements LocalizedEntityInterface, HasSluggableTranslation
 {
     use TimestampableEntity;
     use ActivableEntityTrait;

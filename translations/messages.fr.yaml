@@ -14,6 +14,9 @@ admin:
         excerpt: 'Extrait'
         locale: 'Langue'
         translations: 'Traductions'
+        slug:
+            title: 'Url relative'
+            help: 'Générée automatiquement à partir du titre'
     website:
         label: 'Site Web'
     post:
@@ -28,4 +31,5 @@ admin:
         title: 'Catégorie'
     post_section:
         title: 'Sections'
+        section_title: 'Titre de la section'
         content: 'Contenu'

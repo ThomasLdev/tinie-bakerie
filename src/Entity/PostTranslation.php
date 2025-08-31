@@ -41,6 +41,11 @@ class PostTranslation implements EntityTranslation, SluggableEntityInterface
     #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
     private string $excerpt = '';
 
+    public function __toString(): string
+    {
+        return $this->locale;
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;

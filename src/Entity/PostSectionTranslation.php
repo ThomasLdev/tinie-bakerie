@@ -28,6 +28,14 @@ class PostSectionTranslation implements EntityTranslation
     #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
     private string $content = '';
 
+    #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => ''])]
+    private string $title = '';
+
+    public function __toString(): string
+    {
+        return $this->locale;
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;
@@ -54,6 +62,17 @@ class PostSectionTranslation implements EntityTranslation
     {
         $this->content = $content;
 
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): PostSectionTranslation
+    {
+        $this->title = $title;
         return $this;
     }
 }

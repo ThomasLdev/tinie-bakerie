@@ -26,6 +26,11 @@ class PostMediaTranslation implements EntityTranslation
     #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected PostMedia $translatable;
 
+    public function __toString(): string
+    {
+        return $this->locale;
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;

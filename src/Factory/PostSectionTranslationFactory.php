@@ -21,6 +21,7 @@ final class PostSectionTranslationFactory extends PersistentProxyObjectFactory{
     {
         return [
             'content' => self::faker()->text(),
+            'title' => self::faker()->text(10),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
         ];

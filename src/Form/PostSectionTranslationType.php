@@ -16,10 +16,10 @@ class PostSectionTranslationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('locale', TextType::class, [
-                'label' => 'admin.global.locale',
-                'disabled' => true,
+            ->add('title', TextType::class, [
+                'label' => 'admin.post_section.section_title',
                 'attr' => ['class' => 'form-control'],
+                'required' => true,
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'admin.post_section.content',
