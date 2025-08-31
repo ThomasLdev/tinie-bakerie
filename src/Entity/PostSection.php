@@ -2,22 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 #[ORM\Entity]
 class PostSection implements LocalizedEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,10 +46,6 @@ class PostSection implements LocalizedEntityInterface
         orphanRemoval: true,
     )]
     private Collection $media;
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
-    private string $content = '';
 
     /**
      * @var Collection<int, PostSectionTranslation>
@@ -149,14 +142,14 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
-    public function getContent(): ?string
+    /**
+     * @param array<int,PostSectionTranslation> $translations
+     */
+    public function setTranslations(array $translations): PostSection
     {
-        return $this->content;
-    }
-
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
 
         return $this;
     }
@@ -166,11 +159,14 @@ class PostSection implements LocalizedEntityInterface
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param PostSectionTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

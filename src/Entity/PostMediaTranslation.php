@@ -4,21 +4,42 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
+use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Traits\MediaAccessibility;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: 'post_media_lookup_unique_idx', columns: ['locale', 'object_id', 'field'])]
-class PostMediaTranslation extends AbstractPersonalTranslation
+class PostMediaTranslation implements EntityTranslation
 {
-    public function __construct($locale, $field, $value)
-    {
-        $this->setLocale($locale);
-        $this->setField($field);
-        $this->setContent($value);
-    }
+    use LocalizedEntity;
+    use MediaAccessibility;
+    use TimestampableEntity;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private int $id;
 
     #[ORM\ManyToOne(targetEntity: PostMedia::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected $object;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected PostMedia $translatable;
+
+    public function getId(): ?int
+    {
+        return $this->id ?? null;
+    }
+
+    public function getTranslatable(): PostMedia
+    {
+        return $this->translatable;
+    }
+
+    public function setTranslatable(PostMedia $translatable): PostMediaTranslation
+    {
+        $this->translatable = $translatable;
+
+        return $this;
+    }
 }

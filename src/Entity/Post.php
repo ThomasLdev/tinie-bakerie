@@ -2,27 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Contracts\SluggableEntityInterface;
 use App\Entity\Traits\ActivableEntityTrait;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\SluggableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
-#[Gedmo\TranslationEntity(class: PostTranslation::class)]
-#[ORM\UniqueConstraint('post_title_unique', ['title'])]
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface, SluggableEntityInterface
+class Post implements LocalizedEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
-    use SluggableEntity;
     use ActivableEntityTrait;
 
     #[ORM\Id]
@@ -72,26 +64,10 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $readingTime = 0;
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
-    private string $metaDescription = '';
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING, length: 60, options: ['default' => ''])]
-    private string $metaTitle = '';
-
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
-    private string $excerpt = '';
-
     /**
-     * @var Collection<int, PostTranslation>
+     * @var Collection<int,PostTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
     public function __construct()
@@ -112,7 +88,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this->category;
     }
 
-    public function setCategory(Category $category): self
+    public function setCategory(Category $category): Post
     {
         $this->category = $category;
 
@@ -122,7 +98,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     /**
      * @param array<array-key,Tag> $tags
      */
-    public function setTags(array $tags): self
+    public function setTags(array $tags): Post
     {
         foreach ($tags as $tag) {
             $this->addTag($tag);
@@ -132,14 +108,14 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     }
 
     /**
-     * @return Collection<int, Tag>
+     * @return Collection<int,Tag>
      */
     public function getTags(): Collection
     {
         return $this->tags;
     }
 
-    public function addTag(Tag $tag): self
+    public function addTag(Tag $tag): Post
     {
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
@@ -148,7 +124,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this;
     }
 
-    public function removeTag(Tag $tag): self
+    public function removeTag(Tag $tag): Post
     {
         $this->tags->removeElement($tag);
 
@@ -158,7 +134,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     /**
      * @param array<array-key,PostMedia> $media
      */
-    public function setMedia(array $media): self
+    public function setMedia(array $media): Post
     {
         foreach ($media as $medium) {
             $this->addMedium($medium);
@@ -175,7 +151,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this->media;
     }
 
-    public function addMedium(PostMedia $medium): self
+    public function addMedium(PostMedia $medium): Post
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
@@ -185,7 +161,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this;
     }
 
-    public function removeMedium(PostMedia $medium): self
+    public function removeMedium(PostMedia $medium): Post
     {
         if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)
@@ -200,7 +176,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     /**
      * @param array<array-key,PostSection> $sections
      */
-    public function setSections(array $sections): self
+    public function setSections(array $sections): Post
     {
         foreach ($sections as $section) {
             $this->addSection($section);
@@ -210,14 +186,14 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     }
 
     /**
-     * @return Collection<int, PostSection>
+     * @return Collection<int,PostSection>
      */
     public function getSections(): Collection
     {
         return $this->sections;
     }
 
-    public function addSection(PostSection $section): self
+    public function addSection(PostSection $section): Post
     {
         if (!$this->sections->contains($section)) {
             $this->sections->add($section);
@@ -227,7 +203,7 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this;
     }
 
-    public function removeSection(PostSection $section): self
+    public function removeSection(PostSection $section): Post
     {
         if ($this->sections->removeElement($section)) {
             // set the owning side to null (unless already changed)
@@ -239,60 +215,12 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
         return $this;
     }
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getMetaDescription(): string
-    {
-        return $this->metaDescription;
-    }
-
-    public function setMetaDescription(string $metaDescription): self
-    {
-        $this->metaDescription = $metaDescription;
-
-        return $this;
-    }
-
-    public function getMetaTitle(): string
-    {
-        return $this->metaTitle;
-    }
-
-    public function setMetaTitle(string $metaTitle): self
-    {
-        $this->metaTitle = $metaTitle;
-
-        return $this;
-    }
-
-    public function getExcerpt(): string
-    {
-        return $this->excerpt;
-    }
-
-    public function setExcerpt(string $excerpt): self
-    {
-        $this->excerpt = $excerpt;
-
-        return $this;
-    }
-
     public function getReadingTime(): int
     {
         return $this->readingTime;
     }
 
-    public function setReadingTime(int $readingTime): self
+    public function setReadingTime(int $readingTime): Post
     {
         $this->readingTime = $readingTime;
 
@@ -300,18 +228,33 @@ class Post implements LocalizedEntityInterface, SluggableEntityInterface
     }
 
     /**
-     * @return Collection<int, PostTranslation>
+     * @param array<int,PostTranslation> $translations
+     */
+    public function setTranslations(array $translations): Post
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,PostTranslation>
      */
     public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param PostTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): Post
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

@@ -2,17 +2,15 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Contracts\MediaEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\MediaAccessibility;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -21,8 +19,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
-    use MediaAccessibility;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -45,7 +41,10 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     /**
      * @var Collection<int, CategoryMediaTranslation>
      */
-    #[ORM\OneToMany(targetEntity: CategoryMediaTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: CategoryMediaTranslation::class,
+        mappedBy: 'translatable', cascade: ['persist', 'remove'])
+    ]
     private Collection $translations;
 
     public function __construct()
@@ -63,7 +62,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->mediaName;
     }
 
-    public function setMediaName(?string $mediaName): self
+    public function setMediaName(?string $mediaName): CategoryMedia
     {
         $this->mediaName = $mediaName;
 
@@ -75,7 +74,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $mediaFile = null): self
+    public function setMediaFile(?File $mediaFile = null): CategoryMedia
     {
         $this->mediaFile = $mediaFile;
 
@@ -93,7 +92,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(?Category $category): CategoryMedia
     {
         $this->category = $category;
 
@@ -105,23 +104,41 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->type;
     }
 
-    public function setType(MediaType $type): self
+    public function setType(MediaType $type): CategoryMedia
     {
         $this->type = $type;
 
         return $this;
     }
 
+    /**
+     * @param array<int,CategoryMediaTranslation> $translations
+     */
+    public function setTranslations(array $translations): CategoryMedia
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection<int,CategoryMediaTranslation>
+     */
     public function getTranslations(): ArrayCollection
     {
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param CategoryMediaTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): CategoryMedia
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

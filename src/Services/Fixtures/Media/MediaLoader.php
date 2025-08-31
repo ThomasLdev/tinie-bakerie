@@ -28,7 +28,7 @@ class MediaLoader
     /**
      * @return array{mediaName: string, mediaFile: UploadedFile, type: MediaType}
      */
-    public function getRandomMedia(): array
+    public function getRandomMediaFactoryFields(): array
     {
         $media = $this->createRandomFileModel();
 

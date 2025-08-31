@@ -2,21 +2,22 @@
 
 namespace App\Entity\Traits;
 
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 trait LocalizedEntity
 {
-    #[Gedmo\Locale]
-    private $locale; // @phpstan-ignore-line Let Gedmo handle the type
+    #[ORM\Column(type: Types::STRING)]
+    private string $locale;
 
-    public function setTranslatableLocale(string $locale): self
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getTranslatableLocale(): ?string
+    public function getLocale(): string
     {
         return $this->locale;
     }

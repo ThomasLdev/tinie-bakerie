@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 #[ORM\Entity]
 class Tag implements LocalizedEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,7 +23,7 @@ class Tag implements LocalizedEntityInterface
     private int $id;
 
     /**
-     * @var Collection<int, Post>
+     * @var Collection<int,Post>
      */
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
     private Collection $posts;
@@ -35,23 +31,11 @@ class Tag implements LocalizedEntityInterface
     #[ORM\Column(type: Types::STRING, options: ['default' => '#000000'])]
     private string $color = '#000000';
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
-
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $activatedAt = null;
-
     /**
      * @var Collection<int, TagTranslation>
      */
     #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
     private Collection $translations;
-
-    public function __toString(): string
-    {
-        return $this->getTitle();
-    }
 
     public function __construct()
     {
@@ -77,33 +61,21 @@ class Tag implements LocalizedEntityInterface
         return $this->color;
     }
 
-    public function setColor(string $color): static
+    public function setColor(string $color): Tag
     {
         $this->color = $color;
 
         return $this;
     }
 
-    public function getTitle(): string
+    /**
+     * @param array<int,TagTranslation> $translations
+     */
+    public function setTranslations(array $translations): Tag
     {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getActivatedAt(): ?DateTimeImmutable
-    {
-        return $this->activatedAt;
-    }
-
-    public function setActivatedAt(?DateTimeImmutable $activatedAt): self
-    {
-        $this->activatedAt = $activatedAt;
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
 
         return $this;
     }
@@ -113,11 +85,14 @@ class Tag implements LocalizedEntityInterface
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param TagTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): Tag
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

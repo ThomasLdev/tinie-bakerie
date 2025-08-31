@@ -3,8 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\PostSection;
-use App\Entity\PostSectionTranslation;
-use App\Services\Fixtures\Translations\TranslatableEntityPropertySetter;
 use App\Services\PostSection\Enum\PostSectionType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -13,12 +11,6 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class PostSectionFactory extends PersistentProxyObjectFactory
 {
-    public function __construct(
-        private readonly TranslatableEntityPropertySetter $propertySetter,
-    ) {
-        parent::__construct();
-    }
-
     public static function class(): string
     {
         return PostSection::class;
@@ -35,23 +27,6 @@ final class PostSectionFactory extends PersistentProxyObjectFactory
             'post' => null,
             'type' => self::faker()->randomElement(PostSectionType::cases()),
             'updatedAt' => self::faker()->dateTime(),
-            'content' => self::faker()->text(150),
-            'media' => [],
         ];
-    }
-
-    protected function initialize(): static
-    {
-        return $this
-             ->afterInstantiate(function (PostSection $postSection): void {
-                 $this->propertySetter->processTranslations(
-                     $postSection,
-                     PostSectionTranslation::class,
-                     [
-                         'content' => fn ($locale) => sprintf('%s %s',$postSection->getContent(), $locale),
-                     ]
-                 );
-             })
-        ;
     }
 }

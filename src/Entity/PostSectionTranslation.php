@@ -4,21 +4,56 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
+use App\Entity\Traits\LocalizedEntity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: 'post_section_lookup_unique_idx', columns: ['locale', 'object_id', 'field'])]
-class PostSectionTranslation extends AbstractPersonalTranslation
+class PostSectionTranslation implements EntityTranslation
 {
-    public function __construct($locale, $field, $value)
-    {
-        $this->setLocale($locale);
-        $this->setField($field);
-        $this->setContent($value);
-    }
+    use LocalizedEntity;
+    use TimestampableEntity;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private int $id;
 
     #[ORM\ManyToOne(targetEntity: PostSection::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'object_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected $object;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected PostSection $translatable;
+
+    #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
+    private string $content = '';
+
+    public function getId(): ?int
+    {
+        return $this->id ?? null;
+    }
+
+    public function getTranslatable(): PostSection
+    {
+        return $this->translatable;
+    }
+
+    public function setTranslatable(PostSection $translatable): PostSectionTranslation
+    {
+        $this->translatable = $translatable;
+
+        return $this;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(string $content): PostSectionTranslation
+    {
+        $this->content = $content;
+
+        return $this;
+    }
 }

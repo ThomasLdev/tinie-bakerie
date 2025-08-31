@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Contracts\MediaEntityInterface;
 use App\Entity\Traits\LocalizedEntity;
@@ -21,8 +22,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
-    use MediaAccessibility;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -112,16 +111,31 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
+    /**
+     * @param array<int,PostSectionMediaTranslation> $translations
+     */
+    public function setTranslations(array $translations): PostSectionMedia
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
+
+        return $this;
+    }
+
     public function getTranslations(): ArrayCollection
     {
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param PostSectionMediaTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): PostSectionMedia
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

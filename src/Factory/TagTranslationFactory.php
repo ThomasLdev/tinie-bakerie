@@ -2,27 +2,26 @@
 
 namespace App\Factory;
 
-use App\Entity\Tag;
+use App\Entity\TagTranslation;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Tag>
+ * @extends PersistentProxyObjectFactory<TagTranslation>
  */
-final class TagFactory extends PersistentProxyObjectFactory
-{
+final class TagTranslationFactory extends PersistentProxyObjectFactory{
     public static function class(): string
     {
-        return Tag::class;
+        return TagTranslation::class;
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string,mixed>
      */
     protected function defaults(): array
     {
         return [
-            'color' => self::faker()->hexColor(),
             'createdAt' => self::faker()->dateTime(),
+            'title' => self::faker()->unique()->word(),
             'updatedAt' => self::faker()->dateTime(),
         ];
     }

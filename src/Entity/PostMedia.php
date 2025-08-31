@@ -2,17 +2,15 @@
 
 namespace App\Entity;
 
+use App\Entity\Contracts\EntityTranslation;
 use App\Entity\Contracts\LocalizedEntityInterface;
 use App\Entity\Contracts\MediaEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\MediaAccessibility;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -21,8 +19,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
 {
     use TimestampableEntity;
-    use LocalizedEntity;
-    use MediaAccessibility;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -45,7 +41,7 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
     /**
      * @var Collection<int, PostMediaTranslation>
      */
-    #[ORM\OneToMany(targetEntity: PostMediaTranslation::class, mappedBy: 'object', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: PostMediaTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
     public function __construct()
@@ -63,7 +59,7 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->mediaName;
     }
 
-    public function setMediaName(?string $mediaName): self
+    public function setMediaName(?string $mediaName): PostMedia
     {
         $this->mediaName = $mediaName;
 
@@ -75,7 +71,7 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $mediaFile = null): self
+    public function setMediaFile(?File $mediaFile = null): PostMedia
     {
         $this->mediaFile = $mediaFile;
 
@@ -93,7 +89,7 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->post;
     }
 
-    public function setPost(?Post $post): self
+    public function setPost(?Post $post): PostMedia
     {
         $this->post = $post;
 
@@ -105,9 +101,21 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->type;
     }
 
-    public function setType(MediaType $type): self
+    public function setType(MediaType $type): PostMedia
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @param array<int,PostMediaTranslation> $translations
+     */
+    public function setTranslations(array $translations): PostMedia
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
 
         return $this;
     }
@@ -117,11 +125,14 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->translations;
     }
 
-    public function addTranslation(AbstractPersonalTranslation $translation): self
+    /**
+     * @param PostMediaTranslation $translation
+     */
+    public function addTranslation(EntityTranslation $translation): PostMedia
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
-            $translation->setObject($this);
+            $translation->setTranslatable($this);
         }
 
         return $this;

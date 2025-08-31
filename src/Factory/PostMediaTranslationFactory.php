@@ -2,18 +2,18 @@
 
 namespace App\Factory;
 
-use App\Entity\PostMedia;
-use App\Services\Media\Enum\MediaType;
+use App\Entity\PostMediaTranslation;
+use App\Entity\PostTranslation;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostMedia>
+ * @extends PersistentProxyObjectFactory<PostTranslation>
  */
-final class PostMediaFactory extends PersistentProxyObjectFactory
+final class PostMediaTranslationFactory extends PersistentProxyObjectFactory
 {
     public static function class(): string
     {
-        return PostMedia::class;
+        return PostMediaTranslation::class;
     }
 
     /**
@@ -22,12 +22,10 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
     protected function defaults(): array
     {
         return [
+            'alt' => self::faker()->text(),
             'createdAt' => self::faker()->dateTime(),
-            'mediaName' => '',
+            'title' => self::faker()->text(),
             'updatedAt' => self::faker()->dateTime(),
-            'type' => MediaType::Image,
-            'mediaFile' => null,
-            'translations' => [],
         ];
     }
 }

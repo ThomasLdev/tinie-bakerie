@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity\Contracts;
 
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+use Doctrine\Common\Collections\Collection;
 
 interface LocalizedEntityInterface
 {
-    public function getTranslatableLocale(): ?string;
+    public function addTranslation(EntityTranslation $translation): self;
 
-    public function setTranslatableLocale(string $locale): self;
-
-    public function addTranslation(AbstractPersonalTranslation $translation): self;
+    /**
+     * @return Collection<int, EntityTranslation>
+     */
+    public function getTranslations(): Collection;
 }

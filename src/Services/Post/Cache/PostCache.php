@@ -7,9 +7,9 @@ namespace App\Services\Post\Cache;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Throwable;
 
 readonly class PostCache
 {
@@ -18,6 +18,7 @@ readonly class PostCache
     public function __construct(
         private CacheInterface $cache,
         private PostRepository $repository,
+        #[Autowire(param: 'app.supported_locales')] private string $supportedLocales,
     ) {
     }
 
@@ -45,5 +46,22 @@ readonly class PostCache
                 $item->expiresAfter(self::CACHE_TTL);
                 return $this->repository->findOnePublishedBySlug($postSlug);
             });
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function removeItem(array $slugs): void
+    {
+        foreach (explode('|', $this->supportedLocales) as $locale) {
+            $keys = [
+                'posts_index_'.$locale,
+                sprintf('posts_show_%s_%s', $locale, $slugs[$locale])
+            ];
+
+            foreach ($keys as $key) {
+                $this->cache->delete($key);
+            }
+        }
     }
 }
