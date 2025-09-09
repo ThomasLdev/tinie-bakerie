@@ -43,7 +43,16 @@ class PostSectionType extends AbstractType
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
                 'entry_type' => PostSectionTranslationType::class,
+                'entry_options' => [
+                    'hidde_locale' => $options['hidde_locale'],
+                    'supported_locales' => $options['supported_locales']
+                ],
                 'required' => true,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'prototype' => true,
             ])
         ;
     }
@@ -52,6 +61,11 @@ class PostSectionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSection::class,
+            'hidde_locale' => false,
+            'supported_locales' => []
         ]);
+
+        $resolver->setAllowedTypes('hidde_locale', 'bool');
+        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

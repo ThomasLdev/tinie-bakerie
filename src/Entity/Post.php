@@ -228,11 +228,12 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
         return $this;
     }
 
-    /**
-     * @param array<int,PostTranslation> $translations
-     */
-    public function setTranslations(array $translations): Post
+    public function setTranslations(ArrayCollection|iterable $translations): Post
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -263,20 +264,22 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()->getTitle();
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
     }
 
     public function getSlug(): string
     {
-        return $this->getLocalizedTranslation()->getSlug();
+        return $this->getLocalizedTranslation()?->getSlug() ?? '';
     }
 
     /**
      * With the locale filter enabled, there is only one translation in the collection
      */
-    private function getLocalizedTranslation(): PostTranslation
+    private function getLocalizedTranslation(): ?PostTranslation
     {
-        return $this->getTranslations()->first();
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }
 

@@ -111,11 +111,12 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    /**
-     * @param array<int,CategoryMediaTranslation> $translations
-     */
-    public function setTranslations(array $translations): CategoryMedia
+    public function setTranslations(ArrayCollection|iterable $translations): CategoryMedia
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }

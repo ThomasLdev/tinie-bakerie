@@ -20,6 +20,13 @@ admin:
     website:
         label: 'Site Web'
     post:
+        dashboard:
+            singular: 'Article'
+            plural: 'Articles'
+            index: 'Tous les articles'
+            create: 'Créer un article'
+            edit: 'Modifier un article'
+            detail: "Détail de l'article"
         title: 'Titre'
         title_placeholder: "Titre de l'article (doit être unique)"
         slug: 'Slug (crée automatiquement)'

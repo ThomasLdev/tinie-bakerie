@@ -108,11 +108,12 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    /**
-     * @param array<int,PostMediaTranslation> $translations
-     */
-    public function setTranslations(array $translations): PostMedia
+    public function setTranslations(ArrayCollection|iterable $translations): PostMedia
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -143,19 +144,21 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
 
     public function getAlt(): string
     {
-        return $this->getLocalizedTranslation()->getAlt();
+        return $this->getLocalizedTranslation()?->getAlt() ?? '';
     }
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()->getTitle();
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
     }
 
     /**
      * With the locale filter enabled, there is only one translation in the collection
      */
-    private function getLocalizedTranslation(): PostMediaTranslation
+    private function getLocalizedTranslation(): ?PostMediaTranslation
     {
-        return $this->getTranslations()->first();
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

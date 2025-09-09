@@ -4,9 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
-use App\Form\Field\PostTranslationsField;
 use App\Form\PostSectionType;
-use App\Form\PostTranslationFormType;
 use App\Form\PostTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -21,11 +19,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PostCrudController extends AbstractCrudController
 {
-//    public function __construct(
-//        #[Autowire(param: 'app.non_default_locale')] private readonly array $nonDefaultLocale,
-//    )
-//    {
-//    }
+    public function __construct(
+        #[Autowire(param: 'app.supported_locales')] private readonly string $supportedLocales
+    )
+    {
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -44,12 +42,12 @@ class PostCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Post')
-            ->setEntityLabelInPlural('Posts')
-            ->setPageTitle('index', 'Posts')
-            ->setPageTitle('new', 'Create Post')
-            ->setPageTitle('edit', 'Edit Post')
-            ->setPageTitle('detail', 'Post Details');
+            ->setEntityLabelInSingular('admin.post.dashboard.singular')
+            ->setEntityLabelInPlural('admin.post.dashboard.plural')
+            ->setPageTitle('index', 'admin.post.dashboard.index')
+            ->setPageTitle('new', 'admin.post.dashboard.create')
+            ->setPageTitle('edit', 'admin.post.dashboard.edit')
+            ->setPageTitle('detail', 'admin.post.dashboard.detail');
     }
 
     private function getIndexFields(): Generator
@@ -60,10 +58,10 @@ class PostCrudController extends AbstractCrudController
 
         yield ArrayField::new('tags', 'admin.post.tags');
 
-//        yield AssociationField::new('category', 'admin.category.title')
-//            ->formatValue(function (Category $category) {
-//                return $category->getTitle();
-//            });
+        yield AssociationField::new('category', 'admin.category.title')
+            ->formatValue(function (Category $category) {
+                return $category->getTitle();
+            });
 
         yield DateField::new('createdAt', 'admin.global.created_at');
 
@@ -81,47 +79,43 @@ class PostCrudController extends AbstractCrudController
         yield AssociationField::new('category', 'admin.category.title')
             ->setFormTypeOption('choice_label', 'title');
 
-        $translations = CollectionField::new('translations', 'admin.global.translations')
+        yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(PostTranslationType::class)
             ->setFormTypeOptions([
-                'by_reference' => true,
-                'allow_add' => true,
-                'allow_delete' => true,
+                'by_reference' => false,
+                'allow_add' => Crud::PAGE_EDIT !== $pageName,
+                'allow_delete' => Crud::PAGE_EDIT !== $pageName,
                 'prototype' => true,
+                'entry_options' => [
+                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
+                    'supported_locales' => $this->getSupportedLocales()
+                ]
             ])
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded()
         ;
 
-        if (Crud::PAGE_EDIT === $pageName) {
-            $translations
-                ->setFormTypeOptions(
-                    [
-                        'by_reference' => true,
-                        'allow_add' => false,
-                        'allow_delete' => false,
-                        'prototype' => true,
-                    ]
-                )
-                ->allowAdd(false)
-                ->allowDelete(false)
-            ;
-        }
-
-        yield $translations;
-
         yield CollectionField::new('sections', 'admin.post_section.title')
             ->setEntryType(PostSectionType::class)
             ->setFormTypeOptions([
-                'by_reference' => true,
+                'by_reference' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'prototype' => true,
+                'entry_options' => [
+                    'hidde_locale' => false,
+                    'supported_locales' => $this->getSupportedLocales()
+                ]
             ])
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded();
+    }
+
+    private function getSupportedLocales(): array
+    {
+        return explode('|', $this->supportedLocales);
     }
 }

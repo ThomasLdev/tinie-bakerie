@@ -61,7 +61,7 @@ class PostSection implements LocalizedEntityInterface
 
     public function __toString(): string
     {
-        return $this->getLocalizedTranslation()->getTitle();
+        return $this->getTitle();
     }
 
     public function getId(): ?int
@@ -147,11 +147,12 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
-    /**
-     * @param array<int,PostSectionTranslation> $translations
-     */
-    public function setTranslations(array $translations): PostSection
+    public function setTranslations(ArrayCollection|iterable $translations): PostSection
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -180,16 +181,23 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+    }
+
     public function getContent(): string
     {
-        return $this->getLocalizedTranslation()->getContent();
+        return $this->getLocalizedTranslation()?->getContent() ?? '';
     }
 
     /**
      * With the locale filter enabled, there is only one translation in the collection
      */
-    private function getLocalizedTranslation(): PostSectionTranslation
+    private function getLocalizedTranslation(): ?PostSectionTranslation
     {
-        return $this->getTranslations()->first();
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

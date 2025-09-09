@@ -7,6 +7,7 @@ namespace App\EventSubscriber;
 use App\Entity\Contracts\HasSluggableTranslation;
 use App\Entity\Contracts\SluggableEntityInterface;
 use App\Services\Slug\Slugger;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -21,14 +22,23 @@ readonly class AdminSluggableEntityListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            BeforeEntityUpdatedEvent::class => 'setTranslationSlug',
+            BeforeEntityUpdatedEvent::class => 'setTranslationSlugOnUpdate',
+            BeforeEntityPersistedEvent::class => 'setTranslationSlugOnCreate',
         ];
     }
 
-    public function setTranslationSlug(BeforeEntityUpdatedEvent $event): void
+    public function setTranslationSlugOnUpdate(BeforeEntityUpdatedEvent $event): void
     {
-        $entity = $event->getEntityInstance();
+        $this->setTranslationSlug($event->getEntityInstance());
+    }
 
+    public function setTranslationSlugOnCreate(BeforeEntityPersistedEvent $event): void
+    {
+        $this->setTranslationSlug($event->getEntityInstance());
+    }
+
+    private function setTranslationSlug(object $entity): void
+    {
         if (!$entity instanceof HasSluggableTranslation) {
             return;
         }

@@ -110,11 +110,12 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
         return $this;
     }
 
-    /**
-     * @param array<int,CategoryTranslation> $translations
-     */
-    public function setTranslations(array $translations): Category
+    public function setTranslations(ArrayCollection|iterable $translations): Category
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -145,19 +146,21 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()->getTitle();
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
     }
 
     public function getSlug(): string
     {
-        return $this->getLocalizedTranslation()->getSlug();
+        return $this->getLocalizedTranslation()?->getSlug() ?? '';
     }
 
     /**
      * With the locale filter enabled, there is only one translation in the collection
      */
-    private function getLocalizedTranslation(): CategoryTranslation
+    private function getLocalizedTranslation(): ?CategoryTranslation
     {
-        return $this->getTranslations()->first();
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

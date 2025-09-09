@@ -73,11 +73,12 @@ class Tag implements LocalizedEntityInterface
         return $this;
     }
 
-    /**
-     * @param array<int,TagTranslation> $translations
-     */
-    public function setTranslations(array $translations): Tag
+    public function setTranslations(ArrayCollection|iterable $translations): Tag
     {
+        if (is_array($translations)) {
+            $translations = new ArrayCollection($translations);
+        }
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -108,14 +109,16 @@ class Tag implements LocalizedEntityInterface
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()->getTitle();
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
     }
 
     /**
      * With the locale filter enabled, there is only one translation in the collection
      */
-    private function getLocalizedTranslation(): TagTranslation
+    private function getLocalizedTranslation(): ?TagTranslation
     {
-        return $this->getTranslations()->first();
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }
