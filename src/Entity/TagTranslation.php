@@ -29,6 +29,11 @@ class TagTranslation implements EntityTranslation
     #[ORM\Column(type: Types::STRING)]
     private string $title;
 
+    public function __toString(): string
+    {
+        return $this->locale;
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;

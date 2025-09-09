@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\Category;
-use App\Form\CategoryTranslationType;
+use App\Entity\Tag;
+use App\Form\TagTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class CategoryCrudController extends LocalizedCrudController
+class TagCrudController extends LocalizedCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Category::class;
+        return Tag::class;
     }
 
     public function configureFields(string $pageName): iterable
@@ -30,16 +31,18 @@ class CategoryCrudController extends LocalizedCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('admin.category.dashboard.singular')
-            ->setEntityLabelInPlural('admin.category.dashboard.plural')
-            ->setPageTitle('index', 'admin.category.dashboard.index')
-            ->setPageTitle('new', 'admin.category.dashboard.create')
-            ->setPageTitle('edit', 'admin.category.dashboard.edit')
-            ->setPageTitle('detail', 'admin.category.dashboard.detail');
+            ->setEntityLabelInSingular('admin.tag.dashboard.singular')
+            ->setEntityLabelInPlural('admin.tag.dashboard.plural')
+            ->setPageTitle('index', 'admin.tag.dashboard.index')
+            ->setPageTitle('new', 'admin.tag.dashboard.create')
+            ->setPageTitle('edit', 'admin.tag.dashboard.edit')
+            ->setPageTitle('detail', 'admin.tag.dashboard.detail');
     }
 
     private function getIndexFields(): \Generator
     {
+        yield ColorField::new('color', 'admin.tag.color.title');
+
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
             ->setRequired(true);
@@ -51,8 +54,10 @@ class CategoryCrudController extends LocalizedCrudController
 
     private function getFormFields(string $pageName): \Generator
     {
+        yield ColorField::new('color', 'admin.tag.color.title');
+
         yield CollectionField::new('translations', 'admin.global.translations')
-            ->setEntryType(CategoryTranslationType::class)
+            ->setEntryType(TagTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
                 'allow_add' => Crud::PAGE_EDIT !== $pageName,

@@ -1,4 +1,6 @@
 app:
+    global:
+        site: 'Tinie Bakerie'
     post:
         index: 'Voir tous les articles'
         show:
@@ -30,12 +32,25 @@ admin:
         title: 'Titre'
         title_placeholder: "Titre de l'article (doit être unique)"
         slug: 'Slug (crée automatiquement)'
-        tags: 'Étiquettes'
-        plural: 'Articles'
         active: 'Actif'
+    tag:
+        color:
+            title: 'Couleur'
+        dashboard:
+            singular: 'Étiquette'
+            plural: 'Étiquettes'
+            index: 'Toutes les étiquettes'
+            create: 'Créer une étiquette'
+            edit: 'Modifier une étiquette'
+            detail: "Détail de l'étiquette"
     category:
-        plural: 'Catégories'
-        title: 'Catégorie'
+        dashboard:
+            singular: 'Catégorie'
+            plural: 'Catégories'
+            index: 'Toutes les catégories'
+            create: 'Créer une catégorie'
+            edit: 'Modifier une catégorie'
+            detail: "Détail de la catégorie"
     post_section:
         title: 'Sections'
         section_title: 'Titre de la section'

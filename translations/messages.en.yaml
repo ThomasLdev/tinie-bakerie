@@ -1,4 +1,6 @@
 app:
+    global:
+        site: 'Tinie Bakerie'
     post:
         index: 'See all posts'
         show:

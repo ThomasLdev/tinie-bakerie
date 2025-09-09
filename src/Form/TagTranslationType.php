@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\PostTranslation;
+use App\Entity\TagTranslation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostTranslationType extends AbstractType
+class TagTranslationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -37,35 +36,13 @@ class PostTranslationType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
             ])
-            ->add('metaTitle', TextType::class, [
-                'label' => 'admin.global.meta_title',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-            ])
-            ->add('slug', TextType::class, [
-                'label' => 'admin.global.slug.title',
-                'disabled' => true,
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'help' => 'admin.global.slug.help'
-            ])
-            ->add('metaDescription', TextareaType::class, [
-                'label' => 'admin.global.meta_description',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-            ])
-            ->add('excerpt', TextareaType::class, [
-                'label' => 'admin.global.excerpt',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PostTranslation::class,
+            'data_class' => TagTranslation::class,
             'hidde_locale' => false,
             'supported_locales' => [],
         ]);

@@ -7,7 +7,6 @@ use App\Entity\Post;
 use App\Form\PostSectionType;
 use App\Form\PostTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -15,16 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Generator;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class PostCrudController extends AbstractCrudController
+class PostCrudController extends LocalizedCrudController
 {
-    public function __construct(
-        #[Autowire(param: 'app.supported_locales')] private readonly string $supportedLocales
-    )
-    {
-    }
-
     public static function getEntityFqcn(): string
     {
         return Post::class;
@@ -56,9 +48,9 @@ class PostCrudController extends AbstractCrudController
 
         yield TextField::new('title', 'admin.global.title');
 
-        yield ArrayField::new('tags', 'admin.post.tags');
+        yield ArrayField::new('tags', 'admin.tag.dashboard.plural');
 
-        yield AssociationField::new('category', 'admin.category.title')
+        yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->formatValue(function (Category $category) {
                 return $category->getTitle();
             });
@@ -72,11 +64,11 @@ class PostCrudController extends AbstractCrudController
     {
         yield BooleanField::new('active', 'admin.post.active');
 
-        yield AssociationField::new('tags', 'admin.post.tags')
+        yield AssociationField::new('tags', 'admin.tag.dashboard.plural')
             ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('by_reference', false);
 
-        yield AssociationField::new('category', 'admin.category.title')
+        yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->setFormTypeOption('choice_label', 'title');
 
         yield CollectionField::new('translations', 'admin.global.translations')
@@ -94,6 +86,7 @@ class PostCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded()
+            ->setColumns('col-12')
         ;
 
         yield CollectionField::new('sections', 'admin.post_section.title')
@@ -111,11 +104,8 @@ class PostCrudController extends AbstractCrudController
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded();
-    }
-
-    private function getSupportedLocales(): array
-    {
-        return explode('|', $this->supportedLocales);
+            ->renderExpanded()
+            ->setColumns('col-12')
+        ;
     }
 }
