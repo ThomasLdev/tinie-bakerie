@@ -25,6 +25,7 @@ final class PostSectionMediaFactory extends PersistentProxyObjectFactory
             'createdAt' => self::faker()->dateTime(),
             'type' => self::faker()->randomElement(MediaType::cases()),
             'updatedAt' => self::faker()->dateTime(),
+            'position' => 0,
         ];
     }
 }

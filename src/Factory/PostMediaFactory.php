@@ -28,6 +28,7 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
             'type' => MediaType::Image,
             'mediaFile' => null,
             'translations' => [],
+            'position' => 0,
         ];
     }
 }

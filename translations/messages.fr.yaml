@@ -8,6 +8,14 @@ app:
             updated_at: 'Modifié le : '
 admin:
     global:
+        position: 'Position'
+        media:
+            label: 'Médias'
+            file: 'Fichier'
+            type: 'Type'
+            alt: 'Texte alternatif'
+            title: 'Titre'
+            download: 'Télécharger'
         created_at: 'Créé le'
         updated_at: 'Modifié le'
         title: 'Titre'

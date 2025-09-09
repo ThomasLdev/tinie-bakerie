@@ -11,6 +11,7 @@ use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
@@ -50,6 +51,9 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         cascade: ['persist', 'remove'])
     ]
     private Collection $translations;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
+    private int $position = 0;
 
     public function __construct()
     {
@@ -111,6 +115,18 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
     public function setType(MediaType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): PostSectionMedia
+    {
+        $this->position = $position;
 
         return $this;
     }

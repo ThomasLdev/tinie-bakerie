@@ -9,6 +9,7 @@ use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -37,6 +38,9 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
 
     #[ORM\Column(enumType: MediaType::class)]
     private MediaType $type;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
+    private int $position = 0;
 
     /**
      * @var Collection<int, CategoryMediaTranslation>
@@ -107,6 +111,18 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     public function setType(MediaType $type): CategoryMedia
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): CategoryMedia
+    {
+        $this->position = $position;
 
         return $this;
     }

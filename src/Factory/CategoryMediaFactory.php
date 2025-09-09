@@ -27,6 +27,7 @@ final class CategoryMediaFactory extends PersistentProxyObjectFactory
             'updatedAt' => self::faker()->dateTime(),
             'type' => MediaType::Image,
             'mediaFile' => null,
+            'position' => 0,
         ];
     }
 }

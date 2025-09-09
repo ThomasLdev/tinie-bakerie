@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Form\CategoryMediaType;
 use App\Form\CategoryTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -51,6 +52,24 @@ class CategoryCrudController extends LocalizedCrudController
 
     private function getFormFields(string $pageName): \Generator
     {
+        yield CollectionField::new('media', 'admin.global.media.label')
+            ->setEntryType(CategoryMediaType::class)
+            ->setFormTypeOptions([
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'entry_options' => [
+                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
+                    'supported_locales' => $this->getSupportedLocales()
+                ],
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded()
+            ->setColumns('col-12')
+        ;
+
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(CategoryTranslationType::class)
             ->setFormTypeOptions([

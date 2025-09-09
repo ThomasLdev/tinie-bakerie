@@ -9,6 +9,7 @@ use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -43,6 +44,9 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
      */
     #[ORM\OneToMany(targetEntity: PostMediaTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
+    private int $position = 0;
 
     public function __construct()
     {
@@ -104,6 +108,18 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
     public function setType(MediaType $type): PostMedia
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): PostMedia
+    {
+        $this->position = $position;
 
         return $this;
     }
