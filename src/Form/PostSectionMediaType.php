@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\CategoryMedia;
+use App\Entity\PostSectionMedia;
 use App\Services\Media\Enum\MediaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
-class CategoryMediaType extends AbstractType
+class PostSectionMediaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -40,8 +40,9 @@ class CategoryMediaType extends AbstractType
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
-                'entry_type' => CategoryMediaTranslationType::class,
+                'entry_type' => PostSectionMediaTranslationType::class,
                 'entry_options' => [
+                    'hidde_locale' => $options['hidde_locale'],
                     'supported_locales' => $options['supported_locales']
                 ],
                 'required' => true,
@@ -57,7 +58,7 @@ class CategoryMediaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CategoryMedia::class,
+            'data_class' => PostSectionMedia::class,
             'hidde_locale' => false,
             'supported_locales' => [],
         ]);

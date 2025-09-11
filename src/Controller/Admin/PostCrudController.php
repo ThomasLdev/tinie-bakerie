@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Form\PostMediaType;
 use App\Form\PostSectionType;
 use App\Form\PostTranslationType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -71,21 +72,37 @@ class PostCrudController extends LocalizedCrudController
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->setFormTypeOption('choice_label', 'title');
 
+        yield CollectionField::new('media', 'admin.global.media.label')
+            ->setEntryType(PostMediaType::class)
+            ->setFormTypeOptions([
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'entry_options' => [
+                    'supported_locales' => $this->getSupportedLocales()
+                ],
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded(false)
+            ->setColumns('col-12')
+        ;
+
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(PostTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => Crud::PAGE_EDIT !== $pageName,
-                'allow_delete' => Crud::PAGE_EDIT !== $pageName,
+                'allow_add' => true,
+                'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
                     'supported_locales' => $this->getSupportedLocales()
                 ]
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded()
+            ->renderExpanded(false)
             ->setColumns('col-12')
         ;
 
@@ -98,13 +115,12 @@ class PostCrudController extends LocalizedCrudController
                 'delete_empty' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'hidde_locale' => false,
                     'supported_locales' => $this->getSupportedLocales()
                 ]
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded()
+            ->renderExpanded(false)
             ->setColumns('col-12')
         ;
     }

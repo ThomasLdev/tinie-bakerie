@@ -60,17 +60,16 @@ class TagCrudController extends LocalizedCrudController
             ->setEntryType(TagTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => Crud::PAGE_EDIT !== $pageName,
-                'allow_delete' => Crud::PAGE_EDIT !== $pageName,
+                'allow_add' => true,
+                'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
                     'supported_locales' => $this->getSupportedLocales()
                 ]
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded()
+            ->renderExpanded(false)
             ->setColumns('col-12')
         ;
     }

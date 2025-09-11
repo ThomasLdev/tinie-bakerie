@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\PostSection;
-use App\Entity\PostSectionTranslation;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,6 +38,18 @@ class PostSectionType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'required' => true,
+            ])
+            ->add('media', CollectionType::class, [
+                'label' => 'admin.global.media.label',
+                'required' => false,
+                'entry_type' => PostSectionMediaType::class,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'entry_options' => [
+                    'supported_locales' => $options['supported_locales']
+                ],
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',

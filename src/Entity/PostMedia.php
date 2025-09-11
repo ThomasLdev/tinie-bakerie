@@ -53,6 +53,11 @@ class PostMedia implements LocalizedEntityInterface, MediaEntityInterface
         $this->translations = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getMediaName() ?? '';
+    }
+
     public function getId(): ?int
     {
         return $this->id ?? null;

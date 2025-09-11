@@ -66,7 +66,7 @@ class CategoryCrudController extends LocalizedCrudController
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded()
+            ->renderExpanded(false)
             ->setColumns('col-12')
         ;
 
@@ -84,7 +84,7 @@ class CategoryCrudController extends LocalizedCrudController
             ])
             ->allowAdd()
             ->allowDelete()
-            ->renderExpanded()
+            ->renderExpanded(false)
             ->setColumns('col-12')
         ;
     }
