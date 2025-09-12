@@ -17,7 +17,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<Post>
+     * @return array<array-key,mixed>
      */
     public function findAllActive(): array
     {

@@ -23,13 +23,12 @@ readonly class CategoryCache implements EntityCacheInterface
         private CategoryRepository $repository,
         private CacheKeyGenerator $keyGenerator,
         private Locales $locales,
-        private PostCache $postCache
-    )
-    {
+        private PostCache $postCache,
+    ) {
     }
 
     /**
-     * @return Category[]
+     * @return array<array-key,mixed>
      *
      * @throws InvalidArgumentException
      */
@@ -39,6 +38,7 @@ readonly class CategoryCache implements EntityCacheInterface
 
         return $this->cache->get($key, function (ItemInterface $item) {
             $item->expiresAfter(self::CACHE_TTL);
+
             return $this->repository->findAll();
         });
     }
@@ -52,6 +52,7 @@ readonly class CategoryCache implements EntityCacheInterface
 
         return $this->cache->get($key, function (ItemInterface $item) use ($identifier) {
             $item->expiresAfter(self::CACHE_TTL);
+
             return $this->repository->findOne($identifier);
         });
     }

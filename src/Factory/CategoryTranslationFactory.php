@@ -9,14 +9,17 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<CategoryTranslation>
  */
-final class CategoryTranslationFactory extends PersistentProxyObjectFactory{
+final class CategoryTranslationFactory extends PersistentProxyObjectFactory
+{
     public function __construct(
         private readonly Slugger $slugger,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
+    /**
+     * @return class-string<CategoryTranslation>
+     */
     public static function class(): string
     {
         return CategoryTranslation::class;
@@ -41,8 +44,8 @@ final class CategoryTranslationFactory extends PersistentProxyObjectFactory{
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function(CategoryTranslation $categoryTranslation): void {
-                    $categoryTranslation->setSlug($this->slugger->slugify($categoryTranslation->getTitle()));
+             ->afterInstantiate(function (CategoryTranslation $categoryTranslation): void {
+                 $categoryTranslation->setSlug($this->slugger->slugify($categoryTranslation->getTitle()));
              })
         ;
     }

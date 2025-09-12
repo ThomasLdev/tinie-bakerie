@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Contracts\IsTranslation;
+use App\Entity\Traits\Localized;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements IsTranslation<PostSection>
+ */
 #[ORM\Entity]
-class PostSectionTranslation implements EntityTranslation
+class PostSectionTranslation implements IsTranslation
 {
-    use LocalizedEntity;
+    use Localized;
     use TimestampableEntity;
 
     #[ORM\Id]
@@ -73,6 +76,7 @@ class PostSectionTranslation implements EntityTranslation
     public function setTitle(string $title): PostSectionTranslation
     {
         $this->title = $title;
+
         return $this;
     }
 }

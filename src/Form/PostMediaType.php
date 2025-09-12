@@ -34,7 +34,7 @@ class PostMediaType extends AbstractType
             ->add('type', ChoiceType::class, [
                 'label' => 'admin.global.media.type',
                 'choices' => array_combine(
-                    array_map(static fn(MediaType $type) => $type->name, MediaType::cases()),
+                    array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
                     MediaType::cases()
                 ),
                 'required' => true,
@@ -43,7 +43,7 @@ class PostMediaType extends AbstractType
                 'label' => 'admin.global.translations',
                 'entry_type' => PostMediaTranslationType::class,
                 'entry_options' => [
-                    'supported_locales' => $options['supported_locales']
+                    'supported_locales' => $options['supported_locales'],
                 ],
                 'required' => true,
                 'by_reference' => false,

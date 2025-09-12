@@ -18,6 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Generator;
 
+/**
+ * @extends AbstractCrudController<Post>
+ */
 class PostCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
@@ -86,7 +89,7 @@ class PostCrudController extends AbstractCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->locales->get()
+                    'supported_locales' => $this->locales->get(),
                 ],
             ])
             ->allowAdd()
@@ -103,8 +106,8 @@ class PostCrudController extends AbstractCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->locales->get()
-                ]
+                    'supported_locales' => $this->locales->get(),
+                ],
             ])
             ->allowAdd()
             ->allowDelete()
@@ -121,8 +124,8 @@ class PostCrudController extends AbstractCrudController
                 'delete_empty' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->locales->get()
-                ]
+                    'supported_locales' => $this->locales->get(),
+                ],
             ])
             ->allowAdd()
             ->allowDelete()

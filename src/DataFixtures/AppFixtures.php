@@ -2,34 +2,35 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Contracts\IsTranslation;
 use App\Entity\Post;
+use App\Factory\CategoryFactory;
+use App\Factory\CategoryMediaFactory;
 use App\Factory\CategoryMediaTranslationFactory;
 use App\Factory\CategoryTranslationFactory;
+use App\Factory\PostFactory;
+use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
+use App\Factory\PostSectionFactory;
+use App\Factory\PostSectionMediaFactory;
 use App\Factory\PostSectionMediaTranslationFactory;
 use App\Factory\PostSectionTranslationFactory;
 use App\Factory\PostTranslationFactory;
+use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use App\Services\Fixtures\Media\MediaLoader;
-use App\Factory\CategoryFactory;
-use App\Factory\CategoryMediaFactory;
-use App\Factory\PostFactory;
-use App\Factory\PostMediaFactory;
-use App\Factory\PostSectionFactory;
-use App\Factory\PostSectionMediaFactory;
-use App\Factory\TagFactory;
 use App\Services\Locale\Locales;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 
 class AppFixtures extends Fixture
 {
     public function __construct(
         private readonly MediaLoader $mediaLoader,
         private readonly Locales $locales,
-    )
-    {
+    ) {
     }
 
     public function load(ObjectManager $manager): void
@@ -89,6 +90,11 @@ class AppFixtures extends Fixture
         }
     }
 
+    /**
+     * @return array<array-key,Proxy>
+     *
+     * @phpstan-ignore-next-line
+     */
     private function createTranslations(PersistentProxyObjectFactory $factory): array
     {
         $translations = [];

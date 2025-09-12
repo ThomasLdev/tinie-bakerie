@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Cache;
 
-final readonly class CacheKeyGenerator {
+final readonly class CacheKeyGenerator
+{
     public function entityIndex(string $entityName, string $locale): string
     {
         return sprintf('%s_index_%s', strtolower($entityName), $locale);

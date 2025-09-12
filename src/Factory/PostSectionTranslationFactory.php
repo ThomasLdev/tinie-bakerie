@@ -8,7 +8,11 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<PostSectionTranslation>
  */
-final class PostSectionTranslationFactory extends PersistentProxyObjectFactory{
+final class PostSectionTranslationFactory extends PersistentProxyObjectFactory
+{
+    /**
+     * @return class-string<PostSectionTranslation>
+     */
     public static function class(): string
     {
         return PostSectionTranslation::class;

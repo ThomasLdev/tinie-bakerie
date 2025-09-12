@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\PostTranslation;
+use App\Form\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -14,20 +15,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PostTranslationType extends AbstractType
 {
+    use LocalizedFormType;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale']) {
-            $locales = array_combine($options['supported_locales'], $options['supported_locales']);
-
+        if (!$options['hidde_locale'] && is_array($options['supported_locales'])) {
             $builder
                 ->add('locale', ChoiceType::class, [
-                    'choices' => $locales,
+                    'choices' => $this->getLocales($options['supported_locales']),
                     'label' => 'admin.global.locale',
                     'required' => true,
                     'attr' => [
                         'class' => 'form-control',
-                        'hidden' => $options['hidde_locale'] ?? false
-                    ]
+                        'hidden' => $options['hidde_locale'] ?? false,
+                    ],
                 ]);
         }
 
@@ -47,7 +48,7 @@ class PostTranslationType extends AbstractType
                 'disabled' => true,
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-                'help' => 'admin.global.slug.help'
+                'help' => 'admin.global.slug.help',
             ])
             ->add('metaDescription', TextareaType::class, [
                 'label' => 'admin.global.meta_description',

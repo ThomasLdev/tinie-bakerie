@@ -18,6 +18,9 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    /**
+     * @return array<array-key,mixed>
+     */
     public function findAll(): array
     {
         $qb = $this->createQueryBuilder('c')

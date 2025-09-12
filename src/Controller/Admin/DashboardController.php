@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
-//    #[IsGranted('ROLE_USER')]
+    //    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         return parent::index();

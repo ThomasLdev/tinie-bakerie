@@ -34,7 +34,7 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'post', array<array-key,mixed>>
+     * @return array<'post',Post>
      *
      * @throws InvalidArgumentException
      */

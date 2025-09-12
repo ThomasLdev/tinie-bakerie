@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber\Admin;
 
-use App\Entity\Contracts\HasSluggableTranslation;
-use App\Entity\Contracts\SluggableEntityInterface;
+use App\Entity\Contracts\HasSlugs;
+use App\Entity\Contracts\HasTranslations;
 use App\Services\Slug\Slugger;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
@@ -13,9 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class SluggableEntityListener implements EventSubscriberInterface
 {
-    public function __construct(
-        private Slugger $slugger,
-    )
+    public function __construct(private Slugger $slugger)
     {
     }
 
@@ -39,12 +37,12 @@ readonly class SluggableEntityListener implements EventSubscriberInterface
 
     private function setTranslationSlug(object $entity): void
     {
-        if (!$entity instanceof HasSluggableTranslation) {
+        if (!$entity instanceof HasTranslations) {
             return;
         }
 
         foreach ($entity->getTranslations() as $translation) {
-            if (!$translation instanceof SluggableEntityInterface) {
+            if (!$translation instanceof HasSlugs) {
                 continue;
             }
 

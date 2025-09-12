@@ -2,17 +2,19 @@
 
 namespace App\Services\Filter;
 
+use App\Entity\Contracts\IsTranslation;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
-use App\Entity\Contracts\EntityTranslation;
 
 class LocaleFilter extends SQLFilter
 {
     private const string PARAMETER_NAME = 'locale';
 
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
+    public function addFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string
     {
-        if (!$targetEntity->reflClass->implementsInterface(EntityTranslation::class)) {
+        $reflexionClass = $targetEntity->getReflectionClass();
+
+        if (!$reflexionClass->implementsInterface(IsTranslation::class)) {
             return '';
         }
 

@@ -5,7 +5,7 @@ namespace App\Entity\Traits;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-trait LocalizedEntity
+trait Localized
 {
     #[ORM\Column(type: Types::STRING)]
     private string $locale;

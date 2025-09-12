@@ -2,11 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Contracts\MediaEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\MediaAccessibility;
+use App\Entity\Contracts\HasMediaEntities;
+use App\Entity\Contracts\HasTranslations;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,13 +11,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+/**
+ * @implements HasTranslations<PostSectionMediaTranslation>
+ */
 #[ORM\Entity]
 #[Vich\Uploadable]
-class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
+class PostSectionMedia implements HasTranslations, HasMediaEntities
 {
     use TimestampableEntity;
 
@@ -43,7 +42,7 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
     private MediaType $type;
 
     /**
-     * @var Collection<int, PostSectionMediaTranslation>
+     * @var Collection<int,PostSectionMediaTranslation>
      */
     #[ORM\OneToMany(
         targetEntity: PostSectionMediaTranslation::class,
@@ -136,12 +135,11 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): PostSectionMedia
+    /**
+     * @param PostSectionMediaTranslation[] $translations
+     */
+    public function setTranslations(array $translations): PostSectionMedia
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -157,10 +155,7 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->translations;
     }
 
-    /**
-     * @param PostSectionMediaTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): PostSectionMedia
+    public function addTranslation(PostSectionMediaTranslation $translation): PostSectionMedia
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -181,7 +176,7 @@ class PostSectionMedia implements LocalizedEntityInterface, MediaEntityInterface
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?PostSectionMediaTranslation
     {

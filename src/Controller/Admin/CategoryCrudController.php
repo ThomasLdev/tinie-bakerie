@@ -13,7 +13,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Generator;
 
+/**
+ * @extends AbstractCrudController<Category>
+ */
 class CategoryCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
@@ -45,7 +49,7 @@ class CategoryCrudController extends AbstractCrudController
             ->setPageTitle('detail', 'admin.category.dashboard.detail');
     }
 
-    private function getIndexFields(): \Generator
+    private function getIndexFields(): Generator
     {
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
@@ -56,7 +60,7 @@ class CategoryCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): \Generator
+    private function getFormFields(string $pageName): Generator
     {
         yield CollectionField::new('media', 'admin.global.media.label')
             ->setEntryType(CategoryMediaType::class)
@@ -67,7 +71,7 @@ class CategoryCrudController extends AbstractCrudController
                 'prototype' => true,
                 'entry_options' => [
                     'hidde_locale' => Crud::PAGE_EDIT === $pageName,
-                    'supported_locales' => $this->locales->get()
+                    'supported_locales' => $this->locales->get(),
                 ],
             ])
             ->allowAdd()
@@ -85,8 +89,8 @@ class CategoryCrudController extends AbstractCrudController
                 'prototype' => true,
                 'entry_options' => [
                     'hidde_locale' => Crud::PAGE_EDIT === $pageName,
-                    'supported_locales' => $this->locales->get()
-                ]
+                    'supported_locales' => $this->locales->get(),
+                ],
             ])
             ->allowAdd()
             ->allowDelete()

@@ -12,8 +12,7 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
     }
 
     public static function getSubscribedEvents(): array

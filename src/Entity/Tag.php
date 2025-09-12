@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\HasTranslations;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<TagTranslation>
+ */
 #[ORM\Entity]
-class Tag implements LocalizedEntityInterface
+class Tag implements HasTranslations
 {
     use TimestampableEntity;
 
@@ -32,7 +34,7 @@ class Tag implements LocalizedEntityInterface
     private string $color = '#000000';
 
     /**
-     * @var Collection<int, TagTranslation>
+     * @var Collection<int,TagTranslation>
      */
     #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
@@ -54,7 +56,7 @@ class Tag implements LocalizedEntityInterface
     }
 
     /**
-     * @return Collection<int, Post>
+     * @return Collection<int,Post>
      */
     public function getPosts(): Collection
     {
@@ -73,12 +75,11 @@ class Tag implements LocalizedEntityInterface
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): Tag
+    /**
+     * @param TagTranslation[] $translations
+     */
+    public function setTranslations(array $translations): Tag
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -87,17 +88,14 @@ class Tag implements LocalizedEntityInterface
     }
 
     /**
-     * @return Collection<int, TagTranslation>
+     * @return Collection<int,TagTranslation>
      */
     public function getTranslations(): Collection
     {
         return $this->translations;
     }
 
-    /**
-     * @param TagTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): Tag
+    public function addTranslation(TagTranslation $translation): Tag
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -113,7 +111,7 @@ class Tag implements LocalizedEntityInterface
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?TagTranslation
     {

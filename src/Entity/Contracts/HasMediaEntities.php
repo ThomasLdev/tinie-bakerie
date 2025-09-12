@@ -7,7 +7,7 @@ namespace App\Entity\Contracts;
 use App\Services\Media\Enum\MediaType;
 use Symfony\Component\HttpFoundation\File\File;
 
-interface MediaEntityInterface
+interface HasMediaEntities
 {
     public function getMediaFile(): ?File;
 

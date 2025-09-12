@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\HasTranslations;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,8 +10,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<PostSectionTranslation>
+ */
 #[ORM\Entity]
-class PostSection implements LocalizedEntityInterface
+class PostSection implements HasTranslations
 {
     use TimestampableEntity;
 
@@ -48,7 +50,7 @@ class PostSection implements LocalizedEntityInterface
     private Collection $media;
 
     /**
-     * @var Collection<int, PostSectionTranslation>
+     * @var Collection<int,PostSectionTranslation>
      */
     #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
@@ -106,7 +108,7 @@ class PostSection implements LocalizedEntityInterface
     }
 
     /**
-     * @param array<array-key,PostSectionMedia> $media
+     * @param PostSectionMedia[] $media
      */
     public function setMedia(array $media): self
     {
@@ -147,12 +149,11 @@ class PostSection implements LocalizedEntityInterface
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): PostSection
+    /**
+     * @param PostSectionTranslation[] $translations
+     */
+    public function setTranslations(array $translations): PostSection
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -168,10 +169,7 @@ class PostSection implements LocalizedEntityInterface
         return $this->translations;
     }
 
-    /**
-     * @param PostSectionTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): self
+    public function addTranslation(PostSectionTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -192,7 +190,7 @@ class PostSection implements LocalizedEntityInterface
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?PostSectionTranslation
     {

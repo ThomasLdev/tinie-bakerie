@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\PostSectionTranslation;
+use App\Form\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -14,20 +15,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PostSectionTranslationType extends AbstractType
 {
+    use LocalizedFormType;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale']) {
-            $locales = array_combine($options['supported_locales'], $options['supported_locales']);
-
+        if (!$options['hidde_locale'] && is_array($options['supported_locales'])) {
             $builder
                 ->add('locale', ChoiceType::class, [
-                    'choices' => $locales,
+                    'choices' => $this->getLocales($options['supported_locales']),
                     'label' => 'admin.global.locale',
                     'required' => true,
                     'attr' => [
                         'class' => 'form-control',
-                        'hidden' => $options['hidde_locale'] ?? false
-                    ]
+                        'hidden' => $options['hidde_locale'] ?? false,
+                    ],
                 ]);
         }
 
@@ -50,7 +51,7 @@ class PostSectionTranslationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostSectionTranslation::class,
             'hidde_locale' => false,
-            'supported_locales' => []
+            'supported_locales' => [],
         ]);
 
         $resolver->setAllowedTypes('hidde_locale', 'bool');

@@ -13,11 +13,13 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
 {
     public function __construct(
         private readonly Slugger $slugger,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
+    /**
+     * @return class-string<PostTranslation>
+     */
     public static function class(): string
     {
         return PostTranslation::class;
@@ -41,8 +43,8 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function(PostTranslation $postTranslation): void {
-                    $postTranslation->setSlug($this->slugger->slugify($postTranslation->getTitle()));
+             ->afterInstantiate(function (PostTranslation $postTranslation): void {
+                 $postTranslation->setSlug($this->slugger->slugify($postTranslation->getTitle()));
              })
         ;
     }

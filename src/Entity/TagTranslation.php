@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Contracts\IsTranslation;
+use App\Entity\Traits\Localized;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements IsTranslation<Tag>
+ */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'tag_translation_unique_idx', columns: ['locale', 'title'])]
-class TagTranslation implements EntityTranslation
+class TagTranslation implements IsTranslation
 {
     use TimestampableEntity;
-    use LocalizedEntity;
+    use Localized;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

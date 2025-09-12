@@ -11,6 +11,9 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class PostSectionFactory extends PersistentProxyObjectFactory
 {
+    /**
+     * @return class-string<PostSection>
+     */
     public static function class(): string
     {
         return PostSection::class;

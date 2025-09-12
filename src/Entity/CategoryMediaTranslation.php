@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Contracts\IsTranslation;
+use App\Entity\Traits\Localized;
 use App\Entity\Traits\MediaAccessibility;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements IsTranslation<CategoryMedia>
+ */
 #[ORM\Entity]
-class CategoryMediaTranslation implements EntityTranslation
+class CategoryMediaTranslation implements IsTranslation
 {
-    use LocalizedEntity;
+    use Localized;
     use MediaAccessibility;
     use TimestampableEntity;
 

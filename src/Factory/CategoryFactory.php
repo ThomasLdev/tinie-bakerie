@@ -10,6 +10,9 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class CategoryFactory extends PersistentProxyObjectFactory
 {
+    /**
+     * @return class-string<Category>
+     */
     public static function class(): string
     {
         return Category::class;

@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\HasSluggableTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
+use App\Entity\Contracts\HasTranslations;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<CategoryTranslation>
+ */
 #[ORM\Entity]
-class Category implements LocalizedEntityInterface, HasSluggableTranslation
+class Category implements HasTranslations
 {
     use TimestampableEntity;
 
@@ -21,7 +22,7 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     private int $id;
 
     /**
-     * @var Collection<int, Post>
+     * @var Collection<int,Post>
      */
     #[ORM\OneToMany(
         targetEntity: Post::class,
@@ -63,7 +64,7 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * @return Collection<int, Post>
+     * @return Collection<int,Post>
      */
     public function getPosts(): Collection
     {
@@ -76,7 +77,7 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * @param array<array-key,CategoryMedia> $media
+     * @param CategoryMedia[] $media
      */
     public function setMedia(array $media): Category
     {
@@ -117,12 +118,11 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): Category
+    /**
+     * @param CategoryTranslation[] $translations
+     */
+    public function setTranslations(array $translations): Category
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -138,10 +138,7 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
         return $this->translations;
     }
 
-    /**
-     * @param CategoryTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): Category
+    public function addTranslation(CategoryTranslation $translation): Category
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -182,7 +179,7 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?CategoryTranslation
     {

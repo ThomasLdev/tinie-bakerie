@@ -2,21 +2,22 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\HasSluggableTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\ActivableEntityTrait;
+use App\Entity\Contracts\HasTranslations;
+use App\Entity\Traits\Activable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<PostTranslation>
+ */
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface, HasSluggableTranslation
+class Post implements HasTranslations
 {
     use TimestampableEntity;
-    use ActivableEntityTrait;
+    use Activable;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,7 +28,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
     private ?Category $category = null;
 
     /**
-     * @var Collection<int, Tag>
+     * @var Collection<int,Tag>
      */
     #[ORM\ManyToMany(
         targetEntity: Tag::class,
@@ -97,7 +98,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * @param array<array-key,Tag> $tags
+     * @param Tag[] $tags
      */
     public function setTags(array $tags): Post
     {
@@ -133,7 +134,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * @param array<array-key,PostMedia> $media
+     * @param PostMedia[] $media
      */
     public function setMedia(array $media): Post
     {
@@ -175,7 +176,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * @param array<array-key,PostSection> $sections
+     * @param PostSection[] $sections
      */
     public function setSections(array $sections): Post
     {
@@ -228,12 +229,11 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): Post
+    /**
+     * @param PostTranslation[] $translations
+     */
+    public function setTranslations(array $translations): Post
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -249,10 +249,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
         return $this->translations;
     }
 
-    /**
-     * @param PostTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): Post
+    public function addTranslation(PostTranslation $translation): Post
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -273,7 +270,7 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?PostTranslation
     {
@@ -293,4 +290,3 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
         return null;
     }
 }
-

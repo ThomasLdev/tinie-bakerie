@@ -10,6 +10,9 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class TagFactory extends PersistentProxyObjectFactory
 {
+    /**
+     * @return class-string<Tag>
+     */
     public static function class(): string
     {
         return Tag::class;

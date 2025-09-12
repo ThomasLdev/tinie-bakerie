@@ -2,9 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Contracts\MediaEntityInterface;
+use App\Entity\Contracts\HasMediaEntities;
+use App\Entity\Contracts\HasTranslations;
 use App\Services\Media\Enum\MediaType;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,9 +14,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+/**
+ * @implements HasTranslations<CategoryMediaTranslation>
+ */
 #[ORM\Entity]
 #[Vich\Uploadable]
-class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
+class CategoryMedia implements HasTranslations, HasMediaEntities
 {
     use TimestampableEntity;
 
@@ -43,7 +45,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     private int $position = 0;
 
     /**
-     * @var Collection<int, CategoryMediaTranslation>
+     * @var Collection<int,CategoryMediaTranslation>
      */
     #[ORM\OneToMany(
         targetEntity: CategoryMediaTranslation::class,
@@ -132,12 +134,11 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this;
     }
 
-    public function setTranslations(ArrayCollection|iterable $translations): CategoryMedia
+    /**
+     * @param CategoryMediaTranslation[] $translations
+     */
+    public function setTranslations(array $translations): CategoryMedia
     {
-        if (is_array($translations)) {
-            $translations = new ArrayCollection($translations);
-        }
-
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -153,10 +154,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
         return $this->translations;
     }
 
-    /**
-     * @param CategoryMediaTranslation $translation
-     */
-    public function addTranslation(EntityTranslation $translation): CategoryMedia
+    public function addTranslation(CategoryMediaTranslation $translation): CategoryMedia
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -177,7 +175,7 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
     }
 
     /**
-     * With the locale filter enabled, there is only one translation in the collection
+     * With the locale filter enabled, there is only one translation in the collection.
      */
     private function getLocalizedTranslation(): ?CategoryMediaTranslation
     {

@@ -6,12 +6,13 @@ namespace App\Entity\Contracts;
 
 use Doctrine\Common\Collections\Collection;
 
-interface LocalizedEntityInterface
+/**
+ * @template T of IsTranslation
+ */
+interface HasTranslations
 {
-    public function addTranslation(EntityTranslation $translation): self;
-
     /**
-     * @return Collection<int, EntityTranslation>
+     * @return Collection<int,T>
      */
     public function getTranslations(): Collection;
 }

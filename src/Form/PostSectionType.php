@@ -20,7 +20,7 @@ class PostSectionType extends AbstractType
                 'label' => 'Position',
                 'attr' => [
                     'min' => 0,
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ],
                 'required' => true,
             ])
@@ -35,7 +35,7 @@ class PostSectionType extends AbstractType
                     return $type?->value;
                 },
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
                 ],
                 'required' => true,
             ])
@@ -48,7 +48,7 @@ class PostSectionType extends AbstractType
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $options['supported_locales']
+                    'supported_locales' => $options['supported_locales'],
                 ],
             ])
             ->add('translations', CollectionType::class, [
@@ -56,7 +56,7 @@ class PostSectionType extends AbstractType
                 'entry_type' => PostSectionTranslationType::class,
                 'entry_options' => [
                     'hidde_locale' => $options['hidde_locale'],
-                    'supported_locales' => $options['supported_locales']
+                    'supported_locales' => $options['supported_locales'],
                 ],
                 'required' => true,
                 'by_reference' => false,
@@ -73,7 +73,7 @@ class PostSectionType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostSection::class,
             'hidde_locale' => false,
-            'supported_locales' => []
+            'supported_locales' => [],
         ]);
 
         $resolver->setAllowedTypes('hidde_locale', 'bool');

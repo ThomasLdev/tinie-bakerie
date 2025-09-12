@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\EntityTranslation;
-use App\Entity\Contracts\SluggableEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\SluggableEntity;
+use App\Entity\Contracts\HasSlugs;
+use App\Entity\Contracts\IsTranslation;
+use App\Entity\Traits\Localized;
+use App\Entity\Traits\Sluggable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements IsTranslation<Category>
+ */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'category_translation_unique_idx', columns: ['locale', 'title'])]
-class CategoryTranslation implements EntityTranslation, SluggableEntityInterface
+class CategoryTranslation implements IsTranslation, HasSlugs
 {
-    use LocalizedEntity;
-    use SluggableEntity;
+    use Localized;
+    use Sluggable;
     use TimestampableEntity;
 
     #[ORM\Id]

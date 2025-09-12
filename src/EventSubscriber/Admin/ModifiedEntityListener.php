@@ -14,9 +14,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 readonly class ModifiedEntityListener implements EventSubscriberInterface
 {
     public function __construct(
+        /** @var EntityCacheInterface[] $entityCaches */
         #[AutowireIterator('service.entity_cache')] private iterable $entityCaches,
-    )
-    {
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -50,6 +50,6 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
             }
         }
 
-        throw new RuntimeException('No cache service found for entity ' . $entity::class);
+        throw new RuntimeException('No cache service found for entity '.$entity::class);
     }
 }

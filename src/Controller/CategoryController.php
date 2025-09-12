@@ -36,7 +36,7 @@ final class CategoryController extends AbstractController
     }
 
     /**
-     * @return array<'category', array<array-key,mixed>>
+     * @return array<'category',Category>
      *
      * @throws InvalidArgumentException
      */

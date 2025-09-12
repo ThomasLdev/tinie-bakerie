@@ -5,7 +5,7 @@ namespace App\Entity\Traits;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-trait SluggableEntity
+trait Sluggable
 {
     #[ORM\Column(type: Types::STRING)]
     private string $slug = '';

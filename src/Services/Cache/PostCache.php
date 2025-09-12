@@ -22,13 +22,12 @@ readonly class PostCache implements EntityCacheInterface
         private CacheInterface $cache,
         private PostRepository $repository,
         private CacheKeyGenerator $keyGenerator,
-        private Locales $locales
-    )
-    {
+        private Locales $locales,
+    ) {
     }
 
     /**
-     * @return Post[]
+     * @return array<array-key,mixed>
      *
      * @throws InvalidArgumentException
      */
@@ -38,6 +37,7 @@ readonly class PostCache implements EntityCacheInterface
 
         return $this->cache->get($key, function (ItemInterface $item) {
             $item->expiresAfter(self::CACHE_TTL);
+
             return $this->repository->findAllActive();
         });
     }
@@ -51,11 +51,14 @@ readonly class PostCache implements EntityCacheInterface
 
         return $this->cache->get($key, function (ItemInterface $item) use ($identifier) {
             $item->expiresAfter(self::CACHE_TTL);
+
             return $this->repository->findOneActive($identifier);
         });
     }
 
     /**
+     * @param array<string,mixed> $criteria
+     *
      * @throws InvalidArgumentException
      */
     public function invalidateByCriteria(array $criteria): void
