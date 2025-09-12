@@ -15,7 +15,7 @@ enum MediaType: string
     {
         return match (strtolower($extension)) {
             'jpg', 'jpeg', 'png', 'gif', 'webp' => self::Image,
-            'mp4', 'avi', 'mov' => self::Video,
+            'mp4', 'webm' => self::Video,
             default => throw new InvalidArgumentException("Unsupported media type: $extension"),
         };
     }

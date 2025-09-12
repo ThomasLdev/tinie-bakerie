@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250831103126 extends AbstractMigration
+final class Version20250912230737 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,8 +20,23 @@ final class Version20250831103126 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SEQUENCE category_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE category_media_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE category_media_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE category_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_media_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_media_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_section_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_section_media_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_section_media_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_section_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE post_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE tag_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE tag_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE category (id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE category_media (id INT NOT NULL, category_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE category_media (id INT NOT NULL, category_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, position INT DEFAULT 0 NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_821FEE4512469DE2 ON category_media (category_id)');
         $this->addSql('CREATE TABLE category_media_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, locale VARCHAR(255) NOT NULL, alt VARCHAR(255) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_A9514D7C2C2AC5D3 ON category_media_translation (translatable_id)');
@@ -33,17 +48,17 @@ final class Version20250831103126 extends AbstractMigration
         $this->addSql('CREATE TABLE post_tag (post_id INT NOT NULL, tag_id INT NOT NULL, PRIMARY KEY(post_id, tag_id))');
         $this->addSql('CREATE INDEX IDX_5ACE3AF04B89032C ON post_tag (post_id)');
         $this->addSql('CREATE INDEX IDX_5ACE3AF0BAD26311 ON post_tag (tag_id)');
-        $this->addSql('CREATE TABLE post_media (id INT NOT NULL, post_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE post_media (id INT NOT NULL, post_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, position INT DEFAULT 0 NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_FD372DE34B89032C ON post_media (post_id)');
         $this->addSql('CREATE TABLE post_media_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, locale VARCHAR(255) NOT NULL, alt VARCHAR(255) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_754159D52C2AC5D3 ON post_media_translation (translatable_id)');
         $this->addSql('CREATE TABLE post_section (id INT NOT NULL, post_id INT DEFAULT NULL, position INT DEFAULT 0 NOT NULL, type VARCHAR(255) DEFAULT \'default\' NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_109BCDDC4B89032C ON post_section (post_id)');
-        $this->addSql('CREATE TABLE post_section_media (id INT NOT NULL, post_section_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE post_section_media (id INT NOT NULL, post_section_id INT DEFAULT NULL, media_name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) NOT NULL, position INT DEFAULT 0 NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_E20A787BFB5BEABB ON post_section_media (post_section_id)');
         $this->addSql('CREATE TABLE post_section_media_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, locale VARCHAR(255) NOT NULL, alt VARCHAR(255) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F80F58792C2AC5D3 ON post_section_media_translation (translatable_id)');
-        $this->addSql('CREATE TABLE post_section_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, content TEXT DEFAULT \'\' NOT NULL, locale VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE post_section_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, content TEXT DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, locale VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_4CD4DFE42C2AC5D3 ON post_section_translation (translatable_id)');
         $this->addSql('CREATE TABLE post_translation (id INT NOT NULL, translatable_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, meta_description TEXT DEFAULT \'\' NOT NULL, meta_title VARCHAR(60) DEFAULT \'\' NOT NULL, excerpt TEXT DEFAULT \'\' NOT NULL, slug VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, locale VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5829CF402C2AC5D3 ON post_translation (translatable_id)');
@@ -74,6 +89,21 @@ final class Version20250831103126 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
+        $this->addSql('DROP SEQUENCE category_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE category_media_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE category_media_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE category_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_media_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_media_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_section_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_section_media_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_section_media_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_section_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE post_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE tag_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE tag_translation_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('ALTER TABLE category_media DROP CONSTRAINT FK_821FEE4512469DE2');
         $this->addSql('ALTER TABLE category_media_translation DROP CONSTRAINT FK_A9514D7C2C2AC5D3');
         $this->addSql('ALTER TABLE category_translation DROP CONSTRAINT FK_3F207042C2AC5D3');
