@@ -6,14 +6,20 @@ namespace App\Controller\Admin;
 
 use App\Entity\Tag;
 use App\Form\TagTranslationType;
+use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class TagCrudController extends LocalizedCrudController
+class TagCrudController extends AbstractCrudController
 {
+    public function __construct(private readonly Locales $locales)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Tag::class;
@@ -64,7 +70,7 @@ class TagCrudController extends LocalizedCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ]
             ])
             ->allowAdd()

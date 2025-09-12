@@ -1,0 +1,28 @@
+{% if category is defined and category is not same as null %}
+    <!-- Basic Meta Tags -->
+    <title>{{ category.metaTitle ?: category.title }}</title>
+    <meta name="description" content="{{ category.description ?: category.excerpt }}">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="{{ category.metaTitle ?: category.title }}">
+    <meta property="og:description" content="{{ category.description ?: category.excerpt }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ app.request.uri }}">
+    {% if category.media|length > 0 %}
+        <meta property="og:image" content="{{ absolute_url(vich_uploader_asset(category.media[0])) }}">
+        <meta property="og:image:alt" content="{{ category.media[0].alt }}">
+    {% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ category.metaTitle ?: category.title }}">
+    <meta name="twitter:description" content="{{ category.description ?: category.excerpt }}">
+    {% if category.media|length > 0 %}
+        <meta name="twitter:image" content="{{ absolute_url(vich_uploader_asset(category.media[0])) }}">
+        <meta name="twitter:image:alt" content="{{ category.media[0].alt }}">
+    {% endif %}
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ app.request.uri }}">
+{% endif %}

@@ -8,7 +8,8 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class Slugger
 {
-    public function slugify(string $text): string {
+    public function slugify(string $text): string
+    {
         return new AsciiSlugger()->slug($text)->lower()->toString();
     }
 }

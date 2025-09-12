@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
 use App\Repository\PostRepository;
-use App\Services\Post\Cache\PostCache;
+use App\Services\Cache\PostCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Generator;

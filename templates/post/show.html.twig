@@ -34,8 +34,8 @@
             {% endfor %}
         {% endif %}
 
-        <p>{{ 'app.post.show.created_at'|trans ~ post.createdAt|date }}</p>
-        <p>{{ 'app.post.show.updated_at'|trans ~ post.updatedAt|date }}</p>
+        <p>{{ 'app.global.created_at'|trans ~ post.createdAt|date }}</p>
+        <p>{{ 'app.global.updated_at'|trans ~ post.updatedAt|date }}</p>
         <a href="{{ path('app_post_index') }}">Back to posts</a>
     {% endif %}
 {% endblock %}

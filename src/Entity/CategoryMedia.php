@@ -165,4 +165,24 @@ class CategoryMedia implements LocalizedEntityInterface, MediaEntityInterface
 
         return $this;
     }
+
+    public function getAlt(): string
+    {
+        return $this->getLocalizedTranslation()?->getAlt() ?? '';
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection
+     */
+    private function getLocalizedTranslation(): ?CategoryMediaTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
+    }
 }

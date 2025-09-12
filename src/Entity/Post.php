@@ -281,5 +281,16 @@ class Post implements LocalizedEntityInterface, HasSluggableTranslation
 
         return false === $translations ? null : $translations;
     }
+
+    public function getTranslationByLocale(string $locale): ?PostTranslation
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
 }
 

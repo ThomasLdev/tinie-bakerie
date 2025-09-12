@@ -48,6 +48,8 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
+    private int $postCount = 0;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -66,6 +68,11 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
     public function getPosts(): Collection
     {
         return $this->posts;
+    }
+
+    public function getPostCount(): int
+    {
+        return $this->postCount;
     }
 
     /**
@@ -149,9 +156,29 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
         return $this->getLocalizedTranslation()?->getTitle() ?? '';
     }
 
+    public function getDescription(): string
+    {
+        return $this->getLocalizedTranslation()?->getDescription() ?? '';
+    }
+
     public function getSlug(): string
     {
         return $this->getLocalizedTranslation()?->getSlug() ?? '';
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getMetaTitle() ?? '';
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->getLocalizedTranslation()?->getMetaDescription() ?? '';
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
     }
 
     /**
@@ -162,5 +189,16 @@ class Category implements LocalizedEntityInterface, HasSluggableTranslation
         $translations = $this->getTranslations()->first();
 
         return false === $translations ? null : $translations;
+    }
+
+    public function getTranslationByLocale(string $locale): ?CategoryTranslation
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
     }
 }

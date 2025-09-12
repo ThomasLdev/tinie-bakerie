@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Services\Post\Cache\PostCache;
+use App\Services\Cache\PostCache;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,11 +30,11 @@ final class PostController extends AbstractController
     #[Template('post/index.html.twig')]
     public function index(Request $request): array
     {
-        return ['posts' => $this->cache->getLocalizedCachedPosts($request->getLocale())];
+        return ['posts' => $this->cache->get($request->getLocale())];
     }
 
     /**
-     * @return array<'post',mixed>
+     * @return array<'post', array<array-key,mixed>>
      *
      * @throws InvalidArgumentException
      */
@@ -42,7 +42,7 @@ final class PostController extends AbstractController
     #[Template('post/show.html.twig')]
     public function show(string $categorySlug, string $postSlug, Request $request): array
     {
-        $post = $this->cache->getLocalizedCachedPost($request->getLocale(), $postSlug);
+        $post = $this->cache->getOne($request->getLocale(), $postSlug);
 
         if (!$post instanceof Post) {
             throw $this->createNotFoundException();

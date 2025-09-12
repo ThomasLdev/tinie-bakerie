@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block header %}
+    {% include 'category/seo/_meta.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    {% if category is defined and category is not same as null %}
+        <h1>{{ category.title }}</h1>
+
+        <p>{{ category.description }}</p>
+
+        <p>{{ 'app.global.created_at'|trans ~ category.createdAt|date }}</p>
+        <p>{{ 'app.global.updated_at'|trans ~ category.updatedAt|date }}</p>
+
+        {% for medium in category.media %}
+            {% set src = vich_uploader_asset(medium) %}
+
+            {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
+            {% else %}
+                <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
+                    <source src="{{ src }}" type="video/mp4">
+                </video>
+            {% endif %}
+        {% endfor %}
+
+        <a href="{{ path('app_category_index') }}">Back to categories</a>
+    {% endif %}
+{% endblock body %}

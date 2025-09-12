@@ -1,11 +1,12 @@
 app:
     global:
         site: 'Tinie Bakerie'
+        created_at: 'Créé le : '
+        updated_at: 'Modifié le : '
     post:
-        index: 'Voir tous les articles'
-        show:
-            created_at: 'Créé le : '
-            updated_at: 'Modifié le : '
+        index: 'Tous les articles'
+    category:
+        index: 'Toutes les catégories'
 admin:
     global:
         position: 'Position'

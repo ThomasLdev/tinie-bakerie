@@ -7,7 +7,9 @@ use App\Entity\Post;
 use App\Form\PostMediaType;
 use App\Form\PostSectionType;
 use App\Form\PostTranslationType;
+use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -16,8 +18,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Generator;
 
-class PostCrudController extends LocalizedCrudController
+class PostCrudController extends AbstractCrudController
 {
+    public function __construct(private readonly Locales $locales)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Post::class;
@@ -80,7 +86,7 @@ class PostCrudController extends LocalizedCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ],
             ])
             ->allowAdd()
@@ -97,7 +103,7 @@ class PostCrudController extends LocalizedCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ]
             ])
             ->allowAdd()
@@ -115,7 +121,7 @@ class PostCrudController extends LocalizedCrudController
                 'delete_empty' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ]
             ])
             ->allowAdd()

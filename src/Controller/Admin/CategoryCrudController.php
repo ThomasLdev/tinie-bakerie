@@ -7,13 +7,19 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Form\CategoryMediaType;
 use App\Form\CategoryTranslationType;
+use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class CategoryCrudController extends LocalizedCrudController
+class CategoryCrudController extends AbstractCrudController
 {
+    public function __construct(private readonly Locales $locales)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Category::class;
@@ -61,7 +67,7 @@ class CategoryCrudController extends LocalizedCrudController
                 'prototype' => true,
                 'entry_options' => [
                     'hidde_locale' => Crud::PAGE_EDIT === $pageName,
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ],
             ])
             ->allowAdd()
@@ -79,7 +85,7 @@ class CategoryCrudController extends LocalizedCrudController
                 'prototype' => true,
                 'entry_options' => [
                     'hidde_locale' => Crud::PAGE_EDIT === $pageName,
-                    'supported_locales' => $this->getSupportedLocales()
+                    'supported_locales' => $this->locales->get()
                 ]
             ])
             ->allowAdd()

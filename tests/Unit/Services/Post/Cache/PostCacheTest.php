@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Services\Post\Cache;
 
 use App\Entity\Post;
 use App\Repository\PostRepository;
-use App\Services\Post\Cache\PostCache;
+use App\Services\Cache\PostCache;
 use Exception;
 use Generator;
 use Mockery;

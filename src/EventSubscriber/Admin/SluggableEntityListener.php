@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\EventSubscriber;
+namespace App\EventSubscriber\Admin;
 
 use App\Entity\Contracts\HasSluggableTranslation;
 use App\Entity\Contracts\SluggableEntityInterface;
@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-readonly class AdminSluggableEntityListener implements EventSubscriberInterface
+readonly class SluggableEntityListener implements EventSubscriberInterface
 {
     public function __construct(
         private Slugger $slugger,
