@@ -12,7 +12,7 @@ use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response;
 
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
@@ -74,18 +74,20 @@ class PostControllerTest extends BaseControllerTestCase
         self::assertStringContainsString($post->getTitle(), $title);
     }
 
+    /**
+    * Note: Tests that expect 404 responses will show "NotFoundHttpException"
+    * error messages in the output. This is expected behavior as Symfony logs
+    * exceptions before converting them to HTTP responses.
+    */
     public function testShowWithNotFoundPost(): void
     {
         $this->client->request(Request::METHOD_GET, '/fr/articles/unknown-category/unknown-post');
 
-        self::assertResponseStatusCodeSame(404);
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     public function testShowWithBadCategorySlug(): void
     {
-        $this->client->catchExceptions(false);
-        $this->expectException(NotFoundHttpException::class);
-
         $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', 'fr');
 
         $posts = $this->postRepository->findAllActive();
@@ -99,6 +101,6 @@ class PostControllerTest extends BaseControllerTestCase
             sprintf('/fr/articles/bad-category-slug/%s', $post->getSlug())
         );
 
-        self::assertResponseStatusCodeSame(404);
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

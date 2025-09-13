@@ -108,7 +108,7 @@ doctrine-validate-schema:
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
 phpunit:
-	@$(PHP_CONT) vendor/bin/phpunit
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
 coverage:
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage

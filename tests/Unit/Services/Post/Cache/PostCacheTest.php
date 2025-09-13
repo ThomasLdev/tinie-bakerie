@@ -23,13 +23,19 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[CoversClass(Locales::class)]
 class PostCacheTest extends MockeryTestCase
 {
+    private PostRepository $repository;
+
+    private CacheInterface $cache;
+
+    private PostCache $postCache;
+
     protected function setUp(): void
     {
         $this->repository = Mockery::mock(PostRepository::class);
         $this->cache = Mockery::mock(CacheInterface::class);
-        $this->locales = new Locales('fr|en');
-        $this->cacheKeyGenerator = new CacheKeyGenerator();
-        $this->postCache = new PostCache($this->cache, $this->repository, $this->cacheKeyGenerator, $this->locales);
+        $locales = new Locales('fr|en');
+        $cacheKeyGenerator = new CacheKeyGenerator();
+        $this->postCache = new PostCache($this->cache, $this->repository, $cacheKeyGenerator, $locales);
     }
 
     public static function getCachePostsData(): Generator
