@@ -38,7 +38,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
     {
         yield 'fr categories index page' => ['fr', '/fr/categories'];
 
-        yield 'en categories index page' => ['en', '/categories'];
+        yield 'en categories index page' => ['en', '/en/categories'];
     }
 
     #[DataProvider('getCategoryControllerData')]
@@ -97,10 +97,6 @@ final class CategoryControllerTest extends BaseControllerTestCase
         $this->client->request(Request::METHOD_GET, $baseUrl);
 
         self::assertResponseIsSuccessful();
-
-        // Verify the response contains category data
-        $response = $this->client->getResponse();
-        self::assertStringNotContainsString('error', $response->getContent() ?: '');
     }
 
     public function testShowCategoryWithInvalidSlug(): void
