@@ -28,9 +28,9 @@ readonly class CategoryCache implements EntityCacheInterface
     }
 
     /**
-     * @return array<array-key,mixed>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<array-key,mixed>
      */
     public function get(string $locale): array
     {
@@ -78,7 +78,7 @@ readonly class CategoryCache implements EntityCacheInterface
             }
 
             $this->cache->delete(
-                $this->keyGenerator->entityShow($this->getEntityName(), $locale, $translation->getSlug())
+                $this->keyGenerator->entityShow($this->getEntityName(), $locale, $translation->getSlug()),
             );
         }
     }

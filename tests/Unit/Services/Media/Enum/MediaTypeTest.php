@@ -9,8 +9,11 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+/**
+ * @internal
+ */
 #[CoversClass(MediaType::class)]
-class MediaTypeTest extends MockeryTestCase
+final class MediaTypeTest extends MockeryTestCase
 {
     public static function getValidExtensionData(): array
     {
@@ -27,6 +30,6 @@ class MediaTypeTest extends MockeryTestCase
     #[DataProvider('getValidExtensionData')]
     public function testFromExtension(string $extension, string $expectedType): void
     {
-        $this->assertSame($expectedType, MediaType::fromExtension($extension)->value);
+        self::assertSame($expectedType, MediaType::fromExtension($extension)->value);
     }
 }

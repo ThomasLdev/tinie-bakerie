@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\PostSection;
@@ -31,9 +33,7 @@ class PostSectionType extends AbstractType
                     'Two Columns' => PostSectionTypeEnum::TwoColumns,
                     'Two Columns Media Left' => PostSectionTypeEnum::TwoColumnsMediaLeft,
                 ],
-                'choice_value' => function (?PostSectionTypeEnum $type) {
-                    return $type?->value;
-                },
+                'choice_value' => static fn (?PostSectionTypeEnum $type) => $type?->value,
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -64,8 +64,7 @@ class PostSectionType extends AbstractType
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'prototype' => true,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

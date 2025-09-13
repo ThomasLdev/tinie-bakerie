@@ -9,19 +9,19 @@ use App\Repository\PostRepository;
 use App\Services\Cache\CacheKeyGenerator;
 use App\Services\Cache\PostCache;
 use App\Services\Locale\Locales;
-use Generator;
-use InvalidArgumentException;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
+/**
+ * @internal
+ */
 #[CoversClass(PostCache::class)]
 #[CoversClass(CacheKeyGenerator::class)]
 #[CoversClass(Locales::class)]
-class PostCacheTest extends MockeryTestCase
+final class PostCacheTest extends MockeryTestCase
 {
     private PostRepository $repository;
 
@@ -31,14 +31,14 @@ class PostCacheTest extends MockeryTestCase
 
     protected function setUp(): void
     {
-        $this->repository = Mockery::mock(PostRepository::class);
-        $this->cache = Mockery::mock(CacheInterface::class);
+        $this->repository = \Mockery::mock(PostRepository::class);
+        $this->cache = \Mockery::mock(CacheInterface::class);
         $locales = new Locales('fr|en');
         $cacheKeyGenerator = new CacheKeyGenerator();
         $this->postCache = new PostCache($this->cache, $this->repository, $cacheKeyGenerator, $locales);
     }
 
-    public static function getCachePostsData(): Generator
+    public static function getCachePostsData(): \Generator
     {
         $expected = [new Post(), new Post()];
 
@@ -47,7 +47,7 @@ class PostCacheTest extends MockeryTestCase
         yield 'Get cached posts hits for french locale' => [$expected, 'fr'];
     }
 
-    public static function getCachePostData(): Generator
+    public static function getCachePostData(): \Generator
     {
         yield 'Get cached post hit fore english locale' => [new Post(), 'post-1-en', 'en'];
 
@@ -64,10 +64,9 @@ class PostCacheTest extends MockeryTestCase
 
         $this->repository
             ->shouldReceive('findAllActive')
-            ->never()
-        ;
+            ->never();
 
-        $this->assertSame($expected, $this->postCache->get($locale));
+        self::assertSame($expected, $this->postCache->get($locale));
     }
 
     #[DataProvider('getCachePostsData')]
@@ -76,8 +75,8 @@ class PostCacheTest extends MockeryTestCase
         $this->cache
             ->shouldReceive('get')
             ->once()
-            ->andReturnUsing(function ($key, $callback) {
-                $item = Mockery::mock(ItemInterface::class);
+            ->andReturnUsing(static function ($key, $callback) {
+                $item = \Mockery::mock(ItemInterface::class);
                 $item->shouldReceive('expiresAfter')->once();
 
                 return $callback($item);
@@ -86,25 +85,23 @@ class PostCacheTest extends MockeryTestCase
         $this->repository
             ->shouldReceive('findAllActive')
             ->once()
-            ->andReturn($expected)
-        ;
+            ->andReturn($expected);
 
-        $this->assertSame($expected, $this->postCache->get($locale));
+        self::assertSame($expected, $this->postCache->get($locale));
     }
 
     public function testCachePostsException(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->cache
             ->shouldReceive('get')
             ->once()
-            ->andThrow(new InvalidArgumentException());
+            ->andThrow(new \InvalidArgumentException());
 
         $this->repository
             ->shouldReceive('findAllPublished')
-            ->never()
-        ;
+            ->never();
 
         $this->postCache->get('fr');
     }
@@ -119,10 +116,9 @@ class PostCacheTest extends MockeryTestCase
 
         $this->repository
             ->shouldReceive('findOneActive')
-            ->never()
-        ;
+            ->never();
 
-        $this->assertSame($expected, $this->postCache->getOne($locale, $slug));
+        self::assertSame($expected, $this->postCache->getOne($locale, $slug));
     }
 
     #[DataProvider('getCachePostData')]
@@ -131,8 +127,8 @@ class PostCacheTest extends MockeryTestCase
         $this->cache
             ->shouldReceive('get')
             ->once()
-            ->andReturnUsing(function ($key, $callback) {
-                $item = Mockery::mock(ItemInterface::class);
+            ->andReturnUsing(static function ($key, $callback) {
+                $item = \Mockery::mock(ItemInterface::class);
                 $item->shouldReceive('expiresAfter')->once();
 
                 return $callback($item);
@@ -141,25 +137,23 @@ class PostCacheTest extends MockeryTestCase
         $this->repository
             ->shouldReceive('findOneActive')
             ->once()
-            ->andReturn($expected)
-        ;
+            ->andReturn($expected);
 
-        $this->assertSame($expected, $this->postCache->getOne($locale, $slug));
+        self::assertSame($expected, $this->postCache->getOne($locale, $slug));
     }
 
     public function testCachePostException(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->cache
             ->shouldReceive('get')
             ->once()
-            ->andThrow(new InvalidArgumentException());
+            ->andThrow(new \InvalidArgumentException());
 
         $this->repository
             ->shouldReceive('findAllPublished')
-            ->never()
-        ;
+            ->never();
 
         $this->postCache->getOne('fr', 'test');
     }

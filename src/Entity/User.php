@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use LogicException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,9 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private string $email;
 
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     #[ORM\Column]
     private array $roles = [];
 
@@ -60,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         if ('' === $this->email) {
-            throw new LogicException('Email must be set before calling getUserIdentifier.');
+            throw new \LogicException('Email must be set before calling getUserIdentifier.');
         }
 
         return $this->email;

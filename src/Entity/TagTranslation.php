@@ -17,17 +17,17 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\UniqueConstraint(name: 'tag_translation_unique_idx', columns: ['locale', 'title'])]
 class TagTranslation implements IsTranslation
 {
-    use TimestampableEntity;
     use Localized;
+    use TimestampableEntity;
+
+    #[ORM\ManyToOne(targetEntity: Tag::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected Tag $translatable;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\ManyToOne(targetEntity: Tag::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected Tag $translatable;
 
     #[ORM\Column(type: Types::STRING)]
     private string $title;
@@ -47,7 +47,7 @@ class TagTranslation implements IsTranslation
         return $this->translatable;
     }
 
-    public function setTranslatable(Tag $translatable): TagTranslation
+    public function setTranslatable(Tag $translatable): self
     {
         $this->translatable = $translatable;
 
@@ -59,7 +59,7 @@ class TagTranslation implements IsTranslation
         return $this->title;
     }
 
-    public function setTitle(string $title): TagTranslation
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 

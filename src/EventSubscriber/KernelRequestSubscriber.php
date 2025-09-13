@@ -33,8 +33,9 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
         $this->entityManager
             ->getFilters()
             ->enable('locale_filter')
-            ->setParameter('locale', $request->getLocale()
-            )
-        ;
+            ->setParameter(
+                'locale',
+                $request->getLocale(),
+            );
     }
 }

@@ -7,7 +7,6 @@ namespace App\EventSubscriber\Admin;
 use App\Services\Cache\EntityCacheInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -15,7 +14,8 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
 {
     public function __construct(
         /** @var EntityCacheInterface[] $entityCaches */
-        #[AutowireIterator('service.entity_cache')] private iterable $entityCaches,
+        #[AutowireIterator('service.entity_cache')]
+        private iterable $entityCaches,
     ) {
     }
 
@@ -50,6 +50,6 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
             }
         }
 
-        throw new RuntimeException('No cache service found for entity '.$entity::class);
+        throw new \RuntimeException('No cache service found for entity ' . $entity::class);
     }
 }

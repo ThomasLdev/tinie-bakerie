@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Generator;
 
 /**
  * @extends AbstractCrudController<Tag>
@@ -49,7 +48,7 @@ class TagCrudController extends AbstractCrudController
             ->setPageTitle('detail', 'admin.tag.dashboard.detail');
     }
 
-    private function getIndexFields(): Generator
+    private function getIndexFields(): \Generator
     {
         yield ColorField::new('color', 'admin.tag.color.title');
 
@@ -62,7 +61,7 @@ class TagCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): Generator
+    private function getFormFields(string $pageName): \Generator
     {
         yield ColorField::new('color', 'admin.tag.color.title');
 
@@ -80,7 +79,6 @@ class TagCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -13,24 +15,24 @@ use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:create-upload-dirs',
-    description: 'Create required upload directories for vich upload bundle'
+    description: 'Create required upload directories for vich upload bundle',
 )]
 class CreateUploadDirsCommand extends Command
 {
     private const string CONFIGURATION_KEY = 'vich_uploader.mappings';
 
-    private const int DEFAULT_PERMISSIONS = 0755;
-
-    protected function configure(): void
-    {
-        $this->addOption('clear', 'c', InputOption::VALUE_NONE);
-    }
+    private const int DEFAULT_PERMISSIONS = 0o755;
 
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly ParameterBagInterface $parameterBag,
     ) {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this->addOption('clear', 'c', InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -41,7 +43,7 @@ class CreateUploadDirsCommand extends Command
 
         $mappings = $this->parameterBag->get(self::CONFIGURATION_KEY);
 
-        if (!is_array($mappings) || [] === $mappings) {
+        if (!\is_array($mappings) || [] === $mappings) {
             $io->error('No upload mappings found in the configuration.');
 
             return Command::FAILURE;
@@ -60,7 +62,7 @@ class CreateUploadDirsCommand extends Command
             if (!$this->filesystem->exists($fullPath)) {
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
 
-                $io->info("Created directory: $fullPath");
+                $io->info("Created directory: {$fullPath}");
 
                 continue;
             }
@@ -69,7 +71,7 @@ class CreateUploadDirsCommand extends Command
                 $this->filesystem->remove($fullPath);
                 $this->filesystem->mkdir($fullPath, self::DEFAULT_PERMISSIONS);
 
-                $io->info("Cleared directory: $fullPath");
+                $io->info("Cleared directory: {$fullPath}");
             }
         }
 

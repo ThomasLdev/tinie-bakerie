@@ -8,30 +8,32 @@ use App\Controller\PostController;
 use App\Repository\PostRepository;
 use App\Services\Cache\PostCache;
 use Doctrine\ORM\EntityManagerInterface;
-use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @internal
+ */
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
 #[CoversClass(PostCache::class)]
-class PostControllerTest extends BaseControllerTestCase
+final class PostControllerTest extends BaseControllerTestCase
 {
     private PostRepository $postRepository;
 
     private EntityManagerInterface $entityManager;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->postRepository = static::getContainer()->get(PostRepository::class);
-        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $this->postRepository = self::getContainer()->get(PostRepository::class);
+        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    public static function getPostControllerData(): Generator
+    public static function getPostControllerData(): \Generator
     {
         yield 'fr index post page' => ['fr', '/fr/articles'];
 
@@ -61,13 +63,13 @@ class PostControllerTest extends BaseControllerTestCase
 
         $crawler = $this->client->request(
             Request::METHOD_GET,
-            sprintf('%s/%s/%s', $baseUrl, $post->getCategory()->getSlug(), $post->getSlug())
+            \sprintf('%s/%s/%s', $baseUrl, $post->getCategory()->getSlug(), $post->getSlug()),
         );
 
         self::assertResponseIsSuccessful();
 
         $title = $crawler
-            ->filter(sprintf('html:contains("%s")', $post->getTitle()))
+            ->filter(\sprintf('html:contains("%s")', $post->getTitle()))
             ->getNode(0)
             ->textContent;
 
@@ -75,10 +77,10 @@ class PostControllerTest extends BaseControllerTestCase
     }
 
     /**
-    * Note: Tests that expect 404 responses will show "NotFoundHttpException"
-    * error messages in the output. This is expected behavior as Symfony logs
-    * exceptions before converting them to HTTP responses.
-    */
+     * Note: Tests that expect 404 responses will show "NotFoundHttpException"
+     * error messages in the output. This is expected behavior as Symfony logs
+     * exceptions before converting them to HTTP responses.
+     */
     public function testShowWithNotFoundPost(): void
     {
         $this->client->request(Request::METHOD_GET, '/fr/articles/unknown-category/unknown-post');
@@ -98,7 +100,7 @@ class PostControllerTest extends BaseControllerTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('/fr/articles/bad-category-slug/%s', $post->getSlug())
+            \sprintf('/fr/articles/bad-category-slug/%s', $post->getSlug()),
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);

@@ -24,9 +24,9 @@ final class CategoryController extends AbstractController
     }
 
     /**
-     * @return array<'categories', array<array-key,mixed>>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<'categories', array<array-key,mixed>>
      */
     #[Route(methods: ['GET'])]
     #[Template('category/index.html.twig')]
@@ -36,9 +36,9 @@ final class CategoryController extends AbstractController
     }
 
     /**
-     * @return array<'category',Category>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<'category',Category>
      */
     #[Route(['en' => '/{categorySlug}', 'fr' => '/{categorySlug}'], methods: ['GET'])]
     #[Template('category/show.html.twig')]

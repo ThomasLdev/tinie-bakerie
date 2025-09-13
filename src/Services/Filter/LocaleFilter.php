@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Filter;
 
 use App\Entity\Contracts\IsTranslation;
@@ -22,11 +24,11 @@ class LocaleFilter extends SQLFilter
             return '';
         }
 
-        return sprintf(
+        return \sprintf(
             '%s.%s = %s',
             $targetTableAlias,
             self::PARAMETER_NAME,
-            $this->getParameter(self::PARAMETER_NAME)
+            $this->getParameter(self::PARAMETER_NAME),
         );
     }
 }

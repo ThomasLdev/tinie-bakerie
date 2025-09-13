@@ -34,7 +34,7 @@ class PostSectionMediaType extends AbstractType
                 'label' => 'admin.global.media.type',
                 'choices' => array_combine(
                     array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
-                    MediaType::cases()
+                    MediaType::cases(),
                 ),
                 'required' => true,
             ])
@@ -51,8 +51,7 @@ class PostSectionMediaType extends AbstractType
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'prototype' => true,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

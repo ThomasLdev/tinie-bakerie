@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\HomePageController;
-use Generator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @internal
+ */
 #[CoversClass(HomePageController::class)]
-class HomepageControllerTest extends BaseControllerTestCase
+final class HomepageControllerTest extends BaseControllerTestCase
 {
-    public static function getHomepageControllerData(): Generator
+    public static function getHomepageControllerData(): \Generator
     {
         yield 'get homepage controller for en locale' => [
             '/en',
@@ -24,7 +26,7 @@ class HomepageControllerTest extends BaseControllerTestCase
         ];
     }
 
-    public static function getHomepageControllerRedirectData(): Generator
+    public static function getHomepageControllerRedirectData(): \Generator
     {
         yield 'no locale default value' => [
             '/',
@@ -52,10 +54,12 @@ class HomepageControllerTest extends BaseControllerTestCase
     {
         $this->client->request(
             Request::METHOD_GET,
-            $uri, [], [],
+            $uri,
+            [],
+            [],
             [
                 'HTTP_ACCEPT_LANGUAGE' => $browserLocale,
-            ]
+            ],
         );
 
         self::assertResponseRedirects($expected);

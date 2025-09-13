@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Contracts\HasMediaEntities;
 use App\Entity\Contracts\HasTranslations;
 use App\Services\Media\Enum\MediaType;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -44,12 +45,12 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
     private int $position = 0;
 
-    /**
-     * @var Collection<int,CategoryMediaTranslation>
-     */
+    /** @var Collection<int,CategoryMediaTranslation> */
     #[ORM\OneToMany(
         targetEntity: CategoryMediaTranslation::class,
-        mappedBy: 'translatable', cascade: ['persist', 'remove'])
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+    )
     ]
     private Collection $translations;
 
@@ -73,7 +74,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->mediaName;
     }
 
-    public function setMediaName(?string $mediaName): CategoryMedia
+    public function setMediaName(?string $mediaName): self
     {
         $this->mediaName = $mediaName;
 
@@ -85,14 +86,14 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $mediaFile = null): CategoryMedia
+    public function setMediaFile(?File $mediaFile = null): self
     {
         $this->mediaFile = $mediaFile;
 
         if (null !== $mediaFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new DateTime();
+            $this->updatedAt = new \DateTimeImmutable();
         }
 
         return $this;
@@ -103,7 +104,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->category;
     }
 
-    public function setCategory(?Category $category): CategoryMedia
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
 
@@ -115,7 +116,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->type;
     }
 
-    public function setType(MediaType $type): CategoryMedia
+    public function setType(MediaType $type): self
     {
         $this->type = $type;
 
@@ -127,7 +128,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->position;
     }
 
-    public function setPosition(int $position): CategoryMedia
+    public function setPosition(int $position): self
     {
         $this->position = $position;
 
@@ -137,7 +138,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
     /**
      * @param CategoryMediaTranslation[] $translations
      */
-    public function setTranslations(array $translations): CategoryMedia
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
@@ -154,7 +155,7 @@ class CategoryMedia implements HasTranslations, HasMediaEntities
         return $this->translations;
     }
 
-    public function addTranslation(CategoryMediaTranslation $translation): CategoryMedia
+    public function addTranslation(CategoryMediaTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;

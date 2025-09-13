@@ -19,14 +19,14 @@ class PostSectionTranslation implements IsTranslation
     use Localized;
     use TimestampableEntity;
 
+    #[ORM\ManyToOne(targetEntity: PostSection::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected PostSection $translatable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\ManyToOne(targetEntity: PostSection::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected PostSection $translatable;
 
     #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
     private string $content = '';
@@ -49,7 +49,7 @@ class PostSectionTranslation implements IsTranslation
         return $this->translatable;
     }
 
-    public function setTranslatable(PostSection $translatable): PostSectionTranslation
+    public function setTranslatable(PostSection $translatable): self
     {
         $this->translatable = $translatable;
 
@@ -61,7 +61,7 @@ class PostSectionTranslation implements IsTranslation
         return $this->content;
     }
 
-    public function setContent(string $content): PostSectionTranslation
+    public function setContent(string $content): self
     {
         $this->content = $content;
 
@@ -73,7 +73,7 @@ class PostSectionTranslation implements IsTranslation
         return $this->title;
     }
 
-    public function setTitle(string $title): PostSectionTranslation
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 

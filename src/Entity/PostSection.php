@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Contracts\HasTranslations;
@@ -33,13 +35,11 @@ class PostSection implements HasTranslations
     #[ORM\Column(
         type: 'string',
         enumType: PostSectionType::class,
-        options: ['default' => PostSectionType::Default, 'nullable' => false]
+        options: ['default' => PostSectionType::Default, 'nullable' => false],
     )]
     private PostSectionType $type = PostSectionType::Default;
 
-    /**
-     * @var Collection<int,PostSectionMedia>
-     */
+    /** @var Collection<int,PostSectionMedia> */
     #[ORM\OneToMany(
         targetEntity: PostSectionMedia::class,
         mappedBy: 'postSection',
@@ -49,9 +49,7 @@ class PostSection implements HasTranslations
     )]
     private Collection $media;
 
-    /**
-     * @var Collection<int,PostSectionTranslation>
-     */
+    /** @var Collection<int,PostSectionTranslation> */
     #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
@@ -152,7 +150,7 @@ class PostSection implements HasTranslations
     /**
      * @param PostSectionTranslation[] $translations
      */
-    public function setTranslations(array $translations): PostSection
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);

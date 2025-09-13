@@ -19,7 +19,7 @@ class CategoryTranslationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale'] && is_array($options['supported_locales'])) {
+        if (!$options['hidde_locale'] && \is_array($options['supported_locales'])) {
             $builder
                 ->add('locale', ChoiceType::class, [
                     'choices' => $this->getLocales($options['supported_locales']),
@@ -64,8 +64,7 @@ class CategoryTranslationType extends AbstractType
                 'label' => 'admin.global.excerpt',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

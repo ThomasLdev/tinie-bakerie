@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Generator;
 
 /**
  * @extends AbstractCrudController<Category>
@@ -49,7 +48,7 @@ class CategoryCrudController extends AbstractCrudController
             ->setPageTitle('detail', 'admin.category.dashboard.detail');
     }
 
-    private function getIndexFields(): Generator
+    private function getIndexFields(): \Generator
     {
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
@@ -60,7 +59,7 @@ class CategoryCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): Generator
+    private function getFormFields(string $pageName): \Generator
     {
         yield CollectionField::new('media', 'admin.global.media.label')
             ->setEntryType(CategoryMediaType::class)
@@ -77,8 +76,7 @@ class CategoryCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
 
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(CategoryTranslationType::class)
@@ -95,7 +93,6 @@ class CategoryCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
     }
 }

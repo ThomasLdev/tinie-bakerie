@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Post;
@@ -43,7 +45,7 @@ class PostRepository extends ServiceEntityRepository
 
         $result = $qb->getQuery()->getResult();
 
-        return is_array($result) ? $result : [];
+        return \is_array($result) ? $result : [];
     }
 
     public function findOneActive(string $slug): ?Post

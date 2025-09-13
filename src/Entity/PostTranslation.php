@@ -19,9 +19,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\UniqueConstraint(name: 'post_translation_lookup_unique_idx', columns: ['locale', 'title'])]
 class PostTranslation implements IsTranslation, HasSlugs
 {
+    use Localized;
     use Sluggable;
     use TimestampableEntity;
-    use Localized;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -59,7 +59,7 @@ class PostTranslation implements IsTranslation, HasSlugs
         return $this->translatable;
     }
 
-    public function setTranslatable(Post $translatable): PostTranslation
+    public function setTranslatable(Post $translatable): self
     {
         $this->translatable = $translatable;
 
@@ -71,7 +71,7 @@ class PostTranslation implements IsTranslation, HasSlugs
         return $this->title;
     }
 
-    public function setTitle(string $title): PostTranslation
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -83,7 +83,7 @@ class PostTranslation implements IsTranslation, HasSlugs
         return $this->metaDescription;
     }
 
-    public function setMetaDescription(string $metaDescription): PostTranslation
+    public function setMetaDescription(string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
 
@@ -95,7 +95,7 @@ class PostTranslation implements IsTranslation, HasSlugs
         return $this->metaTitle;
     }
 
-    public function setMetaTitle(string $metaTitle): PostTranslation
+    public function setMetaTitle(string $metaTitle): self
     {
         $this->metaTitle = $metaTitle;
 
@@ -107,7 +107,7 @@ class PostTranslation implements IsTranslation, HasSlugs
         return $this->excerpt;
     }
 
-    public function setExcerpt(string $excerpt): PostTranslation
+    public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
 

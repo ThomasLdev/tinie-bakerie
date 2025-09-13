@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
@@ -16,7 +18,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Generator;
 
 /**
  * @extends AbstractCrudController<Post>
@@ -52,7 +53,7 @@ class PostCrudController extends AbstractCrudController
             ->setPageTitle('detail', 'admin.post.dashboard.detail');
     }
 
-    private function getIndexFields(): Generator
+    private function getIndexFields(): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
 
@@ -61,16 +62,14 @@ class PostCrudController extends AbstractCrudController
         yield ArrayField::new('tags', 'admin.tag.dashboard.plural');
 
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
-            ->formatValue(function (Category $category) {
-                return $category->getTitle();
-            });
+            ->formatValue(static fn (Category $category) => $category->getTitle());
 
         yield DateField::new('createdAt', 'admin.global.created_at');
 
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): Generator
+    private function getFormFields(string $pageName): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
 
@@ -95,8 +94,7 @@ class PostCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
 
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(PostTranslationType::class)
@@ -112,8 +110,7 @@ class PostCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
 
         yield CollectionField::new('sections', 'admin.post_section.title')
             ->setEntryType(PostSectionType::class)
@@ -130,7 +127,6 @@ class PostCrudController extends AbstractCrudController
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
-            ->setColumns('col-12')
-        ;
+            ->setColumns('col-12');
     }
 }

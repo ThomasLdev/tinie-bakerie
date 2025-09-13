@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Contracts\HasTranslations;
@@ -16,8 +18,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 class Post implements HasTranslations
 {
-    use TimestampableEntity;
     use Activable;
+    use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,9 +29,7 @@ class Post implements HasTranslations
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
-    /**
-     * @var Collection<int,Tag>
-     */
+    /** @var Collection<int,Tag> */
     #[ORM\ManyToMany(
         targetEntity: Tag::class,
         inversedBy: 'posts',
@@ -38,9 +38,7 @@ class Post implements HasTranslations
     )]
     private Collection $tags;
 
-    /**
-     * @var Collection<int,PostMedia>
-     */
+    /** @var Collection<int,PostMedia> */
     #[ORM\OneToMany(
         targetEntity: PostMedia::class,
         mappedBy: 'post',
@@ -50,9 +48,7 @@ class Post implements HasTranslations
     )]
     private Collection $media;
 
-    /**
-     * @var Collection<int,PostSection>
-     */
+    /** @var Collection<int,PostSection> */
     #[ORM\OneToMany(
         targetEntity: PostSection::class,
         mappedBy: 'post',
@@ -66,9 +62,7 @@ class Post implements HasTranslations
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $readingTime = 0;
 
-    /**
-     * @var Collection<int,PostTranslation>
-     */
+    /** @var Collection<int,PostTranslation> */
     #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
@@ -90,7 +84,7 @@ class Post implements HasTranslations
         return $this->category;
     }
 
-    public function setCategory(Category $category): Post
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
@@ -100,7 +94,7 @@ class Post implements HasTranslations
     /**
      * @param Tag[] $tags
      */
-    public function setTags(array $tags): Post
+    public function setTags(array $tags): self
     {
         foreach ($tags as $tag) {
             $this->addTag($tag);
@@ -117,7 +111,7 @@ class Post implements HasTranslations
         return $this->tags;
     }
 
-    public function addTag(Tag $tag): Post
+    public function addTag(Tag $tag): self
     {
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
@@ -126,7 +120,7 @@ class Post implements HasTranslations
         return $this;
     }
 
-    public function removeTag(Tag $tag): Post
+    public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
 
@@ -136,7 +130,7 @@ class Post implements HasTranslations
     /**
      * @param PostMedia[] $media
      */
-    public function setMedia(array $media): Post
+    public function setMedia(array $media): self
     {
         foreach ($media as $medium) {
             $this->addMedium($medium);
@@ -153,7 +147,7 @@ class Post implements HasTranslations
         return $this->media;
     }
 
-    public function addMedium(PostMedia $medium): Post
+    public function addMedium(PostMedia $medium): self
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
@@ -163,7 +157,7 @@ class Post implements HasTranslations
         return $this;
     }
 
-    public function removeMedium(PostMedia $medium): Post
+    public function removeMedium(PostMedia $medium): self
     {
         if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)
@@ -178,7 +172,7 @@ class Post implements HasTranslations
     /**
      * @param PostSection[] $sections
      */
-    public function setSections(array $sections): Post
+    public function setSections(array $sections): self
     {
         foreach ($sections as $section) {
             $this->addSection($section);
@@ -195,7 +189,7 @@ class Post implements HasTranslations
         return $this->sections;
     }
 
-    public function addSection(PostSection $section): Post
+    public function addSection(PostSection $section): self
     {
         if (!$this->sections->contains($section)) {
             $this->sections->add($section);
@@ -205,7 +199,7 @@ class Post implements HasTranslations
         return $this;
     }
 
-    public function removeSection(PostSection $section): Post
+    public function removeSection(PostSection $section): self
     {
         if ($this->sections->removeElement($section)) {
             // set the owning side to null (unless already changed)
@@ -222,7 +216,7 @@ class Post implements HasTranslations
         return $this->readingTime;
     }
 
-    public function setReadingTime(int $readingTime): Post
+    public function setReadingTime(int $readingTime): self
     {
         $this->readingTime = $readingTime;
 
@@ -232,7 +226,7 @@ class Post implements HasTranslations
     /**
      * @param PostTranslation[] $translations
      */
-    public function setTranslations(array $translations): Post
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
@@ -249,7 +243,7 @@ class Post implements HasTranslations
         return $this->translations;
     }
 
-    public function addTranslation(PostTranslation $translation): Post
+    public function addTranslation(PostTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -269,16 +263,6 @@ class Post implements HasTranslations
         return $this->getLocalizedTranslation()?->getSlug() ?? '';
     }
 
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?PostTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
-    }
-
     public function getTranslationByLocale(string $locale): ?PostTranslation
     {
         foreach ($this->getTranslations() as $translation) {
@@ -288,5 +272,15 @@ class Post implements HasTranslations
         }
 
         return null;
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection.
+     */
+    private function getLocalizedTranslation(): ?PostTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

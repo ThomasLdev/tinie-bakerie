@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Contracts\HasTranslations;
@@ -21,9 +23,7 @@ class Category implements HasTranslations
     #[ORM\Column]
     private int $id;
 
-    /**
-     * @var Collection<int,Post>
-     */
+    /** @var Collection<int,Post> */
     #[ORM\OneToMany(
         targetEntity: Post::class,
         mappedBy: 'category',
@@ -31,9 +31,7 @@ class Category implements HasTranslations
     )]
     private Collection $posts;
 
-    /**
-     * @var Collection<int,CategoryMedia>
-     */
+    /** @var Collection<int,CategoryMedia> */
     #[ORM\OneToMany(
         targetEntity: CategoryMedia::class,
         mappedBy: 'category',
@@ -43,9 +41,7 @@ class Category implements HasTranslations
     )]
     private Collection $media;
 
-    /**
-     * @var Collection<int,CategoryTranslation>
-     */
+    /** @var Collection<int,CategoryTranslation> */
     #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
@@ -79,7 +75,7 @@ class Category implements HasTranslations
     /**
      * @param CategoryMedia[] $media
      */
-    public function setMedia(array $media): Category
+    public function setMedia(array $media): self
     {
         foreach ($media as $medium) {
             $this->addMedium($medium);
@@ -96,7 +92,7 @@ class Category implements HasTranslations
         return $this->media;
     }
 
-    public function addMedium(CategoryMedia $medium): Category
+    public function addMedium(CategoryMedia $medium): self
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
@@ -106,7 +102,7 @@ class Category implements HasTranslations
         return $this;
     }
 
-    public function removeMedium(CategoryMedia $medium): Category
+    public function removeMedium(CategoryMedia $medium): self
     {
         if ($this->media->removeElement($medium)) {
             // set the owning side to null (unless already changed)
@@ -121,7 +117,7 @@ class Category implements HasTranslations
     /**
      * @param CategoryTranslation[] $translations
      */
-    public function setTranslations(array $translations): Category
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
@@ -138,7 +134,7 @@ class Category implements HasTranslations
         return $this->translations;
     }
 
-    public function addTranslation(CategoryTranslation $translation): Category
+    public function addTranslation(CategoryTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;
@@ -178,16 +174,6 @@ class Category implements HasTranslations
         return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
     }
 
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?CategoryTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
-    }
-
     public function getTranslationByLocale(string $locale): ?CategoryTranslation
     {
         foreach ($this->getTranslations() as $translation) {
@@ -197,5 +183,15 @@ class Category implements HasTranslations
         }
 
         return null;
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection.
+     */
+    private function getLocalizedTranslation(): ?CategoryTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

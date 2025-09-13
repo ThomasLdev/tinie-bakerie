@@ -7,13 +7,16 @@ namespace App\Tests\Functional\Controller;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BaseControllerTestCase extends WebTestCase
+/**
+ * @internal
+ */
+final class BaseControllerTestCase extends WebTestCase
 {
     protected KernelBrowser $client;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->client = static::createClient(
+        $this->client = self::createClient(
             options: [
                 'environment' => 'test',
                 'debug' => false,
@@ -21,7 +24,7 @@ class BaseControllerTestCase extends WebTestCase
             server: [
                 'HTTP_HOST' => 'local.tinie-bakerie.com',
                 'HTTPS' => 'on',
-            ]
+            ],
         );
     }
 }

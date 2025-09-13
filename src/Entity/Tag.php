@@ -24,18 +24,14 @@ class Tag implements HasTranslations
     #[ORM\Column]
     private int $id;
 
-    /**
-     * @var Collection<int,Post>
-     */
+    /** @var Collection<int,Post> */
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
     private Collection $posts;
 
     #[ORM\Column(type: Types::STRING, options: ['default' => '#000000'])]
     private string $color = '#000000';
 
-    /**
-     * @var Collection<int,TagTranslation>
-     */
+    /** @var Collection<int,TagTranslation> */
     #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
@@ -68,7 +64,7 @@ class Tag implements HasTranslations
         return $this->color;
     }
 
-    public function setColor(string $color): Tag
+    public function setColor(string $color): self
     {
         $this->color = $color;
 
@@ -78,7 +74,7 @@ class Tag implements HasTranslations
     /**
      * @param TagTranslation[] $translations
      */
-    public function setTranslations(array $translations): Tag
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
@@ -95,7 +91,7 @@ class Tag implements HasTranslations
         return $this->translations;
     }
 
-    public function addTranslation(TagTranslation $translation): Tag
+    public function addTranslation(TagTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;

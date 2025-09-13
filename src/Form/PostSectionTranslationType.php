@@ -19,7 +19,7 @@ class PostSectionTranslationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale'] && is_array($options['supported_locales'])) {
+        if (!$options['hidde_locale'] && \is_array($options['supported_locales'])) {
             $builder
                 ->add('locale', ChoiceType::class, [
                     'choices' => $this->getLocales($options['supported_locales']),
@@ -42,8 +42,7 @@ class PostSectionTranslationType extends AbstractType
                 'label' => 'admin.post_section.content',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

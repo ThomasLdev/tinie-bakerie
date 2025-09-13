@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\CategoryTranslation;
@@ -44,9 +46,8 @@ final class CategoryTranslationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function (CategoryTranslation $categoryTranslation): void {
-                 $categoryTranslation->setSlug($this->slugger->slugify($categoryTranslation->getTitle()));
-             })
-        ;
+            ->afterInstantiate(function (CategoryTranslation $categoryTranslation): void {
+                $categoryTranslation->setSlug($this->slugger->slugify($categoryTranslation->getTitle()));
+            });
     }
 }

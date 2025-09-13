@@ -44,7 +44,7 @@ class CategoryMediaTranslation implements IsTranslation
         return $this->translatable;
     }
 
-    public function setTranslatable(CategoryMedia $translatable): CategoryMediaTranslation
+    public function setTranslatable(CategoryMedia $translatable): self
     {
         $this->translatable = $translatable;
 

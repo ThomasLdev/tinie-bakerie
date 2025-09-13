@@ -20,14 +20,14 @@ class PostSectionMediaTranslation implements IsTranslation
     use MediaAccessibility;
     use TimestampableEntity;
 
+    #[ORM\ManyToOne(targetEntity: PostSectionMedia::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected PostSectionMedia $translatable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\ManyToOne(targetEntity: PostSectionMedia::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected PostSectionMedia $translatable;
 
     public function __toString(): string
     {
@@ -44,7 +44,7 @@ class PostSectionMediaTranslation implements IsTranslation
         return $this->translatable;
     }
 
-    public function setTranslatable(PostSectionMedia $translatable): PostSectionMediaTranslation
+    public function setTranslatable(PostSectionMedia $translatable): self
     {
         $this->translatable = $translatable;
 

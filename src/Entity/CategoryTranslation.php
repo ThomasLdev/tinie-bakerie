@@ -62,7 +62,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->translatable;
     }
 
-    public function setTranslatable(Category $translatable): CategoryTranslation
+    public function setTranslatable(Category $translatable): self
     {
         $this->translatable = $translatable;
 
@@ -74,7 +74,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->title;
     }
 
-    public function setTitle(string $title): CategoryTranslation
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -86,7 +86,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->description;
     }
 
-    public function setDescription(string $description): CategoryTranslation
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -98,7 +98,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->metaDescription;
     }
 
-    public function setMetaDescription(string $metaDescription): CategoryTranslation
+    public function setMetaDescription(string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
 
@@ -110,7 +110,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->metaTitle;
     }
 
-    public function setMetaTitle(string $metaTitle): CategoryTranslation
+    public function setMetaTitle(string $metaTitle): self
     {
         $this->metaTitle = $metaTitle;
 
@@ -122,7 +122,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
         return $this->excerpt;
     }
 
-    public function setExcerpt(string $excerpt): CategoryTranslation
+    public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
 

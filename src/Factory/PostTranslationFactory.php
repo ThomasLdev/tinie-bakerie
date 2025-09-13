@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\PostTranslation;
@@ -43,9 +45,8 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-             ->afterInstantiate(function (PostTranslation $postTranslation): void {
-                 $postTranslation->setSlug($this->slugger->slugify($postTranslation->getTitle()));
-             })
-        ;
+            ->afterInstantiate(function (PostTranslation $postTranslation): void {
+                $postTranslation->setSlug($this->slugger->slugify($postTranslation->getTitle()));
+            });
     }
 }

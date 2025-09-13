@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Post;
@@ -22,9 +24,9 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'posts', array<array-key,mixed>>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<'posts', array<array-key,mixed>>
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
@@ -34,9 +36,9 @@ final class PostController extends AbstractController
     }
 
     /**
-     * @return array<'post',Post>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return array<'post',Post>
      */
     #[Route(['en' => '/{categorySlug}/{postSlug}', 'fr' => '/{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]

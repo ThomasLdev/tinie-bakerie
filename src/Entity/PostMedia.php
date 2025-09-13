@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Contracts\HasMediaEntities;
 use App\Entity\Contracts\HasTranslations;
 use App\Services\Media\Enum\MediaType;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -41,9 +42,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
     #[ORM\Column(enumType: MediaType::class)]
     private MediaType $type;
 
-    /**
-     * @var Collection<int,PostMediaTranslation>
-     */
+    /** @var Collection<int,PostMediaTranslation> */
     #[ORM\OneToMany(targetEntity: PostMediaTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
 
@@ -70,7 +69,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->mediaName;
     }
 
-    public function setMediaName(?string $mediaName): PostMedia
+    public function setMediaName(?string $mediaName): self
     {
         $this->mediaName = $mediaName;
 
@@ -82,14 +81,14 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->mediaFile;
     }
 
-    public function setMediaFile(?File $mediaFile = null): PostMedia
+    public function setMediaFile(?File $mediaFile = null): self
     {
         $this->mediaFile = $mediaFile;
 
         if (null !== $mediaFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new DateTime();
+            $this->updatedAt = new \DateTimeImmutable();
         }
 
         return $this;
@@ -100,7 +99,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->post;
     }
 
-    public function setPost(?Post $post): PostMedia
+    public function setPost(?Post $post): self
     {
         $this->post = $post;
 
@@ -112,7 +111,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->type;
     }
 
-    public function setType(MediaType $type): PostMedia
+    public function setType(MediaType $type): self
     {
         $this->type = $type;
 
@@ -124,7 +123,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->position;
     }
 
-    public function setPosition(int $position): PostMedia
+    public function setPosition(int $position): self
     {
         $this->position = $position;
 
@@ -134,7 +133,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
     /**
      * @param PostMediaTranslation[] $translations
      */
-    public function setTranslations(array $translations): PostMedia
+    public function setTranslations(array $translations): self
     {
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
@@ -151,7 +150,7 @@ class PostMedia implements HasTranslations, HasMediaEntities
         return $this->translations;
     }
 
-    public function addTranslation(PostMediaTranslation $translation): PostMedia
+    public function addTranslation(PostMediaTranslation $translation): self
     {
         if (!$this->translations->contains($translation)) {
             $this->translations[] = $translation;

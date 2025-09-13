@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Bridge\Twig\Attribute\Template;
@@ -24,14 +26,16 @@ class HomePageController extends AbstractController
     #[Route('/')]
     public function indexNoLocale(
         Request $request,
-        #[Autowire(param: 'app.supported_locales')] string $supportedLocales,
-        #[Autowire(param: 'default_locale')] string $defaultLocale,
+        #[Autowire(param: 'app.supported_locales')]
+        string $supportedLocales,
+        #[Autowire(param: 'default_locale')]
+        string $defaultLocale,
     ): Response {
         return $this->redirectToRoute(
             'app_homepage_index',
             [
                 '_locale' => $request->getPreferredLanguage(explode('|', $supportedLocales)) ?? $defaultLocale,
-            ]
+            ],
         );
     }
 }

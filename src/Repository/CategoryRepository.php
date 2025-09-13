@@ -31,12 +31,11 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL m.{id, mediaName, type}')
             ->leftJoin('m.translations', 'mt')
             ->addSelect('PARTIAL mt.{id, title, alt}')
-            ->orderBy('c.createdAt', 'DESC')
-        ;
+            ->orderBy('c.createdAt', 'DESC');
 
         $result = $qb->getQuery()->getResult();
 
-        return is_array($result) ? $result : [];
+        return \is_array($result) ? $result : [];
     }
 
     public function findOne(string $slug): ?Category
