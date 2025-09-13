@@ -21,7 +21,7 @@ class TagTranslation implements IsTranslation
     use TimestampableEntity;
 
     #[ORM\ManyToOne(targetEntity: Tag::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     protected Tag $translatable;
 
     #[ORM\Id]

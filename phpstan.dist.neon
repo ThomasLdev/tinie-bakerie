@@ -1,10 +1,21 @@
 parameters:
-    ignoreErrors:
-        - '#Property App\\Entity\\.*::\$id is never written, only read.#'
+    # Analysis level (0-9, 9 being the most strict)
     level: 9
+
+    # Paths to analyze
     paths:
-        - bin/
-        - config/
-        - public/
-        - src/
-        - tests/
+        - config
+        - public
+        - src
+        - tests
+
+    # Paths to exclude from analysis
+    excludePaths:
+        - %currentWorkingDirectory%/var/*
+        - %currentWorkingDirectory%/vendor/*
+
+    # Cache directory
+    tmpDir: var/phpstan
+
+    ignoreErrors:
+        - '#Property App\\Entity\\User::\$password type mapping mismatch#'

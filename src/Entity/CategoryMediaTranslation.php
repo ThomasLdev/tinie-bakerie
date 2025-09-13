@@ -26,7 +26,7 @@ class CategoryMediaTranslation implements IsTranslation
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: CategoryMedia::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private CategoryMedia $translatable;
 
     public function __toString(): string

@@ -29,7 +29,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Category $translatable;
 
     #[ORM\Column(type: Types::STRING)]

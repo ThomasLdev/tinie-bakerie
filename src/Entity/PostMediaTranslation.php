@@ -21,7 +21,7 @@ class PostMediaTranslation implements IsTranslation
     use TimestampableEntity;
 
     #[ORM\ManyToOne(targetEntity: PostMedia::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     protected PostMedia $translatable;
 
     #[ORM\Id]

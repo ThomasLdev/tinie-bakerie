@@ -29,7 +29,7 @@ class PostTranslation implements IsTranslation, HasSlugs
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Post $translatable;
 
     #[ORM\Column(type: Types::STRING)]
