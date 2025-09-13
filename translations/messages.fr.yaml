@@ -1,6 +1,66 @@
 app:
+    global:
+        site: 'Tinie Bakerie'
+        created_at: 'Créé le : '
+        updated_at: 'Modifié le : '
     post:
-        index: 'Voir tous les articles'
-        show:
-            created_at: 'Créé le : '
-            updated_at: 'Modifié le : '
+        index: 'Tous les articles'
+    category:
+        index: 'Toutes les catégories'
+admin:
+    global:
+        position: 'Position'
+        media:
+            label: 'Médias'
+            file: 'Fichier'
+            type: 'Type'
+            alt: 'Texte alternatif'
+            title: 'Titre'
+            download: 'Télécharger'
+        created_at: 'Créé le'
+        updated_at: 'Modifié le'
+        title: 'Titre'
+        meta_title: 'Meta Titre'
+        meta_description: 'Meta Description'
+        excerpt: 'Extrait'
+        locale: 'Langue'
+        translations: 'Traductions'
+        slug:
+            title: 'Url relative'
+            help: 'Générée automatiquement à partir du titre'
+    website:
+        label: 'Site Web'
+    post:
+        dashboard:
+            singular: 'Article'
+            plural: 'Articles'
+            index: 'Tous les articles'
+            create: 'Créer un article'
+            edit: 'Modifier un article'
+            detail: "Détail de l'article"
+        title: 'Titre'
+        title_placeholder: "Titre de l'article (doit être unique)"
+        slug: 'Slug (crée automatiquement)'
+        active: 'Actif'
+    tag:
+        color:
+            title: 'Couleur'
+        dashboard:
+            singular: 'Étiquette'
+            plural: 'Étiquettes'
+            index: 'Toutes les étiquettes'
+            create: 'Créer une étiquette'
+            edit: 'Modifier une étiquette'
+            detail: "Détail de l'étiquette"
+    category:
+        dashboard:
+            singular: 'Catégorie'
+            plural: 'Catégories'
+            index: 'Toutes les catégories'
+            create: 'Créer une catégorie'
+            edit: 'Modifier une catégorie'
+            detail: "Détail de la catégorie"
+    post_section:
+        title: 'Sections'
+        section_title: 'Titre de la section'
+        content: 'Contenu'

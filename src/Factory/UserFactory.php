@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\User;
@@ -11,21 +13,15 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 final class UserFactory extends PersistentProxyObjectFactory
 {
     /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
+     * @return class-string<User>
      */
-    public function __construct()
-    {
-    }
-
     public static function class(): string
     {
         return User::class;
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string,mixed>
      */
     protected function defaults(): array
     {
@@ -38,13 +34,10 @@ final class UserFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
+    #[\Override]
     protected function initialize(): static
     {
-        return $this
-            // ->afterInstantiate(function(User $user): void {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(User $user): void {})
     }
 }

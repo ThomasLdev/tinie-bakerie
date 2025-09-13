@@ -1,6 +1,9 @@
 app:
+    global:
+        site: 'Tinie Bakerie'
+        created_at: 'Created at: '
+        updated_at: 'Updated at: '
     post:
-        index: 'See all posts'
-        show:
-            created_at: 'Created at: '
-            updated_at: 'Updated at: '
+        index: 'All posts'
+    category:
+        index: 'All categories'

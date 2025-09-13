@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
+use App\Entity\Contracts\HasTranslations;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<PostSectionTranslation>
+ */
 #[ORM\Entity]
-class PostSection implements LocalizedEntityInterface
+class PostSection implements HasTranslations, \Stringable
 {
     use TimestampableEntity;
-    use LocalizedEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,13 +35,11 @@ class PostSection implements LocalizedEntityInterface
     #[ORM\Column(
         type: 'string',
         enumType: PostSectionType::class,
-        options: ['default' => PostSectionType::Default, 'nullable' => false]
+        options: ['default' => PostSectionType::Default, 'nullable' => false],
     )]
     private PostSectionType $type = PostSectionType::Default;
 
-    /**
-     * @var Collection<int,PostSectionMedia>
-     */
+    /** @var Collection<int,PostSectionMedia> */
     #[ORM\OneToMany(
         targetEntity: PostSectionMedia::class,
         mappedBy: 'postSection',
@@ -49,13 +49,19 @@ class PostSection implements LocalizedEntityInterface
     )]
     private Collection $media;
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::TEXT, nullable: false, options: ['default' => ''])]
-    private string $content = '';
+    /** @var Collection<int,PostSectionTranslation> */
+    #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    private Collection $translations;
 
     public function __construct()
     {
         $this->media = new ArrayCollection();
+        $this->translations = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getTitle();
     }
 
     public function getId(): ?int
@@ -100,7 +106,7 @@ class PostSection implements LocalizedEntityInterface
     }
 
     /**
-     * @param array<array-key,PostSectionMedia> $media
+     * @param PostSectionMedia[] $media
      */
     public function setMedia(array $media): self
     {
@@ -131,25 +137,61 @@ class PostSection implements LocalizedEntityInterface
 
     public function removeMedium(PostSectionMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getPostSection() === $this) {
-                $medium->setPostSection(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getPostSection() === $this) {
+            $medium->setPostSection(null);
         }
 
         return $this;
     }
 
-    public function getContent(): ?string
+    /**
+     * @param PostSectionTranslation[] $translations
+     */
+    public function setTranslations(array $translations): self
     {
-        return $this->content;
-    }
-
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int,PostSectionTranslation>
+     */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(PostSectionTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setTranslatable($this);
+        }
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+    }
+
+    public function getContent(): string
+    {
+        return $this->getLocalizedTranslation()?->getContent() ?? '';
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection.
+     */
+    private function getLocalizedTranslation(): ?PostSectionTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

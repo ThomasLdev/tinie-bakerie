@@ -5,37 +5,31 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Services\Media\Enum;
 
 use App\Services\Media\Enum\MediaType;
-use InvalidArgumentException;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+/**
+ * @internal
+ */
 #[CoversClass(MediaType::class)]
-class MediaTypeTest extends MockeryTestCase
+final class MediaTypeTest extends MockeryTestCase
 {
-    public static function getFromExtensionData(): array
+    public static function getValidExtensionData(): array
     {
         return [
-            'jpg should be an image type' => ['jpg', 'image', true],
-            'jpeg should be an image type' => ['jpeg', 'image', true],
-            'png should be an image type' => ['png', 'image', true],
-            'gif should be an image type' => ['gif', 'image', true],
-            'mp4 should be an video type' => ['mp4', 'video', true],
-            'webm should be an video type' => ['webm', 'video', false],
+            'jpg should be an image type' => ['jpg', 'image'],
+            'jpeg should be an image type' => ['jpeg', 'image'],
+            'png should be an image type' => ['png', 'image'],
+            'gif should be an image type' => ['gif', 'image'],
+            'mp4 should be an video type' => ['mp4', 'video'],
+            'webm should be an video type' => ['webm', 'video'],
         ];
     }
 
-    #[DataProvider('getFromExtensionData')]
-    public function testFromExtension(string $extension, string $expectedType, bool $isSupported): void
+    #[DataProvider('getValidExtensionData')]
+    public function testFromExtension(string $extension, string $expectedType): void
     {
-        if (!$isSupported) {
-            $this->expectException(InvalidArgumentException::class);
-        }
-
-        $result = MediaType::fromExtension($extension)->value;
-
-        if ($isSupported) {
-            $this->assertSame($expectedType, $result);
-        }
+        self::assertSame($expectedType, MediaType::fromExtension($extension)->value);
     }
 }

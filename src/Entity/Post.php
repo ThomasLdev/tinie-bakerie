@@ -1,44 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\SluggableEntity;
-use DateTimeImmutable;
+use App\Entity\Contracts\HasTranslations;
+use App\Entity\Traits\Activable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\UniqueConstraint('post_title_unique', ['title'])]
+/**
+ * @implements HasTranslations<PostTranslation>
+ */
 #[ORM\Entity]
-class Post implements LocalizedEntityInterface
+class Post implements HasTranslations
 {
+    use Activable;
     use TimestampableEntity;
-    use LocalizedEntity;
-    use SluggableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
-
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $publishedAt = null;
-
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
-    /**
-     * @var Collection<int, Tag>
-     */
+    /** @var Collection<int,Tag> */
     #[ORM\ManyToMany(
         targetEntity: Tag::class,
         inversedBy: 'posts',
@@ -47,9 +38,7 @@ class Post implements LocalizedEntityInterface
     )]
     private Collection $tags;
 
-    /**
-     * @var Collection<int,PostMedia>
-     */
+    /** @var Collection<int,PostMedia> */
     #[ORM\OneToMany(
         targetEntity: PostMedia::class,
         mappedBy: 'post',
@@ -59,9 +48,7 @@ class Post implements LocalizedEntityInterface
     )]
     private Collection $media;
 
-    /**
-     * @var Collection<int,PostSection>
-     */
+    /** @var Collection<int,PostSection> */
     #[ORM\OneToMany(
         targetEntity: PostSection::class,
         mappedBy: 'post',
@@ -72,40 +59,24 @@ class Post implements LocalizedEntityInterface
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $sections;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $readingTime = 0;
+
+    /** @var Collection<int,PostTranslation> */
+    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    private Collection $translations;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->sections = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id ?? null;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getPublishedAt(): ?DateTimeImmutable
-    {
-        return $this->publishedAt;
-    }
-
-    public function setPublishedAt(?DateTimeImmutable $publishedAt): self
-    {
-        $this->publishedAt = $publishedAt;
-
-        return $this;
     }
 
     public function getCategory(): ?Category
@@ -121,7 +92,7 @@ class Post implements LocalizedEntityInterface
     }
 
     /**
-     * @param array<array-key,Tag> $tags
+     * @param Tag[] $tags
      */
     public function setTags(array $tags): self
     {
@@ -133,7 +104,7 @@ class Post implements LocalizedEntityInterface
     }
 
     /**
-     * @return Collection<int, Tag>
+     * @return Collection<int,Tag>
      */
     public function getTags(): Collection
     {
@@ -157,7 +128,7 @@ class Post implements LocalizedEntityInterface
     }
 
     /**
-     * @param array<array-key,PostMedia> $media
+     * @param PostMedia[] $media
      */
     public function setMedia(array $media): self
     {
@@ -188,18 +159,16 @@ class Post implements LocalizedEntityInterface
 
     public function removeMedium(PostMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getPost() === $this) {
-                $medium->setPost(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getPost() === $this) {
+            $medium->setPost(null);
         }
 
         return $this;
     }
 
     /**
-     * @param array<array-key,PostSection> $sections
+     * @param PostSection[] $sections
      */
     public function setSections(array $sections): self
     {
@@ -211,7 +180,7 @@ class Post implements LocalizedEntityInterface
     }
 
     /**
-     * @return Collection<int, PostSection>
+     * @return Collection<int,PostSection>
      */
     public function getSections(): Collection
     {
@@ -230,13 +199,84 @@ class Post implements LocalizedEntityInterface
 
     public function removeSection(PostSection $section): self
     {
-        if ($this->sections->removeElement($section)) {
-            // set the owning side to null (unless already changed)
-            if ($section->getPost() === $this) {
-                $section->setPost(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->sections->removeElement($section) && $section->getPost() === $this) {
+            $section->setPost(null);
         }
 
         return $this;
+    }
+
+    public function getReadingTime(): int
+    {
+        return $this->readingTime;
+    }
+
+    public function setReadingTime(int $readingTime): self
+    {
+        $this->readingTime = $readingTime;
+
+        return $this;
+    }
+
+    /**
+     * @param PostTranslation[] $translations
+     */
+    public function setTranslations(array $translations): self
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,PostTranslation>
+     */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(PostTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setTranslatable($this);
+        }
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+    }
+
+    public function getSlug(): string
+    {
+        return $this->getLocalizedTranslation()?->getSlug() ?? '';
+    }
+
+    public function getTranslationByLocale(string $locale): ?PostTranslation
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection.
+     */
+    private function getLocalizedTranslation(): ?PostTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

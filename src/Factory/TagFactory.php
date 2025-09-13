@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\Tag;
-use App\Factory\Utils\TranslatableEntityPropertySetter;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -11,12 +12,9 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class TagFactory extends PersistentProxyObjectFactory
 {
-    public function __construct(
-        private readonly TranslatableEntityPropertySetter $propertySetter,
-    ) {
-        parent::__construct();
-    }
-
+    /**
+     * @return class-string<Tag>
+     */
     public static function class(): string
     {
         return Tag::class;
@@ -31,22 +29,6 @@ final class TagFactory extends PersistentProxyObjectFactory
             'color' => self::faker()->hexColor(),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
-            'title' => self::faker()->word(),
-            'activatedAt' => self::faker()->boolean(90) ? self::faker()->dateTime() : null,
         ];
-    }
-
-    protected function initialize(): static
-    {
-        return $this
-            ->afterInstantiate(function (Tag $tag) {
-                $this->propertySetter->processTranslations(
-                    $tag,
-                    [
-                        'title' => fn ($locale) => $tag->getTitle().' '.$locale,
-                    ]
-                );
-            })
-        ;
     }
 }

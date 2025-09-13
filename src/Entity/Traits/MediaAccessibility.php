@@ -6,18 +6,12 @@ namespace App\Entity\Traits;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * Use with LocalizedEntity trait.
- */
 trait MediaAccessibility
 {
-    #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => ''])]
     private string $alt = '';
 
-    #[Gedmo\Translatable]
     #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => ''])]
     private string $title = '';
 
@@ -26,7 +20,7 @@ trait MediaAccessibility
         return $this->alt;
     }
 
-    public function setAlt(string $alt): static
+    public function setAlt(string $alt): self
     {
         $this->alt = $alt;
 
@@ -38,7 +32,7 @@ trait MediaAccessibility
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 

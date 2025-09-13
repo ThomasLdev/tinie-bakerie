@@ -24,8 +24,7 @@ build: ## Builds the Docker images
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
 
-start: up
-	@$(PHP_CONT) php bin/console tailwind:build
+start: up assets-install
 
 build: build up ## Build and start the containers
 
@@ -49,17 +48,26 @@ create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
 
 fixtures: create-upload-dirs
+	@$(PHP_CONT) bin/console c:c
 	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction
 
 fixtures-test: create-upload-dirs
+	@$(PHP_CONT) bin/console c:c --env=test
 	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction --env=test
 
 doctrine-diff:
 	@$(PHP_CONT) bin/console doctrine:migrations:diff
 
 doctrine-migrate:
+	@$(PHP_CONT) bin/console c:c
 	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
 
+doctrine-migrate-test:
+	@$(PHP_CONT) bin/console c:c --env=test
+	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+assets-install: tailwind
+	@$(PHP_CONT) bin/console assets:install
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
@@ -92,15 +100,18 @@ phpcs-dry:
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: phpstan phpcs twig-linter
+quality: rector phpcs phpstan twig-linter
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
 
+rector:
+	@$(PHP_CONT) vendor/bin/rector process
+
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
 phpunit:
-	@$(PHP_CONT) vendor/bin/phpunit
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
 coverage:
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage

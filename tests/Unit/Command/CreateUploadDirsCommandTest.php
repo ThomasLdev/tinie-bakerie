@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Command;
 
 use App\Command\CreateUploadDirsCommand;
-use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -11,12 +12,26 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @internal
+ */
 #[CoversClass(CreateUploadDirsCommand::class)]
-class CreateUploadDirsCommandTest extends KernelTestCase
+final class CreateUploadDirsCommandTest extends KernelTestCase
 {
     private Filesystem $fileSystem;
 
     private CreateUploadDirsCommand $command;
+
+    protected function setUp(): void
+    {
+        $this->fileSystem = \Mockery::mock(Filesystem::class);
+        $this->command = new CreateUploadDirsCommand(
+            $this->fileSystem,
+            self::getContainer()->get(ParameterBagInterface::class),
+        );
+
+        parent::setUp();
+    }
 
     public static function getUploadDirsDataProvider(): array
     {
@@ -87,17 +102,15 @@ class CreateUploadDirsCommandTest extends KernelTestCase
         $commandTester->execute($arguments);
         $commandTester->assertCommandIsSuccessful();
 
-        $this->assertStringContainsString($expected, $commandTester->getDisplay());
+        self::assertStringContainsString($expected, $commandTester->getDisplay());
     }
 
     private function setupExistsMock(array $existingDirectories): void
     {
         $this->fileSystem
             ->shouldReceive('exists')
-            ->with(Mockery::any())
-            ->andReturnUsing(function ($dir) use ($existingDirectories) {
-                return in_array($dir, $existingDirectories, true);
-            });
+            ->with(\Mockery::any())
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
     }
 
     private function setupCreateMocks(array $directoriesToCreate): void
@@ -109,11 +122,9 @@ class CreateUploadDirsCommandTest extends KernelTestCase
         } else {
             $this->fileSystem
                 ->shouldReceive('mkdir')
-                ->times(count($directoriesToCreate))
-                ->with(Mockery::any(), Mockery::any())
-                ->andReturnUsing(function ($dir) use ($directoriesToCreate) {
-                    return in_array($dir, $directoriesToCreate, true);
-                });
+                ->times(\count($directoriesToCreate))
+                ->with(\Mockery::any(), \Mockery::any())
+                ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $directoriesToCreate, true));
         }
     }
 
@@ -121,29 +132,14 @@ class CreateUploadDirsCommandTest extends KernelTestCase
     {
         $this->fileSystem
             ->shouldReceive('remove')
-            ->times(count($existingDirectories))
-            ->with(Mockery::any())
-            ->andReturnUsing(function ($dir) use ($existingDirectories) {
-                return in_array($dir, $existingDirectories, true);
-            });
+            ->times(\count($existingDirectories))
+            ->with(\Mockery::any())
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
 
         $this->fileSystem
             ->shouldReceive('mkdir')
-            ->times(count($existingDirectories))
-            ->with(Mockery::any(), Mockery::any())
-            ->andReturnUsing(function ($dir) use ($existingDirectories) {
-                return in_array($dir, $existingDirectories, true);
-            });
-    }
-
-    protected function setUp(): void
-    {
-        $this->fileSystem = Mockery::mock(Filesystem::class);
-        $this->command = new CreateUploadDirsCommand(
-            $this->fileSystem,
-            self::getContainer()->get(ParameterBagInterface::class)
-        );
-
-        parent::setUp();
+            ->times(\count($existingDirectories))
+            ->with(\Mockery::any(), \Mockery::any())
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
     }
 }

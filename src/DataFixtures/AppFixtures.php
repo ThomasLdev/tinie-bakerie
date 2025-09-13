@@ -1,51 +1,97 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
-use App\DataFixtures\Trait\MediaFixtures;
+use App\Entity\Post;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
+use App\Factory\CategoryMediaTranslationFactory;
+use App\Factory\CategoryTranslationFactory;
 use App\Factory\PostFactory;
 use App\Factory\PostMediaFactory;
+use App\Factory\PostMediaTranslationFactory;
 use App\Factory\PostSectionFactory;
 use App\Factory\PostSectionMediaFactory;
+use App\Factory\PostSectionMediaTranslationFactory;
+use App\Factory\PostSectionTranslationFactory;
+use App\Factory\PostTranslationFactory;
 use App\Factory\TagFactory;
+use App\Factory\TagTranslationFactory;
+use App\Services\Fixtures\Media\MediaLoader;
+use App\Services\Locale\Locales;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 
 class AppFixtures extends Fixture
 {
-    use MediaFixtures;
+    public function __construct(
+        private readonly MediaLoader $mediaLoader,
+        private readonly Locales $locales,
+    ) {
+    }
 
     public function load(ObjectManager $manager): void
     {
-        CategoryFactory::createMany(5, function () {
-            return [
-                'media' => CategoryMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
-                }),
-            ];
-        });
+        CategoryFactory::createMany(5, fn (): array => [
+            'media' => CategoryMediaFactory::createRange(1, 3, fn (): array => array_merge(
+                [
+                    'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
+                ],
+                $this->mediaLoader->getRandomMediaFactoryFields(),
+            )),
+            'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
+        ]);
 
-        TagFactory::createMany(15);
+        TagFactory::createMany(15, fn (): array => [
+            'translations' => $this->createTranslations(TagTranslationFactory::new()),
+        ]);
 
-        PostFactory::createMany(30, function () {
-            return [
-                'category' => CategoryFactory::random(),
-                'tags' => TagFactory::randomRange(1, 3),
-                'media' => PostMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
-                }),
-            ];
-        });
+        /** @var Post[] $posts */
+        $posts = PostFactory::createMany(30, fn (): array => [
+            'translations' => $this->createTranslations(PostTranslationFactory::new()),
+            'category' => CategoryFactory::random(),
+            'tags' => TagFactory::randomRange(1, 3),
+            'media' => PostMediaFactory::createRange(1, 3, fn (): array => array_merge(
+                [
+                    'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
+                ],
+                $this->mediaLoader->getRandomMediaFactoryFields(),
+            )),
+        ]);
 
-        PostSectionFactory::createMany(40, function () {
-            return [
-                'media' => PostSectionMediaFactory::createRange(1, 3, function () {
-                    return $this->getRandomFileData();
-                }),
-                'post' => PostFactory::random(),
-            ];
-        });
+        foreach ($posts as $post) {
+            PostSectionFactory::createRange(2, 5, fn (): array => [
+                'media' => PostSectionMediaFactory::createRange(1, 3, fn (): array => array_merge(
+                    [
+                        'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
+                    ],
+                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                )),
+                'post' => $post,
+                'translations' => $this->createTranslations(PostSectionTranslationFactory::new()),
+            ]);
+        }
+    }
+
+    /**
+     * @return array<array-key,Proxy>
+     *
+     * @phpstan-ignore-next-line
+     */
+    private function createTranslations(PersistentProxyObjectFactory $factory): array
+    {
+        $translations = [];
+
+        foreach ($this->locales->get() as $locale) {
+            $translations[] = $factory::createOne([
+                'locale' => $locale,
+            ]);
+        }
+
+        return $translations;
     }
 }

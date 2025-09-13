@@ -17,4 +17,44 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
+
+    /**
+     * @return array<array-key,mixed>
+     */
+    #[\Override]
+    public function findAll(): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug}')
+            ->leftJoin('c.media', 'm')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->orderBy('c.createdAt', 'DESC');
+
+        $result = $qb->getQuery()->getResult();
+
+        return \is_array($result) ? $result : [];
+    }
+
+    public function findOne(string $slug): ?Category
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, description, metaDescription, metaTitle, excerpt}')
+            ->leftJoin('c.media', 'm')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->where('ct.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->setMaxResults(1);
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result instanceof Category ? $result : null;
+    }
 }

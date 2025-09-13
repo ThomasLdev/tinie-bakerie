@@ -1,32 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Entity\Contracts\LocalizedEntityInterface;
-use App\Entity\Traits\LocalizedEntity;
-use App\Entity\Traits\SluggableEntity;
+use App\Entity\Contracts\HasTranslations;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
+/**
+ * @implements HasTranslations<CategoryTranslation>
+ */
 #[ORM\Entity]
-class Category implements LocalizedEntityInterface
+class Category implements HasTranslations
 {
     use TimestampableEntity;
-    use LocalizedEntity;
-    use SluggableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    /**
-     * @var Collection<int, Post>
-     */
+    /** @var Collection<int,Post> */
     #[ORM\OneToMany(
         targetEntity: Post::class,
         mappedBy: 'category',
@@ -34,9 +31,7 @@ class Category implements LocalizedEntityInterface
     )]
     private Collection $posts;
 
-    /**
-     * @var Collection<int,CategoryMedia>
-     */
+    /** @var Collection<int,CategoryMedia> */
     #[ORM\OneToMany(
         targetEntity: CategoryMedia::class,
         mappedBy: 'category',
@@ -46,18 +41,17 @@ class Category implements LocalizedEntityInterface
     )]
     private Collection $media;
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
+    /** @var Collection<int,CategoryTranslation> */
+    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    private Collection $translations;
 
-    #[Gedmo\Translatable]
-    #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
-    private string $description = '';
+    private int $postCount = 0;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,39 +60,20 @@ class Category implements LocalizedEntityInterface
     }
 
     /**
-     * @return Collection<int, Post>
+     * @return Collection<int,Post>
      */
     public function getPosts(): Collection
     {
         return $this->posts;
     }
 
-    public function getTitle(): string
+    public function getPostCount(): int
     {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
+        return $this->postCount;
     }
 
     /**
-     * @param array<array-key,CategoryMedia> $media
+     * @param CategoryMedia[] $media
      */
     public function setMedia(array $media): self
     {
@@ -129,13 +104,92 @@ class Category implements LocalizedEntityInterface
 
     public function removeMedium(CategoryMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getCategory() === $this) {
-                $medium->setCategory(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getCategory() === $this) {
+            $medium->setCategory(null);
         }
 
         return $this;
+    }
+
+    /**
+     * @param CategoryTranslation[] $translations
+     */
+    public function setTranslations(array $translations): self
+    {
+        foreach ($translations as $translation) {
+            $this->addTranslation($translation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int,CategoryTranslation>
+     */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(CategoryTranslation $translation): self
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setTranslatable($this);
+        }
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+    }
+
+    public function getDescription(): string
+    {
+        return $this->getLocalizedTranslation()?->getDescription() ?? '';
+    }
+
+    public function getSlug(): string
+    {
+        return $this->getLocalizedTranslation()?->getSlug() ?? '';
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->getLocalizedTranslation()?->getMetaTitle() ?? '';
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->getLocalizedTranslation()?->getMetaDescription() ?? '';
+    }
+
+    public function getExcerpt(): string
+    {
+        return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
+    }
+
+    public function getTranslationByLocale(string $locale): ?CategoryTranslation
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * With the locale filter enabled, there is only one translation in the collection.
+     */
+    private function getLocalizedTranslation(): ?CategoryTranslation
+    {
+        $translations = $this->getTranslations()->first();
+
+        return false === $translations ? null : $translations;
     }
 }

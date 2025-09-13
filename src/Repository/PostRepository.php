@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -21,65 +21,66 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return array<array-key,mixed>
      */
-    public function findAllPublished(): array
+    public function findAllActive(): array
     {
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
-            ->addSelect('PARTIAL c.{id, title, slug}')
-            ->addSelect('PARTIAL t.{id, title, color}')
-            ->addSelect('PARTIAL pm.{id, mediaName, alt, type, title}')
+            ->select('PARTIAL p.{id, createdAt, updatedAt}')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('PARTIAL pt.{id, title, slug}')
             ->leftJoin('p.category', 'c')
+            ->addSelect('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug}')
             ->leftJoin('p.tags', 't')
-            ->leftJoin('p.media', 'pm')
-            ->where('p.publishedAt IS NOT NULL')
-            ->orderBy('p.publishedAt', 'DESC');
+            ->addSelect('PARTIAL t.{id, color}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title}')
+            ->leftJoin('p.media', 'm')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->where('p.active = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC');
 
-        $query = $qb->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
-        $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
+        $result = $qb->getQuery()->getResult();
 
-        $result = $query->getResult();
-
-        return is_array($result) ? $result : [];
+        return \is_array($result) ? $result : [];
     }
 
-    public function findOnePublishedBySlug(string $slug): ?Post
+    public function findOneActive(string $slug): ?Post
     {
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, title, publishedAt, createdAt, updatedAt, slug}')
-            ->addSelect('PARTIAL c.{id, title, slug}')
-            ->addSelect('PARTIAL t.{id, title, color}')
-            ->addSelect('PARTIAL pm.{id, mediaName, alt, type, title}')
-            ->addSelect('PARTIAL ps.{id, position, content, type}')
+            ->select('PARTIAL p.{id, createdAt, updatedAt}')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('PARTIAL pt.{id, title, slug}')
             ->leftJoin('p.category', 'c')
+            ->addSelect('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug}')
             ->leftJoin('p.tags', 't')
-            ->leftJoin('p.media', 'pm')
+            ->addSelect('PARTIAL t.{id, color}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title}')
             ->leftJoin('p.sections', 'ps')
-            ->where('p.slug = :slug')
-            ->andWhere('p.publishedAt IS NOT NULL')
-            ->setParameter('slug', $slug);
+            ->addSelect('PARTIAL ps.{id, position, type}')
+            ->leftJoin('ps.translations', 'pst')
+            ->addSelect('PARTIAL pst.{id, content}')
+            ->leftJoin('ps.media', 'psm')
+            ->addSelect('PARTIAL psm.{id, mediaName, type}')
+            ->leftJoin('psm.translations', 'psmt')
+            ->addSelect('PARTIAL psmt.{id, alt, title}')
+            ->leftJoin('p.media', 'm')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->where('p.active = :active')
+            ->andWhere('pt.slug = :slug')
+            ->setParameter('active', true)
+            ->setParameter('slug', $slug)
+            ->orderBy('p.createdAt', 'DESC');
 
-        $query = $qb->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
-        $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
-
-        $result = $query->getOneOrNullResult();
-
-        return $result instanceof Post ? $result : null;
-    }
-
-    public function findRandomPublished(): ?Post
-    {
-        $qb = $this->createQueryBuilder('p')
-            ->where('p.publishedAt IS NOT NULL')
-            ->setMaxResults(1)
-        ;
-
-        $query = $qb->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
-        $query->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
-
-        $result = $query->getOneOrNullResult();
+        $result = $qb->getQuery()->getOneOrNullResult();
 
         return $result instanceof Post ? $result : null;
     }
