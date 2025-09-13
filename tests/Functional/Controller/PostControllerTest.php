@@ -25,6 +25,7 @@ final class PostControllerTest extends BaseControllerTestCase
 
     private EntityManagerInterface $entityManager;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

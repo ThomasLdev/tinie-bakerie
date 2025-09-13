@@ -159,11 +159,9 @@ class Post implements HasTranslations
 
     public function removeMedium(PostMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getPost() === $this) {
-                $medium->setPost(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getPost() === $this) {
+            $medium->setPost(null);
         }
 
         return $this;
@@ -201,11 +199,9 @@ class Post implements HasTranslations
 
     public function removeSection(PostSection $section): self
     {
-        if ($this->sections->removeElement($section)) {
-            // set the owning side to null (unless already changed)
-            if ($section->getPost() === $this) {
-                $section->setPost(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->sections->removeElement($section) && $section->getPost() === $this) {
+            $section->setPost(null);
         }
 
         return $this;

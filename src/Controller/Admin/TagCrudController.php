@@ -28,15 +28,17 @@ class TagCrudController extends AbstractCrudController
         return Tag::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         if (Crud::PAGE_INDEX === $pageName) {
             return $this->getIndexFields();
         }
 
-        return $this->getFormFields($pageName);
+        return $this->getFormFields();
     }
 
+    #[\Override]
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -61,10 +63,9 @@ class TagCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): \Generator
+    private function getFormFields(): \Generator
     {
         yield ColorField::new('color', 'admin.tag.color.title');
-
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(TagTranslationType::class)
             ->setFormTypeOptions([

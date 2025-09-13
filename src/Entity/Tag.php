@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements HasTranslations<TagTranslation>
  */
 #[ORM\Entity]
-class Tag implements HasTranslations
+class Tag implements HasTranslations, \Stringable
 {
     use TimestampableEntity;
 

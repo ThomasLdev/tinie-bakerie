@@ -14,7 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements IsTranslation<PostSection>
  */
 #[ORM\Entity]
-class PostSectionTranslation implements IsTranslation
+class PostSectionTranslation implements IsTranslation, \Stringable
 {
     use Localized;
     use TimestampableEntity;

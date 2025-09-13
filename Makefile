@@ -100,10 +100,13 @@ phpcs-dry:
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: phpstan phpcs twig-linter
+quality: rector phpcs phpstan twig-linter
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
+
+rector:
+	@$(PHP_CONT) vendor/bin/rector process
 
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 

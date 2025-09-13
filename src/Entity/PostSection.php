@@ -16,7 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements HasTranslations<PostSectionTranslation>
  */
 #[ORM\Entity]
-class PostSection implements HasTranslations
+class PostSection implements HasTranslations, \Stringable
 {
     use TimestampableEntity;
 
@@ -137,11 +137,9 @@ class PostSection implements HasTranslations
 
     public function removeMedium(PostSectionMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getPostSection() === $this) {
-                $medium->setPostSection(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getPostSection() === $this) {
+            $medium->setPostSection(null);
         }
 
         return $this;

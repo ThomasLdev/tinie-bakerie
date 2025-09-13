@@ -17,7 +17,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'post_translation_lookup_unique_idx', columns: ['locale', 'title'])]
-class PostTranslation implements IsTranslation, HasSlugs
+class PostTranslation implements IsTranslation, HasSlugs, \Stringable
 {
     use Localized;
     use Sluggable;

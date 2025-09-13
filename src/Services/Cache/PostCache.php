@@ -35,7 +35,7 @@ readonly class PostCache implements EntityCacheInterface
     {
         $key = $this->keyGenerator->entityIndex($this->getEntityName(), $locale);
 
-        return $this->cache->get($key, function (ItemInterface $item) {
+        return $this->cache->get($key, function (ItemInterface $item): array {
             $item->expiresAfter(self::CACHE_TTL);
 
             return $this->repository->findAllActive();
@@ -49,7 +49,7 @@ readonly class PostCache implements EntityCacheInterface
     {
         $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $identifier);
 
-        return $this->cache->get($key, function (ItemInterface $item) use ($identifier) {
+        return $this->cache->get($key, function (ItemInterface $item) use ($identifier): ?Post {
             $item->expiresAfter(self::CACHE_TTL);
 
             return $this->repository->findOneActive($identifier);

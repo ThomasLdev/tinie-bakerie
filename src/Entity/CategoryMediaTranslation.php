@@ -14,7 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements IsTranslation<CategoryMedia>
  */
 #[ORM\Entity]
-class CategoryMediaTranslation implements IsTranslation
+class CategoryMediaTranslation implements IsTranslation, \Stringable
 {
     use Localized;
     use MediaAccessibility;

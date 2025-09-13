@@ -42,6 +42,7 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         return $this

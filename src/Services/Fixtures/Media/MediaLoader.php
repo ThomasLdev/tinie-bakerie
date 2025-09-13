@@ -62,7 +62,7 @@ class MediaLoader
 
         $fullPath = $this->rootDir . self::FOLDER_PATH;
         $files = array_diff(scandir($fullPath), ['.', '..']);
-        $files = array_filter($files, static fn ($fileName) => is_file($fullPath . $fileName));
+        $files = array_filter($files, static fn (string $fileName): bool => is_file($fullPath . $fileName));
 
         if ([] === $files) {
             throw new \RuntimeException(\sprintf('No media files found in %s directory', $fullPath));

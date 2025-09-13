@@ -104,11 +104,9 @@ class Category implements HasTranslations
 
     public function removeMedium(CategoryMedia $medium): self
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getCategory() === $this) {
-                $medium->setCategory(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->media->removeElement($medium) && $medium->getCategory() === $this) {
+            $medium->setCategory(null);
         }
 
         return $this;

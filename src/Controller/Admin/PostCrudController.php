@@ -33,15 +33,17 @@ class PostCrudController extends AbstractCrudController
         return Post::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         if (Crud::PAGE_INDEX === $pageName) {
             return $this->getIndexFields();
         }
 
-        return $this->getFormFields($pageName);
+        return $this->getFormFields();
     }
 
+    #[\Override]
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -62,24 +64,21 @@ class PostCrudController extends AbstractCrudController
         yield ArrayField::new('tags', 'admin.tag.dashboard.plural');
 
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
-            ->formatValue(static fn (Category $category) => $category->getTitle());
+            ->formatValue(static fn (Category $category): string => $category->getTitle());
 
         yield DateField::new('createdAt', 'admin.global.created_at');
 
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): \Generator
+    private function getFormFields(): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
-
         yield AssociationField::new('tags', 'admin.tag.dashboard.plural')
             ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('by_reference', false);
-
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->setFormTypeOption('choice_label', 'title');
-
         yield CollectionField::new('media', 'admin.global.media.label')
             ->setEntryType(PostMediaType::class)
             ->setFormTypeOptions([
@@ -95,7 +94,6 @@ class PostCrudController extends AbstractCrudController
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
-
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(PostTranslationType::class)
             ->setFormTypeOptions([
@@ -111,7 +109,6 @@ class PostCrudController extends AbstractCrudController
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
-
         yield CollectionField::new('sections', 'admin.post_section.title')
             ->setEntryType(PostSectionType::class)
             ->setFormTypeOptions([

@@ -110,7 +110,7 @@ final class CreateUploadDirsCommandTest extends KernelTestCase
         $this->fileSystem
             ->shouldReceive('exists')
             ->with(\Mockery::any())
-            ->andReturnUsing(static fn ($dir) => \in_array($dir, $existingDirectories, true));
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
     }
 
     private function setupCreateMocks(array $directoriesToCreate): void
@@ -124,7 +124,7 @@ final class CreateUploadDirsCommandTest extends KernelTestCase
                 ->shouldReceive('mkdir')
                 ->times(\count($directoriesToCreate))
                 ->with(\Mockery::any(), \Mockery::any())
-                ->andReturnUsing(static fn ($dir) => \in_array($dir, $directoriesToCreate, true));
+                ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $directoriesToCreate, true));
         }
     }
 
@@ -134,12 +134,12 @@ final class CreateUploadDirsCommandTest extends KernelTestCase
             ->shouldReceive('remove')
             ->times(\count($existingDirectories))
             ->with(\Mockery::any())
-            ->andReturnUsing(static fn ($dir) => \in_array($dir, $existingDirectories, true));
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
 
         $this->fileSystem
             ->shouldReceive('mkdir')
             ->times(\count($existingDirectories))
             ->with(\Mockery::any(), \Mockery::any())
-            ->andReturnUsing(static fn ($dir) => \in_array($dir, $existingDirectories, true));
+            ->andReturnUsing(static fn ($dir): bool => \in_array($dir, $existingDirectories, true));
     }
 }

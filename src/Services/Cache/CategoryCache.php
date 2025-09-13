@@ -36,7 +36,7 @@ readonly class CategoryCache implements EntityCacheInterface
     {
         $key = $this->keyGenerator->entityIndex($this->getEntityName(), $locale);
 
-        return $this->cache->get($key, function (ItemInterface $item) {
+        return $this->cache->get($key, function (ItemInterface $item): array {
             $item->expiresAfter(self::CACHE_TTL);
 
             return $this->repository->findAll();
@@ -50,7 +50,7 @@ readonly class CategoryCache implements EntityCacheInterface
     {
         $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $identifier);
 
-        return $this->cache->get($key, function (ItemInterface $item) use ($identifier) {
+        return $this->cache->get($key, function (ItemInterface $item) use ($identifier): ?Category {
             $item->expiresAfter(self::CACHE_TTL);
 
             return $this->repository->findOne($identifier);

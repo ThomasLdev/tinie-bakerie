@@ -36,8 +36,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        CategoryFactory::createMany(5, fn () => [
-            'media' => CategoryMediaFactory::createRange(1, 3, fn () => array_merge(
+        CategoryFactory::createMany(5, fn (): array => [
+            'media' => CategoryMediaFactory::createRange(1, 3, fn (): array => array_merge(
                 [
                     'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
                 ],
@@ -46,16 +46,16 @@ class AppFixtures extends Fixture
             'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
         ]);
 
-        TagFactory::createMany(15, fn () => [
+        TagFactory::createMany(15, fn (): array => [
             'translations' => $this->createTranslations(TagTranslationFactory::new()),
         ]);
 
         /** @var Post[] $posts */
-        $posts = PostFactory::createMany(30, fn () => [
+        $posts = PostFactory::createMany(30, fn (): array => [
             'translations' => $this->createTranslations(PostTranslationFactory::new()),
             'category' => CategoryFactory::random(),
             'tags' => TagFactory::randomRange(1, 3),
-            'media' => PostMediaFactory::createRange(1, 3, fn () => array_merge(
+            'media' => PostMediaFactory::createRange(1, 3, fn (): array => array_merge(
                 [
                     'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
                 ],
@@ -64,8 +64,8 @@ class AppFixtures extends Fixture
         ]);
 
         foreach ($posts as $post) {
-            PostSectionFactory::createRange(2, 5, fn () => [
-                'media' => PostSectionMediaFactory::createRange(1, 3, fn () => array_merge(
+            PostSectionFactory::createRange(2, 5, fn (): array => [
+                'media' => PostSectionMediaFactory::createRange(1, 3, fn (): array => array_merge(
                     [
                         'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
                     ],

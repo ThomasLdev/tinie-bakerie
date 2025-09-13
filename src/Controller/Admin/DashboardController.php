@@ -17,17 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
 class DashboardController extends AbstractDashboardController
 {
     //    #[IsGranted('ROLE_USER')]
+    #[\Override]
     public function index(): Response
     {
         return parent::index();
     }
 
+    #[\Override]
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('Tinie Bakerie');
     }
 
+    #[\Override]
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToUrl('admin.website.label', 'fa fa-home', '/');

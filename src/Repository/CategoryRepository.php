@@ -21,6 +21,7 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * @return array<array-key,mixed>
      */
+    #[\Override]
     public function findAll(): array
     {
         $qb = $this->createQueryBuilder('c')

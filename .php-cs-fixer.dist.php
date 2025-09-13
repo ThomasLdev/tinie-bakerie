@@ -23,6 +23,7 @@ $finder = Finder::create()
     ->ignoreVCS(true);
 
 return (new Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
     ->setRules([
         // PSR Standards
@@ -280,7 +281,6 @@ return (new Config())
         'types_spaces' => true,
 
         // Symfony specific
-        'date_time_immutable' => true,
         'fopen_flag_order' => true,
         'fopen_flags' => true,
         'get_class_to_class_keyword' => true,

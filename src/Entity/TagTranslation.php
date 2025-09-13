@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'tag_translation_unique_idx', columns: ['locale', 'title'])]
-class TagTranslation implements IsTranslation
+class TagTranslation implements IsTranslation, \Stringable
 {
     use Localized;
     use TimestampableEntity;

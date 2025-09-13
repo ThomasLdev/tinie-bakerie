@@ -28,6 +28,7 @@ class CategoryCrudController extends AbstractCrudController
         return Category::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         if (Crud::PAGE_INDEX === $pageName) {
@@ -37,6 +38,7 @@ class CategoryCrudController extends AbstractCrudController
         return $this->getFormFields($pageName);
     }
 
+    #[\Override]
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
