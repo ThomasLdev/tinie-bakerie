@@ -29,8 +29,8 @@ class CategoryTranslation implements IsTranslation, HasSlugs, \Stringable
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private Category $translatable;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?Category $translatable = null;
 
     #[ORM\Column(type: Types::STRING)]
     private string $title;
@@ -57,7 +57,7 @@ class CategoryTranslation implements IsTranslation, HasSlugs, \Stringable
         return $this->id ?? null;
     }
 
-    public function getTranslatable(): Category
+    public function getTranslatable(): ?Category
     {
         return $this->translatable;
     }

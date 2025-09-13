@@ -21,8 +21,8 @@ class TagTranslation implements IsTranslation, \Stringable
     use TimestampableEntity;
 
     #[ORM\ManyToOne(targetEntity: Tag::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected Tag $translatable;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Tag $translatable = null;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -42,7 +42,7 @@ class TagTranslation implements IsTranslation, \Stringable
         return $this->id ?? null;
     }
 
-    public function getTranslatable(): Tag
+    public function getTranslatable(): ?Tag
     {
         return $this->translatable;
     }

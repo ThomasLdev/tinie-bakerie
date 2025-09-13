@@ -12,7 +12,7 @@ interface IsTranslation
     /**
      * @return T
      */
-    public function getTranslatable(): HasTranslations;
+    public function getTranslatable(): ?HasTranslations;
 
     public function getLocale(): string;
 }

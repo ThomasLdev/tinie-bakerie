@@ -26,8 +26,8 @@ class CategoryMediaTranslation implements IsTranslation, \Stringable
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: CategoryMedia::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private CategoryMedia $translatable;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?CategoryMedia $translatable = null;
 
     public function __toString(): string
     {
@@ -39,7 +39,7 @@ class CategoryMediaTranslation implements IsTranslation, \Stringable
         return $this->id ?? null;
     }
 
-    public function getTranslatable(): CategoryMedia
+    public function getTranslatable(): ?CategoryMedia
     {
         return $this->translatable;
     }

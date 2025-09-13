@@ -29,8 +29,8 @@ class PostTranslation implements IsTranslation, HasSlugs, \Stringable
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private Post $translatable;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?Post $translatable = null;
 
     #[ORM\Column(type: Types::STRING)]
     private string $title;
@@ -54,7 +54,7 @@ class PostTranslation implements IsTranslation, HasSlugs, \Stringable
         return $this->id ?? null;
     }
 
-    public function getTranslatable(): Post
+    public function getTranslatable(): ?Post
     {
         return $this->translatable;
     }

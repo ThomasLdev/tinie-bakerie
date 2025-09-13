@@ -20,8 +20,8 @@ class PostSectionTranslation implements IsTranslation, \Stringable
     use TimestampableEntity;
 
     #[ORM\ManyToOne(targetEntity: PostSection::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    protected PostSection $translatable;
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?PostSection $translatable = null;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -44,7 +44,7 @@ class PostSectionTranslation implements IsTranslation, \Stringable
         return $this->id ?? null;
     }
 
-    public function getTranslatable(): PostSection
+    public function getTranslatable(): ?PostSection
     {
         return $this->translatable;
     }

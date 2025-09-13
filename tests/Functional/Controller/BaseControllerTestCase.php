@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /**
  * @internal
  */
-final class BaseControllerTestCase extends WebTestCase
+abstract class BaseControllerTestCase extends WebTestCase
 {
     protected KernelBrowser $client;
 
