@@ -66,8 +66,20 @@ doctrine-migrate-test:
 	@$(PHP_CONT) bin/console c:c --env=test
 	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction --env=test
 
-assets-install: tailwind
+doctrine-db-create:
+	@$(PHP_CONT) bin/console doctrine:database:create --if-not-exists
+
+doctrine-db-test-create:
+	@$(PHP_CONT) bin/console doctrine:database:create --if-not-exists --env=test
+
+assets-install:
 	@$(PHP_CONT) bin/console assets:install
+
+tailwind:
+	@$(PHP_CONT) bin/console tailwind:build
+
+tailwind-watch:
+	@$(PHP_CONT) bin/console tailwind:build --watch
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
@@ -121,9 +133,3 @@ phpunit-unit:
 
 phpunit-functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
-
-tailwind:
-	@$(PHP_CONT) bin/console tailwind:build
-
-tailwind-watch:
-	@$(PHP_CONT) bin/console tailwind:build --watch

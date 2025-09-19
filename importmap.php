@@ -16,38 +16,22 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
-    '@hotwired/stimulus' => [
-        'version' => '3.2.2',
-    ],
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
-    '@hotwired/turbo' => [
-        'version' => '7.3.0',
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
     ],
-    'mini-svg-data-uri' => [
-        'version' => '1.4.4',
+    '@hotwired/turbo' => [
+        'version' => '8.0.13',
     ],
     'tailwindcss/plugin' => [
-        'version' => '3.4.4',
+        'version' => '4.1.13',
     ],
     'tailwindcss/defaultTheme' => [
-        'version' => '3.4.4',
+        'version' => '4.1.13',
     ],
     'tailwindcss/colors' => [
-        'version' => '3.4.4',
-    ],
-    'picocolors' => [
-        'version' => '1.0.1',
-    ],
-    'flowbite' => [
-        'version' => '2.4.1',
-    ],
-    '@popperjs/core' => [
-        'version' => '2.11.8',
-    ],
-    'flowbite/dist/flowbite.min.css' => [
-        'version' => '2.4.1',
-        'type' => 'css',
+        'version' => '4.1.13',
     ],
 ];
