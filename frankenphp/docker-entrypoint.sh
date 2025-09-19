@@ -28,17 +28,13 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		else
 			echo "The database is now ready and reachable"
 		fi
-
-		echo "Creating app_test database if it does not exist..."
-		php bin/console doctrine:database:create --env=test --if-not-exists
-
 		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
 			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
-
-			echo "Loading migrations and fixtures into app_test database..."
-			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing --env=test
 		fi
 	fi
+
+	echo "Downloading tailwind binary..."
+	php bin/console tailwind:build
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
