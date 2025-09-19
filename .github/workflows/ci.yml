@@ -72,12 +72,14 @@ jobs:
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
       - name: Start services
         run: docker compose up --wait --no-build
-      - name: Build tailwind
-        run: make tailwind
-      - name: Doctrine Schema Validator
-        run: make doctrine-validate-schema
+      - name: Create Test Database
+        run: make doctrine-db-test-create
+      - name: Run Migrations
+        run: make doctrine-migrate-test
       - name: Run Fixtures
         run: make fixtures-test
+      - name: Doctrine Schema Validator
+        run: make doctrine-validate-schema
       - name: Run PHPUnit Functional Suite
         run: make phpunit-functional
   lint:
