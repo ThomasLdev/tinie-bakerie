@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="py-20 px-6">
+        <div class="container mx-auto text-center">
+            <div class="float-animation inline-block text-8xl mb-6">👩‍🍳</div>
+            <h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
+                Welcome to <span class="text-pink-500">Sweet Bites</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Discover delicious recipes, cooking tips, and culinary adventures that will make your kitchen the heart of your home
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-semibold transition-all transform hover:scale-105">
+                    Explore Recipes
+                </button>
+                <button class="bg-white hover:bg-gray-50 text-pink-500 border-2 border-pink-500 px-8 py-3 rounded-full font-semibold transition-all">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Popular Categories</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
+                    <div class="text-6xl mb-4 pulse-slow">🧁</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Desserts</h3>
+                    <p class="text-gray-600 mb-6">Sweet treats and decadent desserts to satisfy your cravings</p>
+                    <button class="bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-6 py-2 rounded-full font-medium transition-colors">
+                        View Recipes
+                    </button>
+                </div>
+
+                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
+                    <div class="text-6xl mb-4 pulse-slow" style="animation-delay: 1s;">🥗</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Healthy Meals</h3>
+                    <p class="text-gray-600 mb-6">Nutritious and delicious meals for a balanced lifestyle</p>
+                    <button class="bg-green-200 hover:bg-green-300 text-green-800 px-6 py-2 rounded-full font-medium transition-colors">
+                        View Recipes
+                    </button>
+                </div>
+
+                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
+                    <div class="text-6xl mb-4 pulse-slow" style="animation-delay: 2s;">🍝</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Comfort Food</h3>
+                    <p class="text-gray-600 mb-6">Hearty, soul-warming dishes that feel like home</p>
+                    <button class="bg-orange-200 hover:bg-orange-300 text-orange-800 px-6 py-2 rounded-full font-medium transition-colors">
+                        View Recipes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 bg-white/40">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Latest Recipes</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
+                        <span class="text-6xl">🍪</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Chocolate Chip Cookies</h3>
+                        <p class="text-gray-600 mb-4">Perfectly chewy cookies with gooey chocolate chips</p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>⏱️ 25 min</span>
+                            <span>👥 12 servings</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-br from-green-200 to-blue-200 flex items-center justify-center">
+                        <span class="text-6xl">🥑</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Avocado Toast</h3>
+                        <p class="text-gray-600 mb-4">Creamy avocado on perfectly toasted sourdough bread</p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>⏱️ 10 min</span>
+                            <span>👥 2 servings</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
+                    <div class="h-48 bg-gradient-to-br from-yellow-200 to-orange-200 flex items-center justify-center">
+                        <span class="text-6xl">🍰</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Lemon Cake</h3>
+                        <p class="text-gray-600 mb-4">Light and fluffy cake with zesty lemon flavor</p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>⏱️ 1 hour</span>
+                            <span>👥 8 servings</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-semibold transition-all transform hover:scale-105">
+                    View All Recipes
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6">
+        <div class="container mx-auto">
+            <div class="bg-gradient-to-r from-pink-400 to-purple-400 rounded-3xl p-12 text-center text-white">
+                <div class="text-5xl mb-6">📧</div>
+                <h2 class="text-3xl font-bold mb-4">Never Miss a Recipe!</h2>
+                <p class="text-lg mb-8 opacity-90">Get our latest recipes and cooking tips delivered straight to your inbox</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                    <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-white/50">
+                    <button class="bg-white text-pink-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<!-- Hero Section -->
+<section class="py-20 px-6">
+    <div class="container mx-auto text-center">
+        <div class="float-animation inline-block text-8xl mb-6">👋</div>
+        <h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
+            Hello, We're <span class="text-pink-500">Sweet Bites</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            A cozy corner of the internet where food lovers gather to share delicious recipes,
+            cooking tips, and the joy of creating memorable meals together.
+        </p>
+    </div>
+</section>
+
+<!-- Our Story -->
+<section class="py-16 px-6">
+    <div class="container mx-auto">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-12 shadow-lg max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">📖</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
+            </div>
+
+            <div class="prose prose-lg max-w-none text-gray-600 leading-relaxed">
+                <p class="text-center mb-8">
+                    Sweet Bites started in 2020 when our founder, Emma, began sharing her grandmother's recipes
+                    with friends during lockdown. What began as simple recipe exchanges grew into a passionate
+                    community of home cooks who believe that food brings people together.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-8 mt-12">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4 pulse-slow">💖</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Made with Love</h3>
+                        <p class="text-gray-600">Every recipe is tested multiple times in real kitchens by real people.</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="text-5xl mb-4 pulse-slow" style="animation-delay: 1s;">🏠</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Home Kitchen Friendly</h3>
+                        <p class="text-gray-600">No fancy equipment needed - just simple ingredients and techniques.</p>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="text-5xl mb-4 pulse-slow" style="animation-delay: 2s;">🌟</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Always Reliable</h3>
+                        <p class="text-gray-600">Clear instructions and helpful tips ensure success every time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Meet the Team -->
+<section class="py-16 px-6 bg-white/40">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <div class="text-6xl mb-4">👥</div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Meet Our Team</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                The passionate food lovers behind Sweet Bites who make it all possible
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Emma - Founder -->
+            <div class="team-card p-8 text-center shadow-lg">
+                <div class="profile-circle bg-pink-200 mb-6">
+                    <span>👩‍🍳</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Emma Johnson</h3>
+                <p class="text-pink-500 font-semibold mb-4">Founder & Head Chef</p>
+                <p class="text-gray-600 mb-6">
+                    Former pastry chef turned recipe developer. Emma's passion for making restaurant-quality
+                    desserts accessible to home bakers drives everything we do.
+                </p>
+                <div class="flex justify-center space-x-4 text-2xl">
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📘</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📷</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">🐦</span>
+                </div>
+            </div>
+
+            <!-- James - Recipe Developer -->
+            <div class="team-card p-8 text-center shadow-lg">
+                <div class="profile-circle bg-blue-200 mb-6">
+                    <span>👨‍🍳</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">James Martinez</h3>
+                <p class="text-blue-500 font-semibold mb-4">Recipe Developer</p>
+                <p class="text-gray-600 mb-6">
+                    James specializes in comfort food and healthy alternatives. His mission is proving that
+                    nutritious meals can be absolutely delicious.
+                </p>
+                <div class="flex justify-center space-x-4 text-2xl">
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📘</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📷</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">🐦</span>
+                </div>
+            </div>
+
+            <!-- Sarah - Community Manager -->
+            <div class="team-card p-8 text-center shadow-lg">
+                <div class="profile-circle bg-green-200 mb-6">
+                    <span>👩‍💼</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Sarah Chen</h3>
+                <p class="text-green-500 font-semibold mb-4">Community Manager</p>
+                <p class="text-gray-600 mb-6">
+                    Sarah connects with our amazing community, responds to your questions, and ensures
+                    everyone feels welcome in our Sweet Bites family.
+                </p>
+                <div class="flex justify-center space-x-4 text-2xl">
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📘</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">📷</span>
+                    <span class="cursor-pointer hover:scale-110 transition-transform">🐦</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Mission -->
+<section class="py-16 px-6">
+    <div class="container mx-auto">
+        <div class="bg-gradient-to-r from-pink-400 to-purple-400 rounded-3xl p-12 text-white text-center">
+            <div class="text-6xl mb-6">🎯</div>
+            <h2 class="text-4xl font-bold mb-6">Our Mission</h2>
+            <p class="text-xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                To make cooking accessible, enjoyable, and stress-free for everyone. Whether you're a beginner
+                or an experienced cook, we believe everyone deserves to create delicious meals with confidence.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-4xl mb-4">📚</div>
+                    <h3 class="text-2xl font-bold mb-3">Educational</h3>
+                    <p class="opacity-90">We teach techniques, not just recipes, so you can cook with confidence.</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h3 class="text-2xl font-bold mb-3">Community-Driven</h3>
+                    <p class="opacity-90">Our readers' feedback and recipe variations make us better every day.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fun Facts -->
+<section class="py-16 px-6 bg-white/40">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Fun Facts About Us</h2>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div class="card-hover bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-lg">
+                <div class="text-4xl mb-3">📝</div>
+                <div class="text-3xl font-bold text-pink-500 mb-2">500+</div>
+                <p class="text-gray-600 font-medium">Tested Recipes</p>
+            </div>
+
+            <div class="card-hover bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-lg">
+                <div class="text-4xl mb-3">👨‍👩‍👧‍👦</div>
+                <div class="text-3xl font-bold text-blue-500 mb-2">50K+</div>
+                <p class="text-gray-600 font-medium">Community Members</p>
+            </div>
+
+            <div class="card-hover bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-lg">
+                <div class="text-4xl mb-3">☕</div>
+                <div class="text-3xl font-bold text-yellow-600 mb-2">2,000+</div>
+                <p class="text-gray-600 font-medium">Cups of Coffee</p>
+            </div>
+
+            <div class="card-hover bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-lg">
+                <div class="text-4xl mb-3">💌</div>
+                <div class="text-3xl font-bold text-green-500 mb-2">10K+</div>
+                <p class="text-gray-600 font-medium">Happy Emails</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="py-16 px-6">
+    <div class="container mx-auto">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-12 shadow-lg text-center max-w-3xl mx-auto">
+            <div class="text-6xl mb-6">📨</div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Let's Stay Connected!</h2>
+            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                Have a recipe request? Want to share your cooking success? Or just want to say hello?
+                We'd love to hear from you!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-semibold transition-all transform hover:scale-105">
+                    Get in Touch
+                </button>
+                <button class="bg-white hover:bg-gray-50 text-pink-500 border-2 border-pink-500 px-8 py-3 rounded-full font-semibold transition-all">
+                    Join Our Newsletter
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
