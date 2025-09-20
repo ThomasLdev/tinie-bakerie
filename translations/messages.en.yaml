@@ -1,6 +1,10 @@
 app:
     global:
         site: 'Tinie Bakerie'
+        welcome_to: 'Welcome to'
+        slogan: 'Discover delicious recipes, cooking tips, and culinary adventures that will make your kitchen the heart of your home'
+        explore_recipes: 'Explore Recipes'
+        explore: 'Explore'
         created_at: 'Created at: '
         updated_at: 'Updated at: '
     post:

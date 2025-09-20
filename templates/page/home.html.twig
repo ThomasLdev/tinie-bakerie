@@ -1,128 +1,169 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <section class="py-20 px-6">
-        <div class="container mx-auto text-center">
-            <div class="float-animation inline-block text-8xl mb-6">👩‍🍳</div>
-            <h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
-                Welcome to <span class="text-pink-500">Sweet Bites</span>
-            </h1>
-            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Discover delicious recipes, cooking tips, and culinary adventures that will make your kitchen the heart of your home
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-semibold transition-all transform hover:scale-105">
-                    Explore Recipes
-                </button>
-                <button class="bg-white hover:bg-gray-50 text-pink-500 border-2 border-pink-500 px-8 py-3 rounded-full font-semibold transition-all">
-                    Subscribe
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16 px-6">
-        <div class="container mx-auto">
-            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Popular Categories</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
-                    <div class="text-6xl mb-4 pulse-slow">🧁</div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Desserts</h3>
-                    <p class="text-gray-600 mb-6">Sweet treats and decadent desserts to satisfy your cravings</p>
-                    <button class="bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-6 py-2 rounded-full font-medium transition-colors">
-                        View Recipes
-                    </button>
-                </div>
-
-                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
-                    <div class="text-6xl mb-4 pulse-slow" style="animation-delay: 1s;">🥗</div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Healthy Meals</h3>
-                    <p class="text-gray-600 mb-6">Nutritious and delicious meals for a balanced lifestyle</p>
-                    <button class="bg-green-200 hover:bg-green-300 text-green-800 px-6 py-2 rounded-full font-medium transition-colors">
-                        View Recipes
-                    </button>
-                </div>
-
-                <div class="card-hover bg-white/80 backdrop-blur-sm rounded-3xl p-8 text-center shadow-lg">
-                    <div class="text-6xl mb-4 pulse-slow" style="animation-delay: 2s;">🍝</div>
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Comfort Food</h3>
-                    <p class="text-gray-600 mb-6">Hearty, soul-warming dishes that feel like home</p>
-                    <button class="bg-orange-200 hover:bg-orange-300 text-orange-800 px-6 py-2 rounded-full font-medium transition-colors">
-                        View Recipes
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16 px-6 bg-white/40">
-        <div class="container mx-auto">
-            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Latest Recipes</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
-                    <div class="h-48 bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
-                        <span class="text-6xl">🍪</span>
+    <main class="py-8">
+        <!-- Category Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-7xl mx-auto xl:px-0 px-4">
+            <!-- Appetizer -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?w=300&h=500&fit=crop" alt="Appetizer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Appetizer</span>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Chocolate Chip Cookies</h3>
-                        <p class="text-gray-600 mb-4">Perfectly chewy cookies with gooey chocolate chips</p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>⏱️ 25 min</span>
-                            <span>👥 12 servings</span>
+                </div>
+            </div>
+
+            <!-- Brunch -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300&h=500&fit=crop" alt="Brunch" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Brunch</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=500&fit=crop" alt="Dinner" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Dinner</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salad -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=500&fit=crop"
+                         alt="Salad"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Salad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seasonal Categories -->
+        <div class="swiper overflow-hidden px-4" {{ stimulus_controller('slider', {mobileOnly: true}) }}>
+            <div class="flex md:justify-center space-x-8 mb-12 swiper-wrapper w-content md:w-50 md:m-auto">
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Spring</span>
+                </div>
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-500 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Summer</span>
+                </div>
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Autumn</span>
+                </div>
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Winter</span>
+                </div>
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Thanksgiving</span>
+                </div>
+                <div class="text-center group cursor-pointer swiper-slide">
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-green-600 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200"></div>
+                    <span class="text-sm text-gray-600">Christmas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Latest Recipes Section -->
+        <div class="text-center mb-8 max-w-7xl mx-auto xl:px-0 px-4">
+            <div class="flex items-center justify-center">
+                <div class="h-px bg-gray-300 flex-1"></div>
+                <h2 class="mx-6 text-2xl font-playfair font-semibold text-gray-800">The Latest Recipes</h2>
+                <div class="h-px bg-gray-300 flex-1"></div>
+            </div>
+        </div>
+
+        <!-- Featured Articles Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto xl:px-0 px-4">
+            <!-- Main Featured Article -->
+            <div class="md:col-span-2 relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=400&fit=crop" alt="Food Photography Career" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 text-white">
+                        <h3 class="text-xl font-playfair font-semibold mb-2 leading-tight">How did I start my career as a food stylist and photographer</h3>
+                        <div class="flex items-center text-sm opacity-90">
+                            <span>By Anna</span>
+                            <span class="mx-2">•</span>
+                            <span>September 1, 2024</span>
                         </div>
                     </div>
-                </article>
-
-                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
-                    <div class="h-48 bg-gradient-to-br from-green-200 to-blue-200 flex items-center justify-center">
-                        <span class="text-6xl">🥑</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Avocado Toast</h3>
-                        <p class="text-gray-600 mb-4">Creamy avocado on perfectly toasted sourdough bread</p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>⏱️ 10 min</span>
-                            <span>👥 2 servings</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg">
-                    <div class="h-48 bg-gradient-to-br from-yellow-200 to-orange-200 flex items-center justify-center">
-                        <span class="text-6xl">🍰</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Lemon Cake</h3>
-                        <p class="text-gray-600 mb-4">Light and fluffy cake with zesty lemon flavor</p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>⏱️ 1 hour</span>
-                            <span>👥 8 servings</span>
-                        </div>
-                    </div>
-                </article>
+                </div>
             </div>
 
-            <div class="text-center mt-12">
-                <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-semibold transition-all transform hover:scale-105">
-                    View All Recipes
-                </button>
-            </div>
-        </div>
-    </section>
+            <!-- Side Articles -->
+            <div class="space-y-6">
+                <div class="relative group cursor-pointer">
+                    <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop" alt="Party Appetizers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h4 class="font-medium text-sm leading-tight mb-1">10 Party appetizers your friends won't be able to resist</h4>
+                            <div class="text-xs opacity-90">By Anna • Aug 25</div>
+                        </div>
+                    </div>
+                </div>
 
-    <section class="py-16 px-6">
-        <div class="container mx-auto">
-            <div class="bg-gradient-to-r from-pink-400 to-purple-400 rounded-3xl p-12 text-center text-white">
-                <div class="text-5xl mb-6">📧</div>
-                <h2 class="text-3xl font-bold mb-4">Never Miss a Recipe!</h2>
-                <p class="text-lg mb-8 opacity-90">Get our latest recipes and cooking tips delivered straight to your inbox</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                    <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-white/50">
-                    <button class="bg-white text-pink-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
-                        Subscribe
-                    </button>
+                <div class="relative group cursor-pointer">
+                    <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop" alt="Pasta Recipe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h4 class="font-medium text-sm leading-tight mb-1">One Pot pasta recipes that are both healthy and delicious</h4>
+                            <div class="text-xs opacity-90">By Anna • Aug 20</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Bottom Row Articles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 max-w-7xl mx-auto xl:px-0 px-4">
+            <div class="relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=200&fit=crop" alt="Lemon Cocktails" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">Serve Lemon Cocktails with Rosemary</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 15</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=300&h=200&fit=crop" alt="Nuts and Grains" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">The ultimate guide to nuts and grains</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 10</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative group cursor-pointer">
+                <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=300&h=300&fit=crop" alt="Chocolate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">Indulgent chocolate recipes</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}

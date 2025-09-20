@@ -1,30 +1,35 @@
-<nav class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
-    <div class="container mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <div class="text-3xl">🍰</div>
-                <h1 class="text-2xl font-bold text-pink-600">Sweet Bites</h1>
+<nav class="bg-white">
+    <div class="max-w-7xl mx-auto xl:px-0 px-4 border-b-2">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center w-100 justify-center md:justify-start flex-col md:flex-row">
+                <h1 class="text-2xl font-playfair font-bold text-gray-900 tracking-wide">
+                    {{ 'app.global.site'|trans|upper }}
+                </h1>
+                <p class="text-xs text-gray-500 ml-2 mt-1">FOOD & FUN</p>
             </div>
-            <div class="hidden md:flex space-x-8">
-                <a href="{{ path('app_homepage_index') }}"
-                   class="text-gray-700 hover:text-pink-500 font-medium transition-colors">
-                    Home
-                </a>
-                <a href="{{ path('app_post_index') }}"
-                   class="text-gray-700 hover:text-pink-500 font-medium transition-colors">
-                    Explore
-                </a>
-                <a href="#" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Categories</a>
-                <a href="{{ path('app_about_index') }}" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">About</a>
-                <a href="#" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Contact</a>
+
+            <!-- Social Icons -->
+            <div class="flex items-center space-x-4 hidden md:block">
+                <div class="flex space-x-2">
+                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                </div>
             </div>
-            <div class="md:hidden">
-                <button class="text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="border-t border-gray-200">
+            <div class="flex space-x-8 py-5 text-sm font-medium text-gray-600">
+                <a href="{{ path('app_post_index') }}" class="hover:text-gray-900">EXPLORE</a>
+                <a href="#" class="hover:text-gray-900">CATEGORIES</a>
+                <a href="#" class="hover:text-gray-900">TAGS</a>
+                <a href="#" class="hover:text-gray-900">ABOUT</a>
             </div>
         </div>
     </div>
 </nav>
+
