@@ -1,12 +1,17 @@
 app:
     global:
         site: 'Tinie Bakerie'
+        slogan: 'Food & Fun'
         welcome_to: 'Bienvenue sur'
-        slogan: 'Découvrez des recettes délicieuses, des astuces culinaires et des aventures gastronomiques qui feront de votre cuisine le cœur de votre maison'
         explore_recipes: 'Explorer les recettes'
         explore: 'Explorer'
         created_at: 'Créé le : '
         updated_at: 'Modifié le : '
+        menu:
+            explore: 'Explorer'
+            categories: 'Catégories'
+            tags: 'Thèmes'
+            about: 'À propos'
     post:
         index: 'Tous les articles'
     category:

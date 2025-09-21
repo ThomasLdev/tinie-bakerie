@@ -1,15 +1,12 @@
-<nav class="bg-white">
+<nav class="bg-white sticky top-0 z-10">
     <div class="max-w-7xl mx-auto xl:px-0 px-4 border-b-2">
-        <div class="flex justify-between items-center py-4">
-            <!-- Logo -->
-            <div class="flex items-center w-100 justify-center md:justify-start flex-col md:flex-row">
-                <h1 class="text-2xl font-playfair font-bold text-gray-900 tracking-wide">
+        <div class="flex justify-between items-center py-4 transition-all duration-300 border-b border-gray-200">
+            <div class="flex items-center w-full justify-center md:justify-start flex-col md:flex-row">
+                <a href="{{ path('app_homepage_index') }}" class="text-2xl font-playfair font-bold text-gray-900 tracking-wide">
                     {{ 'app.global.site'|trans|upper }}
-                </h1>
-                <p class="text-xs text-gray-500 ml-2 mt-1">FOOD & FUN</p>
+                </a>
+                <p class="text-xs text-gray-500 ml-2 mt-1">{{ 'app.global.slogan'|trans|upper }}</p>
             </div>
-
-            <!-- Social Icons -->
             <div class="flex items-center space-x-4 hidden md:block">
                 <div class="flex space-x-2">
                     <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
@@ -20,16 +17,23 @@
                 </div>
             </div>
         </div>
-
-        <!-- Menu -->
-        <div class="border-t border-gray-200">
-            <div class="flex space-x-8 py-5 text-sm font-medium text-gray-600">
-                <a href="{{ path('app_post_index') }}" class="hover:text-gray-900">EXPLORE</a>
-                <a href="#" class="hover:text-gray-900">CATEGORIES</a>
-                <a href="#" class="hover:text-gray-900">TAGS</a>
-                <a href="#" class="hover:text-gray-900">ABOUT</a>
-            </div>
+        <div class="flex flex-wrap justify-between md:justify-start md:space-x-8 py-5 text-xs sm:text-sm font-medium text-gray-600">
+            <a href="{{ path('app_post_index') }}"
+               class="hover:text-gray-900">
+                {{ 'app.global.menu.explore'|trans|upper }}
+            </a>
+            <a href="#"
+               class="hover:text-gray-900">
+                {{ 'app.global.menu.categories'|trans|upper }}
+            </a>
+            <a href="#"
+               class="hover:text-gray-900">
+                {{ 'app.global.menu.tags'|trans|upper }}
+            </a>
+            <a href="#" 
+               class="hover:text-gray-900">
+                {{ 'app.global.menu.about'|trans|upper }}
+            </a>
         </div>
     </div>
 </nav>
-
