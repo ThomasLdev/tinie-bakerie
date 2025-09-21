@@ -1,0 +1,10 @@
+<ul class="absolute bg-white border border-gray-200 rounded-lg shadow-lg z-0 rounded w-50 top-[2rem] hidden" {{ stimulus_target('dropdown', 'collapsable') }}>
+    {% for category in categories %}
+        <li>
+            <a href="{{ path('app_category_show', {'categorySlug': category.slug}) }}"
+               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                {{ category.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

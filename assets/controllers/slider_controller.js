@@ -1,7 +1,6 @@
 import {Controller} from '@hotwired/stimulus';
 import Swiper from 'swiper/bundle';
 import Device from './components/device.js';
-// import 'swiper/swiper-bundle.min.css'
 
 export default class extends Controller {
   static values = {

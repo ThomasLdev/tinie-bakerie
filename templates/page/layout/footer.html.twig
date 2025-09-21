@@ -1,47 +1,73 @@
-<footer class="bg-white/60 backdrop-blur-sm py-12 px-6">
-    <div class="container mx-auto">
-        <div class="grid md:grid-cols-4 gap-8">
-            <div>
-                <div class="flex items-center space-x-2 mb-4">
-                    <div class="text-2xl">🍰</div>
-                    <h3 class="text-xl font-bold text-pink-600">Sweet Bites</h3>
+<footer class="bg-white border-t border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Main Footer Content -->
+        <div class="py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Brand Section -->
+            <div class="md:col-span-1">
+                <h3 class="text-xl font-playfair font-bold text-gray-900 mb-4">LEMON & LIMES</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                    Celebrating the art of cooking with fresh, seasonal ingredients and timeless recipes that bring people together.
+                </p>
+                <div class="flex space-x-3">
+                    <div class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-200 cursor-pointer"></div>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-200 cursor-pointer"></div>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-200 cursor-pointer"></div>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-200 cursor-pointer"></div>
                 </div>
-                <p class="text-gray-600">Making cooking fun and accessible for everyone, one recipe at a time.</p>
             </div>
 
+            <!-- Recipes -->
             <div>
-                <h4 class="font-semibold text-gray-800 mb-4">Quick Links</h4>
-                <ul class="space-y-2 text-gray-600">
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">About Us</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Recipe Index</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Cooking Tips</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Contact</a></li>
+                <h4 class="font-semibold text-gray-900 mb-4">Recipes</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Appetizers</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Main Courses</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Desserts</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Beverages</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Seasonal</a></li>
                 </ul>
             </div>
 
+            <!-- Resources -->
             <div>
-                <h4 class="font-semibold text-gray-800 mb-4">Categories</h4>
-                <ul class="space-y-2 text-gray-600">
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Breakfast</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Lunch</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Dinner</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Desserts</a></li>
+                <h4 class="font-semibold text-gray-900 mb-4">Resources</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Cooking Tips</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Ingredient Guide</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Kitchen Tools</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Meal Planning</a></li>
+                    <li><a href="#" class="hover:text-gray-900 transition-colors duration-200">Nutrition</a></li>
                 </ul>
             </div>
 
+            <!-- Newsletter -->
             <div>
-                <h4 class="font-semibold text-gray-800 mb-4">Follow Us</h4>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-2xl hover:scale-110 transition-transform">📘</a>
-                    <a href="#" class="text-2xl hover:scale-110 transition-transform">📷</a>
-                    <a href="#" class="text-2xl hover:scale-110 transition-transform">🐦</a>
-                    <a href="#" class="text-2xl hover:scale-110 transition-transform">📌</a>
+                <h4 class="font-semibold text-gray-900 mb-4">Stay Connected</h4>
+                <p class="text-sm text-gray-600 mb-4">Get our latest recipes and cooking tips delivered to your inbox.</p>
+                <div class="flex">
+                    <input
+                        type="email"
+                        placeholder="Your email address"
+                        class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                    >
+                    <button class="px-4 py-2 bg-black text-white text-sm rounded-r-md hover:bg-gray-800 transition-colors duration-200">
+                        Subscribe
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-gray-300 mt-12 pt-8 text-center text-gray-600">
-            <p>&copy; 2025 Sweet Bites Blog. Made with 💖 for food lovers everywhere.</p>
+        <!-- Bottom Footer -->
+        <div class="py-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-6 text-sm text-gray-500 mb-4 md:mb-0">
+                <span>&copy; 2025 Lemon & Limes. All rights reserved.</span>
+                <a href="#" class="hover:text-gray-700 transition-colors duration-200">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-700 transition-colors duration-200">Terms of Service</a>
+            </div>
+
+            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <span>Made with ❤️ for food lovers</span>
+            </div>
         </div>
     </div>
 </footer>
