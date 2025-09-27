@@ -1,0 +1,120 @@
+<!-- Dropdown Panel -->
+<div class="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-lg z-0 hidden max-w-7xl mx-auto"
+    {{ stimulus_target('dropdown', 'collapsable') }}
+>
+    <!-- Search Input -->
+    <div class="p-4 border-b border-gray-100">
+        <div class="relative">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
+                 stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text"
+                   placeholder="Search for recipes, ingredients, categories..."
+                   class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent text-sm">
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="max-h-96 overflow-y-auto">
+        <!-- Recent Searches or Suggestions (when no input) -->
+        <div class="p-4">
+            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Popular Searches</h3>
+            <div class="space-y-2">
+                <a href="#"
+                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-150">
+                    Chocolate recipes
+                </a>
+                <a href="#"
+                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-150">
+                    Quick dinner ideas
+                </a>
+                <a href="#"
+                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-150">
+                    Healthy breakfast
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Results (hidden by default, will be shown with JS) -->
+        <div class="hidden">
+            <!-- Results Header -->
+            <div class="px-4 py-2 border-b border-gray-100 bg-gray-50">
+                <span class="text-xs font-medium text-gray-500">3 results found</span>
+            </div>
+
+            <!-- Recipe Results -->
+            <div class="divide-y divide-gray-100">
+                <!-- Recipe Result Item -->
+                <a href="#" class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
+                    <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=100&h=100&fit=crop"
+                             alt="Recipe"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 truncate">Chocolate Chip Cookies</h4>
+                        <p class="text-xs text-gray-500 mt-1">By Anna • Desserts</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+
+                <!-- Another Recipe Result -->
+                <a href="#" class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
+                    <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=100&h=100&fit=crop"
+                             alt="Recipe"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 truncate">One Pot Pasta with Vegetables</h4>
+                        <p class="text-xs text-gray-500 mt-1">By Anna • Dinner</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+
+                <!-- Third Recipe Result -->
+                <a href="#" class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
+                    <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=100&h=100&fit=crop"
+                             alt="Recipe"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 truncate">Party Appetizers Collection</h4>
+                        <p class="text-xs text-gray-500 mt-1">By Anna • Appetizers</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- View All Results -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50">
+                <a href="#"
+                   class="block text-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-150">
+                    View all results
+                </a>
+            </div>
+        </div>
+
+        <!-- No Results State (hidden by default) -->
+        <div class="hidden p-8 text-center">
+            <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <h3 class="text-sm font-medium text-gray-900 mb-2">No recipes found</h3>
+            <p class="text-xs text-gray-500">Try adjusting your search or browse our categories</p>
+        </div>
+    </div>
+</div>

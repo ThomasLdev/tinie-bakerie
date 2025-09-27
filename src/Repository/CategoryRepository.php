@@ -39,6 +39,22 @@ class CategoryRepository extends ServiceEntityRepository
         return \is_array($result) ? $result : [];
     }
 
+    /**
+     * @return array<array-key,mixed>
+     */
+    public function findAllSlugs(): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug}')
+            ->orderBy('c.createdAt', 'DESC');
+
+        $result = $qb->getQuery()->getResult();
+
+        return \is_array($result) ? $result : [];
+    }
+
     public function findOne(string $slug): ?Category
     {
         $qb = $this->createQueryBuilder('c')

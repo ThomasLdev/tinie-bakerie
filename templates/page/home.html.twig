@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main class="py-8">
+        <div class="pb-8 lg:pb-16 lg:pt-8 max-w-7xl mx-auto">
+            <div class="max-w-4xl mx-auto text-center xl:px-0 px-4">
+                <h1 class="text-4xl md:text-5xl font-playfair font-bold text-gray-800 mb-6">
+                    Bienvenue chez Tinie Bakerie
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Découvrez l'art de la cuisine à travers nos recettes authentiques et créatives.
+                    De la pâtisserie traditionnelle aux plats innovants, laissez-vous inspirer par
+                    notre passion pour les saveurs exceptionnelles et les ingrédients de qualité.
+                    Chaque recette raconte une histoire, chaque plat éveille vos sens.
+                </p>
+            </div>
+        </div>
+
+        <!-- The Popular Categories Section -->
+        <div class="text-center mb-8 max-w-7xl mx-auto xl:px-0 px-4">
+            <div class="flex items-center justify-center">
+                <div class="h-px bg-gray-300 flex-1"></div>
+                <h2 class="mx-6 text-2xl font-playfair font-semibold text-gray-800">Popular Categories</h2>
+                <div class="h-px bg-gray-300 flex-1"></div>
+            </div>
+        </div>
+
+        <!-- Category Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-7xl mx-auto xl:px-0 px-4">
+            <!-- Appetizer -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1577906096429-f73c2c312435?w=300&h=500&fit=crop" alt="Appetizer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Appetizer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brunch -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=300&h=500&fit=crop" alt="Brunch" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Brunch</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1489391013510-49401c8a3b6c?w=300&h=500&fit=crop" alt="Dinner" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Dinner</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salad -->
+            <div class="relative group cursor-pointer">
+                <div class="overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=500&fit=crop"
+                         alt="Salad"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm">Salad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Seasons Section -->
+        <div class="pb-4 lg:pb-8">
+            <div class="text-center mb-8 max-w-7xl mx-auto xl:px-0 px-4 py-4">
+                <div class="flex items-center justify-center">
+                    <div class="h-px bg-gray-300 flex-1"></div>
+                    <h2 class="mx-6 text-2xl font-playfair font-semibold text-gray-800">By Season</h2>
+                    <div class="h-px bg-gray-300 flex-1"></div>
+                </div>
+            </div>
+            <div class="swiper overflow-hidden px-4 lg:py-4" {{ stimulus_controller('slider', {mobileOnly: true}) }}>
+                <div class="flex md:justify-center space-x-8 mb-12 swiper-wrapper w-content md:w-50 md:m-auto">
+                    <div class="text-center group cursor-pointer swiper-slide">
+                        <div class="w-32 h-32 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200">
+                            <img class="rounded-full" src="https://images.unsplash.com/photo-1649937629913-20d044521434?w=200&h=200&fit=crop" alt="">
+                        </div>
+                        <span class="text-sm text-gray-600">Spring</span>
+                    </div>
+                    <div class="text-center group cursor-pointer swiper-slide">
+                        <div class="w-32 h-32 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200">
+                            <img class="rounded-full" src="https://images.unsplash.com/photo-1572246538688-3f326dca3951?w=200&h=200&fit=crop" alt="">
+                        </div>
+                        <span class="text-sm text-gray-600">Summer</span>
+                    </div>
+                    <div class="text-center group cursor-pointer swiper-slide">
+                        <div class="w-32 h-32 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200">
+                            <img class="rounded-full" src="https://images.unsplash.com/photo-1453959022778-cfda85dbe0f9?w=200&h=200&fit=crop" alt="">
+                        </div>
+                        <span class="text-sm text-gray-600">Autumn</span>
+                    </div>
+                    <div class="text-center group cursor-pointer swiper-slide">
+                        <div class="w-32 h-32 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200">
+                            <img class="rounded-full" src="https://images.unsplash.com/photo-1420585269105-d908ec316eb3?w=200&h=200&fit=crop" alt="">
+                        </div>
+                        <span class="text-sm text-gray-600">Winter</span>
+                    </div>
+                    <div class="text-center group cursor-pointer swiper-slide">
+                        <div class="w-32 h-32 rounded-full mb-2 mx-auto group-hover:scale-110 transition-transform duration-200">
+                            <img class="rounded-full" src="https://images.unsplash.com/photo-1734730856032-80b75c6877e3?w=200&h=200&fit=crop" alt="">
+                        </div>
+                        <span class="text-sm text-gray-600">Christmas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Latest Recipes Section -->
+        <div class="text-center mb-8 max-w-7xl mx-auto xl:px-0 px-4">
+            <div class="flex items-center justify-center">
+                <div class="h-px bg-gray-300 flex-1"></div>
+                <h2 class="mx-6 text-2xl font-playfair font-semibold text-gray-800">The Latest Recipes</h2>
+                <div class="h-px bg-gray-300 flex-1"></div>
+            </div>
+        </div>
+
+        <!-- Featured Articles Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto xl:px-0 px-4">
+            <!-- Main Featured Article -->
+            <div class="md:col-span-2 relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=400&fit=crop" alt="Food Photography Career" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 text-white">
+                        <h3 class="text-xl font-playfair font-semibold mb-2 leading-tight">How did I start my career as a food stylist and photographer</h3>
+                        <div class="flex items-center text-sm opacity-90">
+                            <span>By Anna</span>
+                            <span class="mx-2">•</span>
+                            <span>September 1, 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Articles -->
+            <div class="space-y-6">
+                <div class="relative group cursor-pointer">
+                    <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop" alt="Party Appetizers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h4 class="font-medium text-sm leading-tight mb-1">10 Party appetizers your friends won't be able to resist</h4>
+                            <div class="text-xs opacity-90">By Anna • Aug 25</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group cursor-pointer">
+                    <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop" alt="Pasta Recipe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h4 class="font-medium text-sm leading-tight mb-1">One Pot pasta recipes that are both healthy and delicious</h4>
+                            <div class="text-xs opacity-90">By Anna • Aug 20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row Articles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 max-w-7xl mx-auto xl:px-0 px-4">
+            <div class="relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=200&fit=crop" alt="Lemon Cocktails" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">Serve Lemon Cocktails with Rosemary</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 15</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative group cursor-pointer">
+                <div class="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=300&h=200&fit=crop" alt="Nuts and Grains" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">The ultimate guide to nuts and grains</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 10</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative group cursor-pointer">
+                <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=300&h=300&fit=crop" alt="Chocolate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h4 class="font-medium text-sm leading-tight mb-1">Indulgent chocolate recipes</h4>
+                        <div class="text-xs opacity-90">By Anna • Aug 5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
