@@ -3,134 +3,181 @@
 {% block title %}Hello PostController!{% endblock %}
 
 {% block body %}
-    <section class="py-8 px-6 bg-white/40">
-        <div class="container mx-auto">
-            <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🔍 Find Your Perfect Recipe</h2>
-
-                <!-- Search Bar -->
-                <div class="mb-8">
-                    <div class="relative max-w-md mx-auto">
-                        <input type="text" id="searchInput" placeholder="Search recipes..."
-                               class="w-full px-6 py-3 pl-12 rounded-full border-2 border-pink-200 focus:border-pink-500 focus:outline-none">
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-400">🔍</div>
-                    </div>
-                </div>
-
-                <!-- Category Filters -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Categories</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <button class="filter-btn filter-active px-6 py-2 rounded-full font-medium transition-all" data-category="all">
-                            All Recipes
-                        </button>
-                        <button class="filter-btn bg-yellow-100 text-yellow-800 px-6 py-2 rounded-full font-medium transition-all hover:bg-yellow-200" data-category="desserts">
-                            🧁 Desserts
-                        </button>
-                        <button class="filter-btn bg-green-100 text-green-800 px-6 py-2 rounded-full font-medium transition-all hover:bg-green-200" data-category="healthy">
-                            🥗 Healthy
-                        </button>
-                        <button class="filter-btn bg-orange-100 text-orange-800 px-6 py-2 rounded-full font-medium transition-all hover:bg-orange-200" data-category="comfort">
-                            🍝 Comfort Food
-                        </button>
-                        <button class="filter-btn bg-blue-100 text-blue-800 px-6 py-2 rounded-full font-medium transition-all hover:bg-blue-200" data-category="breakfast">
-                            🥞 Breakfast
-                        </button>
-                        <button class="filter-btn bg-purple-100 text-purple-800 px-6 py-2 rounded-full font-medium transition-all hover:bg-purple-200" data-category="dinner">
-                            🍖 Dinner
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Time & Difficulty Filters -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Cooking Time</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="time-filter bg-pink-100 text-pink-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-pink-200" data-time="quick">
-                                ⚡ Quick (< 30min)
-                            </button>
-                            <button class="time-filter bg-pink-100 text-pink-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-pink-200" data-time="medium">
-                                ⏰ Medium (30-60min)
-                            </button>
-                            <button class="time-filter bg-pink-100 text-pink-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-pink-200" data-time="long">
-                                🕐 Long (> 60min)
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Difficulty Level</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="difficulty-filter bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-green-200" data-difficulty="easy">
-                                ⭐ Easy
-                            </button>
-                            <button class="difficulty-filter bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-yellow-200" data-difficulty="medium">
-                                ⭐⭐ Medium
-                            </button>
-                            <button class="difficulty-filter bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-red-200" data-difficulty="hard">
-                                ⭐⭐⭐ Hard
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Clear Filters -->
-                <div class="text-center mt-6">
-                    <button id="clearFilters" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium transition-all">
-                        Clear All Filters
-                    </button>
-                </div>
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-playfair font-bold text-gray-900 mb-4">All Recipes</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Discover our complete collection of carefully crafted
+                    recipes, from quick weeknight dinners to show-stopping desserts.</p>
             </div>
         </div>
-    </section>
-    <section class="py-16 px-6">
-        <div class="container mx-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">
-                    <span id="recipeCount">24</span> Recipes Found
-                </h2>
-                <select class="bg-white border-2 border-pink-200 rounded-full px-4 py-2 focus:border-pink-500 focus:outline-none">
+    </div>
+    <div class="max-w-7xl mx-auto bg-white border-b sticky top-0 z-40 shadow-sm">
+        <div class=" px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Search Bar -->
+            <div class="mb-6">
+                <div class="max-w-md mx-auto relative">
+                    <input
+                        type="text"
+                        placeholder="Search recipes..."
+                        class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                    >
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Categories Filter -->
+                <div class="relative group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white">
+                        <option value="">All Categories</option>
+                        <option value="appetizers">Appetizers</option>
+                        <option value="main-courses">Main Courses</option>
+                        <option value="desserts">Desserts</option>
+                        <option value="salads">Salads</option>
+                        <option value="soups">Soups</option>
+                        <option value="beverages">Beverages</option>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="snacks">Snacks</option>
+                    </select>
+                </div>
+
+                <!-- Tags Filter -->
+                <div class="relative group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                    <select
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white">
+                        <option value="">All Tags</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="gluten-free">Gluten-Free</option>
+                        <option value="dairy-free">Dairy-Free</option>
+                        <option value="low-carb">Low Carb</option>
+                        <option value="healthy">Healthy</option>
+                        <option value="quick">Quick & Easy</option>
+                        <option value="comfort-food">Comfort Food</option>
+                    </select>
+                </div>
+
+                <!-- Cooking Time Filter -->
+                <div class="relative group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Cooking Time</label>
+                    <select
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white">
+                        <option value="">Any Time</option>
+                        <option value="15">Under 15 minutes</option>
+                        <option value="30">Under 30 minutes</option>
+                        <option value="60">Under 1 hour</option>
+                        <option value="120">Under 2 hours</option>
+                        <option value="120+">Over 2 hours</option>
+                    </select>
+                </div>
+
+                <!-- Difficulty Filter -->
+                <div class="relative group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                    <select
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white">
+                        <option value="">Any Level</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Advanced</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filters & Clear -->
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <span class="text-sm text-gray-600">Active filters:</span>
+                <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                        Vegetarian
+                        <button class="ml-2 text-gray-500 hover:text-gray-700">×</button>
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                        Under 30 minutes
+                        <button class="ml-2 text-gray-500 hover:text-gray-700">×</button>
+                    </span>
+                </div>
+                <button class="text-sm text-gray-500 hover:text-gray-700 underline ml-2">Clear all</button>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span class="text-gray-600">{{ 'app.filter.count'|trans({'%count%': posts|length}) }}</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-400">
                     <option>Sort by: Latest</option>
                     <option>Sort by: Popular</option>
                     <option>Sort by: A-Z</option>
                     <option>Sort by: Cooking Time</option>
+                    <option>Sort by: Rating</option>
                 </select>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="recipeGrid">
-                {% for post in posts %}
-                    {% set category = post.category %}
-                    {% set mainMedia = post.media|first %}
-                    {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
-
-                        <article class="recipe-card card-hover bg-white rounded-2xl overflow-hidden shadow-lg difficulty-easy"
-                                 data-category="desserts" data-time="quick" data-difficulty="easy" data-name="chocolate chip cookies">
-                            <div class="h-48 bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
-                                {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                                    <img src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}">
-                                {% else %}
-                                    <video autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
-                                        <source src="{{ mainMediaSource }}" type="video/mp4">
-                                    </video>
-                                {% endif %}
-                            </div>
-                            <div class="p-6">
-                                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ post.title }}</h3>
-                                <p class="text-gray-600 text-sm mb-4">{{ post.excerpt }}</p>
-                                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                                    <span>⏱️ 25 min</span>
-                                    <span>👥 12 servings</span>
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">Easy</span>
-                                </div>
-                                <a href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
-                                    class="w-full bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full font-medium transition-colors">
-                                    View Recipe
-                                </a>
-                            </div>
-                        </article>
-                {% endfor %}
+                <div class="flex border border-gray-300 rounded-lg">
+                    <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-l-lg">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                    </button>
+                    <button class="px-3 py-2 text-gray-500 rounded-r-lg hover:bg-gray-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for post in posts %}
+            {% set category = post.category %}
+            {% set mainMedia = post.media|first %}
+            {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
+
+            <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
+               href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
+            >
+                <div class="aspect-square overflow-hidden">
+                    {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}">
+                    {% else %}
+                        <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
+                            <source src="{{ mainMediaSource }}" type="video/mp4">
+                        </video>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        {% for tag in post.tags %}
+                            <span class="inline-block px-2 py-1 text-xs rounded-full" style="background-color:{{ tag.color }}">
+                                {{ tag.title }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-gray-700">{{ post.title }}</h3>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ post.excerpt }}</p>
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <div class="flex items-center space-x-4">
+                            <span>⏱️ 25 min</span>
+                            <span>👨‍🍳 Easy</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span>⭐ 4.8</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}
