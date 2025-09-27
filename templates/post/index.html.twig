@@ -150,7 +150,10 @@
             >
                 <div class="aspect-square overflow-hidden">
                     {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}">
+                        <picture>
+                            <source srcset="{{ mainMediaSource }}" type="image/webp">
+                            <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}" class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </picture>
                     {% else %}
                         <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
                             <source src="{{ mainMediaSource }}" type="video/mp4">
@@ -171,9 +174,6 @@
                         <div class="flex items-center space-x-4">
                             <span>⏱️ 25 min</span>
                             <span>👨‍🍳 Easy</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span>⭐ 4.8</span>
                         </div>
                     </div>
                 </div>
