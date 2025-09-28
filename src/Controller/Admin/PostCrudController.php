@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Entity\PostTranslation;
 use App\Form\PostMediaType;
 use App\Form\PostSectionType;
 use App\Form\PostTranslationType;
@@ -34,6 +35,18 @@ class PostCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Post::class;
+    }
+
+    #[\Override]
+    public function createEntity(string $entityFqcn): Post
+    {
+        $post = new Post();
+
+        foreach ($this->locales->get() as $locale) {
+            $post->addTranslation(new PostTranslation()->setLocale($locale));
+        }
+
+        return $post;
     }
 
     #[\Override]

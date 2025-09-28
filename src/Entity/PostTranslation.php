@@ -32,8 +32,8 @@ class PostTranslation implements IsTranslation, HasSlugs, \Stringable
     #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Post $translatable = null;
 
-    #[ORM\Column(type: Types::STRING)]
-    private string $title;
+    #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
+    private string $title = '';
 
     #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
     private string $metaDescription = '';

@@ -35,11 +35,13 @@ class PostSectionTranslationType extends AbstractType
                 'label' => 'admin.post_section.section_title',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'empty_data' => '',
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'admin.post_section.content',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'empty_data' => '',
             ]);
     }
 

@@ -35,11 +35,13 @@ class PostTranslationType extends AbstractType
                 'label' => 'admin.global.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'empty_data' => '',
             ])
             ->add('metaTitle', TextType::class, [
                 'label' => 'admin.global.meta_title',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('slug', TextType::class, [
                 'label' => 'admin.global.slug.title',
@@ -47,22 +49,26 @@ class PostTranslationType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'help' => 'admin.global.slug.help',
+                'empty_data' => '',
             ])
             ->add('metaDescription', TextareaType::class, [
                 'label' => 'admin.global.meta_description',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('excerpt', TextareaType::class, [
                 'label' => 'admin.global.excerpt',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('notes', TextareaType::class, [
                 'label' => 'admin.post.notes.label',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'help' => 'admin.post.notes.help',
+                'empty_data' => '',
             ])
         ;
     }

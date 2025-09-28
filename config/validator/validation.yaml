@@ -1,3 +1,119 @@
 App\Entity\Post:
     properties:
-        
+        category:
+            - NotNull:
+                message: 'A post must belong to a category.'
+        tags:
+            - Valid: ~
+        media:
+            - Valid: ~
+        sections:
+            - Valid: ~
+        readingTime:
+            - NotNull: ~
+            - Type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'Reading time cannot be negative.'
+            - LessThanOrEqual:
+                value: 300
+                message: 'Reading time cannot exceed 300 minutes.'
+        cookingTime:
+            - NotNull: ~
+            - Type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'Cooking time cannot be negative.'
+            - LessThanOrEqual:
+                value: 1440
+                message: 'Cooking time cannot exceed 24 hours (1440 minutes).'
+        difficulty:
+            - NotNull: ~
+            - Choice:
+                choices: ['easy', 'medium', 'advanced']
+                message: 'Choose a valid difficulty level.'
+        translations:
+            - Valid: ~
+
+App\Entity\PostTranslation:
+    properties:
+        title:
+            - NotBlank:
+                message: 'Title cannot be blank.'
+            - Length:
+                min: 3
+                max: 255
+                minMessage: 'Title must be at least {{ limit }} characters long.'
+                maxMessage: 'Title cannot be longer than {{ limit }} characters.'
+        metaTitle:
+            - Length:
+                max: 60
+                maxMessage: 'Meta title cannot be longer than {{ limit }} characters for SEO optimization.'
+        metaDescription:
+            - Length:
+                min: 120
+                max: 160
+                minMessage: 'Meta description should be at least {{ limit }} characters for better SEO.'
+                maxMessage: 'Meta description cannot be longer than {{ limit }} characters for SEO optimization.'
+        excerpt:
+            - NotBlank:
+                message: 'Excerpt cannot be blank.'
+            - Length:
+                min: 50
+                max: 500
+                minMessage: 'Excerpt must be at least {{ limit }} characters long.'
+                maxMessage: 'Excerpt cannot be longer than {{ limit }} characters.'
+        notes:
+            - Length:
+                max: 2000
+                maxMessage: 'Notes cannot be longer than {{ limit }} characters.'
+
+App\Entity\PostMedia:
+    properties:
+        mediaName:
+            - Length:
+                max: 255
+                maxMessage: 'Media filename cannot be longer than {{ limit }} characters.'
+        mediaFile:
+            - File:
+                maxSize: '10M'
+                maxSizeMessage: 'The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.'
+                mimeTypes:
+                    - 'image/jpeg'
+                    - 'image/png'
+                    - 'image/gif'
+                    - 'image/webp'
+                    - 'video/mp4'
+                    - 'video/webm'
+                mimeTypesMessage: 'Please upload a valid image (JPEG, PNG, GIF, WebP) or video (MP4, WebM) file.'
+        type:
+            - NotNull: ~
+            - Choice:
+                choices: ['image', 'video']
+                message: 'Choose a valid media type.'
+        position:
+            - NotNull: ~
+            - Type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'Position cannot be negative.'
+        translations:
+            - Valid: ~
+        post:
+            - NotNull:
+                message: 'Media must be associated with a post.'
+
+App\Entity\PostMediaTranslation:
+    properties:
+        alt:
+            - NotBlank:
+                message: 'Alt text is required for accessibility.'
+            - Length:
+                min: 5
+                max: 125
+                minMessage: 'Alt text must be at least {{ limit }} characters long.'
+                maxMessage: 'Alt text cannot be longer than {{ limit }} characters for accessibility standards.'
+        title:
+            - Length:
+                max: 255
+                maxMessage: 'Media title cannot be longer than {{ limit }} characters.'

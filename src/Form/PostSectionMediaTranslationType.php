@@ -34,11 +34,13 @@ class PostSectionMediaTranslationType extends AbstractType
                 'label' => 'admin.global.media.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'empty_data' => '',
             ])
             ->add('alt', TextType::class, [
                 'label' => 'admin.global.media.alt',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'empty_data' => '',
             ]);
     }
 
