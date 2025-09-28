@@ -60,7 +60,6 @@ class CategoryMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CategoryMedia::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
     }

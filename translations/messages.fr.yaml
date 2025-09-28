@@ -52,9 +52,18 @@ admin:
         title_placeholder: "Titre de l'article (doit être unique)"
         slug: 'Slug (crée automatiquement)'
         active: 'Actif'
+        cooking_time: 
+            label: 'Temps de cuisson (en minutes)'
+        difficulty:
+            label: 'Difficulté'
+        notes:
+            label: 'Ingrédient & Notes'
+            help: 'Séparer chaque ligne par un pipe (|). Exemple : 200g de farine|100g de sucre|2 œufs'
     tag:
-        color:
-            title: 'Couleur'
+        background_color:
+            title: 'Couleur de fond'
+        text_color:
+            title: 'Couleur du texte'
         dashboard:
             singular: 'Étiquette'
             plural: 'Étiquettes'

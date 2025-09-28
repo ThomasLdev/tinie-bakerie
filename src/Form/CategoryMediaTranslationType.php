@@ -21,20 +21,15 @@ class CategoryMediaTranslationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale'] && \is_array($options['supported_locales'])) {
-            $builder
-                ->add('locale', ChoiceType::class, [
-                    'choices' => $this->getLocales($options['supported_locales']),
-                    'label' => 'admin.global.locale',
-                    'required' => true,
-                    'attr' => [
-                        'class' => 'form-control',
-                        'hidden' => $options['hidde_locale'] ?? false,
-                    ],
-                ]);
-        }
-
         $builder
+            ->add('locale', ChoiceType::class, [
+                'choices' => $this->getLocales($options['supported_locales']),
+                'label' => 'admin.global.locale',
+                'required' => true,
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+            ])
             ->add('title', TextType::class, [
                 'label' => 'admin.global.media.title',
                 'attr' => ['class' => 'form-control'],
@@ -51,11 +46,9 @@ class CategoryMediaTranslationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CategoryMediaTranslation::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
 
-        $resolver->setAllowedTypes('hidde_locale', 'bool');
         $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

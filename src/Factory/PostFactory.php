@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Post;
+use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -34,6 +35,8 @@ final class PostFactory extends PersistentProxyObjectFactory
             'media' => [],
             'sections' => [],
             'translations' => new ArrayCollection(),
+            'cookingTime' => self::faker()->numberBetween(5, 120),
+            'difficulty' => Difficulty::Easy
         ];
     }
 }

@@ -60,7 +60,6 @@ class PostMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostMedia::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
     }

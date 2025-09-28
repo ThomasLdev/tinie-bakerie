@@ -10,13 +10,16 @@ use App\Form\PostMediaType;
 use App\Form\PostSectionType;
 use App\Form\PostTranslationType;
 use App\Services\Locale\Locales;
+use App\Services\Post\Enum\Difficulty;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
@@ -74,11 +77,25 @@ class PostCrudController extends AbstractCrudController
     private function getFormFields(): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
+
+        yield IntegerField::new('cookingTime', 'admin.post.cooking_time.label');
+
+        yield ChoiceField::new('difficulty', 'admin.post.difficulty.label')
+            ->setChoices(Difficulty::cases())
+            ->renderExpanded()
+            ->renderAsBadges([
+                'easy' => 'success',
+                'medium' => 'warning',
+                'hard' => 'danger',
+            ]);
+
         yield AssociationField::new('tags', 'admin.tag.dashboard.plural')
             ->setFormTypeOption('choice_label', 'title')
             ->setFormTypeOption('by_reference', false);
+
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->setFormTypeOption('choice_label', 'title');
+
         yield CollectionField::new('media', 'admin.global.media.label')
             ->setEntryType(PostMediaType::class)
             ->setFormTypeOptions([
@@ -94,6 +111,7 @@ class PostCrudController extends AbstractCrudController
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
+
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(PostTranslationType::class)
             ->setFormTypeOptions([
@@ -109,6 +127,7 @@ class PostCrudController extends AbstractCrudController
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
+
         yield CollectionField::new('sections', 'admin.post_section.title')
             ->setEntryType(PostSectionType::class)
             ->setFormTypeOptions([

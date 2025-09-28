@@ -29,7 +29,10 @@ class Tag implements HasTranslations, \Stringable
     private Collection $posts;
 
     #[ORM\Column(type: Types::STRING, options: ['default' => '#000000'])]
-    private string $color = '#000000';
+    private string $backgroundColor = '#000000';
+
+    #[ORM\Column(type: Types::STRING, options: ['default' => '#FFFFFF'])]
+    private string $textColor = '#FFFFFF';
 
     /** @var Collection<int,TagTranslation> */
     #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
@@ -59,14 +62,26 @@ class Tag implements HasTranslations, \Stringable
         return $this->posts;
     }
 
-    public function getColor(): string
+    public function getBackgroundColor(): string
     {
-        return $this->color;
+        return $this->backgroundColor;
     }
 
-    public function setColor(string $color): self
+    public function setBackgroundColor(string $backgroundColor): self
     {
-        $this->color = $color;
+        $this->backgroundColor = $backgroundColor;
+
+        return $this;
+    }
+
+    public function getTextColor(): string
+    {
+        return $this->textColor;
+    }
+
+    public function setTextColor(string $textColor): self
+    {
+        $this->textColor = $textColor;
 
         return $this;
     }

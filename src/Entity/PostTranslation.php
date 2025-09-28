@@ -44,6 +44,9 @@ class PostTranslation implements IsTranslation, HasSlugs, \Stringable
     #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
     private string $excerpt = '';
 
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $notes = '';
+
     public function __toString(): string
     {
         return $this->locale;
@@ -110,6 +113,18 @@ class PostTranslation implements IsTranslation, HasSlugs, \Stringable
     public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
+
+        return $this;
+    }
+
+    public function getNotes(): string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(string $notes): self
+    {
+        $this->notes = $notes;
 
         return $this;
     }

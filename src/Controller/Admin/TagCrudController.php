@@ -52,7 +52,7 @@ class TagCrudController extends AbstractCrudController
 
     private function getIndexFields(): \Generator
     {
-        yield ColorField::new('color', 'admin.tag.color.title');
+        yield ColorField::new('backgroundColor', 'admin.tag.background_color.title');
 
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
@@ -65,7 +65,10 @@ class TagCrudController extends AbstractCrudController
 
     private function getFormFields(): \Generator
     {
-        yield ColorField::new('color', 'admin.tag.color.title');
+        yield ColorField::new('backgroundColor', 'admin.tag.background_color.title');
+
+        yield ColorField::new('textColor', 'admin.tag.text_color.title');
+
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(TagTranslationType::class)
             ->setFormTypeOptions([
