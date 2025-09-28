@@ -26,18 +26,6 @@ final class CategoryController extends AbstractController
     /**
      * @throws InvalidArgumentException
      *
-     * @return array<'categories', array<array-key,mixed>>
-     */
-    #[Route(methods: ['GET'])]
-    #[Template('category/index.html.twig')]
-    public function index(Request $request): array
-    {
-        return ['categories' => $this->cache->get($request->getLocale())];
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     *
      * @return array<'category',Category>
      */
     #[Route(['en' => '/{categorySlug}', 'fr' => '/{categorySlug}'], methods: ['GET'])]

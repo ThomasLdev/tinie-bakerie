@@ -1,12 +1,22 @@
 app:
     global:
         site: 'Tinie Bakerie'
+        slogan: 'Food & Fun'
+        welcome_to: 'Bienvenue sur'
+        explore_recipes: 'Explorer les recettes'
+        explore: 'Explorer'
         created_at: 'Créé le : '
         updated_at: 'Modifié le : '
+        menu:
+            explore: 'Explorer'
+            categories: 'Catégories'
+            search: 'Rechercher'
     post:
         index: 'Tous les articles'
     category:
         index: 'Toutes les catégories'
+    filter:
+        count: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
 admin:
     global:
         position: 'Position'

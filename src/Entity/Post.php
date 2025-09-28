@@ -259,6 +259,11 @@ class Post implements HasTranslations
         return $this->getLocalizedTranslation()?->getSlug() ?? '';
     }
 
+    public function getExcerpt(): string
+    {
+        return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
+    }
+
     public function getTranslationByLocale(string $locale): ?PostTranslation
     {
         foreach ($this->getTranslations() as $translation) {

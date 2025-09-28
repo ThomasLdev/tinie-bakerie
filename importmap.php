@@ -34,4 +34,7 @@ return [
     'tailwindcss/colors' => [
         'version' => '4.1.13',
     ],
+    'swiper/bundle' => [
+        'version' => '12.0.2',
+    ],
 ];
