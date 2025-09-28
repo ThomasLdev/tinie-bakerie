@@ -45,7 +45,6 @@ class PostSectionMediaType extends AbstractType
                 'label' => 'admin.global.translations',
                 'entry_type' => PostSectionMediaTranslationType::class,
                 'entry_options' => [
-                    'hidde_locale' => $options['hidde_locale'],
                     'supported_locales' => $options['supported_locales'],
                 ],
                 'required' => true,
@@ -61,7 +60,6 @@ class PostSectionMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSectionMedia::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
     }

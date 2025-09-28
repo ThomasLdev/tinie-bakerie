@@ -26,8 +26,7 @@ class DashboardController extends AbstractDashboardController
     #[\Override]
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()
-            ->setTitle('Tinie Bakerie');
+        return Dashboard::new()->setTitle('Tinie Bakerie');
     }
 
     #[\Override]
