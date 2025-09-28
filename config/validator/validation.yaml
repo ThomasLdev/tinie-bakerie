@@ -2,7 +2,7 @@ App\Entity\Post:
     properties:
         category:
             - NotNull:
-                message: 'A post must belong to a category.'
+                message: 'post.category.not_null'
         tags:
             - Valid: ~
         media:
@@ -14,70 +14,68 @@ App\Entity\Post:
             - Type: integer
             - GreaterThanOrEqual:
                 value: 0
-                message: 'Reading time cannot be negative.'
+                message: 'post.reading_time.gte'
             - LessThanOrEqual:
                 value: 300
-                message: 'Reading time cannot exceed 300 minutes.'
+                message: 'post.reading_time.lte'
         cookingTime:
             - NotNull: ~
             - Type: integer
             - GreaterThanOrEqual:
                 value: 0
-                message: 'Cooking time cannot be negative.'
+                message: 'post.cooking_time.gte'
             - LessThanOrEqual:
                 value: 1440
-                message: 'Cooking time cannot exceed 24 hours (1440 minutes).'
+                message: 'post.cooking_time.lte'
         difficulty:
             - NotNull: ~
-            - Choice:
-                choices: ['easy', 'medium', 'advanced']
-                message: 'Choose a valid difficulty level.'
         translations:
             - Valid: ~
+            - App\Validator\Constraints\ValidTranslations: ~
 
 App\Entity\PostTranslation:
     properties:
         title:
             - NotBlank:
-                message: 'Title cannot be blank.'
+                message: 'post_translation.title.not_blank'
             - Length:
                 min: 3
                 max: 255
-                minMessage: 'Title must be at least {{ limit }} characters long.'
-                maxMessage: 'Title cannot be longer than {{ limit }} characters.'
+                minMessage: 'post_translation.title.min_length'
+                maxMessage: 'post_translation.title.max_length'
         metaTitle:
             - Length:
                 max: 60
-                maxMessage: 'Meta title cannot be longer than {{ limit }} characters for SEO optimization.'
+                maxMessage: 'post_translation.meta_title.max_length'
         metaDescription:
             - Length:
                 min: 120
                 max: 160
-                minMessage: 'Meta description should be at least {{ limit }} characters for better SEO.'
-                maxMessage: 'Meta description cannot be longer than {{ limit }} characters for SEO optimization.'
+                minMessage: 'post_translation.meta_description.min_length'
+                maxMessage: 'post_translation.meta_description.max_length'
         excerpt:
             - NotBlank:
-                message: 'Excerpt cannot be blank.'
+                message: 'post_translation.excerpt.not_blank'
             - Length:
                 min: 50
                 max: 500
-                minMessage: 'Excerpt must be at least {{ limit }} characters long.'
-                maxMessage: 'Excerpt cannot be longer than {{ limit }} characters.'
+                minMessage: 'post_translation.excerpt.min_length'
+                maxMessage: 'post_translation.excerpt.max_length'
         notes:
             - Length:
                 max: 2000
-                maxMessage: 'Notes cannot be longer than {{ limit }} characters.'
+                maxMessage: 'post_translation.notes.max_length'
 
 App\Entity\PostMedia:
     properties:
         mediaName:
             - Length:
                 max: 255
-                maxMessage: 'Media filename cannot be longer than {{ limit }} characters.'
+                maxMessage: 'post_media.media_name.max_length'
         mediaFile:
             - File:
                 maxSize: '10M'
-                maxSizeMessage: 'The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.'
+                maxSizeMessage: 'post_media.media_file.max_size'
                 mimeTypes:
                     - 'image/jpeg'
                     - 'image/png'
@@ -85,35 +83,28 @@ App\Entity\PostMedia:
                     - 'image/webp'
                     - 'video/mp4'
                     - 'video/webm'
-                mimeTypesMessage: 'Please upload a valid image (JPEG, PNG, GIF, WebP) or video (MP4, WebM) file.'
-        type:
-            - NotNull: ~
-            - Choice:
-                choices: ['image', 'video']
-                message: 'Choose a valid media type.'
+                mimeTypesMessage: 'post_media.media_file.mime_types'
         position:
             - NotNull: ~
             - Type: integer
             - GreaterThanOrEqual:
                 value: 0
-                message: 'Position cannot be negative.'
+                message: 'post_media.position.gte'
         translations:
             - Valid: ~
-        post:
-            - NotNull:
-                message: 'Media must be associated with a post.'
+            - App\Validator\Constraints\ValidTranslations: ~
 
 App\Entity\PostMediaTranslation:
     properties:
         alt:
             - NotBlank:
-                message: 'Alt text is required for accessibility.'
+                message: 'post_media_translation.alt.not_blank'
             - Length:
                 min: 5
                 max: 125
-                minMessage: 'Alt text must be at least {{ limit }} characters long.'
-                maxMessage: 'Alt text cannot be longer than {{ limit }} characters for accessibility standards.'
+                minMessage: 'post_media_translation.alt.min_length'
+                maxMessage: 'post_media_translation.alt.max_length'
         title:
             - Length:
                 max: 255
-                maxMessage: 'Media title cannot be longer than {{ limit }} characters.'
+                maxMessage: 'post_media_translation.title.max_length'

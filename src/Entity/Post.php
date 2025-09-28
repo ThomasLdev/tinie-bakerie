@@ -227,10 +227,12 @@ class Post implements HasTranslations
     }
 
     /**
-     * @param PostTranslation[] $translations
+     * @param iterable<PostTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }

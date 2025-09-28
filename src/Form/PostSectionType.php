@@ -27,6 +27,7 @@ class PostSectionType extends AbstractType
                     'min' => 0,
                     'class' => 'form-control',
                 ],
+                'empty_data' => '0',
                 'required' => true,
             ])
             ->add('type', ChoiceType::class, [

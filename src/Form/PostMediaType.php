@@ -25,6 +25,8 @@ class PostMediaType extends AbstractType
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
                 'required' => true,
+                'attr' => ['min' => 0],
+                'empty_data' => '0',
             ])
             ->add('mediaFile', VichFileType::class, [
                 'label' => 'admin.global.media.file',
