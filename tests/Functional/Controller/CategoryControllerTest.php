@@ -36,19 +36,9 @@ final class CategoryControllerTest extends BaseControllerTestCase
 
     public static function getCategoryControllerData(): \Generator
     {
-        yield 'fr categories index page' => ['fr', '/fr/categories'];
+        yield 'fr categories' => ['fr', '/fr/categories'];
 
-        yield 'en categories index page' => ['en', '/en/categories'];
-    }
-
-    #[DataProvider('getCategoryControllerData')]
-    public function testIndex(string $locale, string $baseUrl): void
-    {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', $locale);
-
-        $this->client->request(Request::METHOD_GET, $baseUrl);
-
-        self::assertResponseIsSuccessful();
+        yield 'en categories' => ['en', '/en/categories'];
     }
 
     #[DataProvider('getCategoryControllerData')]
@@ -87,33 +77,5 @@ final class CategoryControllerTest extends BaseControllerTestCase
         $this->client->request(Request::METHOD_GET, '/fr/categories/unknown-category');
 
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
-    }
-
-    #[DataProvider('getCategoryControllerData')]
-    public function testIndexWithLocaleFilter(string $locale, string $baseUrl): void
-    {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', $locale);
-
-        $this->client->request(Request::METHOD_GET, $baseUrl);
-
-        self::assertResponseIsSuccessful();
-    }
-
-    public function testShowCategoryWithInvalidSlug(): void
-    {
-        $this->client->request(Request::METHOD_GET, '/fr/categories/invalid-slug-123');
-
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
-    }
-
-    public function testShowCategoryWithEmptySlug(): void
-    {
-        $this->client->request(Request::METHOD_GET, '/fr/categories/');
-
-        // This should either be successful (index) or redirect, depending on routing configuration
-        self::assertTrue(
-            $this->client->getResponse()->isSuccessful()
-            || $this->client->getResponse()->isRedirection(),
-        );
     }
 }

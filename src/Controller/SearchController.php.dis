@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class SearchController extends AbstractController
 {
     public function __construct(
-        private readonly PostRepository $postRepository
+        private readonly PostRepository $postRepository,
     ) {
     }
 
@@ -24,7 +24,7 @@ class SearchController extends AbstractController
         $locale = $request->getLocale();
         $posts = [];
 
-        if (!empty(trim($query))) {
+        if (!\in_array(trim($query), ['', '0'], true)) {
             // Use the ranking version for better results
             $posts = $this->postRepository->searchPostsWithRanking($query, $locale);
         }
@@ -32,7 +32,7 @@ class SearchController extends AbstractController
         return $this->render('search/index.html.twig', [
             'posts' => $posts,
             'query' => $query,
-            'total' => count($posts),
+            'total' => \count($posts),
         ]);
     }
 
@@ -43,12 +43,12 @@ class SearchController extends AbstractController
         $locale = $request->query->get('locale');
         $posts = [];
 
-        if (!empty(trim($query))) {
+        if (!\in_array(trim($query), ['', '0'], true)) {
             $posts = $this->postRepository->searchPostsWithRanking($query, $locale);
         }
 
         // Transform posts to simple array for JSON response
-        $results = array_map(function ($post) {
+        $results = array_map(static function ($post): array {
             $translation = $post->getTranslations()->first();
             $category = $post->getCategory();
             $categoryTranslation = $category ? $category->getTranslations()->first() : null;
@@ -65,7 +65,7 @@ class SearchController extends AbstractController
 
         return $this->json([
             'results' => $results,
-            'total' => count($results),
+            'total' => \count($results),
             'query' => $query,
         ]);
     }

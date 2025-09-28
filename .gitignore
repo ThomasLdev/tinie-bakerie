@@ -8,6 +8,7 @@
 /app/spool/*
 
 # Cache, session files and logs (Symfony3)
+var/*
 /var/tailwind/*
 /var/cache/*
 /var/logs/*

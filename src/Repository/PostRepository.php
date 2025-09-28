@@ -91,6 +91,7 @@ class PostRepository extends ServiceEntityRepository
      *
      * @param string $query Search query
      * @param string|null $locale Locale for search (null for all locales)
+     *
      * @return array<array-key,mixed>
      */
     public function searchPosts(string $query, ?string $locale = null): array
@@ -121,7 +122,7 @@ class PostRepository extends ServiceEntityRepository
             "to_tsvector('simple', COALESCE(pt.excerpt, '')) @@ plainto_tsquery('simple', :query)",
             "to_tsvector('simple', COALESCE(pst.content, '')) @@ plainto_tsquery('simple', :query)",
             "to_tsvector('simple', COALESCE(ct.title, '')) @@ plainto_tsquery('simple', :query)",
-            "to_tsvector('simple', COALESCE(tt.title, '')) @@ plainto_tsquery('simple', :query)"
+            "to_tsvector('simple', COALESCE(tt.title, '')) @@ plainto_tsquery('simple', :query)",
         ];
 
         $qb->andWhere('(' . implode(' OR ', $searchConditions) . ')');
@@ -129,12 +130,12 @@ class PostRepository extends ServiceEntityRepository
         // Add locale filter if specified
         if ($locale !== null) {
             $qb->andWhere('(pt.locale = :locale OR pt.locale IS NULL)')
-               ->setParameter('locale', $locale);
+                ->setParameter('locale', $locale);
         }
 
         $qb->setParameter('active', true)
-           ->setParameter('query', $query)
-           ->orderBy('p.createdAt', 'DESC');
+            ->setParameter('query', $query)
+            ->orderBy('p.createdAt', 'DESC');
 
         $result = $qb->getQuery()->getResult();
 
@@ -147,6 +148,7 @@ class PostRepository extends ServiceEntityRepository
      *
      * @param string $query Search query
      * @param string|null $locale Locale for search (null for all locales)
+     *
      * @return array<array-key,mixed>
      */
     public function searchPostsWithRanking(string $query, ?string $locale = null): array
@@ -190,7 +192,7 @@ class PostRepository extends ServiceEntityRepository
             "to_tsvector('simple', COALESCE(pt.excerpt, '')) @@ plainto_tsquery('simple', :query)",
             "to_tsvector('simple', COALESCE(pst.content, '')) @@ plainto_tsquery('simple', :query)",
             "to_tsvector('simple', COALESCE(ct.title, '')) @@ plainto_tsquery('simple', :query)",
-            "to_tsvector('simple', COALESCE(tt.title, '')) @@ plainto_tsquery('simple', :query)"
+            "to_tsvector('simple', COALESCE(tt.title, '')) @@ plainto_tsquery('simple', :query)",
         ];
 
         $qb->andWhere('(' . implode(' OR ', $searchConditions) . ')');
@@ -198,13 +200,13 @@ class PostRepository extends ServiceEntityRepository
         // Add locale filter if specified
         if ($locale !== null) {
             $qb->andWhere('(pt.locale = :locale OR pt.locale IS NULL)')
-               ->setParameter('locale', $locale);
+                ->setParameter('locale', $locale);
         }
 
         $qb->setParameter('active', true)
-           ->setParameter('query', $query)
-           ->orderBy('relevance_score', 'DESC')
-           ->addOrderBy('p.createdAt', 'DESC');
+            ->setParameter('query', $query)
+            ->orderBy('relevance_score', 'DESC')
+            ->addOrderBy('p.createdAt', 'DESC');
 
         $result = $qb->getQuery()->getResult();
 

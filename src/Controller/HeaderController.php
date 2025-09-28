@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HeaderController extends AbstractController
 {
+    /**
+     * @return array{categories: array<mixed>}
+     */
     #[Route('/header', methods: ['GET'])]
     #[Template('page/layout/header.html.twig')]
     public function renderHeader(CategoryRepository $categoryRepository): array
