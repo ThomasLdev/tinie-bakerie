@@ -37,8 +37,4 @@ return [
     'swiper/bundle' => [
         'version' => '12.0.2',
     ],
-    'swiper/swiper-bundle.min.css' => [
-        'version' => '12.0.2',
-        'type' => 'css',
-    ],
 ];
