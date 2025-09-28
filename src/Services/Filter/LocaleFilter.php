@@ -7,6 +7,7 @@ namespace App\Services\Filter;
 use App\Entity\Contracts\IsTranslation;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
+use function sprintf;
 
 class LocaleFilter extends SQLFilter
 {
@@ -16,7 +17,7 @@ class LocaleFilter extends SQLFilter
     {
         $reflexionClass = $targetEntity->getReflectionClass();
 
-        if (!$reflexionClass->implementsInterface(IsTranslation::class)) {
+        if (!$reflexionClass?->implementsInterface(IsTranslation::class)) {
             return '';
         }
 
@@ -24,7 +25,7 @@ class LocaleFilter extends SQLFilter
             return '';
         }
 
-        return \sprintf(
+        return sprintf(
             '%s.%s = %s',
             $targetTableAlias,
             self::PARAMETER_NAME,

@@ -7,26 +7,72 @@
 {% endblock %}
 
 {% block body %}
-    {% if category is defined and category is not same as null %}
-        <h1>{{ category.title }}</h1>
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-playfair font-bold text-gray-900 mb-4">{{ category.title }}</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ category.description }}</p>
+            </div>
+            {% for medium in category.media %}
+                {% set src = vich_uploader_asset(medium) %}
 
-        <p>{{ category.description }}</p>
+                {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                    <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
+                {% else %}
+                    <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
+                        <source src="{{ src }}" type="video/mp4">
+                    </video>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 
-        <p>{{ 'app.global.created_at'|trans ~ category.createdAt|date }}</p>
-        <p>{{ 'app.global.updated_at'|trans ~ category.updatedAt|date }}</p>
+    {% set posts = category.posts %}
 
-        {% for medium in category.media %}
-            {% set src = vich_uploader_asset(medium) %}
+    {% if posts is not same as null and posts is not empty %}
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for post in posts %}
+                {% set mainMedia = post.media|first %}
+                {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
 
-            {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
-            {% else %}
-                <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
-                    <source src="{{ src }}" type="video/mp4">
-                </video>
-            {% endif %}
-        {% endfor %}
-
-        <a href="{{ path('app_category_index') }}">Back to categories</a>
+                <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
+                   href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
+                >
+                    <div class="aspect-square overflow-hidden">
+                        {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                            <picture>
+                                <source srcset="{{ mainMediaSource }}" type="image/webp">
+                                <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}"
+                                     class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            </picture>
+                        {% else %}
+                            <video
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
+                                <source src="{{ mainMediaSource }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            {% for tag in post.tags %}
+                                <span class="inline-block px-2 py-1 text-xs rounded-full"
+                                      style="background-color:{{ tag.color }}">
+                                {{ tag.title }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-gray-700">{{ post.title }}</h3>
+                        <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ post.excerpt }}</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center space-x-4">
+                                <span>⏱️ 25 min</span>
+                                <span>👨‍🍳 Easy</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     {% endif %}
 {% endblock body %}
