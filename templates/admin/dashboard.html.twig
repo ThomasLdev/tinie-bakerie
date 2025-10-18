@@ -1,0 +1,86 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Back Office Dashboard{% endblock %}
+
+{% block main %}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Daily Visitors</h5>
+                    <p class="card-text display-4">1,234</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Visitors</h5>
+                    <p class="card-text display-4">56,789</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Active Users</h5>
+                    <p class="card-text display-4">87</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Visitors Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Visitors</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2025-10-18</td><td>1,234</td></tr>
+                            <tr><td>2025-10-17</td><td>1,120</td></tr>
+                            <tr><td>2025-10-16</td><td>1,098</td></tr>
+                            <tr><td>2025-10-15</td><td>1,045</td></tr>
+                            <tr><td>2025-10-14</td><td>1,210</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Other Stats</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Most Popular Page
+                            <span class="badge bg-primary">/home</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Avg. Session Duration
+                            <span class="badge bg-success">5m 32s</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Bounce Rate
+                            <span class="badge bg-danger">42%</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            New Signups Today
+                            <span class="badge bg-info">12</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -54,8 +54,6 @@ App\Entity\PostTranslation:
                 minMessage: 'post_translation.meta_description.min_length'
                 maxMessage: 'post_translation.meta_description.max_length'
         excerpt:
-            - NotBlank:
-                message: 'post_translation.excerpt.not_blank'
             - Length:
                 min: 50
                 max: 500
@@ -97,8 +95,6 @@ App\Entity\PostMedia:
 App\Entity\PostMediaTranslation:
     properties:
         alt:
-            - NotBlank:
-                message: 'post_media_translation.alt.not_blank'
             - Length:
                 min: 5
                 max: 125

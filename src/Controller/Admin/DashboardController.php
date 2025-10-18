@@ -20,7 +20,7 @@ class DashboardController extends AbstractDashboardController
     #[\Override]
     public function index(): Response
     {
-        return parent::index();
+        return $this->render('admin/dashboard.html.twig');
     }
 
     #[\Override]

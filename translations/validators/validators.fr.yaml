@@ -10,8 +10,8 @@ post:
     gte: "Le temps de lecture ne peut pas être négatif."
     lte: "Le temps de lecture ne peut pas dépasser 300 minutes."
   cooking_time:
-    gte: "Le temps de cuisson ne peut pas être négatif."
-    lte: "Le temps de cuisson ne peut pas dépasser 24 heures (1440 minutes)."
+    gte: "Le temps de préparation ne peut pas être négatif."
+    lte: "Le temps de préparation ne peut pas dépasser 24 heures (1440 minutes)."
 
 post_translation:
   title:

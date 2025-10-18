@@ -13,7 +13,6 @@ class ValidTranslations extends Constraint
     public string $message = 'translations.invalid';
     public string $countMessage = 'translations.count';
     public string $localeMessage = 'translations.locale_unique';
-    public int $requiredCount = 2;
 
     public function getTargets(): string
     {
