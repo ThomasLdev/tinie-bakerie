@@ -1,106 +1,11 @@
-App\Entity\Post:
-    properties:
-        category:
-            - NotNull:
-                message: 'post.category.not_null'
-        tags:
-            - Valid: ~
-        media:
-            - Valid: ~
-        sections:
-            - Valid: ~
-        readingTime:
-            - NotNull: ~
-            - Type: integer
-            - GreaterThanOrEqual:
-                value: 0
-                message: 'post.reading_time.gte'
-            - LessThanOrEqual:
-                value: 300
-                message: 'post.reading_time.lte'
-        cookingTime:
-            - NotNull: ~
-            - Type: integer
-            - GreaterThanOrEqual:
-                value: 0
-                message: 'post.cooking_time.gte'
-            - LessThanOrEqual:
-                value: 1440
-                message: 'post.cooking_time.lte'
-        difficulty:
-            - NotNull: ~
-        translations:
-            - Valid: ~
-            - App\Validator\Constraints\ValidTranslations: ~
-
-App\Entity\PostTranslation:
-    properties:
-        title:
-            - NotBlank:
-                message: 'post_translation.title.not_blank'
-            - Length:
-                min: 3
-                max: 255
-                minMessage: 'post_translation.title.min_length'
-                maxMessage: 'post_translation.title.max_length'
-        metaTitle:
-            - Length:
-                max: 60
-                maxMessage: 'post_translation.meta_title.max_length'
-        metaDescription:
-            - Length:
-                min: 120
-                max: 160
-                minMessage: 'post_translation.meta_description.min_length'
-                maxMessage: 'post_translation.meta_description.max_length'
-        excerpt:
-            - Length:
-                min: 50
-                max: 500
-                minMessage: 'post_translation.excerpt.min_length'
-                maxMessage: 'post_translation.excerpt.max_length'
-        notes:
-            - Length:
-                max: 2000
-                maxMessage: 'post_translation.notes.max_length'
-
-App\Entity\PostMedia:
-    properties:
-        mediaName:
-            - Length:
-                max: 255
-                maxMessage: 'post_media.media_name.max_length'
-        mediaFile:
-            - File:
-                maxSize: '10M'
-                maxSizeMessage: 'post_media.media_file.max_size'
-                mimeTypes:
-                    - 'image/jpeg'
-                    - 'image/png'
-                    - 'image/gif'
-                    - 'image/webp'
-                    - 'video/mp4'
-                    - 'video/webm'
-                mimeTypesMessage: 'post_media.media_file.mime_types'
-        position:
-            - NotNull: ~
-            - Type: integer
-            - GreaterThanOrEqual:
-                value: 0
-                message: 'post_media.position.gte'
-        translations:
-            - Valid: ~
-            - App\Validator\Constraints\ValidTranslations: ~
-
-App\Entity\PostMediaTranslation:
-    properties:
-        alt:
-            - Length:
-                min: 5
-                max: 125
-                minMessage: 'post_media_translation.alt.min_length'
-                maxMessage: 'post_media_translation.alt.max_length'
-        title:
-            - Length:
-                max: 255
-                maxMessage: 'post_media_translation.title.max_length'
+imports:
+    - { resource: 'post.yaml' }
+    - { resource: 'post_translation.yaml' }
+    - { resource: 'post_media.yaml' }
+    - { resource: 'post_media_translation.yaml' }
+    - { resource: 'category.yaml' }
+    - { resource: 'category_translation.yaml' }
+    - { resource: 'category_media.yaml' }
+    - { resource: 'category_media_translation.yaml' }
+    - { resource: 'tag.yaml' }
+    - { resource: 'tag_translation.yaml' }

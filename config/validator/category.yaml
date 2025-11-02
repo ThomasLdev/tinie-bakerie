@@ -1,0 +1,11 @@
+App\Entity\Category:
+    properties:
+        translations:
+            - Valid: 
+                groups: ['create', 'update', 'admin']
+            - App\Validator\Constraints\ValidTranslations: 
+                groups: ['create', 'update', 'admin']
+        media:
+            - Valid: 
+                groups: ['create', 'update', 'admin']
+

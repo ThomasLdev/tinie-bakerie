@@ -1,0 +1,35 @@
+App\Entity\PostMedia:
+    properties:
+        mediaName:
+            - Length:
+                max: 255
+                maxMessage: 'post_media.media_name.max_length'
+                groups: ['create', 'update', 'admin']
+        mediaFile:
+            - File:
+                maxSize: '10M'
+                maxSizeMessage: 'post_media.media_file.max_size'
+                mimeTypes:
+                    - 'image/jpeg'
+                    - 'image/png'
+                    - 'image/gif'
+                    - 'image/webp'
+                    - 'video/mp4'
+                    - 'video/webm'
+                mimeTypesMessage: 'post_media.media_file.mime_types'
+                groups: ['create', 'upload']
+        position:
+            - NotNull: 
+                groups: ['create', 'update', 'admin']
+            - Type: 
+                type: integer
+                groups: ['create', 'update', 'admin']
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'post_media.position.gte'
+                groups: ['create', 'update', 'admin']
+        translations:
+            - Valid: 
+                groups: ['create', 'update', 'admin']
+            - App\Validator\Constraints\ValidTranslations: 
+                groups: ['create', 'update', 'admin']

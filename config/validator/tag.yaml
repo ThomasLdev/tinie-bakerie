@@ -1,0 +1,8 @@
+App\Entity\Tag:
+    properties:
+        translations:
+            - Valid: 
+                groups: ['create', 'update', 'admin']
+            - App\Validator\Constraints\ValidTranslations: 
+                groups: ['create', 'update', 'admin']
+
