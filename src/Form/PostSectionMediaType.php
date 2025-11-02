@@ -61,7 +61,6 @@ class PostSectionMediaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostSectionMedia::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
     }
 }

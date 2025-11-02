@@ -61,7 +61,6 @@ class CategoryMediaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CategoryMedia::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
     }
 }

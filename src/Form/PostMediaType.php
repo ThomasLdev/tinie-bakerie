@@ -63,7 +63,6 @@ class PostMediaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostMedia::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
     }
 }

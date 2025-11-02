@@ -6,9 +6,7 @@ App\Entity\PostMediaTranslation:
                 max: 125
                 minMessage: 'post_media_translation.alt.min_length'
                 maxMessage: 'post_media_translation.alt.max_length'
-                groups: ['create', 'update', 'admin', 'accessibility']
         title:
             - Length:
                 max: 255
                 maxMessage: 'post_media_translation.title.max_length'
-                groups: ['create', 'update', 'admin']

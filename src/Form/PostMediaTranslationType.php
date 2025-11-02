@@ -49,7 +49,6 @@ class PostMediaTranslationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostMediaTranslation::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

@@ -6,10 +6,8 @@ App\Entity\CategoryMediaTranslation:
                 max: 125
                 minMessage: 'category_media_translation.alt.min_length'
                 maxMessage: 'category_media_translation.alt.max_length'
-                groups: ['create', 'update', 'admin', 'accessibility']
         title:
             - Length:
                 max: 255
                 maxMessage: 'category_media_translation.title.max_length'
-                groups: ['create', 'update', 'admin']
 

@@ -3,49 +3,34 @@ App\Entity\Post:
         category:
             - NotNull:
                 message: 'post.category.not_null'
-                groups: ['create', 'update', 'admin']
         tags:
-            - Valid: 
-                groups: ['create', 'update', 'admin']
+            - Valid: ~
         media:
-            - Valid: 
-                groups: ['create', 'update', 'admin']
+            - Valid: ~
         sections:
-            - Valid: 
-                groups: ['create', 'update', 'admin']
+            - Valid: ~
         readingTime:
-            - NotNull: 
-                groups: ['create', 'update', 'admin']
+            - NotNull: ~
             - Type: 
                 type: integer
-                groups: ['create', 'update', 'admin']
             - GreaterThanOrEqual:
                 value: 0
                 message: 'post.reading_time.gte'
-                groups: ['create', 'update', 'admin']
             - LessThanOrEqual:
                 value: 300
                 message: 'post.reading_time.lte'
-                groups: ['create', 'update', 'admin']
         cookingTime:
-            - NotNull: 
-                groups: ['create', 'update', 'admin']
+            - NotNull: ~
             - Type: 
                 type: integer
-                groups: ['create', 'update', 'admin']
             - GreaterThanOrEqual:
                 value: 0
                 message: 'post.cooking_time.gte'
-                groups: ['create', 'update', 'admin']
             - LessThanOrEqual:
                 value: 1440
                 message: 'post.cooking_time.lte'
-                groups: ['create', 'update', 'admin']
         difficulty:
-            - NotNull: 
-                groups: ['create', 'update', 'admin']
+            - NotNull: ~
         translations:
-            - Valid: 
-                groups: ['create', 'update', 'admin']
-            - App\Validator\Constraints\ValidTranslations: 
-                groups: ['create', 'update', 'admin']
+            - Valid: ~
+            - App\Validator\Constraints\ValidTranslations: ~

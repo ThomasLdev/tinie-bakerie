@@ -3,11 +3,9 @@ App\Entity\TagTranslation:
         title:
             - NotBlank:
                 message: 'tag_translation.title.not_blank'
-                groups: ['create', 'update', 'admin']
             - Length:
                 min: 2
                 max: 100
                 minMessage: 'tag_translation.title.min_length'
                 maxMessage: 'tag_translation.title.max_length'
-                groups: ['create', 'update', 'admin']
 

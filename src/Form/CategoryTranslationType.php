@@ -70,7 +70,6 @@ class CategoryTranslationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CategoryTranslation::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

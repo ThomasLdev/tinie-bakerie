@@ -47,7 +47,6 @@ class CategoryMediaTranslationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CategoryMediaTranslation::class,
             'supported_locales' => [],
-            'validation_groups' => ['admin'],
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');
