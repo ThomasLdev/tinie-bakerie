@@ -6,7 +6,7 @@ namespace App\Services\Post\Enum;
 
 enum Difficulty: string
 {
-    Case Easy = 'easy';
-    Case Medium = 'medium';
-    Case Advanced = 'advanced';
+    case Easy = 'easy';
+    case Medium = 'medium';
+    case Advanced = 'advanced';
 }

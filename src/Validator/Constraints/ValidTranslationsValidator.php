@@ -17,7 +17,7 @@ class ValidTranslationsValidator extends ConstraintValidator
 
     public function __construct(private readonly Locales $locales)
     {
-        $this->requiredCount = count($this->locales->get());
+        $this->requiredCount = \count($this->locales->get());
     }
 
     public function validate(mixed $value, Constraint $constraint): void
@@ -42,6 +42,7 @@ class ValidTranslationsValidator extends ConstraintValidator
                 ->setParameter('{{ required }}', (string) $this->requiredCount)
                 ->setParameter('{{ entity }}', $entityName)
                 ->addViolation();
+
             return;
         }
 
@@ -53,11 +54,13 @@ class ValidTranslationsValidator extends ConstraintValidator
             }
 
             $locale = $translation->getLocale();
-            if (in_array($locale, $locales, true)) {
+
+            if (\in_array($locale, $locales, true)) {
                 $this->context->buildViolation($constraint->localeMessage)
                     ->setParameter('{{ locale }}', $locale)
                     ->setParameter('{{ entity }}', $entityName)
                     ->addViolation();
+
                 return;
             }
             $locales[] = $locale;
@@ -68,11 +71,12 @@ class ValidTranslationsValidator extends ConstraintValidator
     {
         $object = $this->context->getObject();
 
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return 'Entité';
         }
 
-        $className = get_class($object);
+        $className = $object::class;
+
         return ucfirst(strtolower(substr($className, strrpos($className, '\\') + 1)));
     }
 }

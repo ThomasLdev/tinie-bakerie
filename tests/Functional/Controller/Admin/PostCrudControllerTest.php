@@ -20,8 +20,10 @@ use Symfony\Component\DomCrawler\Crawler;
 final class PostCrudControllerTest extends BaseControllerTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private PostRepository $postRepository;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,6 +31,13 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $container = self::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->postRepository = $container->get(PostRepository::class);
+    }
+
+    #[\Override]
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->entityManager->close();
     }
 
     // ========================================
@@ -106,10 +115,12 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $foundFr = false;
         $foundEn = false;
+
         foreach ($translations as $translation) {
             if ($translation->getTitle() === 'Test Post Title Minimal FR') {
                 $foundFr = true;
             }
+
             if ($translation->getTitle() === 'Test Post Title Minimal EN') {
                 $foundEn = true;
             }
@@ -180,15 +191,15 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $form = $crawler->selectButton('Créer')->form([
             // Don't include active field to leave it unchecked (defaults to inactive)
-            "Post[cookingTime]" => '60',
-            "Post[difficulty]" => Difficulty::Advanced->value,
-            "Post[category]" => (string) $category->getId(),
-            "Post[translations][0][title]" => 'Inactive Post Test FR',
-            "Post[translations][0][metaDescription]" => str_repeat('A', 120),
-            "Post[translations][0][excerpt]" => str_repeat('B', 50),
-            "Post[translations][1][title]" => 'Inactive Post Test EN',
-            "Post[translations][1][metaDescription]" => str_repeat('C', 120),
-            "Post[translations][1][excerpt]" => str_repeat('D', 50),
+            'Post[cookingTime]' => '60',
+            'Post[difficulty]' => Difficulty::Advanced->value,
+            'Post[category]' => (string) $category->getId(),
+            'Post[translations][0][title]' => 'Inactive Post Test FR',
+            'Post[translations][0][metaDescription]' => str_repeat('A', 120),
+            'Post[translations][0][excerpt]' => str_repeat('B', 50),
+            'Post[translations][1][title]' => 'Inactive Post Test EN',
+            'Post[translations][1][metaDescription]' => str_repeat('C', 120),
+            'Post[translations][1][excerpt]' => str_repeat('D', 50),
         ]);
 
         // Uncheck the active checkbox
@@ -395,8 +406,8 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             ->getRepository(Category::class)
             ->findOneBy([]);
 
-        if (!$category) {
-            $this->markTestSkipped('No categories available. Please run fixtures first.');
+        if (!$category instanceof Category) {
+            self::markTestSkipped('No categories available. Please run fixtures first.');
         }
 
         return $category;
@@ -415,11 +426,5 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         }
 
         return 'Post';
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->entityManager->close();
     }
 }

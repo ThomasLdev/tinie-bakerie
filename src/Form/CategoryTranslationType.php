@@ -20,6 +20,9 @@ class CategoryTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
+    /**
+     * @param array{supported_locales: array<string>} $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

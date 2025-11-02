@@ -25,11 +25,17 @@ readonly class SluggableEntityListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param BeforeEntityUpdatedEvent<object> $event
+     */
     public function setTranslationSlugOnUpdate(BeforeEntityUpdatedEvent $event): void
     {
         $this->setTranslationSlug($event->getEntityInstance());
     }
 
+    /**
+     * @param BeforeEntityPersistedEvent<object> $event
+     */
     public function setTranslationSlugOnCreate(BeforeEntityPersistedEvent $event): void
     {
         $this->setTranslationSlug($event->getEntityInstance());

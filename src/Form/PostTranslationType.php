@@ -20,6 +20,9 @@ class PostTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
+    /**
+     * @param array{supported_locales: array<string>} $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -69,8 +72,7 @@ class PostTranslationType extends AbstractType
                 'required' => false,
                 'help' => 'admin.post.notes.help',
                 'empty_data' => '',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
