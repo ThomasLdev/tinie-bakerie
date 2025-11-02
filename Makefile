@@ -122,14 +122,14 @@ rector:
 
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
-phpunit: fixtures-test
+phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
-coverage: fixtures-test
+coverage:
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage
 
 phpunit-unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-phpunit-functional: fixtures-test
+phpunit-functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests

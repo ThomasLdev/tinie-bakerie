@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Entity\Category;
+use App\Entity\Tag;
 use App\Repository\PostRepository;
+use App\Services\Media\Enum\MediaType;
 use App\Services\Post\Enum\Difficulty;
+use App\Services\PostSection\Enum\PostSectionType;
 use App\Tests\Functional\Controller\BaseControllerTestCase;
+use App\Tests\Story\PostCrudTestStory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * Functional tests for PostCrudController that test from the user perspective.
@@ -19,9 +25,14 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 final class PostCrudControllerTest extends BaseControllerTestCase
 {
+    use Factories;
+    use ResetDatabase;
+
     private EntityManagerInterface $entityManager;
 
     private PostRepository $postRepository;
+
+    private PostCrudTestStory $story;
 
     #[\Override]
     protected function setUp(): void
@@ -31,6 +42,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $container = self::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->postRepository = $container->get(PostRepository::class);
+        $this->story = PostCrudTestStory::load();
     }
 
     #[\Override]
@@ -64,7 +76,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithValidMinimalData(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
 
@@ -118,7 +130,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithCompleteData(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -170,7 +182,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreateInactivePost(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form([
             'Post[cookingTime]' => '60',
@@ -222,7 +234,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithInvalidCookingTime(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -246,7 +258,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithNegativeCookingTime(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -270,7 +282,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithoutTranslationTitle(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -294,7 +306,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithTooShortTranslationTitle(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -318,7 +330,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithInvalidMetaDescription(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -343,7 +355,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     public function testCreatePostWithInvalidExcerpt(): void
     {
         $crawler = $this->loadNewPostForm();
-        $category = $this->getRandomCategory();
+        $category = $this->getCategory();
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
@@ -364,28 +376,415 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         self::assertResponseStatusCodeSame(422);
     }
 
+    public function testCreatePostWithTags(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+        $tagIds = $this->getTagIds();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '25',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[tags]" => [(string) $tagIds[0], (string) $tagIds[1]],
+            "{$formName}[translations][0][title]" => 'Post With Tags FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Tags EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 25]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(2, $post->getTags(), 'Post should have 2 tags');
+
+        $postTagIds = array_map(fn (Tag $tag) => $tag->getId(), $post->getTags()->toArray());
+        self::assertContains($tagIds[0], $postTagIds, 'First tag should be associated');
+        self::assertContains($tagIds[1], $postTagIds, 'Second tag should be associated');
+    }
+
+    public function testCreatePostWithoutTags(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '26',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post Without Tags FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post Without Tags EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 26]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(0, $post->getTags(), 'Post should have no tags');
+    }
+
+    public function testCreatePostWithMedia(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '27',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post With Media FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Media EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+            // First media item
+            "{$formName}[media][0][position]" => '0',
+            "{$formName}[media][0][type]" => MediaType::Image->value,
+            "{$formName}[media][0][translations][0][locale]" => 'fr',
+            "{$formName}[media][0][translations][0][alt]" => 'Image alt text FR minimum',
+            "{$formName}[media][0][translations][0][title]" => 'Image Title FR',
+            "{$formName}[media][0][translations][1][locale]" => 'en',
+            "{$formName}[media][0][translations][1][alt]" => 'Image alt text EN minimum',
+            "{$formName}[media][0][translations][1][title]" => 'Image Title EN',
+            // Second media item
+            "{$formName}[media][1][position]" => '1',
+            "{$formName}[media][1][type]" => MediaType::Video->value,
+            "{$formName}[media][1][translations][0][locale]" => 'fr',
+            "{$formName}[media][1][translations][0][alt]" => 'Video alt text FR minimum',
+            "{$formName}[media][1][translations][0][title]" => 'Video Title FR',
+            "{$formName}[media][1][translations][1][locale]" => 'en',
+            "{$formName}[media][1][translations][1][alt]" => 'Video alt text EN minimum',
+            "{$formName}[media][1][translations][1][title]" => 'Video Title EN',
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 27]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(2, $post->getMedia(), 'Post should have 2 media items');
+
+        $mediaArray = $post->getMedia()->toArray();
+        self::assertSame(MediaType::Image, $mediaArray[0]->getType(), 'First media should be image');
+        self::assertSame(MediaType::Video, $mediaArray[1]->getType(), 'Second media should be video');
+        self::assertCount(2, $mediaArray[0]->getTranslations(), 'Media should have 2 translations');
+    }
+
+    public function testCreatePostWithoutMedia(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '28',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post Without Media FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post Without Media EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 28]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(0, $post->getMedia(), 'Post should have no media');
+    }
+
+    public function testCreatePostWithInvalidMediaPosition(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '29',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post With Invalid Media Position FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Invalid Media Position EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+            "{$formName}[media][0][position]" => '-1', // Invalid: negative position
+            "{$formName}[media][0][type]" => MediaType::Image->value,
+            "{$formName}[media][0][translations][0][alt]" => 'Image alt text FR minimum',
+            "{$formName}[media][0][translations][0][title]" => 'Image Title FR',
+            "{$formName}[media][0][translations][1][alt]" => 'Image alt text EN minimum',
+            "{$formName}[media][0][translations][1][title]" => 'Image Title EN',
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testCreatePostWithMediaMissingAlt(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '270',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post With Media Missing Alt FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Media Missing Alt EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+            "{$formName}[media][0][position]" => '0',
+            "{$formName}[media][0][type]" => MediaType::Image->value,
+            "{$formName}[media][0][translations][0][alt]" => 'A', // Too short: min 5 chars
+            "{$formName}[media][0][translations][0][title]" => 'Image Title FR',
+            "{$formName}[media][0][translations][1][alt]" => 'Image alt text EN minimum',
+            "{$formName}[media][0][translations][1][title]" => 'Image Title EN',
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testCreatePostWithSections(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '271',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post With Sections FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Sections EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+            // First section
+            "{$formName}[sections][0][position]" => '0',
+            "{$formName}[sections][0][type]" => PostSectionType::Default->value,
+            "{$formName}[sections][0][translations][0][title]" => 'Section 1 Title FR',
+            "{$formName}[sections][0][translations][0][content]" => 'Section 1 content in French',
+            "{$formName}[sections][0][translations][1][title]" => 'Section 1 Title EN',
+            "{$formName}[sections][0][translations][1][content]" => 'Section 1 content in English',
+            // Second section
+            "{$formName}[sections][1][position]" => '1',
+            "{$formName}[sections][1][type]" => PostSectionType::TwoColumns->value,
+            "{$formName}[sections][1][translations][0][title]" => 'Section 2 Title FR',
+            "{$formName}[sections][1][translations][0][content]" => 'Section 2 content in French',
+            "{$formName}[sections][1][translations][1][title]" => 'Section 2 Title EN',
+            "{$formName}[sections][1][translations][1][content]" => 'Section 2 content in English',
+            // Third section
+            "{$formName}[sections][2][position]" => '2',
+            "{$formName}[sections][2][type]" => PostSectionType::TwoColumnsMediaLeft->value,
+            "{$formName}[sections][2][translations][0][title]" => 'Section 3 Title FR',
+            "{$formName}[sections][2][translations][0][content]" => 'Section 3 content in French',
+            "{$formName}[sections][2][translations][1][title]" => 'Section 3 Title EN',
+            "{$formName}[sections][2][translations][1][content]" => 'Section 3 content in English',
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 271]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(3, $post->getSections(), 'Post should have 3 sections');
+
+        $sectionsArray = $post->getSections()->toArray();
+        self::assertSame(PostSectionType::Default, $sectionsArray[0]->getType(), 'First section should be default type');
+        self::assertSame(PostSectionType::TwoColumns, $sectionsArray[1]->getType(), 'Second section should be two columns type');
+        self::assertSame(PostSectionType::TwoColumnsMediaLeft, $sectionsArray[2]->getType(), 'Third section should be two columns media left type');
+        self::assertCount(2, $sectionsArray[0]->getTranslations(), 'Section should have 2 translations');
+    }
+
+    public function testCreatePostWithoutSections(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '272',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post Without Sections FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post Without Sections EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $post = $this->postRepository->findOneBy(['cookingTime' => 272]);
+
+        self::assertNotNull($post, 'Post should be created');
+        self::assertCount(0, $post->getSections(), 'Post should have no sections');
+    }
+
+    public function testCreatePostWithInvalidSectionPosition(): void
+    {
+        $crawler = $this->loadNewPostForm();
+        $category = $this->getCategory();
+
+        $form = $crawler->selectButton('Créer')->form();
+        $formName = $this->extractFormName($form->getName());
+
+        $formData = [
+            "{$formName}[active]" => '1',
+            "{$formName}[cookingTime]" => '273',
+            "{$formName}[difficulty]" => Difficulty::Easy->value,
+            "{$formName}[category]" => (string) $category->getId(),
+            "{$formName}[translations][0][title]" => 'Post With Invalid Section Position FR',
+            "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
+            "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
+            "{$formName}[translations][1][title]" => 'Post With Invalid Section Position EN',
+            "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
+            "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
+            "{$formName}[sections][0][position]" => '-5', // Invalid: negative position
+            "{$formName}[sections][0][type]" => PostSectionType::Default->value,
+            "{$formName}[sections][0][translations][0][title]" => 'Section Title FR',
+            "{$formName}[sections][0][translations][0][content]" => 'Section content in French',
+            "{$formName}[sections][0][translations][1][title]" => 'Section Title EN',
+            "{$formName}[sections][0][translations][1][content]" => 'Section content in English',
+        ];
+
+        $this->submitPostForm($crawler, $formData);
+
+        self::assertResponseStatusCodeSame(422);
+    }
+
     private function loadNewPostForm(): Crawler
     {
         return $this->client->request('GET', '/admin/post/new');
     }
 
-    private function getRandomCategory(): Category
+    private function getCategory(): Category
     {
-        $category = $this->entityManager
-            ->getRepository(Category::class)
-            ->findOneBy([]);
+        return $this->story->getCategory();
+    }
 
-        if (!$category instanceof Category) {
-            self::markTestSkipped('No categories available. Please run fixtures first.');
-        }
-
-        return $category;
+    /**
+     * @return int[]
+     */
+    private function getTagIds(): array
+    {
+        return array_map(fn (Tag $tag) => $tag->getId(), $this->story->getAllTags());
     }
 
     private function submitPostForm(Crawler $crawler, array $data): void
     {
-        $form = $crawler->selectButton('Créer')->form($data);
-        $this->client->submit($form);
+        // Try to use form submission to preserve pre-populated fields (like translation locales)
+        // But this fails for collections that don't exist initially (media, sections)
+        // So we catch that and fall back to raw request submission
+        try {
+            $form = $crawler->selectButton('Créer')->form($data);
+            $this->client->submit($form);
+        } catch (\InvalidArgumentException $e) {
+            // Field doesn't exist in form (e.g., empty media/sections collections)
+            // Fall back to direct request submission
+            $form = $crawler->selectButton('Créer')->form();
+            $uri = $form->getUri();
+            $method = $form->getMethod();
+
+            // Get all form values including CSRF token
+            $formValues = $form->getPhpValues();
+
+            // Deep merge: form values first, then our data overwrites
+            $finalData = $this->arrayMergeRecursiveDistinct($formValues, $data);
+
+            $this->client->request($method, $uri, $finalData);
+        }
+    }
+
+    /**
+     * Merge arrays recursively, with second array values taking precedence.
+     * Unlike array_merge_recursive, this replaces values instead of creating arrays.
+     *
+     * @param array<string|int, mixed> $array1
+     * @param array<string|int, mixed> $array2
+     *
+     * @return array<string|int, mixed>
+     */
+    private function arrayMergeRecursiveDistinct(array $array1, array $array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 
     private function extractFormName(string $fullFormName): string
