@@ -37,7 +37,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
     public function testNewPostFormLoadsSuccessfully(): void
     {
-        $crawler = $this->loadNewPostForm();
+        $this->loadNewPostForm();
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form', 'Form should be present on the page');
@@ -45,7 +45,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
     public function testNewPostFormContainsRequiredFields(): void
     {
-        $crawler = $this->loadNewPostForm();
+        $this->loadNewPostForm();
 
         $this->assertResponseIsSuccessful();
 
@@ -91,7 +91,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $this->submitPostForm($crawler, $formData);
 
         // Should redirect after successful creation
-//        $this->assertResponseRedirects();
+        $this->assertResponseRedirects();
 
         // Verify post was created in database
         $this->entityManager->clear(); // Clear to force fresh query
@@ -218,6 +218,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
 
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
+
         // Submit without category (but with valid translations)
         $formData = [
             "{$formName}[cookingTime]" => '31',
@@ -236,9 +239,10 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         // Should return 422 due to validation error
         $this->assertResponseStatusCodeSame(422);
 
-        // Check no post was created
-        $posts = $this->postRepository->findBy(['cookingTime' => 31]);
-        $this->assertEmpty($posts, 'No post should be created without category');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created without category');
     }
 
     public function testCreatePostWithInvalidCookingTime(): void
@@ -248,6 +252,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
+
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
 
         // Submit with cooking time > 1440 (max allowed)
         $formData = [
@@ -267,9 +274,10 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         // Should return 422
         $this->assertResponseStatusCodeSame(422);
 
-        // Verify nothing was saved
-        $posts = $this->postRepository->findBy(['cookingTime' => 2000]);
-        $this->assertEmpty($posts, 'No post should be created with invalid cooking time');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created with invalid cooking time');
     }
 
     public function testCreatePostWithNegativeCookingTime(): void
@@ -312,6 +320,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
 
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
+
         // Submit without translation title (one translation has empty title)
         $formData = [
             "{$formName}[cookingTime]" => '35',
@@ -330,9 +341,10 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         // Should return 422
         $this->assertResponseStatusCodeSame(422);
 
-        // Verify nothing was saved
-        $posts = $this->postRepository->findBy(['cookingTime' => 35]);
-        $this->assertEmpty($posts, 'No post should be created without translation title');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created without translation title');
     }
 
     public function testCreatePostWithTooShortTranslationTitle(): void
@@ -342,6 +354,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
+
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
 
         // Submit with title too short (min 3 chars)
         $formData = [
@@ -358,11 +373,12 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $this->submitPostForm($crawler, $formData);
 
-        $this->assertResponseStatusCodeSame(422);
+        $this->assertResponseStatusCodeSame(422, 'Form should reject too short title with 422 status');
 
-        // Verify nothing was saved
-        $posts = $this->postRepository->findBy(['cookingTime' => 40]);
-        $this->assertEmpty($posts, 'No post should be created with too short title');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created with too short title');
     }
 
     public function testCreatePostWithInvalidMetaDescription(): void
@@ -372,6 +388,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
+
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
 
         // Submit with meta description too short (min 120)
         $formData = [
@@ -390,9 +409,10 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $this->assertResponseStatusCodeSame(422);
 
-        // Verify nothing was saved
-        $posts = $this->postRepository->findBy(['cookingTime' => 50]);
-        $this->assertEmpty($posts, 'No post should be created with invalid meta description');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created with invalid meta description');
     }
 
     public function testCreatePostWithInvalidExcerpt(): void
@@ -402,6 +422,9 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $form = $crawler->selectButton('Créer')->form();
         $formName = $this->extractFormName($form->getName());
+
+        // Count posts before submission
+        $initialPostCount = $this->postRepository->count();
 
         // Submit with excerpt too short (min 50)
         $formData = [
@@ -420,9 +443,10 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 
         $this->assertResponseStatusCodeSame(422);
 
-        // Verify nothing was saved
-        $posts = $this->postRepository->findBy(['cookingTime' => 557]);
-        $this->assertEmpty($posts, 'No post should be created with invalid excerpt');
+        // Verify no new post was created
+        $this->entityManager->clear();
+        $finalPostCount = $this->postRepository->count();
+        $this->assertSame($initialPostCount, $finalPostCount, 'No post should be created with invalid excerpt');
     }
 
     // ========================================
