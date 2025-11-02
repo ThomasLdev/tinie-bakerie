@@ -26,6 +26,8 @@ use Doctrine\Persistence\ObjectManager;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Persistence\Proxy;
 
+use function Zenstruck\Foundry\Persistence\flush_after;
+
 class AppFixtures extends Fixture
 {
     public function __construct(
@@ -36,62 +38,94 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        CategoryFactory::createMany(5, fn (): array => [
-            'media' => CategoryMediaFactory::createRange(1, 3, fn (): array => array_merge(
-                [
-                    'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
-                ],
-                $this->mediaLoader->getRandomMediaFactoryFields(),
-            )),
-            'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
-        ]);
+        flush_after(function () {
+            $categories = CategoryFactory::createMany(5, fn (): array => [
+                'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
+            ]);
 
-        TagFactory::createMany(15, fn (): array => [
-            'translations' => $this->createTranslations(TagTranslationFactory::new()),
-        ]);
-
-        /** @var Post[] $posts */
-        $posts = PostFactory::createMany(30, fn (): array => [
-            'translations' => $this->createTranslations(PostTranslationFactory::new()),
-            'category' => CategoryFactory::random(),
-            'tags' => TagFactory::randomRange(1, 3),
-            'media' => PostMediaFactory::createRange(1, 3, fn (): array => array_merge(
-                [
-                    'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
-                ],
-                $this->mediaLoader->getRandomMediaFactoryFields(),
-            )),
-        ]);
-
-        foreach ($posts as $post) {
-            PostSectionFactory::createRange(2, 5, fn (): array => [
-                'media' => PostSectionMediaFactory::createRange(1, 3, fn (): array => array_merge(
+            foreach ($categories as $category) {
+                CategoryMediaFactory::createRange(1, 3, fn (): array => array_merge(
                     [
+                        'category' => $category, // Direct reference, no lookup
+                        'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
+                    ],
+                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                ));
+            }
+
+            $tags = TagFactory::createMany(15, fn (): array => [
+                'translations' => $this->createTranslations(TagTranslationFactory::new()),
+            ]);
+
+            /** @var Post[] $posts */
+            $posts = PostFactory::createMany(30, function () use ($categories, $tags): array {
+                // Pick random category and tags from the already-created arrays
+                $randomCategory = $categories[array_rand($categories)];
+                $randomTagCount = random_int(1, 3);
+                $randomTags = (array) array_rand(array_flip(array_keys($tags)), min($randomTagCount, count($tags)));
+                $selectedTags = array_map(fn ($index) => $tags[$index], $randomTags);
+
+                return [
+                    'translations' => $this->createTranslations(PostTranslationFactory::new()),
+                    'category' => $randomCategory, // Direct reference from array
+                    'tags' => $selectedTags, // Direct references from array
+                    'media' => [], // Will add separately to avoid nested creation
+                    'sections' => [], // Will add separately to avoid nested creation
+                ];
+            });
+
+            // Create post media with direct post references
+            foreach ($posts as $post) {
+                PostMediaFactory::createRange(1, 3, fn (): array => array_merge(
+                    [
+                        'post' => $post, // Direct reference, no lookup
+                        'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
+                    ],
+                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                ));
+            }
+
+            // Create post sections WITHOUT their media (will add media separately)
+            // Collect all sections to add media later
+            $sections = [];
+            foreach ($posts as $post) {
+                $postSections = PostSectionFactory::createRange(2, 5, fn (): array => [
+                    'post' => $post, // Direct reference, no lookup
+                    'translations' => $this->createTranslations(PostSectionTranslationFactory::new()),
+                    'media' => [], // Will add separately to avoid nested creation
+                ]);
+                $sections = array_merge($sections, $postSections);
+            }
+
+            // Create post section media with direct section references
+            foreach ($sections as $section) {
+                PostSectionMediaFactory::createRange(1, 3, fn (): array => array_merge(
+                    [
+                        'postSection' => $section, // Direct reference, no lookup (property name is postSection)
                         'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
                     ],
                     $this->mediaLoader->getRandomMediaFactoryFields(),
-                )),
-                'post' => $post,
-                'translations' => $this->createTranslations(PostSectionTranslationFactory::new()),
-            ]);
-        }
+                ));
+            }
+        });
     }
 
     /**
+     * Creates translations for all configured locales.
+     *
      * @return array<array-key,Proxy>
      *
      * @phpstan-ignore-next-line
      */
     private function createTranslations(PersistentProxyObjectFactory $factory): array
     {
-        $translations = [];
+        $locales = $this->locales->get();
 
-        foreach ($this->locales->get() as $locale) {
-            $translations[] = $factory::createOne([
-                'locale' => $locale,
-            ]);
+        $sequence = [];
+        foreach ($locales as $locale) {
+            $sequence[] = ['locale' => $locale];
         }
 
-        return $translations;
+        return $factory::createSequence($sequence);
     }
 }
