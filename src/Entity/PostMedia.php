@@ -131,10 +131,12 @@ class PostMedia implements HasTranslations, HasMediaEntities, \Stringable
     }
 
     /**
-     * @param PostMediaTranslation[] $translations
+     * @param iterable<PostMediaTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }

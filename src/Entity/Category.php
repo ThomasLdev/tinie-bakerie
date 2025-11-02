@@ -113,10 +113,12 @@ class Category implements HasTranslations
     }
 
     /**
-     * @param CategoryTranslation[] $translations
+     * @param iterable<CategoryTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }

@@ -146,10 +146,12 @@ class PostSection implements HasTranslations, \Stringable
     }
 
     /**
-     * @param PostSectionTranslation[] $translations
+     * @param iterable<PostSectionTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
