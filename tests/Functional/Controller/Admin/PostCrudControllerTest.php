@@ -10,6 +10,8 @@ use App\Repository\PostRepository;
 use App\Services\Media\Enum\MediaType;
 use App\Services\Post\Enum\Difficulty;
 use App\Services\PostSection\Enum\PostSectionType;
+use App\Tests\Functional\Controller\Admin\Enum\FormButton;
+use App\Tests\Functional\Controller\Admin\Trait\FormTypeTrait;
 use App\Tests\Functional\Controller\BaseControllerTestCase;
 use App\Tests\Story\PostCrudTestStory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +29,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
 {
     use Factories;
     use ResetDatabase;
+    use FormTypeTrait;
 
     private EntityManagerInterface $entityManager;
 
@@ -39,9 +42,8 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     {
         parent::setUp();
 
-        $container = self::getContainer();
-        $this->entityManager = $container->get(EntityManagerInterface::class);
-        $this->postRepository = $container->get(PostRepository::class);
+        $this->entityManager = $this->container->get(EntityManagerInterface::class);
+        $this->postRepository = $this->container->get(PostRepository::class);
         $this->story = PostCrudTestStory::load();
     }
 
@@ -52,32 +54,11 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $this->entityManager->close();
     }
 
-    public function testNewPostFormLoadsSuccessfully(): void
-    {
-        $this->loadNewPostForm();
-
-        self::assertResponseIsSuccessful();
-        self::assertSelectorExists('form', 'Form should be present on the page');
-    }
-
-    public function testNewPostFormContainsRequiredFields(): void
-    {
-        $this->loadNewPostForm();
-
-        self::assertResponseIsSuccessful();
-
-        self::assertSelectorExists('input[name*="[active]"]', 'Active field should exist');
-        self::assertSelectorExists('input[name*="[cookingTime]"]', 'Cooking time field should exist');
-        self::assertSelectorExists('input[name*="[difficulty]"]', 'Difficulty field should exist (as radio buttons)');
-        self::assertSelectorExists('select[name*="[category]"]', 'Category field should exist');
-        self::assertSelectorExists('input[name*="[translations]"]', 'Translation fields should exist');
-    }
-
     public function testCreatePostWithValidMinimalData(): void
     {
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $this->getCreateForm($crawler);
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -85,17 +66,15 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[cookingTime]" => '30',
             "{$formName}[difficulty]" => Difficulty::Easy->value,
             "{$formName}[category]" => (string) $category->getId(),
-            // French translation (index 0)
             "{$formName}[translations][0][title]" => 'Test Post Title Minimal FR',
             "{$formName}[translations][0][metaDescription]" => str_repeat('A', 120),
             "{$formName}[translations][0][excerpt]" => str_repeat('B', 50),
-            // English translation (index 1)
             "{$formName}[translations][1][title]" => 'Test Post Title Minimal EN',
             "{$formName}[translations][1][metaDescription]" => str_repeat('C', 120),
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -123,6 +102,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
                 $foundEn = true;
             }
         }
+
         self::assertTrue($foundFr, 'French translation should exist');
         self::assertTrue($foundEn, 'English translation should exist');
     }
@@ -132,7 +112,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -154,7 +134,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][notes]" => 'Some recipe notes in English',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -184,7 +164,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form([
+        $form = $crawler->selectButton(FormButton::Create->value)->form([
             'Post[cookingTime]' => '60',
             'Post[difficulty]' => Difficulty::Advanced->value,
             'Post[category]' => (string) $category->getId(),
@@ -212,7 +192,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
     {
         $crawler = $this->loadNewPostForm();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -226,7 +206,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseStatusCodeSame(422);
     }
@@ -236,7 +216,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -251,7 +231,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -260,7 +240,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -275,7 +255,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -284,7 +264,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -299,7 +279,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -308,7 +288,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -323,7 +303,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
         self::assertResponseStatusCodeSame(422, 'Form should reject too short title with 422 status');
     }
 
@@ -332,7 +312,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -347,7 +327,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseStatusCodeSame(422);
     }
@@ -357,7 +337,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -372,7 +352,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -382,7 +362,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $category = $this->getCategory();
         $tagIds = $this->getTagIds();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -399,7 +379,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -419,7 +399,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -435,7 +415,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -451,7 +431,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -485,7 +465,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[media][1][translations][1][title]" => 'Video Title EN',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -506,7 +486,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -522,7 +502,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -538,7 +518,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -560,7 +540,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[media][0][translations][1][title]" => 'Image Title EN',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseStatusCodeSame(422);
     }
@@ -570,7 +550,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -592,7 +572,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[media][0][translations][1][title]" => 'Image Title EN',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseStatusCodeSame(422);
     }
@@ -602,7 +582,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -639,7 +619,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[sections][2][translations][1][content]" => 'Section 3 content in English',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -661,7 +641,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -677,7 +657,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[translations][1][excerpt]" => str_repeat('D', 50),
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseRedirects();
 
@@ -693,7 +673,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         $crawler = $this->loadNewPostForm();
         $category = $this->getCategory();
 
-        $form = $crawler->selectButton('Créer')->form();
+        $form = $crawler->selectButton(FormButton::Create->value)->form();
         $formName = $this->extractFormName($form->getName());
 
         $formData = [
@@ -715,7 +695,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
             "{$formName}[sections][0][translations][1][content]" => 'Section content in English',
         ];
 
-        $this->submitPostForm($crawler, $formData);
+        $this->submitForm($crawler, $formData);
 
         self::assertResponseStatusCodeSame(422);
     }
@@ -735,64 +715,12 @@ final class PostCrudControllerTest extends BaseControllerTestCase
      */
     private function getTagIds(): array
     {
-        return array_map(fn (Tag $tag) => $tag->getId(), $this->story->getAllTags());
+        return array_map(static fn (Tag $tag) => $tag->getId(), $this->story->getAllTags());
     }
 
-    private function submitPostForm(Crawler $crawler, array $data): void
+    private function submitForm(Crawler $crawler, array $data): void
     {
-        // Try to use form submission to preserve pre-populated fields (like translation locales)
-        // But this fails for collections that don't exist initially (media, sections)
-        // So we catch that and fall back to raw request submission
-        try {
-            $form = $crawler->selectButton('Créer')->form($data);
-            $this->client->submit($form);
-        } catch (\InvalidArgumentException $e) {
-            // Field doesn't exist in form (e.g., empty media/sections collections)
-            // Fall back to direct request submission
-            $form = $crawler->selectButton('Créer')->form();
-            $uri = $form->getUri();
-            $method = $form->getMethod();
-
-            // Get all form values including CSRF token
-            $formValues = $form->getPhpValues();
-
-            // Deep merge: form values first, then our data overwrites
-            $finalData = $this->arrayMergeRecursiveDistinct($formValues, $data);
-
-            $this->client->request($method, $uri, $finalData);
-        }
-    }
-
-    /**
-     * Merge arrays recursively, with second array values taking precedence.
-     * Unlike array_merge_recursive, this replaces values instead of creating arrays.
-     *
-     * @param array<string|int, mixed> $array1
-     * @param array<string|int, mixed> $array2
-     *
-     * @return array<string|int, mixed>
-     */
-    private function arrayMergeRecursiveDistinct(array $array1, array $array2): array
-    {
-        $merged = $array1;
-
-        foreach ($array2 as $key => $value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-            } else {
-                $merged[$key] = $value;
-            }
-        }
-
-        return $merged;
-    }
-
-    private function extractFormName(string $fullFormName): string
-    {
-        if (preg_match('/^([^\[]+)/', $fullFormName, $matches)) {
-            return $matches[1];
-        }
-
-        return 'Post';
+        $form = $crawler->selectButton(FormButton::Create->value)->form($data);
+        $this->client->submit($form);
     }
 }

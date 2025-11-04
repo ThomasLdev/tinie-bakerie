@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Controller;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * @internal
@@ -13,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 abstract class BaseControllerTestCase extends WebTestCase
 {
     protected KernelBrowser $client;
+
+    protected Container $container;
 
     protected function setUp(): void
     {
@@ -26,5 +29,7 @@ abstract class BaseControllerTestCase extends WebTestCase
                 'HTTPS' => 'on',
             ],
         );
+
+        $this->container = self::getContainer();
     }
 }
