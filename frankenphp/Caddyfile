@@ -25,3 +25,15 @@ local.tinie-bakerie.com {
 	header ?Permissions-Policy "browsing-topics=()"
 	php_server
 }
+
+# HTTP-only endpoint for E2E tests (Playwright in Docker)
+http://php:80 {
+	log
+	root * /app/public
+	encode zstd br gzip
+
+	vulcain
+	{$CADDY_SERVER_EXTRA_DIRECTIVES}
+	header ?Permissions-Policy "browsing-topics=()"
+	php_server
+}

@@ -8,6 +8,7 @@ use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -27,6 +28,14 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()->setTitle('Tinie Bakerie');
+    }
+
+    #[\Override]
+    public function configureCrud(): Crud
+    {
+        return parent::configureCrud()
+            // Add custom form theme with data-test-id attributes (dev/test only)
+            ->addFormTheme('admin/form_theme.html.twig');
     }
 
     #[\Override]

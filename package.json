@@ -1,0 +1,18 @@
+{
+  "name": "tinie-bakerie",
+  "version": "1.0.0",
+  "description": "E2E tests for Tinie Bakerie",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:debug": "PWDEBUG=1 playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 9323"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.9.0"
+  }
+}

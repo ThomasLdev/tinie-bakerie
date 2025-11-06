@@ -76,3 +76,10 @@ public/bundles
 
 .env.*
 compose.override.yaml
+
+###> playwright ###
+node_modules/
+playwright-report/
+test-results/
+/playwright/.cache/
+###< playwright ###

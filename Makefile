@@ -133,3 +133,29 @@ phpunit-unit:
 
 phpunit-functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
+
+## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————
+
+e2e-install: ## Install Playwright dependencies (run once after setup)
+	@$(DOCKER_COMP) run --rm playwright npm install
+
+e2e: ## Run E2E tests with Playwright
+	@$(DOCKER_COMP) run --rm playwright npm run test:e2e
+
+e2e-headed: ## Run E2E tests with visible browser (requires X11)
+	@echo "Note: This requires X11 forwarding. For UI debugging, use 'make e2e-report' instead."
+	@$(DOCKER_COMP) run --rm -e DISPLAY=$(DISPLAY) -v /tmp/.X11-unix:/tmp/.X11-unix playwright npm run test:e2e:headed
+
+e2e-debug: ## Run E2E tests in debug mode with inspector
+	@echo "Opening Playwright Inspector (headless mode)..."
+	@$(DOCKER_COMP) run --rm playwright npm run test:e2e:debug
+
+e2e-report: ## Show the last E2E test report (BEST for visual debugging)
+	@echo "Opening HTML report on http://localhost:9323..."
+	@$(DOCKER_COMP) run --rm -p 9323:9323 playwright npx playwright show-report --host 0.0.0.0 --port 9323
+
+e2e-show-trace: ## Show trace for last failed test
+	@echo "Opening trace viewer on http://localhost:9323..."
+	@$(DOCKER_COMP) run --rm -p 9323:9323 playwright npx playwright show-trace test-results/**/trace.zip --host 0.0.0.0 --port 9323
+
+test-all: phpunit e2e ## Run all tests (PHPUnit + E2E)

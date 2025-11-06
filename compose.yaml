@@ -44,6 +44,22 @@ services:
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
 
+###> playwright ###
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.56.1-jammy
+    working_dir: /app
+    volumes:
+      - .:/app:rw
+    depends_on:
+      - php
+    environment:
+      - CI=${CI:-false}
+    ipc: host
+    # Only run when explicitly called with: docker compose run --rm playwright npm run test:e2e
+    profiles:
+      - testing
+###< playwright ###
+
 volumes:
   caddy_data:
   caddy_config:
