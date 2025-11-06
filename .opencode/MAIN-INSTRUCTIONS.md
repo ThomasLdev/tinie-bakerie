@@ -5,8 +5,17 @@
 > - **SHOULD** / **RECOMMENDED** = Strong recommendation, may have valid reasons to ignore
 > - **MAY** / **OPTIONAL** = Truly optional
 
-> **Supplementary Guides**:
-> - 📋 **[testing-guide.md](testing-guide.md)** - Complete testing strategy (read when writing/reviewing tests)
+> **📂 Specialized Agents**: For specific tasks, load a specialized agent:
+> - 🔨 **[Feature Developer](agents/feature-developer.md)** - Implementing new features with TDD
+> - 🐛 **[Bug Fixer](agents/bug-fixer.md)** - Debugging and fixing bugs systematically  
+> - ♻️ **[Refactoring Expert](agents/refactoring-expert.md)** - Improving code quality safely
+> - ✅ **[Testing Expert](agents/testing-expert.md)** - Writing tests and TDD workflow
+> - 👀 **[Code Reviewer](agents/code-reviewer.md)** - Reviewing code for quality and security
+
+> **📚 Testing Documentation**:
+> - **[Complete Testing Guide](docs/testing/complete-guide.md)** - Full TDD strategy and patterns
+> - **[Testing Decision Guide](docs/testing/decision-guide.md)** - Quick reference: which test type?
+> - **[E2E Setup](docs/testing/e2e-setup.md)** - Playwright E2E testing setup
 
 ---
 
@@ -20,6 +29,18 @@ Your primary responsibilities:
 - **Implement** using Symfony best practices and modern PHP standards
 - **Validate** all code against quality tools before completion
 - **Learn** from the codebase and store knowledge for future use
+
+### When to Use Specialized Agents
+
+**Before starting a task**, determine which specialized agent to use:
+
+- **Implementing a new feature?** → Load [Feature Developer](agents/feature-developer.md)
+- **Fixing a bug?** → Load [Bug Fixer](agents/bug-fixer.md)
+- **Improving code quality?** → Load [Refactoring Expert](agents/refactoring-expert.md)
+- **Writing tests?** → Load [Testing Expert](agents/testing-expert.md)
+- **Reviewing code?** → Load [Code Reviewer](agents/code-reviewer.md)
+
+Each specialized agent extends these main instructions with task-specific workflows and best practices.
 
 ---
 
@@ -182,7 +203,7 @@ src/
 3. **Testing**
    - SHOULD test edge cases and error conditions
    - SHOULD use Foundry factories for test data
-   - SHOULD prefer integration tests over unit tests (see testing-guide.md)
+   - SHOULD prefer integration tests over unit tests (see docs/testing/complete-guide.md)
 
 ### Priority 3: MAY Consider
 
@@ -258,7 +279,7 @@ src/
    - **RED**: Write failing test first (describes desired behavior)
    - **GREEN**: Write minimal code to make test pass
    - **REFACTOR**: Improve design with confidence (tests protect you)
-   - See [testing-guide.md](testing-guide.md) for detailed TDD workflow
+   - See [docs/testing/complete-guide.md](docs/testing/complete-guide.md) for detailed TDD workflow
 
 4. **Implement Using Best Practices**
    - Follow existing patterns in the codebase
@@ -632,7 +653,7 @@ class PostTranslation
 
 ## 7. TESTING STRATEGY
 
-> **📋 For complete testing guide, see [testing-guide.md](testing-guide.md)**
+> **📋 For complete testing guide, see [docs/testing/complete-guide.md](docs/testing/complete-guide.md)**
 
 ### Core Testing Principles
 
@@ -681,7 +702,7 @@ final class PostServiceTest extends KernelTestCase
 }
 ```
 
-**For detailed testing patterns, TDD workflow, and examples, read [testing-guide.md](testing-guide.md).**
+**For detailed testing patterns, TDD workflow, and examples, read [docs/testing/complete-guide.md](docs/testing/complete-guide.md).**
 
 ---
 
@@ -981,7 +1002,7 @@ config/validator/*.yaml         → Validation rules
 phpstan.dist.neon              → PHPStan config
 .php-cs-fixer.dist.php         → Code style config
 rector.php                     → Rector config
-testing-guide.md               → Complete testing strategy
+docs/testing/complete-guide.md               → Complete testing strategy
 ```
 
 ---
