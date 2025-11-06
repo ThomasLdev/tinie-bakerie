@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin\Trait;
 
 use App\Tests\Functional\Controller\Admin\Enum\FormButton;
-use BadFunctionCallException;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-trait FormTypeTrait {
+trait FormTypeTrait
+{
     protected function getCreateForm(Crawler $crawler): Form
     {
         return $crawler->selectButton(FormButton::Create->value)->form();
@@ -21,6 +21,6 @@ trait FormTypeTrait {
             return $matches[1];
         }
 
-        throw new BadFunctionCallException('Form name is invalid');
+        throw new \BadFunctionCallException('Form name is invalid');
     }
 }

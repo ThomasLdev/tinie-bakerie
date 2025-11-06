@@ -38,7 +38,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        flush_after(function () {
+        flush_after(function (): void {
             $categories = CategoryFactory::createMany(5, fn (): array => [
                 'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
             ]);
@@ -62,8 +62,8 @@ class AppFixtures extends Fixture
                 // Pick random category and tags from the already-created arrays
                 $randomCategory = $categories[array_rand($categories)];
                 $randomTagCount = random_int(1, 3);
-                $randomTags = (array) array_rand(array_flip(array_keys($tags)), min($randomTagCount, count($tags)));
-                $selectedTags = array_map(fn ($index) => $tags[$index], $randomTags);
+                $randomTags = (array) array_rand(array_flip(array_keys($tags)), min($randomTagCount, \count($tags)));
+                $selectedTags = array_map(static fn (int $index) => $tags[$index], $randomTags);
 
                 return [
                     'translations' => $this->createTranslations(PostTranslationFactory::new()),
@@ -88,6 +88,7 @@ class AppFixtures extends Fixture
             // Create post sections WITHOUT their media (will add media separately)
             // Collect all sections to add media later
             $sections = [];
+
             foreach ($posts as $post) {
                 $postSections = PostSectionFactory::createRange(2, 5, fn (): array => [
                     'post' => $post, // Direct reference, no lookup
@@ -122,6 +123,7 @@ class AppFixtures extends Fixture
         $locales = $this->locales->get();
 
         $sequence = [];
+
         foreach ($locales as $locale) {
             $sequence[] = ['locale' => $locale];
         }

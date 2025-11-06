@@ -28,8 +28,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 final class PostCrudControllerTest extends BaseControllerTestCase
 {
     use Factories;
-    use ResetDatabase;
     use FormTypeTrait;
+    use ResetDatabase;
 
     private EntityManagerInterface $entityManager;
 
@@ -389,7 +389,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
         self::assertNotNull($post, 'Post should be created');
         self::assertCount(2, $post->getTags(), 'Post should have 2 tags');
 
-        $postTagIds = array_map(fn (Tag $tag) => $tag->getId(), $post->getTags()->toArray());
+        $postTagIds = array_map(static fn (Tag $tag): ?int => $tag->getId(), $post->getTags()->toArray());
         self::assertContains($tagIds[0], $postTagIds, 'First tag should be associated');
         self::assertContains($tagIds[1], $postTagIds, 'Second tag should be associated');
     }
@@ -715,7 +715,7 @@ final class PostCrudControllerTest extends BaseControllerTestCase
      */
     private function getTagIds(): array
     {
-        return array_map(static fn (Tag $tag) => $tag->getId(), $this->story->getAllTags());
+        return array_map(static fn (Tag $tag): ?int => $tag->getId(), $this->story->getAllTags());
     }
 
     private function submitForm(Crawler $crawler, array $data): void
