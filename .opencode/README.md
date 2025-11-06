@@ -6,7 +6,10 @@ Organized AI agent instructions and specialized agent configurations for Tinie B
 
 ```
 .opencode/
+├── README.md                    # This file - quick navigation
 ├── MAIN-INSTRUCTIONS.md         # Core instructions for all agents
+├── MCP-USAGE-GUIDE.md          # Which MCP tools to use when (IMPORTANT!)
+├── STRUCTURE.md                # Visual directory overview
 ├── agents/                      # Specialized agents for specific tasks
 │   ├── feature-developer.md     # Implementing new features (TDD workflow)
 │   ├── bug-fixer.md            # Debugging and fixing bugs
@@ -58,9 +61,10 @@ Organized AI agent instructions and specialized agent configurations for Tinie B
 
 ### First Time
 ```
-1. Read MAIN-INSTRUCTIONS.md
-2. Understand the project architecture (code is self-explanatory)
+1. Read MAIN-INSTRUCTIONS.md (core principles)
+2. Read MCP-USAGE-GUIDE.md (which tools to use)
 3. Load appropriate specialized agent for your task
+4. Explore code with Serena as needed
 ```
 
 ### For Specific Tasks
@@ -71,6 +75,15 @@ Improve code? → Load: agents/refactoring-expert.md
 Write tests? → Load: agents/testing-expert.md
 Review code? → Load: agents/code-reviewer.md
 ```
+
+### MCP Tools Efficiency
+
+**Each specialized agent specifies:**
+- **MUST use** - Critical tools for that task type
+- **SHOULD use** - Recommended tools for efficiency
+- **MAY use** - Optional tools for specific cases
+
+See **[MCP-USAGE-GUIDE.md](MCP-USAGE-GUIDE.md)** for complete tool reference.
 
 ## 📚 Testing Documentation
 

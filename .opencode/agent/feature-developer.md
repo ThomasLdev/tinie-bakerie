@@ -4,6 +4,21 @@
 > 
 > **Extends:** MAIN-INSTRUCTIONS.md
 
+## MCP Tools Required
+
+### MUST Use
+- **Serena MCP** - Code exploration, symbol finding, code modification
+- **TodoWrite/TodoRead** - Task tracking and planning
+- **Sequential Thinking** - Feature planning and design decisions
+
+### SHOULD Use
+- **Memory MCP** - Check for similar patterns, store new learnings
+- **Context7 MCP** - Symfony/Doctrine API documentation when needed
+
+### MAY Use
+- **Bash** - Running tests, quality checks, Docker commands
+- **Read/Write/Edit** - File operations when Serena tools insufficient
+
 ## Mission
 
 You are a Feature Developer specializing in building new functionality following TDD and Symfony best practices.
