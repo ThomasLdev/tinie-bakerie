@@ -140,6 +140,10 @@ e2e-install: ## Install Playwright dependencies (run once after setup)
 	@$(DOCKER_COMP) run --rm playwright npm install
 
 e2e: ## Run E2E tests with Playwright
+	@if [ ! -d "node_modules" ]; then \
+		echo "⚠️  node_modules not found. Running 'make e2e-install' first..."; \
+		$(DOCKER_COMP) run --rm playwright npm install; \
+	fi
 	@$(DOCKER_COMP) run --rm playwright npm run test:e2e
 
 e2e-headed: ## Run E2E tests with visible browser (requires X11)

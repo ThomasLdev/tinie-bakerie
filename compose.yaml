@@ -55,7 +55,6 @@ services:
     environment:
       - CI=${CI:-false}
     ipc: host
-    # Only run when explicitly called with: docker compose run --rm playwright npm run test:e2e
     profiles:
       - testing
 ###< playwright ###

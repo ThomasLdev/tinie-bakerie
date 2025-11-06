@@ -15,7 +15,8 @@
         "start-mcp-server",
         "--context",
         "ide-assistant",
-        "--no-open-dashboard"
+        "--enable-web-dashboard",
+        "false"
       ],
       "enabled": true
     },
@@ -40,6 +41,11 @@
     "playwright": {
       "type": "local",
       "command": [
+        "docker",
+        "compose",
+        "run",
+        "--rm",
+        "playwright",
         "npx",
         "@playwright/mcp@latest"
       ],
