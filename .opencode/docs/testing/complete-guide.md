@@ -470,6 +470,7 @@ public function testUnpublishedPostNotVisibleToGuests(): void
 ### ❌ MUST NOT Test
 
 **Framework/Library Code**:
+- ❌ Symfony validation (trust it works)
 - ❌ Doctrine ORM behavior (trust it works)
 - ❌ Symfony routing (trust it works)
 - ❌ Twig rendering (trust it works)
