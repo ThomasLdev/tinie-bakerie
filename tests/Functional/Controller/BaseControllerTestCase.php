@@ -7,12 +7,17 @@ namespace App\Tests\Functional\Controller;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Container;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * @internal
  */
 abstract class BaseControllerTestCase extends WebTestCase
 {
+    use Factories;
+    use ResetDatabase;
+
     protected KernelBrowser $client;
 
     protected Container $container;

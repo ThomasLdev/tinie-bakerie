@@ -267,9 +267,24 @@ Writing a new test:
 - ❌ Third-party libraries
 - ❌ Private methods (test public API)
 
+## Documentation Guidelines
+
+**IMPORTANT: Do NOT create one-off analysis documents**
+
+- ❌ **DON'T** create `ANALYSIS_*.md` files for specific refactoring tasks
+- ❌ **DON'T** create documentation for temporary analysis or decisions
+- ✅ **DO** update existing strategy docs (`complete-guide.md`, `decision-guide.md`)
+- ✅ **DO** add new patterns to existing docs when discovering reusable approaches
+- ✅ **DO** keep documentation focused on general strategies, not specific tasks
+
+**Why?** 
+- Documentation should be evergreen and reusable
+- One-off analysis creates clutter and outdated info
+- Patterns and strategies belong in general guides
+- Specific task decisions should stay in commit messages or PRs
+
 ## Resources
 
 - Complete testing guide: `../docs/testing/complete-guide.md`
 - Decision guide: `../docs/testing/decision-guide.md`
-- E2E setup: `../docs/testing/e2e-setup.md`
 - Main instructions: `../MAIN-INSTRUCTIONS.md`

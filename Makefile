@@ -128,10 +128,10 @@ phpunit:
 coverage:
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage
 
-phpunit-unit:
+unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-phpunit-functional:
+functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————

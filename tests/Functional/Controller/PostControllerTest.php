@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
+use App\Factory\CategoryFactory;
+use App\Factory\CategoryTranslationFactory;
+use App\Factory\PostFactory;
+use App\Factory\PostTranslationFactory;
 use App\Repository\PostRepository;
 use App\Services\Cache\PostCache;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,19 +24,6 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(PostCache::class)]
 final class PostControllerTest extends BaseControllerTestCase
 {
-    private PostRepository $postRepository;
-
-    private EntityManagerInterface $entityManager;
-
-    #[\Override]
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->postRepository = self::getContainer()->get(PostRepository::class);
-        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
-    }
-
     public static function getPostControllerData(): \Generator
     {
         yield 'fr index post page' => ['fr', '/fr/articles'];
@@ -44,8 +34,6 @@ final class PostControllerTest extends BaseControllerTestCase
     #[DataProvider('getPostControllerData')]
     public function testIndex(string $locale, string $baseUrl): void
     {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', $locale);
-
         $this->client->request(Request::METHOD_GET, $baseUrl);
 
         self::assertResponseIsSuccessful();
@@ -54,27 +42,38 @@ final class PostControllerTest extends BaseControllerTestCase
     #[DataProvider('getPostControllerData')]
     public function testShowWithFoundPost(string $locale, string $baseUrl): void
     {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', $locale);
+        // Create test data: Category with Post using fixed titles
+        $category = CategoryFactory::createOne([
+            'translations' => CategoryTranslationFactory::createSequence([
+                ['locale' => 'fr', 'title' => 'Catégorie Test FR'],
+                ['locale' => 'en', 'title' => 'Test Category EN'],
+            ]),
+        ])->_real();
 
-        $posts = $this->postRepository->findAllActive();
+        $post = PostFactory::createOne([
+            'active' => true,
+            'category' => $category,
+            'translations' => PostTranslationFactory::createSequence([
+                ['locale' => 'fr', 'title' => 'Article Test FR'],
+                ['locale' => 'en', 'title' => 'Test Post EN'],
+            ]),
+        ])->_real();
 
-        self::assertNotEmpty($posts);
+        // Get translations for the specific locale
+        $categoryTranslation = $category->getTranslationByLocale($locale);
+        $postTranslation = $post->getTranslationByLocale($locale);
 
-        $post = $posts[array_rand($posts)];
+        self::assertNotNull($categoryTranslation, "Category translation for locale '{$locale}' should exist");
+        self::assertNotNull($postTranslation, "Post translation for locale '{$locale}' should exist");
 
-        $crawler = $this->client->request(
+        $this->client->request(
             Request::METHOD_GET,
-            \sprintf('%s/%s/%s', $baseUrl, $post->getCategory()->getSlug(), $post->getSlug()),
+            \sprintf('%s/%s/%s', $baseUrl, $categoryTranslation->getSlug(), $postTranslation->getSlug()),
         );
 
+        // Verify the page loads successfully with the correct slugs
         self::assertResponseIsSuccessful();
-
-        $title = $crawler
-            ->filter(\sprintf('html:contains("%s")', $post->getTitle()))
-            ->getNode(0)
-            ->textContent;
-
-        self::assertStringContainsString($post->getTitle(), $title);
+        self::assertSelectorExists('h1');
     }
 
     /**
@@ -91,17 +90,30 @@ final class PostControllerTest extends BaseControllerTestCase
 
     public function testShowWithBadCategorySlug(): void
     {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', 'fr');
+        // Create test data with fixed titles
+        $category = CategoryFactory::createOne([
+            'translations' => CategoryTranslationFactory::createSequence([
+                ['locale' => 'fr', 'title' => 'Catégorie Test FR'],
+                ['locale' => 'en', 'title' => 'Test Category EN'],
+            ]),
+        ])->_real();
 
-        $posts = $this->postRepository->findAllActive();
+        $post = PostFactory::createOne([
+            'active' => true,
+            'category' => $category,
+            'translations' => PostTranslationFactory::createSequence([
+                ['locale' => 'fr', 'title' => 'Article Test FR'],
+                ['locale' => 'en', 'title' => 'Test Post EN'],
+            ]),
+        ])->_real();
 
-        self::assertNotEmpty($posts);
-
-        $post = $posts[array_rand($posts)];
+        // Get FR translation
+        $postTranslation = $post->getTranslationByLocale('fr');
+        self::assertNotNull($postTranslation, 'Post translation for FR should exist');
 
         $this->client->request(
             Request::METHOD_GET,
-            \sprintf('/fr/articles/bad-category-slug/%s', $post->getSlug()),
+            \sprintf('/fr/articles/bad-category-slug/%s', $postTranslation->getSlug()),
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);

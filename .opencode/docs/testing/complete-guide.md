@@ -8,26 +8,26 @@
 
 ## Testing Philosophy
 
-This project follows a **pragmatic, integration-focused testing approach**:
+This project follows a **pragmatic, two-layer testing approach**:
 
 **Core Principles** (in priority order):
 
-1. **Test Behavior, Not Implementation**
+1. **Trust Symfony & Doctrine**
+   - ✅ Trust Doctrine persistence
+   - ✅ Trust Symfony form rendering
+   - ❌ Don't test framework code
+   - 🎯 Goal: Test YOUR code, not the framework
+
+2. **Test Behavior, Not Implementation**
    - ✅ Test input/output and observable behavior
    - ❌ Don't test internal implementation details
    - 🎯 Goal: Tests should survive refactoring
 
-2. **Prefer Real Objects Over Mocks**
+3. **Prefer Real Objects Over Mocks**
    - ✅ Use concrete class instantiation
    - ✅ Use Symfony's real container in tests
    - ❌ Avoid excessive mocking (creates artificial tests)
    - 🎯 Goal: Test realistic scenarios
-
-3. **Test at the Highest Practical Level**
-   - ✅ Prefer functional/integration tests
-   - ✅ Use `KernelTestCase` or `WebTestCase` when relevant
-   - ❌ Don't write unit tests if a functional test is more appropriate
-   - 🎯 Goal: Test the system as users will use it
 
 4. **Test-Driven Development (TDD)**
    - ✅ **ALWAYS** write tests first (Red-Green-Refactor)
@@ -955,4 +955,291 @@ public static function provideTestCases(): iterable
         'roles' => ['ROLE_USER'],
     ];
 }
+```
+
+---
+
+## Testing FormTypes
+
+### Simple FormTypes - Unit Testing
+
+**SHOULD unit test** FormTypes that:
+- ✅ Use only native Symfony field types (TextType, ChoiceType, etc.)
+- ✅ Have no external dependencies (like VichUploaderBundle)
+- ✅ Are simple and self-contained
+
+**Example**: Testing `PostTranslationType`
+
+```php
+namespace App\Tests\Unit\Form;
+
+use App\Entity\PostTranslation;
+use App\Form\PostTranslationType;
+use Symfony\Component\Form\Test\TypeTestCase;
+
+final class PostTranslationTypeTest extends TypeTestCase
+{
+    public function testSubmitValidData(): void
+    {
+        $formData = [
+            'locale' => 'fr',
+            'title' => 'Test Post Title',
+            'metaDescription' => str_repeat('A', 120),
+        ];
+
+        $model = new PostTranslation();
+        $form = $this->factory->create(PostTranslationType::class, $model, [
+            'supported_locales' => ['en', 'fr'],
+        ]);
+
+        $expected = new PostTranslation();
+        $expected->setLocale('fr');
+        $expected->setTitle('Test Post Title');
+        $expected->setMetaDescription(str_repeat('A', 120));
+
+        $form->submit($formData);
+
+        // Check form synchronized properly (no transformation errors)
+        $this->assertTrue($form->isSynchronized());
+        
+        // Check model was updated correctly
+        $this->assertEquals($expected, $model);
+    }
+    
+    public function testFormHasCorrectFields(): void
+    {
+        $form = $this->factory->create(PostTranslationType::class, null, [
+            'supported_locales' => ['en', 'fr'],
+        ]);
+
+        $this->assertTrue($form->has('locale'));
+        $this->assertTrue($form->has('title'));
+        $this->assertTrue($form->has('metaDescription'));
+    }
+    
+    public function testSlugFieldIsDisabled(): void
+    {
+        $form = $this->factory->create(PostTranslationType::class, null, [
+            'supported_locales' => ['en', 'fr'],
+        ]);
+
+        $view = $form->createView();
+        $this->assertTrue($view['slug']->vars['disabled']);
+    }
+}
+```
+
+### Complex FormTypes - Functional Testing
+
+**MUST use functional tests** for FormTypes with:
+- ❌ VichUploaderBundle (VichFileType)
+- ❌ Complex service dependencies
+- ❌ File upload handling
+- ❌ Custom form extensions
+- ❌ EasyAdmin integration
+
+**Why?** Dependencies like VichFileType require:
+- `StorageInterface`
+- `UploadHandler` (final class, cannot be mocked)
+- `PropertyMappingFactory`
+- Complex configuration
+
+**Example**: Testing form submission functionally
+
+```php
+namespace App\Tests\Functional\Controller\Admin;
+
+use App\Factory\CategoryFactory;
+use App\Services\Media\Enum\MediaType;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+final class PostCrudControllerTest extends WebTestCase
+{
+    use ResetDatabase;
+    
+    public function testCreatePostWithMedia(): void
+    {
+        $client = static::createClient();
+        $category = CategoryFactory::createOne();
+        
+        // Load the form
+        $crawler = $client->request('GET', '/admin/post/new');
+        
+        // Submit with media
+        $form = $crawler->selectButton('Create')->form([
+            'Post[title]' => 'Post with Media',
+            'Post[category]' => $category->getId(),
+            'Post[media][0][type]' => MediaType::Image->value,
+            'Post[media][0][position]' => 0,
+            'Post[media][0][translations][0][alt]' => 'Alt text',
+            'Post[media][0][translations][0][title]' => 'Image Title',
+        ]);
+        
+        $client->submit($form);
+        
+        // Verify persistence
+        $this->assertResponseRedirects();
+        $post = $this->postRepository->findOneBy(['title' => 'Post with Media']);
+        $this->assertNotNull($post);
+        $this->assertCount(1, $post->getMedia());
+    }
+}
+```
+
+### Key Takeaways
+
+1. **Unit test simple FormTypes** - Fast, isolated testing of field configuration
+2. **Functional test complex FormTypes** - Test through HTTP with real dependencies
+3. **Don't fight the framework** - If mocking is painful, use functional tests
+4. **Test behavior, not implementation** - Focus on what the form does, not how
+
+---
+
+## E2E Testing with Playwright
+
+### When to Use E2E Tests
+
+**SHOULD write E2E tests for**:
+- ✅ Critical user workflows (registration, checkout, etc.)
+- ✅ JavaScript-heavy interactions
+- ✅ Complex UI state changes
+- ✅ Multi-page workflows
+- ✅ Browser-specific behavior
+
+**Example**: Simple validation test
+
+```typescript
+// tests/e2e/simple-validation.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Configuration Validation', () => {
+  test('should load the homepage', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    
+    expect(page.url()).toContain('http://php');
+    
+    const body = await page.locator('body');
+    await expect(body).toBeVisible();
+  });
+});
+```
+
+### Playwright Setup
+
+**Docker Configuration**:
+```yaml
+# compose.yaml
+playwright:
+  image: mcr.microsoft.com/playwright:v1.56.1-jammy
+  working_dir: /app
+  volumes:
+    - .:/app:rw
+  depends_on:
+    - php
+  environment:
+    - CI=${CI:-false}
+  ipc: host
+  profiles:
+    - testing
+```
+
+**Running E2E Tests**:
+```bash
+# Install dependencies (first time)
+make e2e-install
+
+# Run E2E tests
+make e2e
+
+# View test report
+make e2e-report
+
+# Debug tests
+make e2e-debug
+```
+
+**Configuration** (`playwright.config.ts`):
+```typescript
+export default defineConfig({
+  testDir: './tests/e2e',
+  use: {
+    baseURL: 'http://php:80',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
+});
+```
+
+### E2E vs Functional Testing
+
+**Functional Tests (Symfony)**:
+- ✅ Test server-side logic
+- ✅ Test database persistence
+- ✅ Fast execution
+- ✅ No JavaScript support
+- 🎯 Use for: API, forms, CRUD operations
+
+**E2E Tests (Playwright)**:
+- ✅ Test complete user workflows
+- ✅ Test JavaScript interactions
+- ✅ Test visual behavior
+- ❌ Slower execution
+- 🎯 Use for: Complex UX, critical paths
+
+---
+
+## CI/CD Testing Pipeline
+
+### GitHub Actions Configuration
+
+```yaml
+# .github/workflows/ci.yml
+jobs:
+  static_analysis:
+    # PHPStan, PHPCS, etc.
+    
+  functional_test:
+    needs: static_analysis
+    # PHPUnit functional tests
+    
+  e2e_tests:
+    needs: functional_test
+    steps:
+      - name: Install Playwright Dependencies
+        run: make e2e-install
+      - name: Run E2E Tests
+        run: make e2e
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+```
+
+### Running Tests Locally
+
+```bash
+# All unit tests
+make phpunit-unit
+
+# All functional tests
+make phpunit-functional
+
+# E2E tests
+make e2e
+
+# All tests
+make test-all
+
+# With coverage
+make coverage
 ```

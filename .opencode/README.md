@@ -10,7 +10,7 @@ Organized AI agent instructions and specialized agent configurations for Tinie B
 ├── MAIN-INSTRUCTIONS.md         # Core instructions for all agents
 ├── MCP-USAGE-GUIDE.md          # Which MCP tools to use when (IMPORTANT!)
 ├── STRUCTURE.md                # Visual directory overview
-├── agents/                      # Specialized agents for specific tasks
+├── agent/                       # Specialized agents for specific tasks
 │   ├── feature-developer.md     # Implementing new features (TDD workflow)
 │   ├── bug-fixer.md            # Debugging and fixing bugs
 │   ├── refactoring-expert.md   # Code quality improvements
@@ -19,8 +19,7 @@ Organized AI agent instructions and specialized agent configurations for Tinie B
 └── docs/
     └── testing/                 # Testing documentation
         ├── complete-guide.md    # Full testing strategy
-        ├── decision-guide.md    # When to use which test type
-        └── e2e-setup.md        # E2E testing setup
+        └── decision-guide.md    # When to use which test type
 ```
 
 ## 🤖 Specialized Agents
@@ -69,11 +68,11 @@ Organized AI agent instructions and specialized agent configurations for Tinie B
 
 ### For Specific Tasks
 ```
-Feature request? → Load: agents/feature-developer.md
-Bug report? → Load: agents/bug-fixer.md
-Improve code? → Load: agents/refactoring-expert.md
-Write tests? → Load: agents/testing-expert.md
-Review code? → Load: agents/code-reviewer.md
+Feature request? → Load: agent/feature-developer.md
+Bug report? → Load: agent/bug-fixer.md
+Improve code? → Load: agent/refactoring-expert.md
+Write tests? → Load: agent/testing-expert.md
+Review code? → Load: agent/code-reviewer.md
 ```
 
 ### MCP Tools Efficiency
@@ -88,9 +87,8 @@ See **[MCP-USAGE-GUIDE.md](MCP-USAGE-GUIDE.md)** for complete tool reference.
 ## 📚 Testing Documentation
 
 All testing docs in `docs/testing/`:
-- **complete-guide.md** - Full TDD strategy, patterns, examples
+- **complete-guide.md** - Full TDD strategy, patterns, examples (includes FormType testing & Playwright)
 - **decision-guide.md** - Quick: which test type to use?
-- **e2e-setup.md** - Playwright E2E testing setup
 
 ## 🎯 Philosophy
 
