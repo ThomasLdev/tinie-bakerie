@@ -47,6 +47,8 @@ class Category implements HasTranslations
 
     private int $postCount = 0;
 
+    private CategoryTranslation $currentTranslation;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -190,8 +192,13 @@ class Category implements HasTranslations
      */
     private function getLocalizedTranslation(): ?CategoryTranslation
     {
-        $translations = $this->getTranslations()->first();
+        if (isset($this->currentTranslation)) {
+            return $this->currentTranslation;
+        }
 
-        return false === $translations ? null : $translations;
+        $translation = $this->getTranslations()->first();
+        $this->currentTranslation = $translation;
+
+        return false === $translation ? null : $translation;
     }
 }

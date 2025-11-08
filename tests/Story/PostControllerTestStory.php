@@ -181,19 +181,9 @@ final class PostControllerTestStory extends Story
         ];
     }
 
-    public function getCategory(): Category
+    public function getActivePost(int $index): Post
     {
-        return self::get('category')->_real();
-    }
-
-    public function getActivePost1(): Post
-    {
-        return self::get('activePost1')->_real();
-    }
-
-    public function getActivePost2(): Post
-    {
-        return self::get('activePost2')->_real();
+        return $this->getActivePosts()[$index]->_real();
     }
 
     public function getInactivePost(): Post
@@ -208,6 +198,7 @@ final class PostControllerTestStory extends Story
     {
         return $category->getTranslationByLocale($locale)?->getSlug() ?? '';
     }
+
     /**
      * Get post slug for specific locale
      */

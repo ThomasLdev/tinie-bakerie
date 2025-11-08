@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Container;
+use Zenstruck\Foundry\Story;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -48,9 +49,9 @@ abstract class BaseControllerTestCase extends WebTestCase
      *
      * @template T
      * @param callable(): T $storyLoader
-     * @return T
+     * @return Story
      */
-    protected function loadStory(callable $storyLoader): mixed
+    protected function loadStory(callable $storyLoader): Story
     {
         $result = $storyLoader();
 
