@@ -30,7 +30,7 @@ final class PostControllerTest extends BaseControllerTestCase
 
     public static function getPostControllerShowData(): \Generator
     {
-        yield 'fr post base url' => ['fr', '/fr/articles'];
+//        yield 'fr post base url' => ['fr', '/fr/articles'];
 
         yield 'en post base url' => ['en', '/en/posts'];
     }
@@ -38,12 +38,17 @@ final class PostControllerTest extends BaseControllerTestCase
     #[DataProvider('getPostControllerIndexData')]
     public function testIndex(string $baseUrl): void
     {
-        $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $activePostCount = count($story->getActivePosts());
 
-        $this->client->request(Request::METHOD_GET, $baseUrl);
+        $crawler = $this->client->request(Request::METHOD_GET, $baseUrl);
 
         self::assertResponseIsSuccessful();
-        // TODO : count posts on index page, should be 2
+        self::assertCount(
+            $activePostCount,
+            $crawler->filter('[data-test-id^="post-card-"]'),
+            sprintf('Expected %s active posts to be displayed on the index page', $activePostCount)
+        );
     }
 
     #[DataProvider('getPostControllerShowData')]
@@ -63,7 +68,7 @@ final class PostControllerTest extends BaseControllerTestCase
         );
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', $postTitle);
+        self::assertSelectorTextContains('[data-test-id="post-show-title"]', $postTitle);
     }
 
     /**

@@ -5,24 +5,17 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Twig\Attribute\AsTwigFunction;
+use Twig\Markup;
 
 /**
  * Twig extension that adds data-test-id attributes for easier E2E/Functional testing.
  * Only renders in test environment to keep production HTML clean.
  */
-class TestExtension extends AbstractExtension
+readonly class TestExtension
 {
     public function __construct(#[Autowire('%kernel.environment%')] private string $environment)
     {
-    }
-
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('test_id', $this->renderTestId(...)),
-        ];
     }
 
     /**
@@ -38,12 +31,15 @@ class TestExtension extends AbstractExtension
      * Renders in prod/dev:
      *   <button>Submit</button>
      */
-    public function renderTestId(string $identifier): string
+    #[AsTwigFunction('test_id')]
+    public function renderTestId(string $identifier): string|Markup
     {
         if ('test' !== $this->environment) {
             return '';
         }
 
-        return sprintf('data-test-id="%s"', htmlspecialchars($identifier, ENT_QUOTES, 'UTF-8'));
+        $attribute = sprintf('data-test-id="%s"', htmlspecialchars($identifier, ENT_COMPAT, 'UTF-8'));
+        
+        return new Markup($attribute, 'UTF-8');
     }
 }

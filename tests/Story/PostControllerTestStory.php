@@ -173,6 +173,14 @@ final class PostControllerTestStory extends Story
         ]));
     }
 
+    public function getActivePosts(): array
+    {
+        return [
+            self::get('activePost1'),
+            self::get('activePost2'),
+        ];
+    }
+
     public function getCategory(): Category
     {
         return self::get('category')->_real();
