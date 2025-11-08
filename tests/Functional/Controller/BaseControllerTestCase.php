@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Container;
@@ -22,6 +23,8 @@ abstract class BaseControllerTestCase extends WebTestCase
 
     protected Container $container;
 
+    protected EntityManagerInterface $entityManager;
+
     protected function setUp(): void
     {
         $this->client = self::createClient(
@@ -36,5 +39,26 @@ abstract class BaseControllerTestCase extends WebTestCase
         );
 
         $this->container = self::getContainer();
+        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
+    }
+
+    /**
+     * Load a Foundry Story and clear the EntityManager identity map.
+     * This ensures subsequent queries return fresh entities respecting filters.
+     *
+     * @template T
+     * @param callable(): T $storyLoader
+     * @return T
+     */
+    protected function loadStory(callable $storyLoader): mixed
+    {
+        $result = $storyLoader();
+
+        // Clear identity map so queries return fresh entities
+        // This is necessary because Foundry persists entities with all translations,
+        // but we want queries to hydrate fresh entities respecting the locale filter
+        $this->entityManager->clear();
+
+        return $result;
     }
 }

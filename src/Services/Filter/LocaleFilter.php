@@ -16,11 +16,7 @@ class LocaleFilter extends SQLFilter
     {
         $reflexionClass = $targetEntity->getReflectionClass();
 
-        if (!$reflexionClass->implementsInterface(IsTranslation::class)) {
-            return '';
-        }
-
-        if (!$targetEntity->hasField(self::PARAMETER_NAME)) {
+        if (!$reflexionClass?->implementsInterface(IsTranslation::class)) {
             return '';
         }
 

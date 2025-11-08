@@ -143,23 +143,29 @@
         {% for post in posts %}
             {% set category = post.category %}
             {% set mainMedia = post.media|first %}
-            {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
+
+            {% if false is not same as mainMedia %}
+                {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
+            {% endif %}
 
             <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
                href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
+               {{ test_id('post-card-' ~ post.id) }}
             >
-                <div class="aspect-square overflow-hidden">
-                    {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                        <picture>
-                            <source srcset="{{ mainMediaSource }}" type="image/webp">
-                            <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}" class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        </picture>
-                    {% else %}
-                        <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
-                            <source src="{{ mainMediaSource }}" type="video/mp4">
-                        </video>
-                    {% endif %}
-                </div>
+                {% if mainMediaSource is defined %}
+                    <div class="aspect-square overflow-hidden">
+                        {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
+                            <picture>
+                                <source srcset="{{ mainMediaSource }}" type="image/webp">
+                                <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}" class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            </picture>
+                        {% else %}
+                            <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
+                                <source src="{{ mainMediaSource }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    </div>
+                {% endif %}
                 <div class="p-4">
                     <div class="flex items-center gap-2 mb-2">
                         {% for tag in post.tags %}
@@ -170,7 +176,7 @@
                             </span>
                         {% endfor %}
                     </div>
-                    <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-gray-700">{{ post.title }}</h3>
+                    <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-gray-700" {{ test_id('post-title-' ~ post.id) }}>{{ post.title }}</h3>
                     <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ post.excerpt }}</p>
                     <div class="flex items-center justify-between text-xs text-gray-500">
                         <div class="flex items-center space-x-4">
