@@ -71,7 +71,6 @@ class CategoryCrudController extends AbstractCrudController
                 'allow_delete' => true,
                 'prototype' => true,
                 'entry_options' => [
-                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
                     'supported_locales' => $this->locales->get(),
                 ],
             ])
@@ -88,7 +87,6 @@ class CategoryCrudController extends AbstractCrudController
                 'allow_delete' => Crud::PAGE_EDIT !== $pageName,
                 'prototype' => true,
                 'entry_options' => [
-                    'hidde_locale' => Crud::PAGE_EDIT === $pageName,
                     'supported_locales' => $this->locales->get(),
                 ],
             ])

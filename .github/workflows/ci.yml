@@ -48,7 +48,7 @@ jobs:
       - name: Run Twig CS
         run: make twig-linter
       - name: Run PHPUnit Unit Suite
-        run: make phpunit-unit
+        run: make unit
   functional_test:
     name: Functional Tests
     runs-on: ubuntu-latest
@@ -81,7 +81,56 @@ jobs:
       - name: Doctrine Schema Validator
         run: make doctrine-validate-schema
       - name: Run PHPUnit Functional Suite
-        run: make phpunit-functional
+        run: make functional
+#  e2e_tests:
+#    name: E2E Tests (Playwright)
+#    runs-on: ubuntu-latest
+#    needs: static_analysis
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#      - name: Build Docker images
+#        uses: docker/bake-action@v5
+#        with:
+#          pull: true
+#          load: true
+#          files: |
+#            compose.yaml
+#            compose.override.yaml
+#          set: |
+#            *.cache-from=type=gha,scope=${{github.ref}}
+#            *.cache-from=type=gha,scope=refs/heads/main
+#            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+#      - name: Start services
+#        run: docker compose up --wait --no-build
+#      - name: Create Test Database
+#        run: make doctrine-db-test-create
+#      - name: Run Migrations
+#        run: make doctrine-migrate-test
+#      - name: Run Fixtures
+#        run: make fixtures-test
+#      - name: Install Playwright Dependencies
+#        run: make e2e-install
+#      - name: Run E2E Tests
+#        run: make e2e
+#        env:
+#          CI: true
+#      - name: Upload Playwright Report
+#        uses: actions/upload-artifact@v4
+#        if: always()
+#        with:
+#          name: playwright-report
+#          path: playwright-report/
+#          retention-days: 30
+#      - name: Upload Test Results
+#        uses: actions/upload-artifact@v4
+#        if: always()
+#        with:
+#          name: test-results
+#          path: test-results/
+#          retention-days: 30
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest

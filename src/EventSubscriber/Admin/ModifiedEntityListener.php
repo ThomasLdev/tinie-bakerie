@@ -27,11 +27,17 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param BeforeEntityUpdatedEvent<object> $event
+     */
     public function invalidateCacheOnUpdate(BeforeEntityUpdatedEvent $event): void
     {
         $this->invalidateCache($event->getEntityInstance());
     }
 
+    /**
+     * @param BeforeEntityPersistedEvent<object> $event
+     */
     public function invalidateCacheOnCreate(BeforeEntityPersistedEvent $event): void
     {
         $this->invalidateCache($event->getEntityInstance());

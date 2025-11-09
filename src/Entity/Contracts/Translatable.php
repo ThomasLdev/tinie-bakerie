@@ -7,9 +7,9 @@ namespace App\Entity\Contracts;
 use Doctrine\Common\Collections\Collection;
 
 /**
- * @template T of IsTranslation
+ * @template T of Translation
  */
-interface HasTranslations
+interface Translatable
 {
     /**
      * @return Collection<int,T>

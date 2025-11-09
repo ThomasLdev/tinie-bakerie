@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Filter;
 
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translation;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 
@@ -16,11 +16,7 @@ class LocaleFilter extends SQLFilter
     {
         $reflexionClass = $targetEntity->getReflectionClass();
 
-        if (!$reflexionClass->implementsInterface(IsTranslation::class)) {
-            return '';
-        }
-
-        if (!$targetEntity->hasField(self::PARAMETER_NAME)) {
+        if (!$reflexionClass->implementsInterface(Translation::class)) {
             return '';
         }
 

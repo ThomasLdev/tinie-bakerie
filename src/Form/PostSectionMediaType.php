@@ -39,13 +39,13 @@ class PostSectionMediaType extends AbstractType
                     array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
                     MediaType::cases(),
                 ),
+                'choice_value' => static fn (?MediaType $type) => $type?->value,
                 'required' => true,
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
                 'entry_type' => PostSectionMediaTranslationType::class,
                 'entry_options' => [
-                    'hidde_locale' => $options['hidde_locale'],
                     'supported_locales' => $options['supported_locales'],
                 ],
                 'required' => true,
@@ -61,7 +61,6 @@ class PostSectionMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSectionMedia::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
     }

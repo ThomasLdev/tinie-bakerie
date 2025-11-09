@@ -24,6 +24,8 @@ class CategoryRepository extends ServiceEntityRepository
     #[\Override]
     public function findAll(): array
     {
+        $this->getEntityManager()->clear();
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
@@ -44,6 +46,8 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function findAllSlugs(): array
     {
+        $this->getEntityManager()->clear();
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id}')
             ->leftJoin('c.translations', 'ct')
@@ -57,6 +61,8 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findOne(string $slug): ?Category
     {
+        $this->getEntityManager()->clear();
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')

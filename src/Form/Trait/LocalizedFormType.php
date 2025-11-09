@@ -7,7 +7,7 @@ namespace App\Form\Trait;
 trait LocalizedFormType
 {
     /**
-     * @param array<mixed,mixed> $supportedLocales
+     * @param array<string> $supportedLocales
      *
      * @return array<string,string>
      */

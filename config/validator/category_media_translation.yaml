@@ -1,0 +1,13 @@
+App\Entity\CategoryMediaTranslation:
+    properties:
+        alt:
+            - Length:
+                min: 5
+                max: 125
+                minMessage: 'category_media_translation.alt.min_length'
+                maxMessage: 'category_media_translation.alt.max_length'
+        title:
+            - Length:
+                max: 255
+                maxMessage: 'category_media_translation.title.max_length'
+

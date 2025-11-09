@@ -25,6 +25,8 @@ class PostMediaType extends AbstractType
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
                 'required' => true,
+                'attr' => ['min' => 0],
+                'empty_data' => '0',
             ])
             ->add('mediaFile', VichFileType::class, [
                 'label' => 'admin.global.media.file',
@@ -39,6 +41,7 @@ class PostMediaType extends AbstractType
                     array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
                     MediaType::cases(),
                 ),
+                'choice_value' => static fn (?MediaType $type) => $type?->value,
                 'required' => true,
             ])
             ->add('translations', CollectionType::class, [
@@ -60,7 +63,6 @@ class PostMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostMedia::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
     }

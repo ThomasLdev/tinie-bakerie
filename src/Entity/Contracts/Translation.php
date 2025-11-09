@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Entity\Contracts;
 
 /**
- * @template T of HasTranslations
+ * @template T of Translatable
  */
-interface IsTranslation
+interface Translation
 {
     /**
      * @return T
      */
-    public function getTranslatable(): ?HasTranslations;
+    public function getTranslatable(): ?Translatable;
 
     public function getLocale(): string;
 }

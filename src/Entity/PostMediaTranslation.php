@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translation;
 use App\Entity\Traits\Localized;
 use App\Entity\Traits\MediaAccessibility;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements IsTranslation<PostMedia>
+ * @implements Translation<PostMedia>
  */
 #[ORM\Entity]
-class PostMediaTranslation implements IsTranslation, \Stringable
+class PostMediaTranslation implements Translation, \Stringable
 {
     use Localized;
     use MediaAccessibility;

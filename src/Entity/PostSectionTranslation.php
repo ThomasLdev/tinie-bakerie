@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translation;
 use App\Entity\Traits\Localized;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements IsTranslation<PostSection>
+ * @implements Translation<PostSection>
  */
 #[ORM\Entity]
-class PostSectionTranslation implements IsTranslation, \Stringable
+class PostSectionTranslation implements Translation, \Stringable
 {
     use Localized;
     use TimestampableEntity;

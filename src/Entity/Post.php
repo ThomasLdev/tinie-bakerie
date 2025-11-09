@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
+use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,10 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements HasTranslations<PostTranslation>
+ * @implements Translatable<PostTranslation>
  */
 #[ORM\Entity]
-class Post implements HasTranslations
+class Post implements Translatable
 {
     use Activable;
     use TimestampableEntity;
@@ -65,6 +66,12 @@ class Post implements HasTranslations
     /** @var Collection<int,PostTranslation> */
     #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
     private Collection $translations;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $cookingTime = 0;
+
+    #[ORM\Column(enumType: Difficulty::class, options: ['default' => Difficulty::Easy])]
+    private Difficulty $difficulty = Difficulty::Easy;
 
     public function __construct()
     {
@@ -220,10 +227,12 @@ class Post implements HasTranslations
     }
 
     /**
-     * @param PostTranslation[] $translations
+     * @param iterable<PostTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -245,6 +254,30 @@ class Post implements HasTranslations
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function getCookingTime(): int
+    {
+        return $this->cookingTime;
+    }
+
+    public function setCookingTime(int $cookingTime): self
+    {
+        $this->cookingTime = $cookingTime;
+
+        return $this;
+    }
+
+    public function getDifficulty(): Difficulty
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(Difficulty $difficulty): self
+    {
+        $this->difficulty = $difficulty;
 
         return $this;
     }

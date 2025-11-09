@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements HasTranslations<CategoryTranslation>
+ * @implements Translatable<CategoryTranslation>
  */
 #[ORM\Entity]
-class Category implements HasTranslations
+class Category implements Translatable
 {
     use TimestampableEntity;
 
@@ -113,10 +113,12 @@ class Category implements HasTranslations
     }
 
     /**
-     * @param CategoryTranslation[] $translations
+     * @param iterable<CategoryTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }
@@ -188,8 +190,8 @@ class Category implements HasTranslations
      */
     private function getLocalizedTranslation(): ?CategoryTranslation
     {
-        $translations = $this->getTranslations()->first();
+        $translation = $this->getTranslations()->first();
 
-        return false === $translations ? null : $translations;
+        return false === $translation ? null : $translation;
     }
 }

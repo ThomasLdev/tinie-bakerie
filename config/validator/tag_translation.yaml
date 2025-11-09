@@ -1,0 +1,11 @@
+App\Entity\TagTranslation:
+    properties:
+        title:
+            - NotBlank:
+                message: 'tag_translation.title.not_blank'
+            - Length:
+                min: 2
+                max: 100
+                minMessage: 'tag_translation.title.min_length'
+                maxMessage: 'tag_translation.title.max_length'
+

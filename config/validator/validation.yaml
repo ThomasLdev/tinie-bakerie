@@ -1,0 +1,11 @@
+imports:
+    - { resource: 'post.yaml' }
+    - { resource: 'post_translation.yaml' }
+    - { resource: 'post_media.yaml' }
+    - { resource: 'post_media_translation.yaml' }
+    - { resource: 'category.yaml' }
+    - { resource: 'category_translation.yaml' }
+    - { resource: 'category_media.yaml' }
+    - { resource: 'category_media_translation.yaml' }
+    - { resource: 'tag.yaml' }
+    - { resource: 'tag_translation.yaml' }

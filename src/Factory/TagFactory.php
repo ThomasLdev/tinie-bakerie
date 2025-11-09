@@ -26,7 +26,8 @@ final class TagFactory extends PersistentProxyObjectFactory
     protected function defaults(): array
     {
         return [
-            'color' => self::faker()->hexColor(),
+            'backgroundColor' => self::faker()->hexColor(),
+            'textColor' => self::faker()->hexColor(),
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
         ];

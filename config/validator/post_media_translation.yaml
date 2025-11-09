@@ -1,0 +1,12 @@
+App\Entity\PostMediaTranslation:
+    properties:
+        alt:
+            - Length:
+                min: 5
+                max: 125
+                minMessage: 'post_media_translation.alt.min_length'
+                maxMessage: 'post_media_translation.alt.max_length'
+        title:
+            - Length:
+                max: 255
+                maxMessage: 'post_media_translation.title.max_length'

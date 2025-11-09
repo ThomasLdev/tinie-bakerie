@@ -1,0 +1,6 @@
+App\Entity\Tag:
+    properties:
+        translations:
+            - Valid: ~
+            - App\Validator\Constraints\ValidTranslations: ~
+

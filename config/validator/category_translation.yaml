@@ -1,0 +1,31 @@
+App\Entity\CategoryTranslation:
+    properties:
+        title:
+            - NotBlank:
+                message: 'category_translation.title.not_blank'
+            - Length:
+                min: 3
+                max: 255
+                minMessage: 'category_translation.title.min_length'
+                maxMessage: 'category_translation.title.max_length'
+        metaTitle:
+            - Length:
+                max: 60
+                maxMessage: 'category_translation.meta_title.max_length'
+        metaDescription:
+            - Length:
+                min: 120
+                max: 160
+                minMessage: 'category_translation.meta_description.min_length'
+                maxMessage: 'category_translation.meta_description.max_length'
+        description:
+            - Length:
+                max: 2000
+                maxMessage: 'category_translation.description.max_length'
+        excerpt:
+            - Length:
+                min: 50
+                max: 500
+                minMessage: 'category_translation.excerpt.min_length'
+                maxMessage: 'category_translation.excerpt.max_length'
+

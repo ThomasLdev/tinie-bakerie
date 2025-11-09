@@ -18,21 +18,22 @@
         "phpstan/phpdoc-parser": "^2.1",
         "runtime/frankenphp-symfony": "^0.2.0",
         "stof/doctrine-extensions-bundle": "^1.14",
-        "symfony/asset": "7.1.*",
-        "symfony/asset-mapper": "7.1.*",
-        "symfony/dotenv": "7.1.*",
+        "symfony/asset": "7.3.*",
+        "symfony/asset-mapper": "7.3.*",
+        "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.1.*",
-        "symfony/property-access": "7.1.*",
-        "symfony/property-info": "7.1.*",
-        "symfony/runtime": "7.1.*",
-        "symfony/security-bundle": "7.1.*",
-        "symfony/serializer": "7.1.*",
+        "symfony/framework-bundle": "7.3.*",
+        "symfony/property-access": "7.3.*",
+        "symfony/property-info": "7.3.*",
+        "symfony/runtime": "7.3.*",
+        "symfony/security-bundle": "7.3.*",
+        "symfony/serializer": "7.3.*",
         "symfony/stimulus-bundle": "^2.18",
-        "symfony/translation": "7.1.*",
-        "symfony/twig-bundle": "7.1.*",
+        "symfony/translation": "7.3.*",
+        "symfony/twig-bundle": "7.3.*",
         "symfony/ux-turbo": "^2.18",
-        "symfony/yaml": "7.1.*",
+        "symfony/validator": "7.3.*",
+        "symfony/yaml": "7.3.*",
         "symfonycasts/tailwind-bundle": "^0.5.3",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
@@ -71,8 +72,7 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "importmap:install": "symfony-cmd",
-            "app:create-upload-dirs": "symfony-cmd"
+            "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -97,6 +97,8 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.2",
+        "dg/bypass-finals": "^1.9",
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "friendsofphp/php-cs-fixer": "^3.59",
         "mockery/mockery": "^1.6",
@@ -108,11 +110,11 @@
         "phpunit/phpunit": "^12.1",
         "rector/rector": "^2.1",
         "roave/security-advisories": "dev-latest",
-        "symfony/browser-kit": "7.1.*",
-        "symfony/css-selector": "7.1.*",
+        "symfony/browser-kit": "7.3.*",
+        "symfony/css-selector": "7.3.*",
         "symfony/maker-bundle": "^1.63",
-        "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*",
+        "symfony/stopwatch": "7.3.*",
+        "symfony/web-profiler-bundle": "7.3.*",
         "zenstruck/foundry": "^2.6"
     }
 }

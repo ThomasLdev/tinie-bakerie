@@ -1,0 +1,36 @@
+App\Entity\Post:
+    properties:
+        category:
+            - NotNull:
+                message: 'post.category.not_null'
+        tags:
+            - Valid: ~
+        media:
+            - Valid: ~
+        sections:
+            - Valid: ~
+        readingTime:
+            - NotNull: ~
+            - Type: 
+                type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'post.reading_time.gte'
+            - LessThanOrEqual:
+                value: 300
+                message: 'post.reading_time.lte'
+        cookingTime:
+            - NotNull: ~
+            - Type: 
+                type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'post.cooking_time.gte'
+            - LessThanOrEqual:
+                value: 1440
+                message: 'post.cooking_time.lte'
+        difficulty:
+            - NotNull: ~
+        translations:
+            - Valid: ~
+            - App\Validator\Constraints\ValidTranslations: ~

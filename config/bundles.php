@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
@@ -38,4 +39,5 @@ return [
     ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     TwigComponentBundle::class => ['all' => true],
     EasyAdminBundle::class => ['all' => true],
+    DAMADoctrineTestBundle::class => ['test' => true],
 ];

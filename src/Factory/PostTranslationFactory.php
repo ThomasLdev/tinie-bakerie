@@ -39,6 +39,7 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
             'metaDescription' => self::faker()->text(),
             'metaTitle' => self::faker()->text(60),
             'title' => self::faker()->text(25),
+            'notes' => 'ingredient1|ingredient2|ingredient3|ingredient4|ingredient5',
         ];
     }
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber\Admin;
 
 use App\Entity\Contracts\HasSlugs;
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use App\Services\Slug\Slugger;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
@@ -25,11 +25,17 @@ readonly class SluggableEntityListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param BeforeEntityUpdatedEvent<object> $event
+     */
     public function setTranslationSlugOnUpdate(BeforeEntityUpdatedEvent $event): void
     {
         $this->setTranslationSlug($event->getEntityInstance());
     }
 
+    /**
+     * @param BeforeEntityPersistedEvent<object> $event
+     */
     public function setTranslationSlugOnCreate(BeforeEntityPersistedEvent $event): void
     {
         $this->setTranslationSlug($event->getEntityInstance());
@@ -37,7 +43,7 @@ readonly class SluggableEntityListener implements EventSubscriberInterface
 
     private function setTranslationSlug(object $entity): void
     {
-        if (!$entity instanceof HasTranslations) {
+        if (!$entity instanceof Translatable) {
             return;
         }
 

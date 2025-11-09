@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\HasMediaEntities;
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use App\Services\Media\Enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,11 +16,11 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @implements HasTranslations<PostSectionMediaTranslation>
+ * @implements Translatable<PostSectionMediaTranslation>
  */
 #[ORM\Entity]
 #[Vich\Uploadable]
-class PostSectionMedia implements HasTranslations, HasMediaEntities, \Stringable
+class PostSectionMedia implements Translatable, HasMediaEntities, \Stringable
 {
     use TimestampableEntity;
 
@@ -136,10 +136,12 @@ class PostSectionMedia implements HasTranslations, HasMediaEntities, \Stringable
     }
 
     /**
-     * @param PostSectionMediaTranslation[] $translations
+     * @param iterable<PostSectionMediaTranslation> $translations
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(iterable $translations): self
     {
+        $this->translations->clear();
+
         foreach ($translations as $translation) {
             $this->addTranslation($translation);
         }

@@ -1,0 +1,8 @@
+App\Entity\Category:
+    properties:
+        translations:
+            - Valid: ~
+            - App\Validator\Constraints\ValidTranslations: ~
+        media:
+            - Valid: ~
+

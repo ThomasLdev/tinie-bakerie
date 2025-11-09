@@ -27,6 +27,7 @@ class PostSectionType extends AbstractType
                     'min' => 0,
                     'class' => 'form-control',
                 ],
+                'empty_data' => '0',
                 'required' => true,
             ])
             ->add('type', ChoiceType::class, [
@@ -58,7 +59,6 @@ class PostSectionType extends AbstractType
                 'label' => 'admin.global.translations',
                 'entry_type' => PostSectionTranslationType::class,
                 'entry_options' => [
-                    'hidde_locale' => $options['hidde_locale'],
                     'supported_locales' => $options['supported_locales'],
                 ],
                 'required' => true,
@@ -74,11 +74,9 @@ class PostSectionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSection::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
 
-        $resolver->setAllowedTypes('hidde_locale', 'bool');
         $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

@@ -20,22 +20,20 @@ class CategoryTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
+    /**
+     * @param array{supported_locales: array<string>} $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if (!$options['hidde_locale'] && \is_array($options['supported_locales'])) {
-            $builder
-                ->add('locale', ChoiceType::class, [
-                    'choices' => $this->getLocales($options['supported_locales']),
-                    'label' => 'admin.global.locale',
-                    'required' => true,
-                    'attr' => [
-                        'class' => 'form-control',
-                        'hidden' => $options['hidde_locale'] ?? false,
-                    ],
-                ]);
-        }
-
         $builder
+            ->add('locale', ChoiceType::class, [
+                'choices' => $this->getLocales($options['supported_locales']),
+                'label' => 'admin.global.locale',
+                'required' => true,
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+            ])
             ->add('title', TextType::class, [
                 'label' => 'admin.global.title',
                 'attr' => ['class' => 'form-control'],
@@ -45,16 +43,19 @@ class CategoryTranslationType extends AbstractType
                 'label' => 'admin.global.meta_title',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'admin.global.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('metaDescription', TextareaType::class, [
                 'label' => 'admin.global.meta_description',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('slug', TextType::class, [
                 'label' => 'admin.global.slug.title',
@@ -67,6 +68,7 @@ class CategoryTranslationType extends AbstractType
                 'label' => 'admin.global.excerpt',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ]);
     }
 
@@ -74,11 +76,9 @@ class CategoryTranslationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CategoryTranslation::class,
-            'hidde_locale' => false,
             'supported_locales' => [],
         ]);
 
-        $resolver->setAllowedTypes('hidde_locale', 'bool');
         $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

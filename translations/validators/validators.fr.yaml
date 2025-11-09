@@ -1,0 +1,52 @@
+translations:
+  invalid: "Les traductions ne sont pas valides."
+  count: "{{ entity }} doit avoir exactement {{ required }} traduction(s), {{ count }} trouvée(s)."
+  locale_unique: "Chaque traduction de {{ entity }} doit avoir une langue différente. La langue {{ locale }} est dupliquée."
+
+post:
+  category:
+    not_null: "Un article doit appartenir à une catégorie."
+  reading_time:
+    gte: "Le temps de lecture ne peut pas être négatif."
+    lte: "Le temps de lecture ne peut pas dépasser 300 minutes."
+  cooking_time:
+    gte: "Le temps de préparation ne peut pas être négatif."
+    lte: "Le temps de préparation ne peut pas dépasser 24 heures (1440 minutes)."
+
+post_translation:
+  title:
+    not_blank: "Le titre ne peut pas être vide."
+    min_length: "Le titre doit contenir au moins {{ limit }} caractères."
+    max_length: "Le titre ne peut pas dépasser {{ limit }} caractères."
+  meta_title:
+    max_length: "Le méta-titre ne peut pas dépasser {{ limit }} caractères pour l'optimisation SEO."
+  meta_description:
+    min_length: "La méta-description doit contenir au moins {{ limit }} caractères pour un meilleur SEO."
+    max_length: "La méta-description ne peut pas dépasser {{ limit }} caractères pour l'optimisation SEO."
+  excerpt:
+    not_blank: "L'extrait ne peut pas être vide."
+    min_length: "L'extrait doit contenir au moins {{ limit }} caractères."
+    max_length: "L'extrait ne peut pas dépasser {{ limit }} caractères."
+  notes:
+    max_length: "Les notes ne peuvent pas dépasser {{ limit }} caractères."
+
+post_media:
+  media_name:
+    max_length: "Le nom du fichier média ne peut pas dépasser {{ limit }} caractères."
+  media_file:
+    max_size: "Le fichier est trop volumineux ({{ size }} {{ suffix }}). La taille maximale autorisée est {{ limit }} {{ suffix }}."
+    mime_types: "Veuillez télécharger un fichier image valide (JPEG, PNG, GIF, WebP) ou vidéo (MP4, WebM)."
+  type:
+    choice: "Choisissez un type de média valide."
+  position:
+    gte: "La position ne peut pas être négative."
+  post:
+    not_null: "Le média doit être associé à un article."
+
+post_media_translation:
+  alt:
+    not_blank: "Le texte alternatif est requis pour l'accessibilité."
+    min_length: "Le texte alternatif doit contenir au moins {{ limit }} caractères."
+    max_length: "Le texte alternatif ne peut pas dépasser {{ limit }} caractères pour les standards d'accessibilité."
+  title:
+    max_length: "Le titre du média ne peut pas dépasser {{ limit }} caractères."
