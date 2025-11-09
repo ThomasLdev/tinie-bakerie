@@ -41,6 +41,7 @@ class PostMediaType extends AbstractType
                     array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
                     MediaType::cases(),
                 ),
+                'choice_value' => static fn (?MediaType $type) => $type?->value,
                 'required' => true,
             ])
             ->add('translations', CollectionType::class, [

@@ -22,6 +22,7 @@
     </php>
     <extensions>
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+        <bootstrap class="DG\BypassFinals\PHPUnitExtension"/>
     </extensions>
     <testsuites>
         <testsuite name="All">
