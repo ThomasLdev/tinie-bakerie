@@ -581,6 +581,73 @@ public function testPublishingPostSendsNotification(): void
 
 ## PHPUnit Attributes & Data Providers
 
+### CRITICAL: Coverage Tracking with #[CoversClass()]
+
+**ALWAYS use `#[CoversClass()]` attributes on ALL test classes** to track test coverage.
+
+**Why this matters**:
+- ✅ Tracks which classes are covered by tests
+- ✅ Identifies untested code
+- ✅ Prevents accidental coverage from unrelated tests
+- ✅ Makes test intent explicit
+
+**Rules**:
+1. **MUST** add `#[CoversClass()]` to every test class (no exceptions)
+2. **MUST** include the primary class being tested
+3. **MUST** include classes with executable logic:
+   - Controllers
+   - Services
+   - Repositories
+   - Form types
+   - Enums
+   - Custom exceptions
+   - Value objects with logic
+   - Traits with methods
+4. **MUST NOT** include entities (Doctrine data structures)
+5. **MUST** update when refactoring adds new dependencies
+
+**Complete Example**:
+```php
+use PHPUnit\Framework\Attributes\CoversClass;
+
+// Testing PostService which:
+// - Uses PostRepository for queries
+// - Throws PostNotFoundException
+// - Uses PostStatus enum
+// Note: Post entity is NOT included (it's a data structure)
+#[CoversClass(PostService::class)]           // ✅ Primary service tested
+#[CoversClass(PostRepository::class)]         // ✅ Repository used
+#[CoversClass(PostNotFoundException::class)]  // ✅ Exception thrown
+#[CoversClass(PostStatus::class)]             // ✅ Enum used
+final class PostServiceTest extends KernelTestCase
+{
+    public function testFindPublishedPost(): void
+    {
+        $post = $this->postService->findPublished(123);
+        $this->assertEquals(PostStatus::Published, $post->getStatus());
+    }
+}
+```
+
+**When to add more `#[CoversClass()]` attributes**:
+- ✅ Service calls another service → Add both services
+- ✅ Method uses repository → Add repository class
+- ✅ Method throws exception → Add exception class
+- ✅ Method uses enum/form type/value object with logic → Add those classes
+- ❌ Method returns/manipulates entity → DO NOT add entity (data structure)
+
+**Why exclude entities?**
+```php
+// ❌ WRONG - Including entities generates PHPUnit warnings
+#[CoversClass(PostService::class)]
+#[CoversClass(Post::class)]  // ⚠️ PHPUnit Warning: "not a valid target for code coverage"
+
+// ✅ CORRECT - Only classes with executable logic
+#[CoversClass(PostService::class)]
+#[CoversClass(PostRepository::class)]
+// Post entity excluded - it's just getters/setters/Doctrine annotations
+```
+
 ### MUST use PHP 8+ attributes instead of docblocks
 
 PHPUnit 10+ supports native PHP attributes which are cleaner, type-safe, and better supported by IDEs.
@@ -595,7 +662,10 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Depends;
 
+// IMPORTANT: Include ALL classes covered, even indirectly
 #[CoversClass(PostService::class)]
+#[CoversClass(PostRepository::class)]
+#[CoversClass(Post::class)]
 final class PostServiceTest extends KernelTestCase
 {
     #[Test]
@@ -623,7 +693,10 @@ final class PostServiceTest extends KernelTestCase
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+// Include all classes involved in the test
 #[CoversClass(CategoryService::class)]
+#[CoversClass(CategoryRepository::class)]
+#[CoversClass(Category::class)]
 final class CategoryServiceTest extends KernelTestCase
 {
     #[DataProvider('provideSearchScenarios')]
@@ -679,7 +752,10 @@ final class CategoryServiceTest extends KernelTestCase
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+// Include all classes: service being tested + entities manipulated + exceptions thrown
 #[CoversClass(PostPublishService::class)]
+#[CoversClass(Post::class)]
+#[CoversClass(ValidationException::class)]
 final class PostPublishServiceTest extends KernelTestCase
 {
     #[DataProvider('provideInvalidPostStates')]
@@ -721,12 +797,26 @@ final class PostPublishServiceTest extends KernelTestCase
 ### Key Rules
 
 1. **MUST** use `#[DataProvider('methodName')]` instead of `@dataProvider`
-2. **MUST** use `#[CoversClass(ClassName::class)]` on test classes
-3. **MUST** use `yield` in data providers with descriptive string keys
-4. **MUST** use named array keys in yielded data (`'input' => 'value'`)
-5. **SHOULD** use `#[TestDox('description')]` for complex test scenarios
-6. **SHOULD** use `#[Group('name')]` to organize related tests
-7. **MAY** use other attributes when relevant (Depends, Requires*, etc.)
+2. **MUST** use `#[CoversClass(ClassName::class)]` on ALL test classes
+3. **MUST** include ALL classes tested (main class + dependencies + entities) in `#[CoversClass()]`
+4. **MUST** use `yield` in data providers with descriptive string keys
+5. **MUST** use named array keys in yielded data (`'input' => 'value'`)
+6. **SHOULD** use `#[TestDox('description')]` for complex test scenarios
+7. **SHOULD** use `#[Group('name')]` to organize related tests
+8. **MAY** use other attributes when relevant (Depends, Requires*, etc.)
+
+**Example of complete coverage attributes**:
+```php
+// If PostService uses PostRepository and manipulates Post entities,
+// include ALL of them to track coverage accurately
+#[CoversClass(PostService::class)]
+#[CoversClass(PostRepository::class)]
+#[CoversClass(Post::class)]
+final class PostServiceTest extends KernelTestCase
+{
+    // Tests...
+}
+```
 
 ---
 

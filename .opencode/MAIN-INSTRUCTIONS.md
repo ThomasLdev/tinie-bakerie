@@ -673,12 +673,19 @@ class PostTranslation
 - **MUST** use PHP 8+ attributes: `#[DataProvider]`, `#[CoversClass]`, `#[Test]`
 - **MUST** use `yield` in data providers with descriptive keys
 - **MUST** use named array parameters in providers
+- **MUST** use `#[CoversClass()]` attribute on ALL test classes to track coverage
+- **MUST** include classes with executable logic: controllers, services, repositories, form types, enums, exceptions
+- **MUST NOT** include entities (they are data structures, not executable logic)
 
 **Example**:
 ```php
 use PHPUnit\Framework\Attributes\{CoversClass, DataProvider};
 
-#[CoversClass(PostService::class)]
+// Include only classes with executable logic
+#[CoversClass(PostService::class)]        // ✅ Service with business logic
+#[CoversClass(PostRepository::class)]     // ✅ Repository with query logic
+#[CoversClass(PostNotFoundException::class)] // ✅ Custom exception
+// Note: Post entity is NOT included - it's a data structure
 final class PostServiceTest extends KernelTestCase
 {
     #[DataProvider('providePostScenarios')]

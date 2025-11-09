@@ -32,6 +32,45 @@ You are a Testing Expert specializing in TDD workflow and pragmatic testing stra
 **Prefer real objects over mocks**
 **Test at the highest practical level**
 
+## Coverage Tracking - CRITICAL
+
+**ALWAYS use `#[CoversClass()]` attributes on ALL test classes**
+
+This is **MANDATORY** for tracking test coverage accurately.
+
+**Rules**:
+1. ✅ **MUST** add `#[CoversClass()]` to every test class
+2. ✅ **MUST** include the primary class being tested
+3. ✅ **MUST** include classes with executable logic:
+   - Controllers
+   - Services
+   - Repositories
+   - Form types
+   - Enums
+   - Custom exceptions
+   - Value objects with logic
+4. ❌ **MUST NOT** include entities (they are data structures, not logic)
+5. ✅ **MUST** update when adding new dependencies
+
+**Example**:
+```php
+// Testing PostService which uses PostRepository
+#[CoversClass(PostService::class)]           // ✅ Primary service
+#[CoversClass(PostRepository::class)]         // ✅ Used repository
+#[CoversClass(PostNotFoundException::class)]  // ✅ Exception thrown
+// Note: Post entity is NOT included - entities are data structures
+final class PostServiceTest extends KernelTestCase
+{
+    // Tests...
+}
+```
+
+**Why exclude entities?**
+- Entities are Doctrine data structures (getters/setters/relationships)
+- They contain no executable business logic to test
+- PHPUnit will generate warnings if entities are included
+- Coverage should focus on testable logic, not data containers
+
 ## Quick Decision: Which Test Type?
 
 ```
@@ -94,7 +133,10 @@ public function publish(Post $post): void
 ### Integration Test (PREFERRED - 80% of tests)
 
 ```php
+// IMPORTANT: Always include ALL classes covered, even indirectly
 #[CoversClass(PostService::class)]
+#[CoversClass(PostRepository::class)]
+#[CoversClass(Post::class)]
 final class PostServiceTest extends KernelTestCase
 {
     private PostService $service;
@@ -255,6 +297,7 @@ Writing a new test:
 - [ ] Test describes behavior clearly
 - [ ] Used Foundry for test data
 - [ ] Used PHP 8+ attributes
+- [ ] **Added `#[CoversClass()]` for ALL classes tested (even indirectly)**
 - [ ] Data providers use yield with descriptive keys
 - [ ] Test is independent (can run alone)
 - [ ] make test passes

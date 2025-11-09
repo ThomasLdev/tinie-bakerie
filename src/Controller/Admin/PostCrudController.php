@@ -80,7 +80,7 @@ class PostCrudController extends AbstractCrudController
         yield ArrayField::new('tags', 'admin.tag.dashboard.plural');
 
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
-            ->formatValue(static fn (Category $category): string => $category->getTitle());
+            ->formatValue(static fn (?Category $category): string => $category?->getTitle() ?? '-');
 
         yield DateField::new('createdAt', 'admin.global.created_at');
 

@@ -2,6 +2,28 @@
 
 Quick reference for choosing the right testing approach for each scenario.
 
+## ⚠️ CRITICAL: Coverage Tracking
+
+**EVERY test class MUST include `#[CoversClass()]` attributes**
+
+```php
+use PHPUnit\Framework\Attributes\CoversClass;
+
+// Include only classes with executable logic (NOT entities)
+#[CoversClass(PostService::class)]       // ✅ Service with logic
+#[CoversClass(PostRepository::class)]    // ✅ Repository with queries
+// Note: Post entity excluded - it's a data structure
+final class PostServiceTest extends KernelTestCase
+{
+    // Tests...
+}
+```
+
+**Rule**: Include controllers, services, repositories, forms, enums, exceptions.  
+**Exclude**: Entities (they're data structures, not logic).
+
+**See complete-guide.md for detailed coverage tracking rules.**
+
 ## Quick Decision Tree
 
 ```
