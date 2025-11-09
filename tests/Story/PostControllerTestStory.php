@@ -45,11 +45,13 @@ final class PostControllerTestStory extends Story
         ]));
 
         // Create active posts with translations and media
+        // Set explicit createdAt timestamps to ensure deterministic ordering
         $this->addState('activePost1', PostFactory::createOne([
             'active' => true,
             'category' => self::get('category'),
             'cookingTime' => 30,
             'difficulty' => Difficulty::Easy,
+            'createdAt' => new \DateTimeImmutable('2024-01-01 10:00:00'),
             'translations' => [
                 PostTranslationFactory::new([
                     'locale' => 'fr',
@@ -92,6 +94,7 @@ final class PostControllerTestStory extends Story
             'category' => self::get('category'),
             'cookingTime' => 45,
             'difficulty' => Difficulty::Medium,
+            'createdAt' => new \DateTimeImmutable('2024-01-02 10:00:00'), // Newer post
             'translations' => [
                 PostTranslationFactory::new([
                     'locale' => 'fr',
