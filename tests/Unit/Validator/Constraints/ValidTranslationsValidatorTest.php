@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Validator\Constraints;
 
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translation;
 use App\Services\Locale\Locales;
 use App\Validator\Constraints\ValidTranslations;
 use App\Validator\Constraints\ValidTranslationsValidator;
@@ -309,11 +309,11 @@ final class ValidTranslationsValidatorTest extends TestCase
     }
 
     /**
-     * Creates a mock IsTranslation object with the given locale.
+     * Creates a mock Translation object with the given locale.
      */
-    private function createTranslationMock(string $locale): IsTranslation&MockObject
+    private function createTranslationMock(string $locale): Translation&MockObject
     {
-        $translation = $this->createMock(IsTranslation::class);
+        $translation = $this->createMock(Translation::class);
         $translation->method('getLocale')->willReturn($locale);
 
         return $translation;

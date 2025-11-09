@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,10 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements HasTranslations<PostTranslation>
+ * @implements Translatable<PostTranslation>
  */
 #[ORM\Entity]
-class Post implements HasTranslations
+class Post implements Translatable
 {
     use Activable;
     use TimestampableEntity;

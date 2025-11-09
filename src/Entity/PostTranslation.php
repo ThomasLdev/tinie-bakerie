@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\HasSlugs;
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translation;
 use App\Entity\Traits\Localized;
 use App\Entity\Traits\Sluggable;
 use Doctrine\DBAL\Types\Types;
@@ -13,11 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements IsTranslation<Post>
+ * @implements Translation<Post>
  */
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'post_translation_lookup_unique_idx', columns: ['locale', 'title'])]
-class PostTranslation implements IsTranslation, HasSlugs, \Stringable
+class PostTranslation implements Translation, HasSlugs, \Stringable
 {
     use Localized;
     use Sluggable;

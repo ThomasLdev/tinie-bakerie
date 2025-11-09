@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasTranslations;
+use App\Entity\Contracts\Translatable;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,10 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @implements HasTranslations<PostSectionTranslation>
+ * @implements Translatable<PostSectionTranslation>
  */
 #[ORM\Entity]
-class PostSection implements HasTranslations, \Stringable
+class PostSection implements Translatable, \Stringable
 {
     use TimestampableEntity;
 

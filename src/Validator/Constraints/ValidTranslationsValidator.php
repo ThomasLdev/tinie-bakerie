@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Contracts\IsTranslation;
+use App\Entity\Contracts\Translatable;
+use App\Entity\Contracts\Translation;
 use App\Services\Locale\Locales;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraint;
@@ -48,8 +49,11 @@ class ValidTranslationsValidator extends ConstraintValidator
 
         $locales = [];
 
-        /** @var IsTranslation $translation */
         foreach ($value as $translation) {
+            if (!$translation instanceof Translation) {
+                continue;
+            }
+
             $locale = $translation->getLocale();
 
             if (\in_array($locale, $locales, true)) {
