@@ -7,7 +7,7 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\CategoryController;
 use App\Repository\CategoryRepository;
 use App\Services\Cache\CategoryCache;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Tests\Story\CategoryControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,61 +21,86 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(CategoryCache::class)]
 final class CategoryControllerTest extends BaseControllerTestCase
 {
-    private CategoryRepository $categoryRepository;
+    private const string BASE_URL_FR = '/fr/categories';
 
-    private EntityManagerInterface $entityManager;
+    private const string BASE_URL_EN = '/en/categories';
 
-    #[\Override]
-    protected function setUp(): void
+    #[DataProvider('getCategoryControllerShowData')]
+    public function testShowWithFoundCategory(string $expectedTitle, string $locale, string $baseUrl): void
     {
-        parent::setUp();
-
-        $this->categoryRepository = self::getContainer()->get(CategoryRepository::class);
-        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
-    }
-
-    public static function getCategoryControllerData(): \Generator
-    {
-        yield 'fr categories' => ['fr', '/fr/categories'];
-
-        yield 'en categories' => ['en', '/en/categories'];
-    }
-
-    #[DataProvider('getCategoryControllerData')]
-    public function testShowWithFoundCategory(string $locale, string $baseUrl): void
-    {
-        $this->entityManager->getFilters()->enable('locale_filter')->setParameter('locale', $locale);
-
-        $categories = $this->categoryRepository->findAll();
-
-        self::assertNotEmpty($categories);
-
-        $category = $categories[array_rand($categories)];
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(fn() => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $categorySlug = $story->getCategorySlug($category, $locale);
 
         $crawler = $this->client->request(
             Request::METHOD_GET,
-            \sprintf('%s/%s', $baseUrl, $category->getSlug()),
+            \sprintf('%s/%s', $baseUrl, $categorySlug),
         );
 
         self::assertResponseIsSuccessful();
-
-        $title = $crawler
-            ->filter(\sprintf('html:contains("%s")', $category->getTitle()))
-            ->getNode(0)
-            ->textContent;
-
-        self::assertStringContainsString($category->getTitle(), $title);
+        
+        // Verify the page title contains the category title
+        $pageTitle = $crawler->filter('title')->text();
+        self::assertStringContainsString($expectedTitle, $pageTitle, 'Page title should contain category title');
+        
+        // Verify the category title appears in the page content
+        $html = $crawler->html();
+        self::assertStringContainsString($expectedTitle, $html, 'Category title should be present in page content');
     }
 
-    /**
-     * Note: Tests that expect 404 responses will show "NotFoundHttpException"
-     * error messages in the output. This is expected behavior as Symfony logs
-     * exceptions before converting them to HTTP responses.
-     */
     public function testShowWithNotFoundCategory(): void
     {
-        $this->client->request(Request::METHOD_GET, '/fr/categories/unknown-category');
+        foreach ([self::BASE_URL_FR, self::BASE_URL_EN] as $baseUrl) {
+            $this->client->request(
+                Request::METHOD_GET,
+                \sprintf('%s/unknown-category', $baseUrl)
+            );
 
-        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    #[DataProvider('getHttpMethodsData')]
+    public function testShowRejectsNonGetMethods(string $method, string $baseUrl): void
+    {
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(fn() => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $locale = $baseUrl === self::BASE_URL_FR ? 'fr' : 'en';
+        $categorySlug = $story->getCategorySlug($category, $locale);
+
+        $this->client->request(
+            $method,
+            \sprintf('%s/%s', $baseUrl, $categorySlug),
+        );
+
+        self::assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    public static function getCategoryControllerShowData(): \Generator
+    {
+        yield 'should find fr title on category fr page' => ['Catégorie Test 1 FR', 'fr', self::BASE_URL_FR];
+
+        yield 'should find en title on category en page' => ['Test Category 1 EN', 'en', self::BASE_URL_EN];
+    }
+
+    public static function getHttpMethodsData(): \Generator
+    {
+        yield 'POST method on fr url' => [Request::METHOD_POST, self::BASE_URL_FR];
+
+        yield 'POST method on en url' => [Request::METHOD_POST, self::BASE_URL_EN];
+
+        yield 'PUT method on fr url' => [Request::METHOD_PUT, self::BASE_URL_FR];
+
+        yield 'PUT method on en url' => [Request::METHOD_PUT, self::BASE_URL_EN];
+
+        yield 'DELETE method on fr url' => [Request::METHOD_DELETE, self::BASE_URL_FR];
+
+        yield 'DELETE method on en url' => [Request::METHOD_DELETE, self::BASE_URL_EN];
+
+        yield 'PATCH method on fr url' => [Request::METHOD_PATCH, self::BASE_URL_FR];
+
+        yield 'PATCH method on en url' => [Request::METHOD_PATCH, self::BASE_URL_EN];
     }
 }
