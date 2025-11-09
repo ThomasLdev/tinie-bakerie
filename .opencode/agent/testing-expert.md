@@ -310,6 +310,47 @@ Writing a new test:
 - ❌ Third-party libraries
 - ❌ Private methods (test public API)
 
+## ⚠️ CRITICAL: Anti-Pattern to AVOID
+
+**NEVER write tests that only assert response success with a wishful comment:**
+
+```php
+// ❌ BAD - Meaningless test that passes but tests nothing
+public function testEditPageShowsExistingData(): void
+{
+    $post = PostFactory::createOne();
+    $this->client->request('GET', "/admin/post/{$post->getId()}/edit");
+    
+    self::assertResponseIsSuccessful();
+    // Form should be populated with existing post data  ← Wishful thinking!
+}
+```
+
+**This test is USELESS because:**
+1. It only checks the page loads (200 response)
+2. The comment describes what "should" happen but doesn't verify it
+3. The test would pass even if the form is empty
+4. It provides false confidence
+
+**✅ GOOD - Either make it test something real or delete it:**
+
+```php
+// Option 1: Add a real assertion
+public function testEditPageShowsExistingData(): void
+{
+    $post = PostFactory::createOne(['title' => 'Test Title']);
+    $this->client->request('GET', "/admin/post/{$post->getId()}/edit");
+    
+    self::assertResponseIsSuccessful();
+    self::assertSelectorTextContains('input[name="Post[title]"]', 'Test Title');
+}
+
+// Option 2: If you can't assert it, DELETE THE TEST
+// Don't write tests with only assertResponseIsSuccessful() + comment
+```
+
+**Rule**: Every test MUST have a meaningful assertion beyond "page loads successfully"
+
 ## Documentation Guidelines
 
 **IMPORTANT: Do NOT create one-off analysis documents**

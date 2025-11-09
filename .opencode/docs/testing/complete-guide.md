@@ -963,6 +963,39 @@ public function testSomething(): void
 }
 ```
 
+### ❌ Tests With Only Response Success + Wishful Comment
+```php
+// BAD: Meaningless test - only checks page loads, doesn't verify behavior
+public function testEditPageShowsExistingTranslations(): void
+{
+    $post = PostFactory::createOne();
+    $this->client->request('GET', "/admin/post/{$post->getId()}/edit");
+    
+    self::assertResponseIsSuccessful();
+    // Existing translations should be displayed  ← This is wishful thinking!
+}
+
+// GOOD: Either add real assertion or DELETE the test
+public function testEditPageShowsExistingTranslations(): void
+{
+    $post = PostFactory::createOne();
+    $translation = $post->getTranslations()->first();
+    
+    $this->client->request('GET', "/admin/post/{$post->getId()}/edit");
+    
+    self::assertResponseIsSuccessful();
+    self::assertSelectorExists('input[value="' . $translation->getTitle() . '"]');
+}
+
+// Or just DELETE IT if you can't assert the actual behavior
+```
+
+**WHY THIS IS BAD:**
+- The test passes even if translations are NOT displayed
+- It gives false confidence that functionality works
+- Comments about what "should" happen are not tests
+- It's worse than no test (false positive)
+
 ### ❌ Using Docblocks Instead of Attributes
 ```php
 // BAD: Old PHPUnit docblock style
