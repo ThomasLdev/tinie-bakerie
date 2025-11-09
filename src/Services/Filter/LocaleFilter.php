@@ -16,7 +16,7 @@ class LocaleFilter extends SQLFilter
     {
         $reflexionClass = $targetEntity->getReflectionClass();
 
-        if (!$reflexionClass?->implementsInterface(IsTranslation::class)) {
+        if (!$reflexionClass->implementsInterface(IsTranslation::class)) {
             return '';
         }
 

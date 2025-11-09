@@ -195,7 +195,7 @@ final class PostControllerTestStory extends Story
     }
 
     /**
-     * Get category slug for specific locale
+     * Get category slug for specific locale.
      */
     public function getCategorySlug(Category $category, string $locale): string
     {
@@ -203,7 +203,7 @@ final class PostControllerTestStory extends Story
     }
 
     /**
-     * Get post slug for specific locale
+     * Get post slug for specific locale.
      */
     public function getPostSlug(Post $post, string $locale): string
     {

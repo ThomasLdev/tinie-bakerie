@@ -25,7 +25,7 @@ class PostRepository extends ServiceEntityRepository
     {
         // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
-        
+
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, createdAt, updatedAt}')
             ->leftJoin('p.translations', 'pt')
@@ -55,7 +55,7 @@ class PostRepository extends ServiceEntityRepository
     {
         // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
-        
+
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, createdAt, updatedAt}')
             ->leftJoin('p.translations', 'pt')
@@ -86,6 +86,8 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('slug', $slug)
             ->orderBy('p.createdAt', 'DESC');
 
-        return $qb->getQuery()->getOneOrNullResult();
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result instanceof Post ? $result : null;
     }
 }

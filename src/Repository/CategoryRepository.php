@@ -26,7 +26,7 @@ class CategoryRepository extends ServiceEntityRepository
     {
         // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
-        
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
@@ -62,7 +62,7 @@ class CategoryRepository extends ServiceEntityRepository
     {
         // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
-        
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')

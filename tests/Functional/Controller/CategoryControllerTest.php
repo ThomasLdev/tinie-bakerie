@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\CategoryController;
 use App\Repository\CategoryRepository;
 use App\Services\Cache\CategoryCache;
+use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\CategoryControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(CategoryController::class)]
 #[CoversClass(CategoryRepository::class)]
 #[CoversClass(CategoryCache::class)]
+#[CoversClass(LocaleFilter::class)]
 final class CategoryControllerTest extends BaseControllerTestCase
 {
     private const string BASE_URL_FR = '/fr/categories';
@@ -29,7 +31,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
     public function testShowWithFoundCategory(string $expectedTitle, string $locale, string $baseUrl): void
     {
         /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(fn() => CategoryControllerTestStory::load());
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
         $category = $story->getCategory(0);
         $categorySlug = $story->getCategorySlug($category, $locale);
 
@@ -39,11 +41,11 @@ final class CategoryControllerTest extends BaseControllerTestCase
         );
 
         self::assertResponseIsSuccessful();
-        
+
         // Verify the page title contains the category title
         $pageTitle = $crawler->filter('title')->text();
         self::assertStringContainsString($expectedTitle, $pageTitle, 'Page title should contain category title');
-        
+
         // Verify the category title appears in the page content
         $html = $crawler->html();
         self::assertStringContainsString($expectedTitle, $html, 'Category title should be present in page content');
@@ -54,7 +56,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
         foreach ([self::BASE_URL_FR, self::BASE_URL_EN] as $baseUrl) {
             $this->client->request(
                 Request::METHOD_GET,
-                \sprintf('%s/unknown-category', $baseUrl)
+                \sprintf('%s/unknown-category', $baseUrl),
             );
 
             self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -65,7 +67,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
     public function testShowRejectsNonGetMethods(string $method, string $baseUrl): void
     {
         /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(fn() => CategoryControllerTestStory::load());
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
         $category = $story->getCategory(0);
         $locale = $baseUrl === self::BASE_URL_FR ? 'fr' : 'en';
         $categorySlug = $story->getCategorySlug($category, $locale);

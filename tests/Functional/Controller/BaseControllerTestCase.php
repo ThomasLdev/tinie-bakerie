@@ -41,7 +41,7 @@ abstract class BaseControllerTestCase extends WebTestCase
 
         $this->container = self::getContainer();
         $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
-        
+
         // Clear cache before each test to prevent cache pollution between tests
         // ResetDatabase clears the database but not the cache
         $cache = self::getContainer()->get('cache.app');
@@ -53,8 +53,8 @@ abstract class BaseControllerTestCase extends WebTestCase
      * This ensures subsequent queries return fresh entities respecting filters.
      *
      * @template T
+     *
      * @param callable(): T $storyLoader
-     * @return Story
      */
     protected function loadStory(callable $storyLoader): Story
     {

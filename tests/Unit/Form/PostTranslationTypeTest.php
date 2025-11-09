@@ -44,7 +44,7 @@ final class PostTranslationTypeTest extends TypeTestCase
         $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
-        self::assertEquals($expected, $model);
+        self::assertSame($expected, $model);
     }
 
     public function testSubmitMinimalData(): void

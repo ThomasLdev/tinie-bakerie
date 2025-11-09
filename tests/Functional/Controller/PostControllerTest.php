@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\PostController;
 use App\Repository\PostRepository;
 use App\Services\Cache\PostCache;
+use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\PostControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
 #[CoversClass(PostCache::class)]
+#[CoversClass(LocaleFilter::class)]
 final class PostControllerTest extends BaseControllerTestCase
 {
     private const string BASE_URL_FR = '/fr/articles';
@@ -29,9 +31,9 @@ final class PostControllerTest extends BaseControllerTestCase
     public function testIndex(array $expectedTitles, string $baseUrl): void
     {
         /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
         $activePosts = $story->getActivePosts();
-        $activePostsCount = count($activePosts);
+        $activePostsCount = \count($activePosts);
 
         $crawler = $this->client->request(Request::METHOD_GET, $baseUrl);
 
@@ -42,27 +44,28 @@ final class PostControllerTest extends BaseControllerTestCase
         self::assertCount(
             $activePostsCount,
             $postCards,
-            sprintf('Expected %s active posts to be displayed on the index page', $activePostsCount)
+            \sprintf('Expected %s active posts to be displayed on the index page', $activePostsCount),
         );
 
         // Verify all expected titles are present and in the correct order (by createdAt DESC)
         $html = $crawler->html();
+
         foreach ($expectedTitles as $title) {
-            self::assertStringContainsString($title, $html, sprintf('Post title "%s" should be present', $title));
+            self::assertStringContainsString($title, $html, \sprintf('Post title "%s" should be present', $title));
         }
 
         // Verify ordering: newer post (expectedTitles[0]) appears before older post (expectedTitles[1])
-        $firstPos = strpos($html, $expectedTitles[0]);
-        $secondPos = strpos($html, $expectedTitles[1]);
+        $firstPos = strpos($html, (string) $expectedTitles[0]);
+        $secondPos = strpos($html, (string) $expectedTitles[1]);
 
         self::assertLessThan(
             $secondPos,
             $firstPos,
-            sprintf(
+            \sprintf(
                 'Post "%s" (newer) should appear before "%s" (older) in HTML (ordered by createdAt DESC)',
                 $expectedTitles[0],
-                $expectedTitles[1]
-            )
+                $expectedTitles[1],
+            ),
         );
     }
 
@@ -70,7 +73,7 @@ final class PostControllerTest extends BaseControllerTestCase
     public function testShowWithFoundPost(string $expected, string $locale, string $baseUrl): void
     {
         /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
         $post = $story->getActivePost(0);
         $postSlug = $story->getPostSlug($post, $locale);
         $categorySlug = $story->getCategorySlug($post->getCategory(), $locale);
@@ -88,7 +91,7 @@ final class PostControllerTest extends BaseControllerTestCase
     public function testShowWithInactivePost(string $locale, string $baseUrl): void
     {
         /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
         $post = $story->getInactivePost();
         $postSlug = $story->getPostSlug($post, $locale);
         $categorySlug = $story->getCategorySlug($post->getCategory(), $locale);
@@ -106,7 +109,7 @@ final class PostControllerTest extends BaseControllerTestCase
         foreach ([self::BASE_URL_FR, self::BASE_URL_EN] as $baseUrl) {
             $this->client->request(
                 Request::METHOD_GET,
-                \sprintf('%s/bad-category-slug/%s', $baseUrl, 'unknown-category/unknown-post')
+                \sprintf('%s/bad-category-slug/%s', $baseUrl, 'unknown-category/unknown-post'),
             );
 
             self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -117,7 +120,7 @@ final class PostControllerTest extends BaseControllerTestCase
     public function testShowWithBadCategorySlug(string $locale, string $baseUrl): void
     {
         /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
         $post = $story->getActivePost(0);
         $postSlug = $story->getPostSlug($post, $locale);
 
@@ -151,7 +154,7 @@ final class PostControllerTest extends BaseControllerTestCase
     public function testShowRejectsNonGetMethods(string $method, string $baseUrl): void
     {
         /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(fn() => PostControllerTestStory::load());
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
         $post = $story->getActivePost(0);
         $locale = $baseUrl === self::BASE_URL_FR ? 'fr' : 'en';
         $postSlug = $story->getPostSlug($post, $locale);
