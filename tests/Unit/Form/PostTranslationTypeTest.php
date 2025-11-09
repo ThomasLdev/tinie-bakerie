@@ -33,18 +33,15 @@ final class PostTranslationTypeTest extends TypeTestCase
             'supported_locales' => ['en', 'fr'],
         ]);
 
-        $expected = new PostTranslation();
-        $expected->setLocale('fr');
-        $expected->setTitle('Test Post Title');
-        $expected->setMetaTitle('Test Meta Title');
-        $expected->setMetaDescription(str_repeat('A', 120));
-        $expected->setExcerpt(str_repeat('B', 50));
-        $expected->setNotes('Some test notes');
-
         $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
-        self::assertSame($expected, $model);
+        self::assertSame('fr', $model->getLocale());
+        self::assertSame('Test Post Title', $model->getTitle());
+        self::assertSame('Test Meta Title', $model->getMetaTitle());
+        self::assertSame(str_repeat('A', 120), $model->getMetaDescription());
+        self::assertSame(str_repeat('B', 50), $model->getExcerpt());
+        self::assertSame('Some test notes', $model->getNotes());
     }
 
     public function testSubmitMinimalData(): void
