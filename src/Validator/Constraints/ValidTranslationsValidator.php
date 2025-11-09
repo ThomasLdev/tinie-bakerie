@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Contracts\Translatable;
 use App\Entity\Contracts\Translation;
 use App\Services\Locale\Locales;
 use Doctrine\Common\Collections\Collection;
