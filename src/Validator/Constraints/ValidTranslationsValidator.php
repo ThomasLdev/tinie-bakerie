@@ -49,10 +49,6 @@ class ValidTranslationsValidator extends ConstraintValidator
         $locales = [];
 
         foreach ($value as $translation) {
-            if (!$translation instanceof IsTranslation) {
-                continue;
-            }
-
             $locale = $translation->getLocale();
 
             if (\in_array($locale, $locales, true)) {
