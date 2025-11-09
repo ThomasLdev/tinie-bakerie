@@ -89,6 +89,7 @@ See **[MCP-USAGE-GUIDE.md](MCP-USAGE-GUIDE.md)** for complete tool reference.
 All testing docs in `docs/testing/`:
 - **complete-guide.md** - Full TDD strategy, patterns, examples (includes FormType testing & Playwright)
 - **decision-guide.md** - Quick: which test type to use?
+- **data-test-id-pattern.md** - Stable element targeting pattern using `test_id()` Twig function
 
 ## 🎯 Philosophy
 

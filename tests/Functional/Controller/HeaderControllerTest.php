@@ -36,7 +36,7 @@ final class HeaderControllerTest extends BaseControllerTestCase
 
     public function testRenderHeaderRendersCorrectTemplate(): void
     {
-        $crawler = $this->client->request(Request::METHOD_GET, self::HEADER_URL);
+        $this->client->request(Request::METHOD_GET, self::HEADER_URL);
 
         self::assertResponseIsSuccessful();
 
@@ -58,8 +58,7 @@ final class HeaderControllerTest extends BaseControllerTestCase
 
     public function testRenderHeaderWithCategories(): void
     {
-        /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
 
         $crawler = $this->client->request(Request::METHOD_GET, self::HEADER_URL);
 
@@ -74,8 +73,7 @@ final class HeaderControllerTest extends BaseControllerTestCase
 
     public function testRenderHeaderCategoriesAreOrderedByCreatedAtDesc(): void
     {
-        /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
 
         $crawler = $this->client->request(Request::METHOD_GET, self::HEADER_URL);
 
@@ -97,10 +95,9 @@ final class HeaderControllerTest extends BaseControllerTestCase
 
     public function testRenderHeaderCategoriesContainRequiredSlugLinks(): void
     {
-        /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
 
-        $crawler = $this->client->request(Request::METHOD_GET, self::HEADER_URL);
+        $this->client->request(Request::METHOD_GET, self::HEADER_URL);
 
         self::assertResponseIsSuccessful();
 
@@ -140,8 +137,7 @@ final class HeaderControllerTest extends BaseControllerTestCase
 
     public function testRenderHeaderShowsCategoriesDropdown(): void
     {
-        /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
 
         $this->client->request(Request::METHOD_GET, self::HEADER_URL);
 

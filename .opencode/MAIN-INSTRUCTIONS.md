@@ -15,6 +15,7 @@
 > **📚 Testing Documentation**:
 > - **[Complete Testing Guide](docs/testing/complete-guide.md)** - Full TDD strategy and patterns
 > - **[Testing Decision Guide](docs/testing/decision-guide.md)** - Quick reference: which test type?
+> - **[Data Test ID Pattern](docs/testing/data-test-id-pattern.md)** - Stable element targeting for tests
 > - **[E2E Setup](docs/testing/e2e-setup.md)** - Playwright E2E testing setup
 
 ---
@@ -667,7 +668,9 @@ class PostTranslation
 - ✅ Prefer real objects over mocks
 - ✅ Test at highest practical level (80% integration, 20% unit)
 - ✅ Use `KernelTestCase` or `WebTestCase` for most tests
+- ✅ **Use `data-test-id` pattern** for targeting elements in tests (see [docs/testing/data-test-id-pattern.md](docs/testing/data-test-id-pattern.md))
 - ❌ Avoid excessive mocking
+- ❌ Avoid fragile CSS class or element position selectors
 
 **PHPUnit Conventions**:
 - **MUST** use PHP 8+ attributes: `#[DataProvider]`, `#[CoversClass]`, `#[Test]`
@@ -708,6 +711,55 @@ final class PostServiceTest extends KernelTestCase
     }
 }
 ```
+
+### Element Targeting in Tests
+
+**MUST use `data-test-id` pattern for element selection:**
+
+This project uses a custom Twig `test_id()` function that adds `data-test-id` attributes **only in test environment**.
+
+**In Templates:**
+```twig
+{# Add test IDs to elements you want to test #}
+<button {{ test_id('submit-form') }}>Submit</button>
+<nav {{ test_id('navbar') }}>...</nav>
+<article {{ test_id('post-card-' ~ post.id) }}>...</article>
+```
+
+**In Tests:**
+```php
+// ✅ PREFERRED - Stable and explicit
+self::assertSelectorExists('[data-test-id="submit-form"]');
+$crawler->filter('[data-test-id="navbar"]');
+$crawler->filter('[data-test-id="post-card-123"]');
+
+// ❌ AVOID - Fragile and implicit
+self::assertSelectorExists('.btn.btn-primary');  // Breaks with CSS changes
+$crawler->filter('nav')->first();                // Breaks with DOM changes
+$crawler->filter('button')->eq(2);               // Breaks with element order
+```
+
+**Benefits:**
+- ✅ Survives styling changes (CSS classes can change freely)
+- ✅ Survives DOM restructuring (element positions can change)
+- ✅ Explicit test contract (clear what is meant to be tested)
+- ✅ Clean production HTML (only renders in test environment)
+- ✅ Works for both Functional (PHPUnit) and E2E (Playwright) tests
+
+**When to add test IDs:**
+- Interactive elements: buttons, links, inputs, forms
+- Content verification: titles, messages, alerts
+- Dynamic lists: posts, categories, users
+- Navigation: menus, breadcrumbs
+- Modals and overlays
+
+**Naming conventions:**
+- Use kebab-case: `submit-form`, `nav-link-home`
+- Be descriptive: `delete-post-button` not `btn1`
+- Include entity IDs: `post-card-123`, `user-avatar-456`
+- Use action verbs: `submit-form`, `edit-profile`, `delete-post`
+
+**See [docs/testing/data-test-id-pattern.md](docs/testing/data-test-id-pattern.md) for complete guide with examples.**
 
 **For detailed testing patterns, TDD workflow, and examples, read [docs/testing/complete-guide.md](docs/testing/complete-guide.md).**
 
