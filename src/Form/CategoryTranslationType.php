@@ -43,16 +43,19 @@ class CategoryTranslationType extends AbstractType
                 'label' => 'admin.global.meta_title',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'admin.global.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('metaDescription', TextareaType::class, [
                 'label' => 'admin.global.meta_description',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ])
             ->add('slug', TextType::class, [
                 'label' => 'admin.global.slug.title',
@@ -65,6 +68,7 @@ class CategoryTranslationType extends AbstractType
                 'label' => 'admin.global.excerpt',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
+                'empty_data' => '',
             ]);
     }
 
