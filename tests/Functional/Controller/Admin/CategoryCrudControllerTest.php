@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\CategoryCrudController;
+use App\Entity\Category;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Factory\CategoryFactory;
 use App\Form\CategoryMediaType;
@@ -37,6 +38,11 @@ final class CategoryCrudControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = self::createClient();
+    }
+
+    public function testCategoryEntityName(): void
+    {
+        self::assertSame(Category::class, CategoryCrudController::getEntityFqcn());
     }
 
     public function testIndexPageLoadsSuccessfully(): void

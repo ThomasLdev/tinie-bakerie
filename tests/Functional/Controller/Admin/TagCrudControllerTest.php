@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\TagCrudController;
+use App\Entity\Tag;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Factory\TagFactory;
 use App\Form\TagTranslationType;
@@ -35,6 +36,11 @@ final class TagCrudControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = self::createClient();
+    }
+
+    public function testCategoryEntityName(): void
+    {
+        self::assertSame(Tag::class, TagCrudController::getEntityFqcn());
     }
 
     public function testIndexPageLoadsSuccessfully(): void

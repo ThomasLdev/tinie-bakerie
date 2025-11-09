@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\PostCrudController;
+use App\Entity\Post;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Factory\PostFactory;
 use App\Form\PostMediaType;
@@ -41,6 +42,11 @@ final class PostCrudControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = self::createClient();
+    }
+
+    public function testCategoryEntityName(): void
+    {
+        self::assertSame(Post::class, PostCrudController::getEntityFqcn());
     }
 
     public function testIndexPageLoadsSuccessfully(): void
