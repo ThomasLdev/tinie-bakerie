@@ -665,11 +665,13 @@ class PostTranslation
 
 **Testing Philosophy**:
 - ✅ Test behavior, not implementation
-- ✅ Prefer real objects over mocks
+- ✅ Prefer real objects over mocks (use real services from container)
 - ✅ Test at highest practical level (80% integration, 20% unit)
 - ✅ Use `KernelTestCase` or `WebTestCase` for most tests
 - ✅ **Use `data-test-id` pattern** for targeting elements in tests (see [docs/testing/data-test-id-pattern.md](docs/testing/data-test-id-pattern.md))
-- ❌ Avoid excessive mocking
+- ✅ **Test cache services through functional tests** - verify they're wired correctly, not implementation details
+- ❌ Avoid excessive mocking (especially with Mockery - causes PHPStan issues)
+- ❌ Avoid testing implementation details (like "method X was called with Y parameters")
 - ❌ Avoid fragile CSS class or element position selectors
 
 **PHPUnit Conventions**:
@@ -761,6 +763,52 @@ $crawler->filter('button')->eq(2);               // Breaks with element order
 
 **See [docs/testing/data-test-id-pattern.md](docs/testing/data-test-id-pattern.md) for complete guide with examples.**
 
+### Cache Service Testing
+
+**DO NOT use unit tests with mocks for cache services.**
+
+❌ **Wrong Approach (Deleted from codebase)**:
+```php
+// BAD - Unit test with Mockery mocks
+$cacheMock = \Mockery::mock(CacheInterface::class);
+$cacheMock->shouldReceive('get')->once()->andReturn($data);
+// Tests implementation details, not behavior
+// Causes PHPStan issues
+// Doesn't catch real cache bugs
+```
+
+✅ **Correct Approach (Current implementation)**:
+```php
+// GOOD - Functional test verifying service integration
+public function testHeaderUsesCacheService(): void
+{
+    $this->loadStory(static fn() => CategoryControllerTestStory::load());
+    
+    // Make request - exercises cache through controller
+    $this->client->request('GET', '/header');
+    self::assertResponseIsSuccessful();
+    
+    // Verify cache service is properly wired
+    $container = self::getContainer();
+    $cache = $container->get(HeaderCache::class);
+    self::assertInstanceOf(HeaderCache::class, $cache);
+    
+    // Verify cache works with real data
+    $categories = $cache->getCategories('en');
+    self::assertIsArray($categories);
+    self::assertNotEmpty($categories);
+}
+```
+
+**Benefits of functional approach**:
+- ✅ Tests actual behavior (cache returns correct data)
+- ✅ Uses real CacheInterface (catches serialization bugs)
+- ✅ No PHPStan issues (no Mockery)
+- ✅ Tests full integration (service wiring, dependency injection)
+- ✅ Faster (no mock setup overhead)
+
+**Cache services are already tested** when you test controllers that use them. Additional tests should verify service registration and data correctness, not mock interactions.
+
 **For detailed testing patterns, TDD workflow, and examples, read [docs/testing/complete-guide.md](docs/testing/complete-guide.md).**
 
 ---
@@ -781,7 +829,7 @@ $crawler->filter('button')->eq(2);               // Breaks with element order
    ```
 
 2. **Fix All Issues**
-   - PHPStan errors: MUST be fixed (no exceptions)
+   - PHPStan errors: MUST be fixed (no exceptions, no `@phpstan-ignore` without approval)
    - Rector suggestions: SHOULD apply (or justify why not)
    - CS Fixer issues: MUST be fixed (run without --dry-run)
 
@@ -811,6 +859,72 @@ $crawler->filter('button')->eq(2);               // Breaks with element order
 **Rector**: `rector.php`
 - Suggests modern PHP patterns
 - Apply suggestions unless breaking
+
+### 8.3 PHPStan Error Suppression Policy
+
+**CRITICAL: `@phpstan-ignore` comments are STRICTLY REGULATED**
+
+**Default Position: NEVER add `@phpstan-ignore`**
+
+PHPStan errors indicate real problems in the code. Suppressing them hides issues rather than fixing them.
+
+**MUST NEVER add `@phpstan-ignore` for:**
+- ❌ Type mismatches (fix the types instead)
+- ❌ Missing properties or methods (fix the code instead)
+- ❌ Invalid arguments (fix the call instead)
+- ❌ To make tests pass quickly
+- ❌ Because "it works anyway"
+- ❌ Without explicit user approval
+
+**MAY add `@phpstan-ignore` ONLY IF:**
+1. ✅ It's for Mockery test stubs (known PHPStan limitation)
+2. ✅ It's a proven false positive in PHPStan itself
+3. ✅ You have **explicitly asked for and received user approval**
+4. ✅ You have provided a **clear justification** for why fixing the underlying issue is not possible
+5. ✅ You have documented the reason in a comment above the ignore
+
+**Process for requesting approval:**
+```
+1. Encounter PHPStan error
+2. Attempt to fix the underlying issue first
+3. If truly unfixable, document:
+   - What the error is
+   - Why it can't be fixed properly
+   - What the ignore will suppress
+   - What risks it introduces
+4. Ask user for approval with full justification
+5. Only if approved, add ignore with explanatory comment
+```
+
+**Example of ACCEPTABLE use (Mockery in tests):**
+```php
+// Mockery doesn't provide type information to PHPStan
+// This is a known limitation of static analysis with dynamic mocks
+/** @phpstan-ignore assign.propertyType */
+$this->cache = \Mockery::mock(CacheInterface::class);
+```
+
+**Example of UNACCEPTABLE use:**
+```php
+// ❌ WRONG - Hiding a real type problem
+/** @phpstan-ignore argument.type */
+$this->service->process($wrongType);
+
+// ✅ RIGHT - Fix the actual issue
+$this->service->process($correctType);
+```
+
+**Consequences of unauthorized ignores:**
+- Code quality degradation
+- Hidden bugs and type safety issues
+- Technical debt accumulation
+- Loss of PHPStan's protection
+
+**If you find yourself wanting to add `@phpstan-ignore`, STOP and:**
+1. Review your implementation approach
+2. Check if there's a better design
+3. Consult existing code patterns
+4. Ask the user for guidance
 
 ---
 
@@ -1011,6 +1125,15 @@ $post->getTitle(); // Gedmo handles current locale
 - Missing existing implementations
 - Not understanding code structure before changing
 
+❌ **Adding PHPStan Ignores Without Approval**
+- Using `@phpstan-ignore` to bypass errors instead of fixing them
+- Suppressing errors without justification
+- Not asking for user approval before adding ignores
+- Hiding type safety issues
+- Creating technical debt
+
+**Remember:** PHPStan errors are there to protect code quality. Fix the root cause, don't silence the alarm.
+
 ---
 
 ## 11. QUICK REFERENCE
@@ -1027,6 +1150,7 @@ $post->getTitle(); // Gedmo handles current locale
 □ Implement minimal code to pass (TDD - Green phase)
 □ Refactor with confidence (TDD - Refactor phase)
 □ Run make quality (PHPStan + Rector + CS Fixer)
+□ Fix all PHPStan errors properly (NEVER use @phpstan-ignore without approval)
 □ Run make test (all tests pass)
 □ Update memory with learnings
 □ Mark task complete in todo list
