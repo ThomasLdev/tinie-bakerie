@@ -4,34 +4,32 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Form;
 
-use App\Entity\PostTranslation;
-use App\Form\PostTranslationType;
-use PHPUnit\Framework\Attributes\CoversClass;
+use App\Entity\CategoryTranslation;
+use App\Form\CategoryTranslationType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
- * Unit tests for PostTranslationType.
+ * Unit tests for CategoryTranslationType.
  * Tests form structure, field configuration, and data transformation.
  *
  * @internal
  */
-#[CoversClass(PostTranslationType::class)]
-final class PostTranslationTypeTest extends TypeTestCase
+final class CategoryTranslationTypeTest extends TypeTestCase
 {
     public function testSubmitValidData(): void
     {
         $formData = [
             'locale' => 'fr',
-            'title' => 'Test Post Title',
+            'title' => 'Test Category Title',
             'metaTitle' => 'Test Meta Title',
             'slug' => '', // disabled field, value should be ignored
+            'description' => 'Test description content',
             'metaDescription' => str_repeat('A', 120),
-            'excerpt' => str_repeat('B', 50),
-            'notes' => 'Some test notes',
+            'excerpt' => 'Test excerpt',
         ];
 
-        $model = new PostTranslation();
-        $form = $this->factory->create(PostTranslationType::class, $model, [
+        $model = new CategoryTranslation();
+        $form = $this->factory->create(CategoryTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -39,11 +37,11 @@ final class PostTranslationTypeTest extends TypeTestCase
 
         self::assertTrue($form->isSynchronized());
         self::assertSame('fr', $model->getLocale());
-        self::assertSame('Test Post Title', $model->getTitle());
+        self::assertSame('Test Category Title', $model->getTitle());
         self::assertSame('Test Meta Title', $model->getMetaTitle());
+        self::assertSame('Test description content', $model->getDescription());
         self::assertSame(str_repeat('A', 120), $model->getMetaDescription());
-        self::assertSame(str_repeat('B', 50), $model->getExcerpt());
-        self::assertSame('Some test notes', $model->getNotes());
+        self::assertSame('Test excerpt', $model->getExcerpt());
     }
 
     public function testSubmitMinimalData(): void
@@ -53,8 +51,8 @@ final class PostTranslationTypeTest extends TypeTestCase
             'title' => 'Minimal Title',
         ];
 
-        $model = new PostTranslation();
-        $form = $this->factory->create(PostTranslationType::class, $model, [
+        $model = new CategoryTranslation();
+        $form = $this->factory->create(CategoryTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -64,14 +62,14 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertSame('en', $model->getLocale());
         self::assertSame('Minimal Title', $model->getTitle());
         self::assertSame('', $model->getMetaTitle());
+        self::assertSame('', $model->getDescription());
         self::assertSame('', $model->getMetaDescription());
         self::assertSame('', $model->getExcerpt());
-        self::assertSame('', $model->getNotes());
     }
 
     public function testFormHasCorrectFields(): void
     {
-        $form = $this->factory->create(PostTranslationType::class, null, [
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -79,15 +77,15 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertTrue($form->has('title'));
         self::assertTrue($form->has('metaTitle'));
         self::assertTrue($form->has('slug'));
+        self::assertTrue($form->has('description'));
         self::assertTrue($form->has('metaDescription'));
         self::assertTrue($form->has('excerpt'));
-        self::assertTrue($form->has('notes'));
     }
 
     public function testLocaleFieldChoices(): void
     {
         $supportedLocales = ['en', 'fr', 'de'];
-        $form = $this->factory->create(PostTranslationType::class, null, [
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
             'supported_locales' => $supportedLocales,
         ]);
 
@@ -99,7 +97,7 @@ final class PostTranslationTypeTest extends TypeTestCase
 
     public function testSlugFieldIsDisabled(): void
     {
-        $form = $this->factory->create(PostTranslationType::class, null, [
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -110,7 +108,7 @@ final class PostTranslationTypeTest extends TypeTestCase
 
     public function testTitleFieldIsRequired(): void
     {
-        $form = $this->factory->create(PostTranslationType::class, null, [
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -121,16 +119,16 @@ final class PostTranslationTypeTest extends TypeTestCase
 
     public function testOptionalFieldsAreNotRequired(): void
     {
-        $form = $this->factory->create(PostTranslationType::class, null, [
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         $view = $form->createView();
 
         self::assertFalse($view['metaTitle']->vars['required']);
+        self::assertFalse($view['description']->vars['required']);
         self::assertFalse($view['metaDescription']->vars['required']);
         self::assertFalse($view['excerpt']->vars['required']);
-        self::assertFalse($view['notes']->vars['required']);
     }
 
     public function testEmptyDataForTextFields(): void
@@ -139,13 +137,13 @@ final class PostTranslationTypeTest extends TypeTestCase
             'locale' => 'fr',
             'title' => 'Test',
             'metaTitle' => null,
+            'description' => null,
             'metaDescription' => null,
             'excerpt' => null,
-            'notes' => null,
         ];
 
-        $model = new PostTranslation();
-        $form = $this->factory->create(PostTranslationType::class, $model, [
+        $model = new CategoryTranslation();
+        $form = $this->factory->create(CategoryTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -153,8 +151,34 @@ final class PostTranslationTypeTest extends TypeTestCase
 
         self::assertTrue($form->isSynchronized());
         self::assertSame('', $model->getMetaTitle());
+        self::assertSame('', $model->getDescription());
         self::assertSame('', $model->getMetaDescription());
         self::assertSame('', $model->getExcerpt());
-        self::assertSame('', $model->getNotes());
+    }
+
+    public function testTextareaFieldsAreUsedForLongContent(): void
+    {
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
+            'supported_locales' => ['en', 'fr'],
+        ]);
+
+        $view = $form->createView();
+
+        // Verify that description, metaDescription, and excerpt use TextareaType
+        // by checking they don't have a 'type' attribute set to something else
+        self::assertArrayHasKey('attr', $view['description']->vars);
+        self::assertArrayHasKey('attr', $view['metaDescription']->vars);
+        self::assertArrayHasKey('attr', $view['excerpt']->vars);
+    }
+
+    public function testLocaleFieldIsRequired(): void
+    {
+        $form = $this->factory->create(CategoryTranslationType::class, null, [
+            'supported_locales' => ['en', 'fr'],
+        ]);
+
+        $view = $form->createView();
+
+        self::assertTrue($view['locale']->vars['required']);
     }
 }

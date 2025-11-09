@@ -6,8 +6,10 @@ namespace App\Tests\Unit\Form;
 
 use App\Entity\PostSectionMedia;
 use App\Entity\PostSectionMediaTranslation;
+use App\Form\PostSectionMediaTranslationType;
 use App\Form\PostSectionMediaType;
 use App\Services\Media\Enum\MediaType;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -22,6 +24,8 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  *
  * @internal
  */
+#[CoversClass(PostSectionMediaType::class)]
+#[CoversClass(PostSectionMediaTranslationType::class)]
 final class PostSectionMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
@@ -82,11 +86,11 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         self::assertSame(3, $model->getPosition());
         self::assertSame(MediaType::Video, $model->getType());
         self::assertCount(2, $model->getTranslations());
-        
+
         $frTranslation = $model->getTranslations()->filter(
             static fn (PostSectionMediaTranslation $t) => $t->getLocale() === 'fr'
         )->first();
-        
+
         self::assertInstanceOf(PostSectionMediaTranslation::class, $frTranslation);
         self::assertSame('Section Video Title FR', $frTranslation->getTitle());
         self::assertSame('Section Video Alt', $frTranslation->getAlt());
@@ -173,11 +177,11 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $choices = $view['type']->vars['choices'];
 
         self::assertCount(2, $choices);
-        
+
         // The choices array keys contain the enum name (Image, Video) from array_combine
         $hasImage = false;
         $hasVideo = false;
-        
+
         foreach ($choices as $choiceView) {
             if ($choiceView->label === 'Image') {
                 $hasImage = true;
@@ -186,7 +190,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
                 $hasVideo = true;
             }
         }
-        
+
         self::assertTrue($hasImage, 'Image choice not found');
         self::assertTrue($hasVideo, 'Video choice not found');
     }

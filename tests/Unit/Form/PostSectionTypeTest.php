@@ -7,9 +7,11 @@ namespace App\Tests\Unit\Form;
 use App\Entity\PostSection;
 use App\Entity\PostSectionMedia;
 use App\Entity\PostSectionTranslation;
+use App\Form\PostSectionTranslationType;
 use App\Form\PostSectionType;
 use App\Services\Media\Enum\MediaType;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -24,6 +26,8 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  *
  * @internal
  */
+#[CoversClass(PostSectionType::class)]
+#[CoversClass(PostSectionTranslationType::class)]
 final class PostSectionTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
@@ -96,17 +100,17 @@ final class PostSectionTypeTest extends TypeTestCase
         self::assertTrue($form->isSynchronized());
         self::assertSame(1, $model->getPosition());
         self::assertSame(PostSectionTypeEnum::TwoColumns, $model->getType());
-        
+
         // Check translations
         self::assertCount(2, $model->getTranslations());
         $frTranslation = $model->getTranslations()->filter(
             static fn (PostSectionTranslation $t) => $t->getLocale() === 'fr'
         )->first();
-        
+
         self::assertInstanceOf(PostSectionTranslation::class, $frTranslation);
         self::assertSame('Section Title FR', $frTranslation->getTitle());
         self::assertSame('Section Content FR', $frTranslation->getContent());
-        
+
         // Check media collection
         self::assertCount(1, $model->getMedia());
         $media = $model->getMedia()->first();
@@ -227,12 +231,12 @@ final class PostSectionTypeTest extends TypeTestCase
         $choices = $view['type']->vars['choices'];
 
         self::assertCount(3, $choices);
-        
+
         // Check that the enum labels are present
         $hasDefault = false;
         $hasTwoColumns = false;
         $hasTwoColumnsMediaLeft = false;
-        
+
         foreach ($choices as $choiceView) {
             if ($choiceView->label === 'Default') {
                 $hasDefault = true;
@@ -244,7 +248,7 @@ final class PostSectionTypeTest extends TypeTestCase
                 $hasTwoColumnsMediaLeft = true;
             }
         }
-        
+
         self::assertTrue($hasDefault, 'Default choice not found');
         self::assertTrue($hasTwoColumns, 'Two Columns choice not found');
         self::assertTrue($hasTwoColumnsMediaLeft, 'Two Columns Media Left choice not found');

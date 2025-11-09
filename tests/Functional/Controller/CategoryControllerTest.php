@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\CategoryController;
+use App\EventSubscriber\KernelRequestSubscriber;
 use App\Repository\CategoryRepository;
 use App\Services\Cache\CategoryCache;
 use App\Services\Filter\LocaleFilter;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(CategoryRepository::class)]
 #[CoversClass(CategoryCache::class)]
 #[CoversClass(LocaleFilter::class)]
+#[CoversClass(KernelRequestSubscriber::class)]
 final class CategoryControllerTest extends BaseControllerTestCase
 {
     private const string BASE_URL_FR = '/fr/categories';

@@ -6,8 +6,10 @@ namespace App\Tests\Unit\Form;
 
 use App\Entity\CategoryMedia;
 use App\Entity\CategoryMediaTranslation;
+use App\Form\CategoryMediaTranslationType;
 use App\Form\CategoryMediaType;
 use App\Services\Media\Enum\MediaType;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -22,6 +24,8 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  *
  * @internal
  */
+#[CoversClass(CategoryMediaType::class)]
+#[CoversClass(CategoryMediaTranslationType::class)]
 final class CategoryMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
@@ -83,11 +87,11 @@ final class CategoryMediaTypeTest extends TypeTestCase
         self::assertSame(1, $model->getPosition());
         self::assertSame(MediaType::Image, $model->getType());
         self::assertCount(2, $model->getTranslations());
-        
+
         $frTranslation = $model->getTranslations()->filter(
             static fn (CategoryMediaTranslation $t) => $t->getLocale() === 'fr'
         )->first();
-        
+
         self::assertInstanceOf(CategoryMediaTranslation::class, $frTranslation);
         self::assertSame('Image Title FR', $frTranslation->getTitle());
         self::assertSame('Image Alt Text', $frTranslation->getAlt());
@@ -174,11 +178,11 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $choices = $view['type']->vars['choices'];
 
         self::assertCount(2, $choices);
-        
+
         // The choices array keys contain the enum name (Image, Video) from array_combine
         $hasImage = false;
         $hasVideo = false;
-        
+
         foreach ($choices as $choiceView) {
             if ($choiceView->label === 'Image') {
                 $hasImage = true;
@@ -187,7 +191,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
                 $hasVideo = true;
             }
         }
-        
+
         self::assertTrue($hasImage, 'Image choice not found');
         self::assertTrue($hasVideo, 'Video choice not found');
     }

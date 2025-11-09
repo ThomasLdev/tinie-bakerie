@@ -6,8 +6,10 @@ namespace App\Tests\Unit\Form;
 
 use App\Entity\PostMedia;
 use App\Entity\PostMediaTranslation;
+use App\Form\PostMediaTranslationType;
 use App\Form\PostMediaType;
 use App\Services\Media\Enum\MediaType;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -22,6 +24,8 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  *
  * @internal
  */
+#[CoversClass(PostMediaType::class)]
+#[CoversClass(PostMediaTranslationType::class)]
 final class PostMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
@@ -82,11 +86,11 @@ final class PostMediaTypeTest extends TypeTestCase
         self::assertSame(2, $model->getPosition());
         self::assertSame(MediaType::Image, $model->getType());
         self::assertCount(2, $model->getTranslations());
-        
+
         $enTranslation = $model->getTranslations()->filter(
             static fn (PostMediaTranslation $t) => $t->getLocale() === 'en'
         )->first();
-        
+
         self::assertInstanceOf(PostMediaTranslation::class, $enTranslation);
         self::assertSame('Post Image Title EN', $enTranslation->getTitle());
         self::assertSame('Post Image Alt EN', $enTranslation->getAlt());
@@ -185,11 +189,11 @@ final class PostMediaTypeTest extends TypeTestCase
         $choices = $view['type']->vars['choices'];
 
         self::assertCount(2, $choices);
-        
+
         // The choices array keys contain the enum name (Image, Video) from array_combine
         $hasImage = false;
         $hasVideo = false;
-        
+
         foreach ($choices as $choiceView) {
             if ($choiceView->label === 'Image') {
                 $hasImage = true;
@@ -198,7 +202,7 @@ final class PostMediaTypeTest extends TypeTestCase
                 $hasVideo = true;
             }
         }
-        
+
         self::assertTrue($hasImage, 'Image choice not found');
         self::assertTrue($hasVideo, 'Video choice not found');
     }

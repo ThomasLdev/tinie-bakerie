@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\PostController;
+use App\EventSubscriber\KernelRequestSubscriber;
 use App\Repository\PostRepository;
 use App\Services\Cache\PostCache;
 use App\Services\Filter\LocaleFilter;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(PostRepository::class)]
 #[CoversClass(PostCache::class)]
 #[CoversClass(LocaleFilter::class)]
+#[CoversClass(KernelRequestSubscriber::class)]
 final class PostControllerTest extends BaseControllerTestCase
 {
     private const string BASE_URL_FR = '/fr/articles';
