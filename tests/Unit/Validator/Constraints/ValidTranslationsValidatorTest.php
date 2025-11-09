@@ -28,7 +28,9 @@ use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 final class ValidTranslationsValidatorTest extends TestCase
 {
     private ValidTranslationsValidator $validator;
+
     private MockObject&ExecutionContextInterface $context;
+
     private ValidTranslations $constraint;
 
     protected function setUp(): void
@@ -51,7 +53,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
     public function testValidateWithNullValue(): void
     {
-        $this->context->expects($this->never())
+        $this->context->expects(self::never())
             ->method('buildViolation');
 
         $this->validator->validate(null, $this->constraint);
@@ -71,7 +73,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $collection = new ArrayCollection([$translation1, $translation2]);
 
-        $this->context->expects($this->never())
+        $this->context->expects(self::never())
             ->method('buildViolation');
 
         $this->validator->validate($collection, $this->constraint);
@@ -85,14 +87,14 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->method('setParameter')->willReturnSelf();
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->countMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -106,14 +108,14 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->method('setParameter')->willReturnSelf();
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->localeMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -126,9 +128,9 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
 
-        $violationBuilder->expects($this->exactly(3))
+        $violationBuilder->expects(self::exactly(3))
             ->method('setParameter')
-            ->willReturnCallback(function (string $key, string $value) use ($violationBuilder) {
+            ->willReturnCallback(static function (string $key, string $value) use ($violationBuilder): MockObject {
                 if ($key === '{{ count }}') {
                     self::assertSame('1', $value);
                 } elseif ($key === '{{ required }}') {
@@ -136,17 +138,18 @@ final class ValidTranslationsValidatorTest extends TestCase
                 } elseif ($key === '{{ entity }}') {
                     self::assertNotEmpty($value);
                 }
+
                 return $violationBuilder;
             });
 
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->countMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -160,25 +163,26 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
 
-        $violationBuilder->expects($this->exactly(2))
+        $violationBuilder->expects(self::exactly(2))
             ->method('setParameter')
-            ->willReturnCallback(function (string $key, string $value) use ($violationBuilder) {
+            ->willReturnCallback(static function (string $key, string $value) use ($violationBuilder): MockObject {
                 if ($key === '{{ locale }}') {
                     self::assertSame('fr', $value);
                 } elseif ($key === '{{ entity }}') {
                     self::assertNotEmpty($value);
                 }
+
                 return $violationBuilder;
             });
 
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->localeMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -189,14 +193,14 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->method('setParameter')->willReturnSelf();
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->countMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -212,7 +216,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $collection = new ArrayCollection([$translation1, $translation2, $translation3]);
 
-        $this->context->expects($this->never())
+        $this->context->expects(self::never())
             ->method('buildViolation');
 
         $validator->validate($collection, $this->constraint);
@@ -230,15 +234,15 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->method('setParameter')->willReturnSelf();
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
         // Will fail count check (3 items but 2 locales required)
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->with($this->constraint->countMessage)
             ->willReturn($violationBuilder);
 
-        $this->context->method('getObject')->willReturn(new class {});
+        $this->context->method('getObject')->willReturn(new class() {});
 
         $this->validator->validate($collection, $this->constraint);
     }
@@ -248,17 +252,14 @@ final class ValidTranslationsValidatorTest extends TestCase
         $translation1 = $this->createTranslationMock('en');
         $collection = new ArrayCollection([$translation1]);
 
-        $testEntity = new class {
-            public function __construct()
-            {
-            }
+        $testEntity = new class() {
         };
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->method('setParameter')->willReturnSelf();
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->willReturn($violationBuilder);
 
@@ -274,18 +275,19 @@ final class ValidTranslationsValidatorTest extends TestCase
 
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
 
-        $violationBuilder->expects($this->exactly(3))
+        $violationBuilder->expects(self::exactly(3))
             ->method('setParameter')
-            ->willReturnCallback(function (string $key, string $value) use ($violationBuilder) {
+            ->willReturnCallback(static function (string $key, string $value) use ($violationBuilder): MockObject {
                 if ($key === '{{ entity }}') {
                     self::assertSame('Entité', $value);
                 }
+
                 return $violationBuilder;
             });
 
-        $violationBuilder->expects($this->once())->method('addViolation');
+        $violationBuilder->expects(self::once())->method('addViolation');
 
-        $this->context->expects($this->once())
+        $this->context->expects(self::once())
             ->method('buildViolation')
             ->willReturn($violationBuilder);
 

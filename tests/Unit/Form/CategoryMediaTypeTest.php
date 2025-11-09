@@ -29,9 +29,12 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 final class CategoryMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
+
     private MockObject&UploadHandler $handler;
+
     private MockObject&PropertyMappingFactory $mappingFactory;
 
+    #[\Override]
     protected function setUp(): void
     {
         // Mock VichFileType dependencies
@@ -40,20 +43,6 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $this->mappingFactory = $this->createMock(PropertyMappingFactory::class);
 
         parent::setUp();
-    }
-
-    protected function getExtensions(): array
-    {
-        // Create VichFileType with mocked dependencies
-        $vichFileType = new VichFileType(
-            $this->storage,
-            $this->handler,
-            $this->mappingFactory
-        );
-
-        return [
-            new PreloadedExtension([$vichFileType], []),
-        ];
     }
 
     public function testSubmitValidDataWithTranslations(): void
@@ -83,13 +72,13 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
-        self::assertTrue($form->isValid(), 'Form has errors: ' . (string) $form->getErrors(true));
+        self::assertTrue($form->isValid(), 'Form has errors: ' . $form->getErrors(true));
         self::assertSame(1, $model->getPosition());
         self::assertSame(MediaType::Image, $model->getType());
         self::assertCount(2, $model->getTranslations());
 
         $frTranslation = $model->getTranslations()->filter(
-            static fn (CategoryMediaTranslation $t) => $t->getLocale() === 'fr'
+            static fn (CategoryMediaTranslation $t): bool => $t->getLocale() === 'fr',
         )->first();
 
         self::assertInstanceOf(CategoryMediaTranslation::class, $frTranslation);
@@ -187,6 +176,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
             if ($choiceView->label === 'Image') {
                 $hasImage = true;
             }
+
             if ($choiceView->label === 'Video') {
                 $hasVideo = true;
             }
@@ -229,5 +219,20 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
         self::assertArrayHasKey('prototype', $view['translations']->vars);
         self::assertNotNull($view['translations']->vars['prototype']);
+    }
+
+    #[\Override]
+    protected function getExtensions(): array
+    {
+        // Create VichFileType with mocked dependencies
+        $vichFileType = new VichFileType(
+            $this->storage,
+            $this->handler,
+            $this->mappingFactory,
+        );
+
+        return [
+            new PreloadedExtension([$vichFileType], []),
+        ];
     }
 }

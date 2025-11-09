@@ -48,6 +48,7 @@ class ValidTranslationsValidator extends ConstraintValidator
 
         $locales = [];
 
+        /** @var IsTranslation $translation */
         foreach ($value as $translation) {
             $locale = $translation->getLocale();
 

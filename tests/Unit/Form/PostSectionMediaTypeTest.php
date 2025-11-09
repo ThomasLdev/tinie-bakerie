@@ -29,9 +29,12 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 final class PostSectionMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
+
     private MockObject&UploadHandler $handler;
+
     private MockObject&PropertyMappingFactory $mappingFactory;
 
+    #[\Override]
     protected function setUp(): void
     {
         // Mock VichFileType dependencies
@@ -40,20 +43,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $this->mappingFactory = $this->createMock(PropertyMappingFactory::class);
 
         parent::setUp();
-    }
-
-    protected function getExtensions(): array
-    {
-        // Create VichFileType with mocked dependencies
-        $vichFileType = new VichFileType(
-            $this->storage,
-            $this->handler,
-            $this->mappingFactory
-        );
-
-        return [
-            new PreloadedExtension([$vichFileType], []),
-        ];
     }
 
     public function testSubmitValidDataWithTranslations(): void
@@ -88,7 +77,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         self::assertCount(2, $model->getTranslations());
 
         $frTranslation = $model->getTranslations()->filter(
-            static fn (PostSectionMediaTranslation $t) => $t->getLocale() === 'fr'
+            static fn (PostSectionMediaTranslation $t): bool => $t->getLocale() === 'fr',
         )->first();
 
         self::assertInstanceOf(PostSectionMediaTranslation::class, $frTranslation);
@@ -186,6 +175,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
             if ($choiceView->label === 'Image') {
                 $hasImage = true;
             }
+
             if ($choiceView->label === 'Video') {
                 $hasVideo = true;
             }
@@ -228,5 +218,20 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         self::assertArrayHasKey('prototype', $view['translations']->vars);
         self::assertNotNull($view['translations']->vars['prototype']);
+    }
+
+    #[\Override]
+    protected function getExtensions(): array
+    {
+        // Create VichFileType with mocked dependencies
+        $vichFileType = new VichFileType(
+            $this->storage,
+            $this->handler,
+            $this->mappingFactory,
+        );
+
+        return [
+            new PreloadedExtension([$vichFileType], []),
+        ];
     }
 }

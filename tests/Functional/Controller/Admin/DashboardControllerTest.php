@@ -28,7 +28,7 @@ final class DashboardControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        $this->client = self::createClient();
     }
 
     public function testDashboardIndexReturns200(): void

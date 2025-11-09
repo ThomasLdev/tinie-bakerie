@@ -24,7 +24,6 @@ class CategoryRepository extends ServiceEntityRepository
     #[\Override]
     public function findAll(): array
     {
-        // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
 
         $qb = $this->createQueryBuilder('c')
@@ -47,6 +46,8 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function findAllSlugs(): array
     {
+        $this->getEntityManager()->clear();
+
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id}')
             ->leftJoin('c.translations', 'ct')
@@ -60,7 +61,6 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findOne(string $slug): ?Category
     {
-        // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
         $this->getEntityManager()->clear();
 
         $qb = $this->createQueryBuilder('c')

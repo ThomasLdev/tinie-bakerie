@@ -124,7 +124,7 @@ final class TestExtensionTest extends TestCase
         $result = $extension->renderTestId('test-id');
 
         self::assertInstanceOf(Markup::class, $result);
-        
+
         // Markup should prevent double-escaping when rendered in Twig
         $markup = new Markup((string) $result, 'UTF-8');
         self::assertSame('data-test-id="test-id"', (string) $markup);
@@ -169,11 +169,10 @@ final class TestExtensionTest extends TestCase
         $result = $extension->renderTestId('test-id');
 
         self::assertInstanceOf(Markup::class, $result);
-        
+
         $reflection = new \ReflectionClass($result);
         $charsetProperty = $reflection->getProperty('charset');
-        $charsetProperty->setAccessible(true);
-        
+
         self::assertSame('UTF-8', $charsetProperty->getValue($result));
     }
 }

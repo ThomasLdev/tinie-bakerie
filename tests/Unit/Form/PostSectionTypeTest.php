@@ -31,9 +31,12 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 final class PostSectionTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
+
     private MockObject&UploadHandler $handler;
+
     private MockObject&PropertyMappingFactory $mappingFactory;
 
+    #[\Override]
     protected function setUp(): void
     {
         // Mock VichFileType dependencies
@@ -42,20 +45,6 @@ final class PostSectionTypeTest extends TypeTestCase
         $this->mappingFactory = $this->createMock(PropertyMappingFactory::class);
 
         parent::setUp();
-    }
-
-    protected function getExtensions(): array
-    {
-        // Create VichFileType with mocked dependencies
-        $vichFileType = new VichFileType(
-            $this->storage,
-            $this->handler,
-            $this->mappingFactory
-        );
-
-        return [
-            new PreloadedExtension([$vichFileType], []),
-        ];
     }
 
     public function testSubmitValidDataWithMediaAndTranslations(): void
@@ -104,7 +93,7 @@ final class PostSectionTypeTest extends TypeTestCase
         // Check translations
         self::assertCount(2, $model->getTranslations());
         $frTranslation = $model->getTranslations()->filter(
-            static fn (PostSectionTranslation $t) => $t->getLocale() === 'fr'
+            static fn (PostSectionTranslation $t): bool => $t->getLocale() === 'fr',
         )->first();
 
         self::assertInstanceOf(PostSectionTranslation::class, $frTranslation);
@@ -241,9 +230,11 @@ final class PostSectionTypeTest extends TypeTestCase
             if ($choiceView->label === 'Default') {
                 $hasDefault = true;
             }
+
             if ($choiceView->label === 'Two Columns') {
                 $hasTwoColumns = true;
             }
+
             if ($choiceView->label === 'Two Columns Media Left') {
                 $hasTwoColumnsMediaLeft = true;
             }
@@ -322,5 +313,20 @@ final class PostSectionTypeTest extends TypeTestCase
 
         self::assertArrayHasKey('prototype', $view['translations']->vars);
         self::assertNotNull($view['translations']->vars['prototype']);
+    }
+
+    #[\Override]
+    protected function getExtensions(): array
+    {
+        // Create VichFileType with mocked dependencies
+        $vichFileType = new VichFileType(
+            $this->storage,
+            $this->handler,
+            $this->mappingFactory,
+        );
+
+        return [
+            new PreloadedExtension([$vichFileType], []),
+        ];
     }
 }
