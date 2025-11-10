@@ -9,6 +9,7 @@ use App\Entity\CategoryTranslation;
 use App\Event\CacheInvalidationEvent;
 use App\Repository\CategoryRepository;
 use App\Services\Locale\Locales;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -28,12 +29,13 @@ readonly class CategoryCache extends AbstractEntityCache
         TagAwareCacheInterface $cache,
         CacheKeyGenerator $keyGenerator,
         LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
         private CategoryRepository $repository,
         private Locales $locales,
         private HeaderCache $headerCache,
         private EventDispatcherInterface $eventDispatcher,
     ) {
-        parent::__construct($cache, $keyGenerator, $logger);
+        parent::__construct($cache, $keyGenerator, $logger, $entityManager);
     }
 
     /**

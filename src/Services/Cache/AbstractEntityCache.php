@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Cache;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -22,7 +23,23 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
         protected TagAwareCacheInterface $cache,
         protected CacheKeyGenerator $keyGenerator,
         protected LoggerInterface $logger,
+        protected EntityManagerInterface $entityManager,
     ) {
+    }
+
+    /**
+     * Ensure the locale filter is enabled and set to the correct locale.
+     * This is critical for slug resolution to be locale-aware.
+     */
+    private function ensureLocaleFilter(string $locale): void
+    {
+        $filters = $this->entityManager->getFilters();
+        
+        if (!$filters->isEnabled('locale_filter')) {
+            $filters->enable('locale_filter');
+        }
+        
+        $filters->getFilter('locale_filter')->setParameter('locale', $locale);
     }
 
     /**
@@ -108,6 +125,10 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
             return $this->cache->get($mappingKey, function (ItemInterface $item) use ($locale, $identifier): ?array {
                 $item->expiresAfter(static::CACHE_TTL);
 
+                // CRITICAL: Ensure locale filter is active for slug resolution
+                // This ensures the query only returns entities with translations in the requested locale
+                $this->ensureLocaleFilter($locale);
+
                 // Load entity by slug using child class implementation
                 $entity = $this->loadEntityBySlug($identifier);
 
@@ -133,6 +154,9 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
                 'exception' => $e->getMessage(),
                 'key' => $mappingKey,
             ]);
+
+            // CRITICAL: Ensure locale filter is active for slug resolution
+            $this->ensureLocaleFilter($locale);
 
             $entity = $this->loadEntityBySlug($identifier);
 

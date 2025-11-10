@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
 use App\Services\Locale\Locales;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -26,10 +27,11 @@ readonly class PostCache extends AbstractEntityCache
         TagAwareCacheInterface $cache,
         CacheKeyGenerator $keyGenerator,
         LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
         private PostRepository $repository,
         private Locales $locales,
     ) {
-        parent::__construct($cache, $keyGenerator, $logger);
+        parent::__construct($cache, $keyGenerator, $logger, $entityManager);
     }
 
     /**

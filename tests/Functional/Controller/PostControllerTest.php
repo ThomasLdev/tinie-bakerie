@@ -291,4 +291,47 @@ final class PostControllerTest extends BaseControllerTestCase
 
         yield 'PATCH method on en url' => [Request::METHOD_PATCH, self::BASE_URL_EN];
     }
+
+    /**
+     * CRITICAL TEST: Verify controller rejects cross-locale slug combinations.
+     * This is the exact bug discovered: French URL with English slug should return 404.
+     */
+    #[DataProvider('getCrossLocaleSlugData')]
+    public function testShowRejectsCrossLocaleSlugCombination(string $urlLocale, string $urlBase, string $slugLocale): void
+    {
+        /** @var PostControllerTestStory $story */
+        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
+        $post = $story->getActivePost(0);
+        $category = $post->getCategory();
+        self::assertNotNull($category, 'Post should have a category');
+
+        // Get slugs for DIFFERENT locale than URL
+        $categorySlug = $story->getCategorySlug($category, $slugLocale);
+        $postSlug = $story->getPostSlug($post, $slugLocale);
+
+        // Try to access with WRONG locale combination
+        $this->client->request(
+            Request::METHOD_GET,
+            \sprintf('%s/%s/%s', $urlBase, $categorySlug, $postSlug),
+        );
+
+        self::assertResponseStatusCodeSame(
+            Response::HTTP_NOT_FOUND,
+            \sprintf(
+                'Should reject %s URL with %s slug combination (%s/%s/%s)',
+                $urlLocale,
+                $slugLocale,
+                $urlBase,
+                $categorySlug,
+                $postSlug,
+            ),
+        );
+    }
+
+    public static function getCrossLocaleSlugData(): \Generator
+    {
+        yield 'French URL with English slug' => ['fr', self::BASE_URL_FR, 'en'];
+
+        yield 'English URL with French slug' => ['en', self::BASE_URL_EN, 'fr'];
+    }
 }

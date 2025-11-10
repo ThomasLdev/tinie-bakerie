@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Command;
 
 use App\Command\WarmCacheCommand;
+use App\Services\Cache\PostCache;
+use App\Services\Cache\CategoryCache;
+use App\Tests\Story\PostControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * @internal
@@ -17,6 +22,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(WarmCacheCommand::class)]
 final class WarmCacheCommandTest extends KernelTestCase
 {
+    use Factories;
+    use ResetDatabase;
     private CommandTester $commandTester;
 
     private AdapterInterface $cache;
@@ -139,5 +146,148 @@ final class WarmCacheCommandTest extends KernelTestCase
         $output = $this->commandTester->getDisplay();
         // Check that duration is displayed (format: "in X.XXs")
         self::assertMatchesRegularExpression('/Cache warmed successfully in \d+\.\d+s/', $output);
+    }
+
+    /**
+     * CRITICAL TEST: Verify warmup caches only French translations for French locale
+     * This test would have caught the locale filter bug.
+     */
+    public function testWarmupCachesCorrectLocaleDataForFrench(): void
+    {
+        // Arrange: Load test story with posts in both locales
+        PostControllerTestStory::load();
+
+        // Act: Clear and warm cache
+        $this->cache->clear();
+        $this->commandTester->execute(['--clear-first' => true]);
+
+        // Assert: Command succeeded
+        $this->commandTester->assertCommandIsSuccessful();
+
+        // Assert: Get French cache and verify ONLY French translations
+        $container = self::getContainer();
+        /** @var PostCache $postCache */
+        $postCache = $container->get(PostCache::class);
+        $frenchPosts = $postCache->get('fr');
+
+        self::assertNotEmpty($frenchPosts, 'French cache should contain posts');
+
+        foreach ($frenchPosts as $post) {
+            $title = $post->getTitle();
+            self::assertStringContainsString(
+                'FR',
+                $title,
+                \sprintf('French cache should only contain French titles, but found: "%s"', $title)
+            );
+            self::assertStringNotContainsString(
+                'EN',
+                $title,
+                \sprintf('French cache should NOT contain English titles, but found: "%s"', $title)
+            );
+        }
+    }
+
+    /**
+     * CRITICAL TEST: Verify warmup caches only English translations for English locale.
+     */
+    public function testWarmupCachesCorrectLocaleDataForEnglish(): void
+    {
+        PostControllerTestStory::load();
+
+        $this->cache->clear();
+        $this->commandTester->execute(['--clear-first' => true]);
+
+        $this->commandTester->assertCommandIsSuccessful();
+
+        $container = self::getContainer();
+        /** @var PostCache $postCache */
+        $postCache = $container->get(PostCache::class);
+        $englishPosts = $postCache->get('en');
+
+        self::assertNotEmpty($englishPosts, 'English cache should contain posts');
+
+        foreach ($englishPosts as $post) {
+            $title = $post->getTitle();
+            self::assertStringContainsString(
+                'EN',
+                $title,
+                \sprintf('English cache should only contain English titles, but found: "%s"', $title)
+            );
+            self::assertStringNotContainsString(
+                'FR',
+                $title,
+                \sprintf('English cache should NOT contain French titles, but found: "%s"', $title)
+            );
+        }
+    }
+
+    /**
+     * CRITICAL TEST: Verify individual post detail pages are warmed with correct locale
+     * This ensures slug-to-ID mappings are locale-specific.
+     */
+    public function testWarmupCachesIndividualPostsWithCorrectLocale(): void
+    {
+        $story = PostControllerTestStory::load();
+        $post = $story->getActivePost(0);
+
+        // Get slugs for both locales
+        $frenchSlug = $story->getPostSlug($post, 'fr');
+        $englishSlug = $story->getPostSlug($post, 'en');
+
+        $this->cache->clear();
+        $this->commandTester->execute(['--clear-first' => true]);
+
+        $this->commandTester->assertCommandIsSuccessful();
+
+        $container = self::getContainer();
+        /** @var PostCache $postCache */
+        $postCache = $container->get(PostCache::class);
+
+        // Fetch by French slug in French locale
+        $frenchPost = $postCache->getOne('fr', $frenchSlug);
+        self::assertNotNull($frenchPost, 'Should find post by French slug in French locale');
+        self::assertStringContainsString('FR', $frenchPost->getTitle(), 'French post should have French title');
+
+        // Fetch by English slug in English locale
+        $englishPost = $postCache->getOne('en', $englishSlug);
+        self::assertNotNull($englishPost, 'Should find post by English slug in English locale');
+        self::assertStringContainsString('EN', $englishPost->getTitle(), 'English post should have English title');
+    }
+
+    /**
+     * CRITICAL TEST: Verify slug-to-ID mappings are locale-specific
+     * Ensures French slug doesn't map to English content and vice versa.
+     * THIS TEST CATCHES THE BUG YOU DISCOVERED!
+     */
+    public function testWarmupDoesNotMixLocalesInSlugMappings(): void
+    {
+        $story = PostControllerTestStory::load();
+        $post = $story->getActivePost(0);
+
+        $frenchSlug = $story->getPostSlug($post, 'fr');
+        $englishSlug = $story->getPostSlug($post, 'en');
+
+        $this->cache->clear();
+        $this->commandTester->execute([]);
+
+        $this->commandTester->assertCommandIsSuccessful();
+
+        $container = self::getContainer();
+        /** @var PostCache $postCache */
+        $postCache = $container->get(PostCache::class);
+
+        // Try to fetch ENGLISH slug in FRENCH locale - should return null
+        $wrongLocalePost = $postCache->getOne('fr', $englishSlug);
+        self::assertNull(
+            $wrongLocalePost,
+            \sprintf('Should NOT find English slug "%s" in French locale context', $englishSlug)
+        );
+
+        // Try to fetch FRENCH slug in ENGLISH locale - should return null
+        $wrongLocalePost2 = $postCache->getOne('en', $frenchSlug);
+        self::assertNull(
+            $wrongLocalePost2,
+            \sprintf('Should NOT find French slug "%s" in English locale context', $frenchSlug)
+        );
     }
 }
