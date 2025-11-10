@@ -63,16 +63,28 @@ class CategoryRepository extends ServiceEntityRepository
     public function findOne(string $slug): ?Category
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->select('c')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug, description, metaDescription, metaTitle, excerpt}')
+            ->addSelect('ct')
             ->leftJoin('c.media', 'm')
-            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->addSelect('m')
             ->leftJoin('m.translations', 'mt')
-            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->addSelect('mt')
+            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
+            ->addSelect('p')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('pt')
+            ->leftJoin('p.media', 'pm')
+            ->addSelect('pm')
+            ->leftJoin('pm.translations', 'pmt')
+            ->addSelect('pmt')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('t')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('tt')
             ->where('ct.slug = :slug')
             ->setParameter('slug', $slug)
-            ->setMaxResults(1);
+            ->setParameter('active', true);
 
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
@@ -84,20 +96,34 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * Find a category by ID with all related data.
      * Uses HINT_REFRESH to ensure locale filter is applied.
+     * Eagerly loads posts to ensure they're available when entity is cached.
+     * Only loads active posts.
      */
     public function findOneById(int $id): ?Category
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->select('c')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug, description, metaDescription, metaTitle, excerpt}')
+            ->addSelect('ct')
             ->leftJoin('c.media', 'm')
-            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->addSelect('m')
             ->leftJoin('m.translations', 'mt')
-            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->addSelect('mt')
+            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
+            ->addSelect('p')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('pt')
+            ->leftJoin('p.media', 'pm')
+            ->addSelect('pm')
+            ->leftJoin('pm.translations', 'pmt')
+            ->addSelect('pmt')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('t')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('tt')
             ->where('c.id = :id')
             ->setParameter('id', $id)
-            ->setMaxResults(1);
+            ->setParameter('active', true);
 
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
