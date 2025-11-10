@@ -35,10 +35,33 @@ jobs:
       - name: Start services
         run: docker compose up --wait --no-build
       - name: Check HTTP reachability
-        run: curl -v --fail-with-body http://localhost
+        run: |
+          echo "Waiting for HTTP server to be ready..."
+          for i in {1..30}; do
+            if curl -f --silent --max-time 5 -H "Host: php" http://localhost > /dev/null 2>&1; then
+              echo "✓ HTTP server is ready"
+              curl -v --fail-with-body -H "Host: php" http://localhost
+              exit 0
+            fi
+            echo "Waiting for server... (attempt $i/30)"
+            sleep 2
+          done
+          echo "✗ HTTP server failed to become ready"
+          curl -v --fail-with-body -H "Host: php" http://localhost || exit 1
       - name: Check HTTPS reachability
-        if: false # Remove this line when the homepage will be configured, or change the path to check
-        run: curl -vk --fail-with-body https://localhost
+        run: |
+          echo "Waiting for HTTPS server to be ready..."
+          for i in {1..30}; do
+            if curl -fk --silent --max-time 5 -H "Host: local.tinie-bakerie.com" https://localhost > /dev/null 2>&1; then
+              echo "✓ HTTPS server is ready"
+              curl -vk --fail-with-body -H "Host: local.tinie-bakerie.com" https://localhost
+              exit 0
+            fi
+            echo "Waiting for server... (attempt $i/30)"
+            sleep 2
+          done
+          echo "✗ HTTPS server failed to become ready"
+          curl -vk --fail-with-body -H "Host: local.tinie-bakerie.com" https://localhost || exit 1
       - name: Run PHPStan
         run: make phpstan
       - name: Run PHPMD
