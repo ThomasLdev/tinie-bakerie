@@ -109,6 +109,113 @@ final class CategoryControllerTest extends BaseControllerTestCase
         self::assertSame($expectedTitle, $cachedCategory->getTitle(), \sprintf('Cached category should have correct %s title', $locale));
     }
 
+    /**
+     * CRITICAL TEST: Verify that posts persist on category page even when loaded from cache.
+     * This prevents regression of the bug where posts disappeared after caching.
+     */
+    #[DataProvider('getCategoryControllerShowData')]
+    public function testShowDisplaysPostsWithAndWithoutCache(string $expectedTitle, string $locale, string $baseUrl): void
+    {
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $categorySlug = $story->getCategorySlug($category, $locale);
+        $url = \sprintf('%s/%s', $baseUrl, $categorySlug);
+
+        // First request - without cache
+        $crawler = $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+
+        // Verify posts are displayed on first load
+        $html = $crawler->html();
+        $firstPostTitle = $locale === 'fr' ? 'Post Test 1 FR' : 'Test Post 1 EN';
+        $secondPostTitle = $locale === 'fr' ? 'Post Test 2 FR' : 'Test Post 2 EN';
+        
+        self::assertStringContainsString($firstPostTitle, $html, 'First post should appear on category page (uncached)');
+        self::assertStringContainsString($secondPostTitle, $html, 'Second post should appear on category page (uncached)');
+
+        // Second request - with cache (this is where the bug occurred)
+        $crawler = $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+
+        // Verify posts still appear after caching
+        $html = $crawler->html();
+        self::assertStringContainsString($firstPostTitle, $html, 'First post should still appear on category page (cached)');
+        self::assertStringContainsString($secondPostTitle, $html, 'Second post should still appear on category page (cached)');
+    }
+
+    /**
+     * CRITICAL TEST: Verify that only active posts appear on category pages.
+     * This prevents showing inactive posts which should return 404 when accessed directly.
+     */
+    #[DataProvider('getCategoryControllerShowData')]
+    public function testShowDisplaysOnlyActivePosts(string $expectedTitle, string $locale, string $baseUrl): void
+    {
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $categorySlug = $story->getCategorySlug($category, $locale);
+
+        $crawler = $this->client->request(
+            Request::METHOD_GET,
+            \sprintf('%s/%s', $baseUrl, $categorySlug),
+        );
+
+        self::assertResponseIsSuccessful();
+
+        // All posts in the story are active, so they should all appear
+        $html = $crawler->html();
+        $firstPostTitle = $locale === 'fr' ? 'Post Test 1 FR' : 'Test Post 1 EN';
+        $secondPostTitle = $locale === 'fr' ? 'Post Test 2 FR' : 'Test Post 2 EN';
+        
+        self::assertStringContainsString($firstPostTitle, $html, 'Active post 1 should appear');
+        self::assertStringContainsString($secondPostTitle, $html, 'Active post 2 should appear');
+    }
+
+    /**
+     * Verify that cached categories have complete post data including media and tags.
+     */
+    #[DataProvider('getCategoryControllerShowData')]
+    public function testCachedCategoryHasCompletePostData(string $expectedTitle, string $locale, string $baseUrl): void
+    {
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $categorySlug = $story->getCategorySlug($category, $locale);
+        $url = \sprintf('%s/%s', $baseUrl, $categorySlug);
+
+        // Make request to populate cache
+        $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+
+        // Get category from cache
+        /** @var CategoryCache $cache */
+        $cache = $this->container->get(CategoryCache::class);
+        $cachedCategory = $cache->getOne($locale, $categorySlug);
+
+        self::assertNotNull($cachedCategory, 'Category should be cached');
+
+        // Verify posts collection is loaded and not empty
+        $posts = $cachedCategory->getPosts();
+        self::assertNotEmpty($posts, 'Cached category should have posts loaded');
+        self::assertCount(2, $posts, 'Category should have 2 active posts');
+
+        // Verify each post has complete data
+        foreach ($posts as $post) {
+            self::assertNotEmpty($post->getMedia(), 'Cached post should have media');
+            self::assertNotEmpty($post->getTags(), 'Cached post should have tags');
+            self::assertNotEmpty($post->getTranslations(), 'Cached post should have translations');
+        }
+
+        // Make second request from cache and verify rendering works
+        $crawler = $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+
+        // Verify post media renders (media images should be present)
+        $html = $crawler->html();
+        self::assertStringContainsString('test-post-image', $html, 'Post media should render from cached category');
+    }
+
     public static function getCategoryControllerShowData(): \Generator
     {
         yield 'should find fr title on category fr page' => ['Catégorie Test 1 FR', 'fr', self::BASE_URL_FR];
