@@ -130,7 +130,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
         $html = $crawler->html();
         $firstPostTitle = $locale === 'fr' ? 'Post Test 1 FR' : 'Test Post 1 EN';
         $secondPostTitle = $locale === 'fr' ? 'Post Test 2 FR' : 'Test Post 2 EN';
-        
+
         self::assertStringContainsString($firstPostTitle, $html, 'First post should appear on category page (uncached)');
         self::assertStringContainsString($secondPostTitle, $html, 'Second post should appear on category page (uncached)');
 
@@ -167,7 +167,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
         $html = $crawler->html();
         $firstPostTitle = $locale === 'fr' ? 'Post Test 1 FR' : 'Test Post 1 EN';
         $secondPostTitle = $locale === 'fr' ? 'Post Test 2 FR' : 'Test Post 2 EN';
-        
+
         self::assertStringContainsString($firstPostTitle, $html, 'Active post 1 should appear');
         self::assertStringContainsString($secondPostTitle, $html, 'Active post 2 should appear');
     }
