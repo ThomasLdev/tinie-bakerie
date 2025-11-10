@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Cache;
 
-use App\Entity\Contracts\Translation;
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
@@ -153,6 +153,31 @@ readonly class PostCache extends AbstractEntityCache
         return $entity instanceof Post;
     }
 
+    /**
+     * Warm up the cache for the given locale by pre-loading all active posts.
+     * This caches both the post index AND each individual post detail page.
+     *
+     * @return int Number of posts cached
+     */
+    public function warmUp(string $locale): int
+    {
+        // First, warm the index (list of all posts)
+        $posts = $this->get($locale);
+
+        // Then, warm each individual post detail page
+        // This caches both the entity and the slug-to-ID mapping
+        foreach ($posts as $post) {
+            \assert($post instanceof Post);
+            $translation = $post->getTranslationByLocale($locale);
+
+            if ($translation instanceof PostTranslation) {
+                $this->getOne($locale, $translation->getSlug());
+            }
+        }
+
+        return \count($posts);
+    }
+
     protected function loadEntityById(int $id): ?Post
     {
         return $this->repository->findOneActiveById($id);
@@ -172,7 +197,7 @@ readonly class PostCache extends AbstractEntityCache
             'post_' . $entity->getId(),
         ];
 
-        if ($entity->getCategory()) {
+        if ($entity->getCategory() instanceof Category) {
             $tags[] = 'category_' . $entity->getCategory()->getId();
         }
 
@@ -188,29 +213,5 @@ readonly class PostCache extends AbstractEntityCache
         \assert($entity instanceof Post);
 
         return $entity->getId();
-    }
-
-    /**
-     * Warm up the cache for the given locale by pre-loading all active posts.
-     * This caches both the post index AND each individual post detail page.
-     *
-     * @return int Number of posts cached
-     */
-    public function warmUp(string $locale): int
-    {
-        // First, warm the index (list of all posts)
-        $posts = $this->get($locale);
-
-        // Then, warm each individual post detail page
-        // This caches both the entity and the slug-to-ID mapping
-        foreach ($posts as $post) {
-            $translation = $post->getTranslationByLocale($locale);
-
-            if ($translation instanceof Translation) {
-                $this->getOne($locale, $translation->getSlug());
-            }
-        }
-
-        return \count($posts);
     }
 }

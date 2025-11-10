@@ -83,6 +83,7 @@ class WarmCacheCommand extends Command
 
         // Get available cache names
         $availableCaches = [];
+
         foreach ($this->warmableCaches as $cache) {
             $availableCaches[] = $cache->getEntityName();
         }
@@ -145,13 +146,13 @@ class WarmCacheCommand extends Command
                 // Enable locale filter for this locale in CLI context
                 // This ensures translations are filtered correctly during warmup
                 $filters = $this->entityManager->getFilters();
-                
+
                 if (!$filters->isEnabled('locale_filter')) {
                     $filters->enable('locale_filter');
                 }
-                
+
                 $filters->getFilter('locale_filter')->setParameter('locale', $locale);
-                
+
                 // Warm the cache with the correct locale filter active
                 $count = $cache->warmUp($locale);
                 $stats[$entityName] += $count;

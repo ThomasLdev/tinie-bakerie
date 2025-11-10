@@ -207,7 +207,7 @@ final class PostControllerTest extends BaseControllerTestCase
 
         // Verify cached posts contain expected locale-specific titles
         /** @var array<Post> $posts */
-        $cachedTitles = array_map(static fn ($post) => $post->getTitle(), $posts);
+        $cachedTitles = array_map(static fn (Post $post): string => $post->getTitle(), $posts);
 
         foreach ($expectedTitles as $expectedTitle) {
             self::assertContains(

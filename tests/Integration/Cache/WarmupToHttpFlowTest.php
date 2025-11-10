@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -33,10 +34,10 @@ final class WarmupToHttpFlowTest extends WebTestCase
     public function testWarmupThenHttpRequestUsesCorrectCache(): void
     {
         // Arrange
-        $client = static::createClient();
+        $client = self::createClient();
         $kernel = self::$kernel;
 
-        if (null === $kernel) {
+        if (!$kernel instanceof KernelInterface) {
             throw new \RuntimeException('Kernel is not available');
         }
 
@@ -84,10 +85,10 @@ final class WarmupToHttpFlowTest extends WebTestCase
      */
     public function testWarmupThenHttpRequestToIndividualPostWorks(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $kernel = self::$kernel;
 
-        if (null === $kernel) {
+        if (!$kernel instanceof KernelInterface) {
             throw new \RuntimeException('Kernel is not available');
         }
 

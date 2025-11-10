@@ -75,11 +75,6 @@ readonly class HeaderCache implements WarmableCacheInterface
         }
     }
 
-    private function generateKey(string $locale): string
-    {
-        return \sprintf('%s_%s', self::CACHE_KEY_PREFIX, $locale);
-    }
-
     /**
      * Warm up the header cache for the given locale by pre-loading category slugs.
      *
@@ -95,5 +90,10 @@ readonly class HeaderCache implements WarmableCacheInterface
     public function getEntityName(): string
     {
         return self::ENTITY_NAME;
+    }
+
+    private function generateKey(string $locale): string
+    {
+        return \sprintf('%s_%s', self::CACHE_KEY_PREFIX, $locale);
     }
 }

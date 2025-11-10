@@ -28,21 +28,6 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
     }
 
     /**
-     * Ensure the locale filter is enabled and set to the correct locale.
-     * This is critical for slug resolution to be locale-aware.
-     */
-    private function ensureLocaleFilter(string $locale): void
-    {
-        $filters = $this->entityManager->getFilters();
-        
-        if (!$filters->isEnabled('locale_filter')) {
-            $filters->enable('locale_filter');
-        }
-        
-        $filters->getFilter('locale_filter')->setParameter('locale', $locale);
-    }
-
-    /**
      * Get one entity by locale and identifier.
      * Final implementation - child classes don't override this.
      * Template method that orchestrates the caching flow.
@@ -209,4 +194,19 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
      * @return int|null The entity ID, or null if not available
      */
     abstract protected function extractEntityId(object $entity): ?int;
+
+    /**
+     * Ensure the locale filter is enabled and set to the correct locale.
+     * This is critical for slug resolution to be locale-aware.
+     */
+    private function ensureLocaleFilter(string $locale): void
+    {
+        $filters = $this->entityManager->getFilters();
+
+        if (!$filters->isEnabled('locale_filter')) {
+            $filters->enable('locale_filter');
+        }
+
+        $filters->getFilter('locale_filter')->setParameter('locale', $locale);
+    }
 }

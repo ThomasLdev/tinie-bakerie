@@ -6,13 +6,13 @@ namespace App\Tests\Unit\Command;
 
 use App\Command\WarmCacheCommand;
 use App\Services\Cache\PostCache;
-use App\Services\Cache\CategoryCache;
 use App\Tests\Story\PostControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -24,6 +24,7 @@ final class WarmCacheCommandTest extends KernelTestCase
 {
     use Factories;
     use ResetDatabase;
+
     private CommandTester $commandTester;
 
     private AdapterInterface $cache;
@@ -34,7 +35,7 @@ final class WarmCacheCommandTest extends KernelTestCase
 
         $kernel = self::$kernel;
 
-        if (null === $kernel) {
+        if (!$kernel instanceof KernelInterface) {
             throw new \RuntimeException('Kernel is not available');
         }
 
@@ -177,12 +178,12 @@ final class WarmCacheCommandTest extends KernelTestCase
             self::assertStringContainsString(
                 'FR',
                 $title,
-                \sprintf('French cache should only contain French titles, but found: "%s"', $title)
+                \sprintf('French cache should only contain French titles, but found: "%s"', $title),
             );
             self::assertStringNotContainsString(
                 'EN',
                 $title,
-                \sprintf('French cache should NOT contain English titles, but found: "%s"', $title)
+                \sprintf('French cache should NOT contain English titles, but found: "%s"', $title),
             );
         }
     }
@@ -211,12 +212,12 @@ final class WarmCacheCommandTest extends KernelTestCase
             self::assertStringContainsString(
                 'EN',
                 $title,
-                \sprintf('English cache should only contain English titles, but found: "%s"', $title)
+                \sprintf('English cache should only contain English titles, but found: "%s"', $title),
             );
             self::assertStringNotContainsString(
                 'FR',
                 $title,
-                \sprintf('English cache should NOT contain French titles, but found: "%s"', $title)
+                \sprintf('English cache should NOT contain French titles, but found: "%s"', $title),
             );
         }
     }
@@ -280,14 +281,14 @@ final class WarmCacheCommandTest extends KernelTestCase
         $wrongLocalePost = $postCache->getOne('fr', $englishSlug);
         self::assertNull(
             $wrongLocalePost,
-            \sprintf('Should NOT find English slug "%s" in French locale context', $englishSlug)
+            \sprintf('Should NOT find English slug "%s" in French locale context', $englishSlug),
         );
 
         // Try to fetch FRENCH slug in ENGLISH locale - should return null
         $wrongLocalePost2 = $postCache->getOne('en', $frenchSlug);
         self::assertNull(
             $wrongLocalePost2,
-            \sprintf('Should NOT find French slug "%s" in English locale context', $frenchSlug)
+            \sprintf('Should NOT find French slug "%s" in English locale context', $frenchSlug),
         );
     }
 }

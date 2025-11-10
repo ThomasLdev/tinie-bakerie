@@ -41,16 +41,24 @@ readonly class PostCacheEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $categoryId = $entity->getId();
+
+        if (null === $categoryId) {
+            $this->logger->warning('PostCache: Cannot invalidate posts for category without ID');
+
+            return;
+        }
+
         $this->logger->info('PostCache: Invalidating posts due to category change', [
-            'category_id' => $entity->getId(),
+            'category_id' => $categoryId,
             'operation' => $event->getOperation(),
         ]);
 
         try {
-            $this->postCache->invalidateByCategory($entity->getId());
+            $this->postCache->invalidateByCategory($categoryId);
         } catch (\Exception $e) {
             $this->logger->error('PostCache: Failed to invalidate posts for category', [
-                'category_id' => $entity->getId(),
+                'category_id' => $categoryId,
                 'exception' => $e->getMessage(),
             ]);
         }
@@ -67,16 +75,24 @@ readonly class PostCacheEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $tagId = $entity->getId();
+
+        if (null === $tagId) {
+            $this->logger->warning('PostCache: Cannot invalidate posts for tag without ID');
+
+            return;
+        }
+
         $this->logger->info('PostCache: Invalidating posts due to tag change', [
-            'tag_id' => $entity->getId(),
+            'tag_id' => $tagId,
             'operation' => $event->getOperation(),
         ]);
 
         try {
-            $this->postCache->invalidateByTag($entity->getId());
+            $this->postCache->invalidateByTag($tagId);
         } catch (\Exception $e) {
             $this->logger->error('PostCache: Failed to invalidate posts for tag', [
-                'tag_id' => $entity->getId(),
+                'tag_id' => $tagId,
                 'exception' => $e->getMessage(),
             ]);
         }
