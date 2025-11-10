@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +25,6 @@ class CategoryRepository extends ServiceEntityRepository
     #[\Override]
     public function findAll(): array
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
@@ -36,7 +35,11 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL mt.{id, title, alt}')
             ->orderBy('c.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getResult();
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        // This is crucial when entities are pre-loaded (e.g., by test fixtures with all translations)
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
 
         return \is_array($result) ? $result : [];
     }
@@ -46,23 +49,22 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function findAllSlugs(): array
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id}')
             ->leftJoin('c.translations', 'ct')
             ->addSelect('PARTIAL ct.{id, title, slug}')
             ->orderBy('c.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getResult();
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
 
         return \is_array($result) ? $result : [];
     }
 
     public function findOne(string $slug): ?Category
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
@@ -75,7 +77,36 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('slug', $slug)
             ->setMaxResults(1);
 
-        $result = $qb->getQuery()->getOneOrNullResult();
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
+
+        return $result instanceof Category ? $result : null;
+    }
+
+    /**
+     * Find a category by ID with all related data.
+     * Uses HINT_REFRESH to ensure locale filter is applied.
+     */
+    public function findOneById(int $id): ?Category
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, description, metaDescription, metaTitle, excerpt}')
+            ->leftJoin('c.media', 'm')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->setMaxResults(1);
+
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
 
         return $result instanceof Category ? $result : null;
     }

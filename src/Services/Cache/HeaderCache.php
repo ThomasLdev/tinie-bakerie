@@ -6,6 +6,7 @@ namespace App\Services\Cache;
 
 use App\Repository\CategoryRepository;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -18,13 +19,12 @@ readonly class HeaderCache
     public function __construct(
         private CacheInterface $cache,
         private CategoryRepository $categoryRepository,
+        private LoggerInterface $logger,
     ) {
     }
 
     /**
      * Get cached categories for header navigation.
-     *
-     * @throws InvalidArgumentException
      *
      * @return array<array-key,mixed>
      */
@@ -32,11 +32,20 @@ readonly class HeaderCache
     {
         $key = $this->generateKey($locale);
 
-        return $this->cache->get($key, function (ItemInterface $item): array {
-            $item->expiresAfter(self::CACHE_TTL);
+        try {
+            return $this->cache->get($key, function (ItemInterface $item): array {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                return $this->categoryRepository->findAllSlugs();
+            });
+        } catch (InvalidArgumentException|\Psr\Cache\CacheException $e) {
+            $this->logger->error('Header cache read failed, using direct DB query', [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+            ]);
 
             return $this->categoryRepository->findAllSlugs();
-        });
+        }
     }
 
     /**
@@ -45,13 +54,22 @@ readonly class HeaderCache
      * This should be called when categories are created, updated, or deleted.
      *
      * @param array<string> $locales
-     *
-     * @throws InvalidArgumentException
      */
     public function invalidate(array $locales): void
     {
-        foreach ($locales as $locale) {
-            $this->cache->delete($this->generateKey($locale));
+        try {
+            $this->logger->info('Invalidating header cache', [
+                'locales' => $locales,
+            ]);
+
+            foreach ($locales as $locale) {
+                $this->cache->delete($this->generateKey($locale));
+            }
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Header cache invalidation failed', [
+                'exception' => $e->getMessage(),
+                'locales' => $locales,
+            ]);
         }
     }
 

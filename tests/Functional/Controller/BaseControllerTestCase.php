@@ -46,6 +46,10 @@ abstract class BaseControllerTestCase extends WebTestCase
         // ResetDatabase clears the database but not the cache
         $cache = self::getContainer()->get('cache.app');
         $cache->clear();
+        
+        // Also clear the taggable cache used by entity cache services
+        $taggableCache = self::getContainer()->get('cache.app.taggable');
+        $taggableCache->clear();
     }
 
     /**
