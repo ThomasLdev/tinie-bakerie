@@ -14,25 +14,22 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-readonly class TagCache implements EntityCacheInterface
+readonly class TagCache extends AbstractEntityCache
 {
-    private const int CACHE_TTL = 3600; // 1 hour
-
     private const string ENTITY_NAME = 'tag';
 
     public function __construct(
         #[Autowire(service: 'cache.app.taggable')]
-        private TagAwareCacheInterface $cache,
+        TagAwareCacheInterface $cache,
+        CacheKeyGenerator $keyGenerator,
+        LoggerInterface $logger,
         private TagRepository $repository,
-        private CacheKeyGenerator $keyGenerator,
         private EventDispatcherInterface $eventDispatcher,
-        private LoggerInterface $logger,
     ) {
+        parent::__construct($cache, $keyGenerator, $logger);
     }
 
     /**
-     * @throws InvalidArgumentException
-     *
      * @return array<array-key,mixed>
      */
     public function get(string $locale): array
@@ -43,7 +40,6 @@ readonly class TagCache implements EntityCacheInterface
             return $this->cache->get($key, function (ItemInterface $item): array {
                 $item->expiresAfter(self::CACHE_TTL);
 
-                // Add cache tags
                 $item->tag([
                     'tags',
                     'tags_index',
@@ -58,42 +54,6 @@ readonly class TagCache implements EntityCacheInterface
             ]);
 
             return $this->repository->findAll();
-        }
-    }
-
-    public function getOne(string $locale, string $identifier): ?Tag
-    {
-        $id = is_numeric($identifier) ? (int) $identifier : null;
-
-        if (null === $id) {
-            return null;
-        }
-
-        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $id);
-
-        try {
-            return $this->cache->get($key, function (ItemInterface $item) use ($id): ?Tag {
-                $item->expiresAfter(self::CACHE_TTL);
-
-                $tag = $this->repository->findOne($id);
-
-                if ($tag) {
-                    // Add cache tags
-                    $item->tag([
-                        'tags',
-                        'tag_' . $tag->getId(),
-                    ]);
-                }
-
-                return $tag;
-            });
-        } catch (InvalidArgumentException $e) {
-            $this->logger->error('Tag cache read failed, using direct DB query', [
-                'exception' => $e->getMessage(),
-                'key' => $key,
-            ]);
-
-            return $this->repository->findOne($id);
         }
     }
 
@@ -135,5 +95,42 @@ readonly class TagCache implements EntityCacheInterface
     public static function supports(object $entity): bool
     {
         return $entity instanceof Tag;
+    }
+
+    /**
+     * Override resolveIdentifierToId because Tag doesn't support slug resolution.
+     * Tags only work with numeric IDs.
+     */
+    protected function resolveIdentifierToId(string $locale, string $identifier): ?int
+    {
+        return is_numeric($identifier) ? (int) $identifier : null;
+    }
+
+    protected function loadEntityById(int $id): ?Tag
+    {
+        return $this->repository->findOne($id);
+    }
+
+    protected function loadEntityBySlug(string $slug): ?Tag
+    {
+        // Tags don't have slugs - this should never be called due to overridden resolveIdentifierToId
+        return null;
+    }
+
+    protected function generateCacheTags(object $entity): array
+    {
+        \assert($entity instanceof Tag);
+
+        return [
+            'tags',
+            'tag_' . $entity->getId(),
+        ];
+    }
+
+    protected function extractEntityId(object $entity): ?int
+    {
+        \assert($entity instanceof Tag);
+
+        return $entity->getId();
     }
 }
