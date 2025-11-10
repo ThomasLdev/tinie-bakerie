@@ -72,110 +72,15 @@ readonly class CategoryCache implements EntityCacheInterface
             return null;
         }
 
-        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $id);
-
-        try {
-            return $this->cache->get($key, function (ItemInterface $item) use ($id): ?Category {
-                $item->expiresAfter(self::CACHE_TTL);
-
-                // Query by ID to ensure we cache the correct entity with correct locale
-                $category = $this->repository->findOneById($id);
-
-                if ($category) {
-                    // Add cache tags
-                    $item->tag([
-                        'categories',
-                        'category_' . $category->getId(),
-                    ]);
-                }
-
-                return $category;
-            });
-        } catch (InvalidArgumentException|\Psr\Cache\CacheException $e) {
-            $this->logger->error('Category cache read failed, using direct DB query', [
-                'exception' => $e->getMessage(),
-                'key' => $key,
-            ]);
-
-            return $this->repository->findOneById($id);
-        }
+        // Use unified caching method with DB loader for critical path
+        return $this->cacheCategory(
+            locale: $locale,
+            id: $id,
+            loader: fn () => $this->repository->findOneById($id),
+            throwOnError: true,
+        );
     }
 
-    /**
-     * Resolve a slug or ID to an entity ID.
-     * Caches the slug-to-ID mapping to avoid repeated database lookups.
-     * Also proactively caches the full entity to avoid a second query.
-     */
-    private function resolveIdentifierToId(string $locale, string $identifier): ?int
-    {
-        // If already numeric, return as is
-        if (is_numeric($identifier)) {
-            return (int) $identifier;
-        }
-
-        // Try to get ID from slug mapping cache
-        $mappingKey = $this->keyGenerator->slugMapping($this->getEntityName(), $locale, $identifier);
-
-        try {
-            return $this->cache->get($mappingKey, function (ItemInterface $item) use ($locale, $identifier): ?int {
-                $item->expiresAfter(self::CACHE_TTL);
-
-                // Query database for entity
-                $entity = $this->repository->findOne($identifier);
-
-                if (!$entity) {
-                    return null;
-                }
-
-                // Proactively cache the entity to avoid second query in getOne()
-                $this->cacheEntity($entity, $locale);
-
-                return $entity->getId();
-            });
-        } catch (InvalidArgumentException $e) {
-            $this->logger->error('Slug mapping cache failed, using direct DB query', [
-                'exception' => $e->getMessage(),
-                'key' => $mappingKey,
-            ]);
-
-            return $this->repository->findOne($identifier)?->getId();
-        }
-    }
-
-    /**
-     * Proactively cache an entity to optimize cold cache performance.
-     * This is called when we've already fetched the entity from DB during slug resolution.
-     */
-    private function cacheEntity(Category $entity, string $locale): void
-    {
-        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $entity->getId());
-
-        try {
-            // Use cache->get() to be idempotent - if already cached, does nothing
-            $this->cache->get($key, function (ItemInterface $item) use ($entity): Category {
-                $item->expiresAfter(self::CACHE_TTL);
-
-                // Add cache tags
-                $item->tag([
-                    'categories',
-                    'category_' . $entity->getId(),
-                ]);
-
-                return $entity;
-            });
-        } catch (InvalidArgumentException $e) {
-            // Don't throw - this is an optimization, not critical path
-            $this->logger->warning('Failed to proactively cache entity during slug resolution', [
-                'exception' => $e->getMessage(),
-                'entity' => 'Category',
-                'id' => $entity->getId(),
-            ]);
-        }
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
     public function invalidate(object $entity): void
     {
         if (!$entity instanceof Category) {
@@ -232,5 +137,141 @@ readonly class CategoryCache implements EntityCacheInterface
     public static function supports(object $entity): bool
     {
         return $entity instanceof Category;
+    }
+
+    /**
+     * Resolve a slug or ID to an entity ID.
+     * Caches the slug-to-ID mapping to avoid repeated database lookups.
+     * Also proactively caches the full entity to avoid a second query.
+     */
+    private function resolveIdentifierToId(string $locale, string $identifier): ?int
+    {
+        // If already numeric, return as is
+        if (is_numeric($identifier)) {
+            return (int) $identifier;
+        }
+
+        // Try to get ID from slug mapping cache
+        $mappingKey = $this->keyGenerator->slugMapping($this->getEntityName(), $locale, $identifier);
+
+        try {
+            return $this->cache->get($mappingKey, function (ItemInterface $item) use ($locale, $identifier): ?int {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                // Query database for entity
+                $entity = $this->repository->findOne($identifier);
+
+                if (!$entity) {
+                    return null;
+                }
+
+                // Proactively cache the entity to avoid second query in getOne()
+                $this->cacheEntity($entity, $locale);
+
+                return $entity->getId();
+            });
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Slug mapping cache failed, using direct DB query', [
+                'exception' => $e->getMessage(),
+                'key' => $mappingKey,
+            ]);
+
+            return $this->repository->findOne($identifier)?->getId();
+        }
+    }
+
+    /**
+     * Configures a cache item with TTL and tags.
+     * Only applies tags if we have a valid category to prevent orphaned cache entries.
+     *
+     * @param ItemInterface $item The cache item to configure
+     * @param Category|null $category The category to cache (null for negative caching)
+     */
+    private function configureCacheItem(ItemInterface $item, ?Category $category): void
+    {
+        $item->expiresAfter(self::CACHE_TTL);
+
+        // Only apply tags if we have a valid category
+        // This prevents orphaned cache entries and ensures consistent invalidation
+        if ($category) {
+            $item->tag([
+                'categories',
+                'category_' . $category->getId(),
+            ]);
+        }
+    }
+
+    /**
+     * Unified method to cache a category with consistent configuration.
+     * Handles both "fetch from DB" and "use provided entity" scenarios.
+     *
+     * @param string $locale The locale for cache key generation
+     * @param int $id The category ID
+     * @param callable|null $loader Optional loader function that fetches the category from DB
+     * @param Category|null $entity Pre-loaded entity (for proactive caching optimization)
+     * @param bool $throwOnError Whether to throw/fallback on cache errors (true for critical path)
+     *
+     * @return Category|null The cached category
+     */
+    private function cacheCategory(
+        string $locale,
+        int $id,
+        ?callable $loader = null,
+        ?Category $entity = null,
+        bool $throwOnError = true,
+    ): ?Category {
+        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $id);
+
+        try {
+            return $this->cache->get($key, function (ItemInterface $item) use ($loader, $entity): ?Category {
+                // Use loader if provided, otherwise return pre-loaded entity
+                $category = $loader ? $loader() : $entity;
+
+                // Configure cache item with unified logic
+                $this->configureCacheItem($item, $category);
+
+                return $category;
+            });
+        } catch (InvalidArgumentException $e) {
+            $context = [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+                'entity' => 'Category',
+                'id' => $id,
+            ];
+
+            if ($throwOnError) {
+                // Critical path - log as error and provide fallback
+                $this->logger->error('Category cache read failed, using direct DB query', $context);
+
+                return $loader ? $loader() : $entity;
+            }
+            // Optimization path - log as warning, no fallback needed
+            $this->logger->warning('Failed to proactively cache category', $context);
+
+            return null;
+        }
+    }
+
+    /**
+     * Proactively cache an entity to optimize cold cache performance.
+     * This is called when we've already fetched the entity from DB during slug resolution.
+     */
+    private function cacheEntity(Category $entity, string $locale): void
+    {
+        $id = $entity->getId();
+
+        // Entity must have an ID (should always be true for DB-fetched entities)
+        if (null === $id) {
+            return;
+        }
+
+        // Use unified caching method with pre-loaded entity for optimization
+        $this->cacheCategory(
+            locale: $locale,
+            id: $id,
+            entity: $entity,
+            throwOnError: false,
+        );
     }
 }

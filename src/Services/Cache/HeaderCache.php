@@ -38,7 +38,7 @@ readonly class HeaderCache
 
                 return $this->categoryRepository->findAllSlugs();
             });
-        } catch (InvalidArgumentException|\Psr\Cache\CacheException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->logger->error('Header cache read failed, using direct DB query', [
                 'exception' => $e->getMessage(),
                 'key' => $key,
