@@ -128,16 +128,19 @@ rector:
 
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
-phpunit:
+cache:
+	@$(PHP_CONT) bin/console cache:pool:clear --all
+
+tests: cache
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
-coverage:
+coverage: cache
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
 
-unit:
+unit: cache
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
 
-functional:
+functional: cache
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————

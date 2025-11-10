@@ -63,6 +63,7 @@ final class WarmupToHttpFlowTest extends WebTestCase
         self::assertStringContainsString('FR', $html, 'Page should contain French content');
 
         // Assert: Cache was populated correctly (verify cache service directly)
+        /** @var PostCache $postCache */
         $postCache = self::getContainer()->get(PostCache::class);
         $cachedPosts = $postCache->get('fr');
 
@@ -102,6 +103,18 @@ final class WarmupToHttpFlowTest extends WebTestCase
         $commandTester->execute(['--clear-first' => true]);
 
         self::assertSame(0, $commandTester->getStatusCode());
+
+        // After cache warmup, disable the locale filter to access all translations in test
+        // The warmup command enables the locale filter during execution, which persists in the test context
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        $entityManager->getFilters()->disable('locale_filter');
+
+        // Clear and refresh entities to load all translations
+        $entityManager->clear();
+        $post = $story->getActivePost(0);
+        $category = $post->getCategory();
+
+        self::assertNotNull($category, 'Post should have a category');
 
         // Get French slugs
         $categorySlug = $story->getCategorySlug($category, 'fr');

@@ -6,6 +6,7 @@ namespace App\Services\Cache;
 
 use App\Entity\Category;
 use App\Entity\CategoryTranslation;
+use App\Entity\Contracts\Translation;
 use App\Event\CacheInvalidationEvent;
 use App\Repository\CategoryRepository;
 use App\Services\Locale\Locales;
@@ -164,7 +165,11 @@ readonly class CategoryCache extends AbstractEntityCache
         // Then, warm each individual category detail page
         // This caches both the entity and the slug-to-ID mapping
         foreach ($categories as $category) {
-            $this->getOne($locale, (string) $category->getId());
+            $translation = $category->getTranslationByLocale($locale);
+
+            if ($translation instanceof Translation) {
+                $this->getOne($locale, $translation->getSlug());
+            }
         }
 
         return \count($categories);

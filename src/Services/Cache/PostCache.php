@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Cache;
 
+use App\Entity\Contracts\Translation;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
@@ -203,7 +204,11 @@ readonly class PostCache extends AbstractEntityCache
         // Then, warm each individual post detail page
         // This caches both the entity and the slug-to-ID mapping
         foreach ($posts as $post) {
-            $this->getOne($locale, (string) $post->getId());
+            $translation = $post->getTranslationByLocale($locale);
+
+            if ($translation instanceof Translation) {
+                $this->getOne($locale, $translation->getSlug());
+            }
         }
 
         return \count($posts);
