@@ -32,13 +32,17 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
      */
     final public function getOne(string $locale, string $identifier): ?object
     {
-        $id = $this->resolveIdentifierToId($locale, $identifier);
+        $result = $this->resolveIdentifierToId($locale, $identifier);
 
-        if (null === $id) {
+        if (null === $result) {
             return null;
         }
 
-        return $this->fetchAndCacheEntity($locale, $id);
+        [$id, $preloadedEntity] = $result;
+
+        // If entity was already loaded during slug resolution, return it directly
+        // This avoids an extra cache fetch after the proactive cache save
+        return $preloadedEntity ?? $this->fetchAndCacheEntity($locale, $id);
     }
 
     /**
@@ -82,25 +86,26 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
     }
 
     /**
-     * Resolve identifier (slug or ID) to an entity ID.
+     * Resolve identifier (slug or ID) to an entity ID and optionally the entity itself.
      * Can be overridden by child classes if needed (e.g., Tag doesn't need slug resolution).
      *
      * @param string $locale The locale for slug resolution
      * @param string $identifier The identifier (slug or numeric ID)
      *
-     * @return int|null The entity ID, or null if not found
+     * @return array{int, object|null}|null Array of [id, entity] where entity may be null if not preloaded, or null if not found
      */
-    protected function resolveIdentifierToId(string $locale, string $identifier): ?int
+    protected function resolveIdentifierToId(string $locale, string $identifier): ?array
     {
-        // If already numeric, return as is
+        // If already numeric, return ID with no preloaded entity
         if (is_numeric($identifier)) {
-            return (int) $identifier;
+            return [(int) $identifier, null];
         }
 
         $mappingKey = $this->keyGenerator->slugMapping($this->getEntityName(), $locale, $identifier);
 
         try {
-            return $this->cache->get($mappingKey, function (ItemInterface $item) use ($locale, $identifier): ?int {
+            // Cache the mapping result which includes both ID and entity
+            return $this->cache->get($mappingKey, function (ItemInterface $item) use ($locale, $identifier): ?array {
                 $item->expiresAfter(static::CACHE_TTL);
 
                 // Load entity by slug using child class implementation
@@ -112,12 +117,16 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
 
                 $id = $this->extractEntityId($entity);
 
-                if (null !== $id) {
-                    // Proactively cache the full entity to avoid second query in getOne()
-                    $this->fetchAndCacheEntity($locale, $id, $entity);
+                if (null === $id) {
+                    return null;
                 }
 
-                return $id;
+                // Proactively cache the full entity to avoid second DB query in getOne()
+                $this->fetchAndCacheEntity($locale, $id, $entity);
+
+                // Return array for internal use: [id, entity]
+                // The entity will be used by getOne() to avoid redundant cache fetch
+                return [$id, $entity];
             });
         } catch (InvalidArgumentException $e) {
             $this->logger->error('Slug mapping cache failed, using direct DB query', [
@@ -127,7 +136,13 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
 
             $entity = $this->loadEntityBySlug($identifier);
 
-            return $entity ? $this->extractEntityId($entity) : null;
+            if (!$entity) {
+                return null;
+            }
+
+            $id = $this->extractEntityId($entity);
+
+            return $id ? [$id, $entity] : null;
         }
     }
 

@@ -11,7 +11,7 @@ SYMFONY  = $(PHP) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up start down logs sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan
+.PHONY        : help build up start down logs sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan cache-warmup cache-warmup-clear
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -46,6 +46,12 @@ test: ## Start tests with phpunit, pass the parameter "c=" to add options to php
 
 create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
+
+cache-warmup: ## Warm up entity caches (posts, categories, headers)
+	@$(PHP_CONT) bin/console app:cache:warm
+
+cache-warmup-clear: ## Clear and warm up entity caches
+	@$(PHP_CONT) bin/console app:cache:warm --clear-first
 
 fixtures: create-upload-dirs
 	@$(PHP_CONT) bin/console c:c
