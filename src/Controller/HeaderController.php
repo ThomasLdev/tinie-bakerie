@@ -4,22 +4,31 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
+use App\Services\Cache\HeaderCache;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-class HeaderController extends AbstractController
+final class HeaderController extends AbstractController
 {
+    public function __construct(
+        private readonly HeaderCache $cache,
+    ) {
+    }
+
     /**
+     * @throws InvalidArgumentException
+     *
      * @return array{categories: array<mixed>}
      */
     #[Route('/header', methods: ['GET'])]
     #[Template('page/layout/header.html.twig')]
-    public function renderHeader(CategoryRepository $categoryRepository): array
+    public function renderHeader(Request $request): array
     {
         return [
-            'categories' => $categoryRepository->findAllSlugs(),
+            'categories' => $this->cache->getCategories($request->getLocale()),
         ];
     }
 }

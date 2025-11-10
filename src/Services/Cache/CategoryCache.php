@@ -24,6 +24,7 @@ readonly class CategoryCache implements EntityCacheInterface
         private CacheKeyGenerator $keyGenerator,
         private Locales $locales,
         private PostCache $postCache,
+        private HeaderCache $headerCache,
     ) {
     }
 
@@ -68,7 +69,12 @@ readonly class CategoryCache implements EntityCacheInterface
 
         $this->postCache->invalidateByCriteria(['category' => $entity]);
 
-        foreach ($this->locales->get() as $locale) {
+        $locales = $this->locales->get();
+
+        // Invalidate header cache since category list changed
+        $this->headerCache->invalidate($locales);
+
+        foreach ($locales as $locale) {
             $this->cache->delete($this->keyGenerator->entityIndex(self::ENTITY_NAME, $locale));
 
             $translation = $entity->getTranslationByLocale($locale);

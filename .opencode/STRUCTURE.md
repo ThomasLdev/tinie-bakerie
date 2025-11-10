@@ -17,6 +17,7 @@
     └── testing/                   # All testing-related documentation
         ├── complete-guide.md      # Full testing strategy and patterns
         ├── decision-guide.md      # Quick: which test type to use?
+        ├── data-test-id-pattern.md # Stable element targeting with test_id()
         └── e2e-setup.md          # Playwright E2E testing setup
 ```
 
@@ -43,6 +44,7 @@ Each agent provides:
 Comprehensive testing guides:
 - **complete-guide.md** - Philosophy, TDD workflow, patterns, examples
 - **decision-guide.md** - Quick matrix for choosing test types
+- **data-test-id-pattern.md** - Element targeting using `test_id()` Twig function
 - **e2e-setup.md** - Setting up Playwright E2E tests
 
 ## Usage Flow
