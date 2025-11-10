@@ -52,16 +52,16 @@ jobs:
         run: |
           echo "Waiting for HTTPS server to be ready..."
           for i in {1..30}; do
-            if curl -fk --silent --max-time 5 -H "Host: local.tinie-bakerie.com" https://localhost > /dev/null 2>&1; then
+            if curl -fk --silent --max-time 5 --resolve local.tinie-bakerie.com:443:127.0.0.1 https://local.tinie-bakerie.com > /dev/null 2>&1; then
               echo "✓ HTTPS server is ready"
-              curl -vk --fail-with-body -H "Host: local.tinie-bakerie.com" https://localhost
+              curl -vk --fail-with-body --resolve local.tinie-bakerie.com:443:127.0.0.1 https://local.tinie-bakerie.com
               exit 0
             fi
             echo "Waiting for server... (attempt $i/30)"
             sleep 2
           done
           echo "✗ HTTPS server failed to become ready"
-          curl -vk --fail-with-body -H "Host: local.tinie-bakerie.com" https://localhost || exit 1
+          curl -vk --fail-with-body --resolve local.tinie-bakerie.com:443:127.0.0.1 https://local.tinie-bakerie.com || exit 1
       - name: Run PHPStan
         run: make phpstan
       - name: Run PHPMD
