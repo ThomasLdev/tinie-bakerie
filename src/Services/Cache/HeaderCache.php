@@ -12,7 +12,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 readonly class HeaderCache
 {
-    private const int CACHE_TTL = 3600; // 1 hour
+    private const int CACHE_TTL = 604800; // 7 days
 
     private const string CACHE_KEY_PREFIX = 'header_categories';
 

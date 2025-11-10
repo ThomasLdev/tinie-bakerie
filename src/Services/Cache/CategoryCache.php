@@ -44,7 +44,6 @@ readonly class CategoryCache extends AbstractEntityCache
             return $this->cache->get($key, function (ItemInterface $item): array {
                 $item->expiresAfter(self::CACHE_TTL);
 
-                // Add cache tags
                 $item->tag([
                     'categories',
                     'categories_index',

@@ -166,12 +166,10 @@ readonly class PostCache extends AbstractEntityCache
             'post_' . $entity->getId(),
         ];
 
-        // Add category tag if post has a category
         if ($entity->getCategory()) {
             $tags[] = 'category_' . $entity->getCategory()->getId();
         }
 
-        // Add tag tags for each tag
         foreach ($entity->getTags() as $tag) {
             $tags[] = 'tag_' . $tag->getId();
         }

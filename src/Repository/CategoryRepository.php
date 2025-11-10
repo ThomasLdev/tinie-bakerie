@@ -35,8 +35,6 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL mt.{id, title, alt}')
             ->orderBy('c.createdAt', 'DESC');
 
-        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
-        // This is crucial when entities are pre-loaded (e.g., by test fixtures with all translations)
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
             ->getResult();
@@ -55,7 +53,6 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL ct.{id, title, slug}')
             ->orderBy('c.createdAt', 'DESC');
 
-        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
             ->getResult();
@@ -77,7 +74,6 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('slug', $slug)
             ->setMaxResults(1);
 
-        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
             ->getOneOrNullResult();
@@ -103,7 +99,6 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->setMaxResults(1);
 
-        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
             ->getOneOrNullResult();

@@ -82,6 +82,28 @@ final class CategoryControllerTest extends BaseControllerTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[DataProvider('getCategoryControllerShowData')]
+    public function testShowUsesCategoryCacheService(string $expectedTitle, string $locale, string $baseUrl): void
+    {
+        /** @var CategoryControllerTestStory $story */
+        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
+        $category = $story->getCategory(0);
+        $categorySlug = $story->getCategorySlug($category, $locale);
+        $url = \sprintf('%s/%s', $baseUrl, $categorySlug);
+
+        // Make request to verify cache service works
+        $this->client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
+
+        // Verify CategoryCache service can retrieve individual category with correct locale content
+        $cache = $this->container->get(CategoryCache::class);
+
+        $cachedCategory = $cache->getOne($locale, $categorySlug);
+        self::assertNotNull($cachedCategory, 'Cache should return category by slug');
+        self::assertSame($categorySlug, $cachedCategory->getSlug(), 'Cached category should match requested slug');
+        self::assertSame($expectedTitle, $cachedCategory->getTitle(), \sprintf('Cached category should have correct %s title', $locale));
+    }
+
     public static function getCategoryControllerShowData(): \Generator
     {
         yield 'should find fr title on category fr page' => ['Catégorie Test 1 FR', 'fr', self::BASE_URL_FR];

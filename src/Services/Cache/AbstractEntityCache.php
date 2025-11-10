@@ -16,7 +16,7 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
  */
 abstract readonly class AbstractEntityCache implements EntityCacheInterface
 {
-    protected const int CACHE_TTL = 3600; // 1 hour
+    protected const int CACHE_TTL = 86400; // 24 hours
 
     public function __construct(
         protected TagAwareCacheInterface $cache,
@@ -110,7 +110,6 @@ abstract readonly class AbstractEntityCache implements EntityCacheInterface
                     return null;
                 }
 
-                // Extract ID
                 $id = $this->extractEntityId($entity);
 
                 if (null !== $id) {
