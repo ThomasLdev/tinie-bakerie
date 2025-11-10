@@ -147,4 +147,24 @@ readonly class CategoryCache extends AbstractEntityCache
 
         return $entity->getId();
     }
+
+    /**
+     * Warm up the cache for the given locale by pre-loading all categories.
+     * This caches both the category index AND each individual category detail page.
+     *
+     * @return int Number of categories cached
+     */
+    public function warmUp(string $locale): int
+    {
+        // First, warm the index (list of all categories)
+        $categories = $this->get($locale);
+
+        // Then, warm each individual category detail page
+        // This caches both the entity and the slug-to-ID mapping
+        foreach ($categories as $category) {
+            $this->getOne($locale, (string) $category->getId());
+        }
+
+        return \count($categories);
+    }
 }

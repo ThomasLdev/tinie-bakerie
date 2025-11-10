@@ -6,13 +6,10 @@ namespace App\Services\Cache;
 
 /**
  * Full caching interface for entities with public pages.
- * Extends InvalidatableEntityCacheInterface and adds get/getOne methods
- * for entities that need to be cached and retrieved (e.g., Category, Post).
- *
- * Note: This interface no longer has the AutoconfigureTag attribute
- * because InvalidatableEntityCacheInterface already has it.
+ * Extends InvalidatableEntityCacheInterface and WarmableCacheInterface,
+ * adding get/getOne methods for entities that need to be cached and retrieved (e.g., Category, Post).
  */
-interface EntityCacheInterface extends InvalidatableEntityCacheInterface
+interface EntityCacheInterface extends InvalidatableEntityCacheInterface, WarmableCacheInterface
 {
     /**
      * Get all entities for a given locale.

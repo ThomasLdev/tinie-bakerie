@@ -56,9 +56,9 @@ final class WarmCacheCommandTest extends KernelTestCase
         self::assertStringContainsString('Cache Warming', $output);
         self::assertStringContainsString('Locales: fr, en', $output);
         self::assertStringContainsString('Cache Statistics:', $output);
-        self::assertStringContainsString('Posts:', $output);
-        self::assertStringContainsString('Categories:', $output);
-        self::assertStringContainsString('Headers:', $output);
+        self::assertStringContainsString('Post:', $output);
+        self::assertStringContainsString('Category:', $output);
+        self::assertStringContainsString('Header:', $output);
         self::assertStringContainsString('Cache warmed successfully', $output);
     }
 
@@ -74,60 +74,60 @@ final class WarmCacheCommandTest extends KernelTestCase
         self::assertStringContainsString('Cache warmed successfully', $output);
     }
 
-    public function testExecuteWithEntityFilterPost(): void
+    public function testExecuteWithCacheFilterPost(): void
     {
-        $this->commandTester->execute(['--entity' => 'post']);
+        $this->commandTester->execute(['--cache' => 'post']);
 
         $this->commandTester->assertCommandIsSuccessful();
 
         $output = $this->commandTester->getDisplay();
-        self::assertStringContainsString('Posts:', $output);
+        self::assertStringContainsString('Post:', $output);
         self::assertStringContainsString('entities cached', $output);
 
-        // Verify only posts were warmed (stats show 0 for others)
-        self::assertMatchesRegularExpression('/Categories:\s+0\s+entities/', $output);
-        self::assertMatchesRegularExpression('/Headers:\s+0\s+entities/', $output);
+        // Verify only post cache was warmed (others not mentioned)
+        self::assertStringNotContainsString('Category:', $output);
+        self::assertStringNotContainsString('Header:', $output);
     }
 
-    public function testExecuteWithEntityFilterCategory(): void
+    public function testExecuteWithCacheFilterCategory(): void
     {
-        $this->commandTester->execute(['--entity' => 'category']);
+        $this->commandTester->execute(['--cache' => 'category']);
 
         $this->commandTester->assertCommandIsSuccessful();
 
         $output = $this->commandTester->getDisplay();
-        self::assertStringContainsString('Categories:', $output);
+        self::assertStringContainsString('Category:', $output);
         self::assertStringContainsString('entities cached', $output);
 
-        // Verify only categories were warmed
-        self::assertMatchesRegularExpression('/Posts:\s+0\s+entities/', $output);
-        self::assertMatchesRegularExpression('/Headers:\s+0\s+entities/', $output);
+        // Verify only category cache was warmed
+        self::assertStringNotContainsString('Post:', $output);
+        self::assertStringNotContainsString('Header:', $output);
     }
 
-    public function testExecuteWithEntityFilterHeader(): void
+    public function testExecuteWithCacheFilterHeader(): void
     {
-        $this->commandTester->execute(['--entity' => 'header']);
+        $this->commandTester->execute(['--cache' => 'header']);
 
         $this->commandTester->assertCommandIsSuccessful();
 
         $output = $this->commandTester->getDisplay();
-        self::assertStringContainsString('Headers:', $output);
+        self::assertStringContainsString('Header:', $output);
         self::assertStringContainsString('entities cached', $output);
 
-        // Verify only headers were warmed
-        self::assertMatchesRegularExpression('/Posts:\s+0\s+entities/', $output);
-        self::assertMatchesRegularExpression('/Categories:\s+0\s+entities/', $output);
+        // Verify only header cache was warmed
+        self::assertStringNotContainsString('Post:', $output);
+        self::assertStringNotContainsString('Category:', $output);
     }
 
-    public function testExecuteWithInvalidEntityFilter(): void
+    public function testExecuteWithInvalidCacheFilter(): void
     {
-        $this->commandTester->execute(['--entity' => 'invalid']);
+        $this->commandTester->execute(['--cache' => 'invalid']);
 
         self::assertSame(1, $this->commandTester->getStatusCode());
 
         $output = $this->commandTester->getDisplay();
-        self::assertStringContainsString('Invalid entity type "invalid"', $output);
-        self::assertStringContainsString('Valid options: post, category, header', $output);
+        self::assertStringContainsString('Invalid cache type "invalid"', $output);
+        self::assertStringContainsString('Available caches:', $output);
     }
 
     public function testExecuteDisplaysDuration(): void

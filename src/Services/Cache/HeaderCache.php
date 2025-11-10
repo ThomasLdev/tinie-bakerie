@@ -10,11 +10,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-readonly class HeaderCache
+readonly class HeaderCache implements WarmableCacheInterface
 {
     private const int CACHE_TTL = 604800; // 7 days
 
     private const string CACHE_KEY_PREFIX = 'header_categories';
+
+    private const string ENTITY_NAME = 'header';
 
     public function __construct(
         private CacheInterface $cache,
@@ -76,5 +78,22 @@ readonly class HeaderCache
     private function generateKey(string $locale): string
     {
         return \sprintf('%s_%s', self::CACHE_KEY_PREFIX, $locale);
+    }
+
+    /**
+     * Warm up the header cache for the given locale by pre-loading category slugs.
+     *
+     * @return int Number of categories cached
+     */
+    public function warmUp(string $locale): int
+    {
+        $categories = $this->getCategories($locale);
+
+        return \count($categories);
+    }
+
+    public function getEntityName(): string
+    {
+        return self::ENTITY_NAME;
     }
 }

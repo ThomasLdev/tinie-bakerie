@@ -186,4 +186,24 @@ readonly class PostCache extends AbstractEntityCache
 
         return $entity->getId();
     }
+
+    /**
+     * Warm up the cache for the given locale by pre-loading all active posts.
+     * This caches both the post index AND each individual post detail page.
+     *
+     * @return int Number of posts cached
+     */
+    public function warmUp(string $locale): int
+    {
+        // First, warm the index (list of all posts)
+        $posts = $this->get($locale);
+
+        // Then, warm each individual post detail page
+        // This caches both the entity and the slug-to-ID mapping
+        foreach ($posts as $post) {
+            $this->getOne($locale, (string) $post->getId());
+        }
+
+        return \count($posts);
+    }
 }
