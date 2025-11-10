@@ -126,7 +126,7 @@ phpunit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
 coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html public/coverage
+	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
 
 unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests

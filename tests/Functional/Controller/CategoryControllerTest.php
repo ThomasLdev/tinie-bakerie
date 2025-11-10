@@ -7,6 +7,8 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\CategoryController;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Repository\CategoryRepository;
+use App\Services\Cache\AbstractEntityCache;
+use App\Services\Cache\CacheKeyGenerator;
 use App\Services\Cache\CategoryCache;
 use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\CategoryControllerTestStory;
@@ -21,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(CategoryController::class)]
 #[CoversClass(CategoryRepository::class)]
 #[CoversClass(CategoryCache::class)]
+#[CoversClass(AbstractEntityCache::class)]
+#[CoversClass(CacheKeyGenerator::class)]
 #[CoversClass(LocaleFilter::class)]
 #[CoversClass(KernelRequestSubscriber::class)]
 final class CategoryControllerTest extends BaseControllerTestCase
@@ -96,6 +100,7 @@ final class CategoryControllerTest extends BaseControllerTestCase
         self::assertResponseIsSuccessful();
 
         // Verify CategoryCache service can retrieve individual category with correct locale content
+        /** @var CategoryCache $cache */
         $cache = $this->container->get(CategoryCache::class);
 
         $cachedCategory = $cache->getOne($locale, $categorySlug);

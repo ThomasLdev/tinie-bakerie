@@ -10,7 +10,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- *
  * Tags don't have public pages, so this service only handles event dispatching.
  * When tags change, this notifies PostCache (via TAG_INVALIDATED event) to
  * invalidate posts that use those tags.

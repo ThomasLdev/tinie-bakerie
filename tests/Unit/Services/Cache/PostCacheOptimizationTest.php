@@ -16,7 +16,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 /**
  * @internal
  *
- * Test that verifies the cache optimization that prevents double queries on cold cache.
+ * Test that verifies the cache optimization that prevents double queries on cold cache
  */
 #[CoversClass(PostCache::class)]
 final class PostCacheOptimizationTest extends KernelTestCase
@@ -24,15 +24,18 @@ final class PostCacheOptimizationTest extends KernelTestCase
     use ResetDatabase;
 
     private PostCache $cache;
+
     private TagAwareCacheInterface $cacheBackend;
+
     private EntityManagerInterface $entityManager;
+
     private DebugStack $sqlLogger;
 
     protected function setUp(): void
     {
         self::bootKernel();
 
-        $container = static::getContainer();
+        $container = self::getContainer();
         $this->cache = $container->get(PostCache::class);
         $this->cacheBackend = $container->get('cache.app.taggable');
         $this->entityManager = $container->get(EntityManagerInterface::class);
@@ -40,6 +43,14 @@ final class PostCacheOptimizationTest extends KernelTestCase
         // Set up SQL query logger
         $this->sqlLogger = new DebugStack();
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger($this->sqlLogger);
+    }
+
+    protected function tearDown(): void
+    {
+        // Clean up SQL logger
+        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        parent::tearDown();
     }
 
     /**
@@ -55,7 +66,7 @@ final class PostCacheOptimizationTest extends KernelTestCase
         $this->cacheBackend->clear();
         $this->entityManager->clear();
         $this->sqlLogger->queries = [];
-        
+
         // When: First access by slug (cold cache)
         $postBySlug = $this->cache->getOne('fr', 'article-test-1-fr');
 
@@ -67,28 +78,28 @@ final class PostCacheOptimizationTest extends KernelTestCase
         self::assertCount(
             1,
             $selectQueries,
-            sprintf(
+            \sprintf(
                 "Expected exactly 1 SELECT query on cold cache, got %d.\nQueries:\n%s",
-                count($selectQueries),
+                \count($selectQueries),
                 $this->formatQueries($selectQueries),
             ),
         );
 
         $postId = $postBySlug->getId();
-        $queriesAfterFirstAccess = count($this->sqlLogger->queries);
+        $queriesAfterFirstAccess = \count($this->sqlLogger->queries);
 
         // Clear entity manager to ensure we're not using identity map
         $this->entityManager->clear();
 
         // When: Second access by same slug (warm cache)
         $postBySlugAgain = $this->cache->getOne('fr', 'article-test-1-fr');
-        
+
         // Then: Should be cache hit with no additional queries
         self::assertNotNull($postBySlugAgain);
         self::assertSame($postId, $postBySlugAgain->getId());
-        self::assertSame(
+        self::assertCount(
             $queriesAfterFirstAccess,
-            count($this->sqlLogger->queries),
+            $this->sqlLogger->queries,
             'Second slug access should not execute any queries (cache hit)',
         );
 
@@ -97,13 +108,13 @@ final class PostCacheOptimizationTest extends KernelTestCase
 
         // When: Access by ID (warm cache - entity was proactively cached)
         $postById = $this->cache->getOne('fr', (string) $postId);
-        
+
         // Then: Should be cache hit with no additional queries
         self::assertNotNull($postById);
         self::assertSame($postId, $postById->getId());
-        self::assertSame(
+        self::assertCount(
             $queriesAfterFirstAccess,
-            count($this->sqlLogger->queries),
+            $this->sqlLogger->queries,
             'Access by ID should not execute any queries (entity was proactively cached)',
         );
     }
@@ -117,7 +128,7 @@ final class PostCacheOptimizationTest extends KernelTestCase
     {
         return array_filter(
             $this->sqlLogger->queries,
-            fn (array $query): bool => str_starts_with(strtoupper($query['sql']), 'SELECT')
+            static fn (array $query): bool => str_starts_with(strtoupper($query['sql']), 'SELECT')
                 && str_contains($query['sql'], 'FROM post')
                 && !str_contains($query['sql'], 'NEXTVAL'),
         );
@@ -131,18 +142,11 @@ final class PostCacheOptimizationTest extends KernelTestCase
     private function formatQueries(array $queries): string
     {
         $output = [];
+
         foreach ($queries as $index => $query) {
-            $output[] = sprintf("#%d: %s", $index + 1, $query['sql']);
+            $output[] = \sprintf('#%d: %s', $index + 1, $query['sql']);
         }
 
         return implode("\n", $output);
-    }
-
-    protected function tearDown(): void
-    {
-        // Clean up SQL logger
-        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-
-        parent::tearDown();
     }
 }

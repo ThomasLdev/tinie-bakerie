@@ -16,6 +16,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
+/**
+ * @method Category|null getOne(string $locale, string $identifier)
+ */
 readonly class CategoryCache extends AbstractEntityCache
 {
     private const string ENTITY_NAME = 'category';

@@ -12,6 +12,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 class CacheInvalidationEvent extends Event
 {
     public const string CATEGORY_INVALIDATED = 'cache.invalidation.category';
+
     public const string TAG_INVALIDATED = 'cache.invalidation.tag';
 
     public function __construct(

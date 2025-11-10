@@ -14,6 +14,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
+/**
+ * @method Post|null getOne(string $locale, string $identifier)
+ */
 readonly class PostCache extends AbstractEntityCache
 {
     private const string ENTITY_NAME = 'post';
