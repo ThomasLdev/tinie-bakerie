@@ -32,8 +32,8 @@ jobs:
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
-      - name: Start services
-        run: docker compose up --wait --no-build
+      - name: Start services (including Node.js for linting)
+        run: docker compose --profile dev up --wait --no-build
       - name: Check HTTP reachability
         run: |
           echo "Waiting for HTTP server to be ready..."
@@ -70,6 +70,14 @@ jobs:
         run: make phpcs-dry
       - name: Run Twig CS
         run: make twig-linter
+      - name: Install Node.js dependencies
+        run: make node-install
+      - name: Run ESLint (TypeScript)
+        run: make lint
+      - name: Check TypeScript formatting
+        run: make format-check
+      - name: TypeScript type checking
+        run: make type-check
       - name: Run PHPUnit Unit Suite
         run: make unit
   functional_test:
@@ -93,7 +101,7 @@ jobs:
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
-      - name: Start services
+      - name: Start services (production mode - no Node.js needed for PHP tests)
         run: docker compose up --wait --no-build
       - name: Create Test Database
         run: make doctrine-db-test-create
@@ -105,55 +113,57 @@ jobs:
         run: make doctrine-validate-schema
       - name: Run PHPUnit Functional Suite
         run: make functional
-#  e2e_tests:
-#    name: E2E Tests (Playwright)
-#    runs-on: ubuntu-latest
-#    needs: static_analysis
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v3
-#      - name: Build Docker images
-#        uses: docker/bake-action@v5
-#        with:
-#          pull: true
-#          load: true
-#          files: |
-#            compose.yaml
-#            compose.override.yaml
-#          set: |
-#            *.cache-from=type=gha,scope=${{github.ref}}
-#            *.cache-from=type=gha,scope=refs/heads/main
-#            *.cache-to=type=gha,scope=${{github.ref}},mode=max
-#      - name: Start services
-#        run: docker compose up --wait --no-build
-#      - name: Create Test Database
-#        run: make doctrine-db-test-create
-#      - name: Run Migrations
-#        run: make doctrine-migrate-test
-#      - name: Run Fixtures
-#        run: make fixtures-test
-#      - name: Install Playwright Dependencies
-#        run: make e2e-install
-#      - name: Run E2E Tests
-#        run: make e2e
-#        env:
-#          CI: true
-#      - name: Upload Playwright Report
-#        uses: actions/upload-artifact@v4
-#        if: always()
-#        with:
-#          name: playwright-report
-#          path: playwright-report/
-#          retention-days: 30
-#      - name: Upload Test Results
-#        uses: actions/upload-artifact@v4
-#        if: always()
-#        with:
-#          name: test-results
-#          path: test-results/
-#          retention-days: 30
+  e2e_tests:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: static_analysis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker images
+        uses: docker/bake-action@v5
+        with:
+          pull: true
+          load: true
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+      - name: Start services (including Node.js for E2E)
+        run: docker compose --profile dev up --wait --no-build
+      - name: Create Test Database
+        run: make doctrine-db-test-create
+      - name: Run Migrations
+        run: make doctrine-migrate-test
+      - name: Run Fixtures
+        run: make fixtures-test
+      - name: Install Node.js dependencies
+        run: make node-install
+      - name: Install Playwright Dependencies
+        run: make e2e-install
+      - name: Run E2E Tests
+        run: make e2e
+        env:
+          CI: true
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest
