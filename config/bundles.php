@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
 use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MakerBundle\MakerBundle;
@@ -40,4 +41,5 @@ return [
     TwigComponentBundle::class => ['all' => true],
     EasyAdminBundle::class => ['all' => true],
     DAMADoctrineTestBundle::class => ['test' => true],
+    SensiolabsTypeScriptBundle::class => ['all' => true],
 ];

@@ -1,17 +1,20 @@
 # Executables (local)
 DOCKER_COMP = docker compose
+DOCKER_COMP_DEV = docker compose --profile dev
 
 # Docker containers
 PHP_CONT = $(DOCKER_COMP) exec php
+NODE_CONT = $(DOCKER_COMP_DEV) exec node
 
 # Executables
 PHP      = $(PHP_CONT) php
 COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
+NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up start down logs sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan cache-warmup cache-warmup-clear
+.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan cache-warmup cache-warmup-clear typescript typescript-watch assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -21,24 +24,47 @@ help: ## Outputs this help screen
 build: ## Builds the Docker images
 	@$(DOCKER_COMP) build --pull --no-cache
 
-up: ## Start the docker hub in detached mode (no logs)
+up: ## Start production services (no Node.js)
 	@$(DOCKER_COMP) up --detach
 
-start: up assets-install
+up-dev: ## Start all services including Node.js for development
+	@$(DOCKER_COMP_DEV) up --detach
+
+up-ci: ## Start services for CI environment (includes Node.js for testing)
+	@echo "🔧 Starting services for CI environment..."
+	@$(DOCKER_COMP_DEV) up --detach
+	@echo "✅ CI environment ready (Node.js available for linting/testing)"
+
+start: up-dev assets-install typescript ## Start development environment
 
 build: build up ## Build and start the containers
 
-down: ## Stop the docker hub
-	@$(DOCKER_COMP) down --remove-orphans
+down: ## Stop all containers including dev profile
+	@$(DOCKER_COMP) --profile dev down --remove-orphans
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
+
+verify-prod: ## Verify production setup (no Node.js container)
+	@echo "🔍 Checking production setup..."
+	@if docker compose ps | grep -q node; then \
+		echo "❌ ERROR: Node.js container is running in production mode!"; \
+		echo "   This should not happen. Use 'make up' for production."; \
+		exit 1; \
+	else \
+		echo "✅ SUCCESS: Node.js container is NOT running (production mode)"; \
+		echo "   Running containers:"; \
+		docker compose ps --format "table {{.Name}}\t{{.Service}}\t{{.Status}}"; \
+	fi
 
 sh: ## Connect to the FrankenPHP container
 	@$(PHP_CONT) sh
 
 bash: ## Connect to the FrankenPHP container via bash so up and down arrows go to previous commands
 	@$(PHP_CONT) bash
+
+node-sh: ## Connect to the Node container
+	@$(NODE_CONT) sh
 
 test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
 	@$(eval c ?=)
@@ -78,14 +104,47 @@ doctrine-db-create:
 doctrine-db-test-create:
 	@$(PHP_CONT) bin/console doctrine:database:create --if-not-exists --env=test
 
-assets-install:
+## —— Assets 🎨 ————————————————————————————————————————————————————————————————
+assets-install: ## Install assets in the public directory
 	@$(PHP_CONT) bin/console assets:install
 
-tailwind:
+assets-compile: typescript tailwind ## Compile all assets (TypeScript + Tailwind) for production
+	@$(PHP_CONT) bin/console asset-map:compile
+
+typescript: ## Build TypeScript files
+	@$(PHP_CONT) bin/console typescript:build
+
+typescript-watch: ## Watch and rebuild TypeScript files on changes
+	@$(PHP_CONT) bin/console typescript:build --watch
+
+tailwind: ## Build Tailwind CSS
 	@$(PHP_CONT) bin/console tailwind:build
 
-tailwind-watch:
+tailwind-watch: ## Watch and rebuild Tailwind CSS on changes
 	@$(PHP_CONT) bin/console tailwind:build --watch
+
+watch: ## Watch both TypeScript and Tailwind (run in separate terminals)
+	@echo "💡 Run 'make typescript-watch' and 'make tailwind-watch' in separate terminals for watch mode"
+	@echo "   Or use Symfony CLI: 'symfony server:start' (will auto-run TypeScript worker)"
+
+## —— Node.js 📦 ———————————————————————————————————————————————————————————————
+node-install: ## Install Node.js dependencies
+	@$(NPM) install
+
+lint: ## Lint TypeScript files with ESLint
+	@$(NPM) run lint
+
+lint-fix: ## Lint and auto-fix TypeScript files
+	@$(NPM) run lint:fix
+
+format: ## Format code with Prettier
+	@$(NPM) run format
+
+format-check: ## Check code formatting with Prettier
+	@$(NPM) run format:check
+
+type-check: ## Type check TypeScript files
+	@$(NPM) run type-check
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
@@ -118,7 +177,7 @@ phpcs-dry:
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: rector phpcs phpstan twig-linter
+quality: rector phpcs phpstan twig-linter lint format-check ## Run all quality checks (PHP + TypeScript)
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
@@ -145,30 +204,27 @@ functional: cache
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————
 
-e2e-install: ## Install Playwright dependencies (run once after setup)
-	@$(DOCKER_COMP) run --rm playwright npm install
+e2e-install: ## Install Playwright dependencies (included in node-install)
+	@echo "Installing Playwright browsers..."
+	@$(NODE_CONT) npx playwright install --with-deps
 
 e2e: ## Run E2E tests with Playwright
-	@if [ ! -d "node_modules" ]; then \
-		echo "⚠️  node_modules not found. Running 'make e2e-install' first..."; \
-		$(DOCKER_COMP) run --rm playwright npm install; \
-	fi
-	@$(DOCKER_COMP) run --rm playwright npm run test:e2e
+	@$(NPM) run test:e2e
 
 e2e-headed: ## Run E2E tests with visible browser (requires X11)
 	@echo "Note: This requires X11 forwarding. For UI debugging, use 'make e2e-report' instead."
-	@$(DOCKER_COMP) run --rm -e DISPLAY=$(DISPLAY) -v /tmp/.X11-unix:/tmp/.X11-unix playwright npm run test:e2e:headed
+	@$(NODE_CONT) sh -c "DISPLAY=${DISPLAY} npm run test:e2e:headed"
 
 e2e-debug: ## Run E2E tests in debug mode with inspector
 	@echo "Opening Playwright Inspector (headless mode)..."
-	@$(DOCKER_COMP) run --rm playwright npm run test:e2e:debug
+	@$(NPM) run test:e2e:debug
 
 e2e-report: ## Show the last E2E test report (BEST for visual debugging)
 	@echo "Opening HTML report on http://localhost:9323..."
-	@$(DOCKER_COMP) run --rm -p 9323:9323 playwright npx playwright show-report --host 0.0.0.0 --port 9323
+	@$(NODE_CONT) npx playwright show-report --host 0.0.0.0 --port 9323
 
 e2e-show-trace: ## Show trace for last failed test
 	@echo "Opening trace viewer on http://localhost:9323..."
-	@$(DOCKER_COMP) run --rm -p 9323:9323 playwright npx playwright show-trace test-results/**/trace.zip --host 0.0.0.0 --port 9323
+	@$(NODE_CONT) npx playwright show-trace test-results/**/trace.zip --host 0.0.0.0 --port 9323
 
-test-all: phpunit e2e ## Run all tests (PHPUnit + E2E)
+test-all: test e2e ## Run all tests (PHPUnit + E2E)

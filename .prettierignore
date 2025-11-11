@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+var/
+public/bundles/
+public/build/
+
+# Compiled assets
+*.min.js
+*.min.css
+
+# Config files
+composer.lock
+package-lock.json
+symfony.lock
