@@ -84,3 +84,9 @@ playwright-report/
 test-results/
 /playwright/.cache/
 ###< playwright ###
+
+###> lighthouse-ci ###
+.lighthouseci/
+lighthouse-results/
+lighthouse-urls.json
+###< lighthouse-ci ###
