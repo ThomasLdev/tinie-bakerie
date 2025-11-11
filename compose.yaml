@@ -44,6 +44,21 @@ services:
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
 
+###> symfony/cache ###
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+###< symfony/cache ###
+
 ###> playwright ###
   playwright:
     image: mcr.microsoft.com/playwright:v1.56.1-jammy
@@ -66,3 +81,7 @@ volumes:
 ###> doctrine/doctrine-bundle ###
   database_data:
 ###< doctrine/doctrine-bundle ###
+
+###> symfony/cache ###
+  redis_data:
+###< symfony/cache ###
