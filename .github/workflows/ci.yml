@@ -168,6 +168,69 @@ jobs:
           name: test-results
           path: test-results/
           retention-days: 30
+  lhci:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    needs: static_analysis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker images
+        uses: docker/bake-action@v5
+        with:
+          pull: true
+          load: true
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+      - name: Start services
+        run: docker compose up --wait --no-build
+      - name: Create Test Database
+        run: make doctrine-db-test-create
+      - name: Run Migrations
+        run: make doctrine-migrate-test
+      - name: Run Fixtures
+        run: make fixtures-test
+      - name: Build TypeScript Assets
+        run: make typescript
+      - name: Check HTTP reachability
+        run: |
+          echo "Waiting for HTTP server to be ready..."
+          for i in {1..30}; do
+            if curl -f --silent --max-time 5 -H "Host: php" http://localhost > /dev/null 2>&1; then
+              echo "✓ HTTP server is ready"
+              exit 0
+            fi
+            echo "Waiting for server... (attempt $i/30)"
+            sleep 2
+          done
+          echo "✗ HTTP server failed to become ready"
+          exit 1
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.15.x
+      - name: Run Lighthouse CI
+        run: lhci autorun --upload.target=temporary-public-storage
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Upload Lighthouse Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+          retention-days: 30
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest
