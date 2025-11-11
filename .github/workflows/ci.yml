@@ -197,8 +197,10 @@ jobs:
         run: make doctrine-db-test-create
       - name: Run Migrations
         run: make doctrine-migrate-test
-      - name: Run Fixtures
+      - name: Load Fixtures
         run: make fixtures-test
+      - name: Generate Lighthouse URLs from Database
+        run: docker compose exec -T php bin/console app:generate-lighthouse-urls --env=test --output=/srv/app/lighthouse-urls.json
       - name: Build TypeScript Assets
         run: make typescript
       - name: Check HTTP reachability

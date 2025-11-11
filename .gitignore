@@ -88,4 +88,5 @@ test-results/
 ###> lighthouse-ci ###
 .lighthouseci/
 lighthouse-results/
+lighthouse-urls.json
 ###< lighthouse-ci ###
