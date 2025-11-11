@@ -14,6 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translation<PostSection>
  */
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class PostSectionTranslation implements Translation, \Stringable
 {
     use Localized;
@@ -78,5 +79,14 @@ class PostSectionTranslation implements Translation, \Stringable
         $this->title = $title;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateParentTimestamp(): void
+    {
+        if ($this->translatable instanceof PostSection) {
+            $this->translatable->setUpdatedAt(new \DateTime());
+        }
     }
 }

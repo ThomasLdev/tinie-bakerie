@@ -16,6 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translation<Post>
  */
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(name: 'post_translation_lookup_unique_idx', columns: ['locale', 'title'])]
 class PostTranslation implements Translation, HasSlugs, \Stringable
 {
@@ -127,5 +128,14 @@ class PostTranslation implements Translation, HasSlugs, \Stringable
         $this->notes = $notes;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateParentTimestamp(): void
+    {
+        if ($this->translatable instanceof Post) {
+            $this->translatable->setUpdatedAt(new \DateTime());
+        }
     }
 }

@@ -13,6 +13,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @implements Translation<CategoryMedia>
  */
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity]
 class CategoryMediaTranslation implements Translation, \Stringable
 {
@@ -49,5 +50,14 @@ class CategoryMediaTranslation implements Translation, \Stringable
         $this->translatable = $translatable;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateParentTimestamp(): void
+    {
+        if ($this->translatable instanceof CategoryMedia) {
+            $this->translatable->setUpdatedAt(new \DateTime());
+        }
     }
 }
