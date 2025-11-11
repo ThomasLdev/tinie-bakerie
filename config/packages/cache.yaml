@@ -3,20 +3,13 @@ framework:
         # Unique name of your app: used to compute stable namespaces for cache keys.
         prefix_seed: 'tinie_bakerie_v1'
 
-        # The "app" cache stores to the filesystem by default.
-        # The data in this cache should persist between deploys.
-        # Other options include:
-
-        # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
-
-        # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
-        #app: cache.adapter.apcu
+        # Redis cache configuration
+        app: cache.adapter.redis
+        default_redis_provider: redis://redis:6379
 
         # Configure tag-aware cache pools
         pools:
             # Tag-aware cache for entity caching (Posts, Categories, Tags)
             cache.app.taggable:
-                adapter: cache.adapter.filesystem
+                adapter: cache.adapter.redis
                 tags: true
