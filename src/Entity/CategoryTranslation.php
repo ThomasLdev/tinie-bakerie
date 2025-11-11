@@ -16,6 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translation<Category>
  */
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(name: 'category_translation_unique_idx', columns: ['locale', 'title'])]
 class CategoryTranslation implements Translation, HasSlugs, \Stringable
 {
@@ -127,5 +128,14 @@ class CategoryTranslation implements Translation, HasSlugs, \Stringable
         $this->excerpt = $excerpt;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateParentTimestamp(): void
+    {
+        if ($this->translatable instanceof Category) {
+            $this->translatable->setUpdatedAt(new \DateTime());
+        }
     }
 }

@@ -6,86 +6,110 @@ namespace App\Services\Cache;
 
 use App\Entity\Category;
 use App\Entity\CategoryTranslation;
+use App\Event\CacheInvalidationEvent;
 use App\Repository\CategoryRepository;
 use App\Services\Locale\Locales;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
-use Symfony\Contracts\Cache\CacheInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-readonly class CategoryCache implements EntityCacheInterface
+/**
+ * @method Category|null getOne(string $locale, string $identifier)
+ */
+readonly class CategoryCache extends AbstractEntityCache
 {
-    private const int CACHE_TTL = 3600; // 1 hour
-
     private const string ENTITY_NAME = 'category';
 
     public function __construct(
-        private CacheInterface $cache,
+        #[Autowire(service: 'cache.app.taggable')]
+        TagAwareCacheInterface $cache,
+        CacheKeyGenerator $keyGenerator,
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
         private CategoryRepository $repository,
-        private CacheKeyGenerator $keyGenerator,
         private Locales $locales,
-        private PostCache $postCache,
         private HeaderCache $headerCache,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
+        parent::__construct($cache, $keyGenerator, $logger, $entityManager);
     }
 
     /**
-     * @throws InvalidArgumentException
-     *
      * @return array<array-key,mixed>
      */
     public function get(string $locale): array
     {
         $key = $this->keyGenerator->entityIndex($this->getEntityName(), $locale);
 
-        return $this->cache->get($key, function (ItemInterface $item): array {
-            $item->expiresAfter(self::CACHE_TTL);
+        try {
+            return $this->cache->get($key, function (ItemInterface $item): array {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                $item->tag([
+                    'categories',
+                    'categories_index',
+                ]);
+
+                return $this->repository->findAll();
+            });
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Category cache read failed, using direct DB query', [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+            ]);
 
             return $this->repository->findAll();
-        });
+        }
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function getOne(string $locale, string $identifier): ?Category
-    {
-        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $identifier);
-
-        return $this->cache->get($key, function (ItemInterface $item) use ($identifier): ?Category {
-            $item->expiresAfter(self::CACHE_TTL);
-
-            return $this->repository->findOne($identifier);
-        });
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
     public function invalidate(object $entity): void
     {
         if (!$entity instanceof Category) {
             return;
         }
 
-        $this->postCache->invalidateByCriteria(['category' => $entity]);
+        try {
+            $this->logger->info('Invalidating category cache', [
+                'entity' => 'Category',
+                'id' => $entity->getId(),
+            ]);
 
-        $locales = $this->locales->get();
+            $this->cache->invalidateTags([
+                'category_' . $entity->getId(),
+                'categories_index',
+            ]);
 
-        // Invalidate header cache since category list changed
-        $this->headerCache->invalidate($locales);
+            // Invalidate header cache since category list changed
+            $locales = $this->locales->get();
+            $this->headerCache->invalidate($locales);
 
-        foreach ($locales as $locale) {
-            $this->cache->delete($this->keyGenerator->entityIndex(self::ENTITY_NAME, $locale));
+            // Invalidate slug mapping caches for all locales
+            foreach ($locales as $locale) {
+                $translation = $entity->getTranslationByLocale($locale);
 
-            $translation = $entity->getTranslationByLocale($locale);
-
-            if (!$translation instanceof CategoryTranslation) {
-                continue;
+                if ($translation instanceof CategoryTranslation) {
+                    $this->cache->delete(
+                        $this->keyGenerator->slugMapping($this->getEntityName(), $locale, $translation->getSlug()),
+                    );
+                }
             }
 
-            $this->cache->delete(
-                $this->keyGenerator->entityShow($this->getEntityName(), $locale, $translation->getSlug()),
+            // Dispatch event to notify other caches (like PostCache) that need invalidation
+            $this->eventDispatcher->dispatch(
+                new CacheInvalidationEvent($entity, 'update'),
+                CacheInvalidationEvent::CATEGORY_INVALIDATED,
             );
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Category cache invalidation failed', [
+                'exception' => $e->getMessage(),
+                'entity' => 'Category',
+                'id' => $entity->getId(),
+            ]);
+            // Don't throw - allow operation to continue
         }
     }
 
@@ -97,5 +121,57 @@ readonly class CategoryCache implements EntityCacheInterface
     public static function supports(object $entity): bool
     {
         return $entity instanceof Category;
+    }
+
+    /**
+     * Warm up the cache for the given locale by pre-loading all categories.
+     * This caches both the category index AND each individual category detail page.
+     *
+     * @return int Number of categories cached
+     */
+    public function warmUp(string $locale): int
+    {
+        // First, warm the index (list of all categories)
+        $categories = $this->get($locale);
+
+        // Then, warm each individual category detail page
+        // This caches both the entity and the slug-to-ID mapping
+        foreach ($categories as $category) {
+            \assert($category instanceof Category);
+            $translation = $category->getTranslationByLocale($locale);
+
+            if ($translation instanceof CategoryTranslation) {
+                $this->getOne($locale, $translation->getSlug());
+            }
+        }
+
+        return \count($categories);
+    }
+
+    protected function loadEntityById(int $id): ?Category
+    {
+        return $this->repository->findOneById($id);
+    }
+
+    protected function loadEntityBySlug(string $slug): ?Category
+    {
+        return $this->repository->findOne($slug);
+    }
+
+    protected function generateCacheTags(object $entity): array
+    {
+        \assert($entity instanceof Category);
+
+        return [
+            'categories',
+            'category_' . $entity->getId(),
+        ];
+    }
+
+    protected function extractEntityId(object $entity): ?int
+    {
+        \assert($entity instanceof Category);
+
+        return $entity->getId();
     }
 }

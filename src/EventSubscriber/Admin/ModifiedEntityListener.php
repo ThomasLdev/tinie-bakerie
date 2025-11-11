@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber\Admin;
 
-use App\Services\Cache\EntityCacheInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use App\Services\Cache\InvalidatableEntityCacheInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class ModifiedEntityListener implements EventSubscriberInterface
 {
     public function __construct(
-        /** @var EntityCacheInterface[] $entityCaches */
+        /** @var InvalidatableEntityCacheInterface[] $entityCaches */
         #[AutowireIterator('service.entity_cache')]
         private iterable $entityCaches,
     ) {
@@ -22,23 +23,32 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            BeforeEntityUpdatedEvent::class => 'invalidateCacheOnUpdate',
-            BeforeEntityPersistedEvent::class => 'invalidateCacheOnCreate',
+            AfterEntityUpdatedEvent::class => 'invalidateCacheOnUpdate',
+            AfterEntityPersistedEvent::class => 'invalidateCacheOnCreate',
+            AfterEntityDeletedEvent::class => 'invalidateCacheOnDelete',
         ];
     }
 
     /**
-     * @param BeforeEntityUpdatedEvent<object> $event
+     * @param AfterEntityUpdatedEvent<object> $event
      */
-    public function invalidateCacheOnUpdate(BeforeEntityUpdatedEvent $event): void
+    public function invalidateCacheOnUpdate(AfterEntityUpdatedEvent $event): void
     {
         $this->invalidateCache($event->getEntityInstance());
     }
 
     /**
-     * @param BeforeEntityPersistedEvent<object> $event
+     * @param AfterEntityPersistedEvent<object> $event
      */
-    public function invalidateCacheOnCreate(BeforeEntityPersistedEvent $event): void
+    public function invalidateCacheOnCreate(AfterEntityPersistedEvent $event): void
+    {
+        $this->invalidateCache($event->getEntityInstance());
+    }
+
+    /**
+     * @param AfterEntityDeletedEvent<object> $event
+     */
+    public function invalidateCacheOnDelete(AfterEntityDeletedEvent $event): void
     {
         $this->invalidateCache($event->getEntityInstance());
     }
@@ -48,7 +58,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         $this->getCache($entity)->invalidate($entity);
     }
 
-    private function getCache(object $entity): EntityCacheInterface
+    private function getCache(object $entity): InvalidatableEntityCacheInterface
     {
         foreach ($this->entityCaches as $cache) {
             if ($cache::supports($entity)) {

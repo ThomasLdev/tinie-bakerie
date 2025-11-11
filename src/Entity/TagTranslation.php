@@ -14,6 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translation<Tag>
  */
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(name: 'tag_translation_unique_idx', columns: ['locale', 'title'])]
 class TagTranslation implements Translation, \Stringable
 {
@@ -64,5 +65,14 @@ class TagTranslation implements Translation, \Stringable
         $this->title = $title;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateParentTimestamp(): void
+    {
+        if ($this->translatable instanceof Tag) {
+            $this->translatable->setUpdatedAt(new \DateTime());
+        }
     }
 }

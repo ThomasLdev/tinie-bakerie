@@ -4,93 +4,142 @@ declare(strict_types=1);
 
 namespace App\Services\Cache;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Repository\PostRepository;
 use App\Services\Locale\Locales;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
-use Symfony\Contracts\Cache\CacheInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-readonly class PostCache implements EntityCacheInterface
+/**
+ * @method Post|null getOne(string $locale, string $identifier)
+ */
+readonly class PostCache extends AbstractEntityCache
 {
-    private const int CACHE_TTL = 3600; // 1 hour
-
     private const string ENTITY_NAME = 'post';
 
     public function __construct(
-        private CacheInterface $cache,
+        #[Autowire(service: 'cache.app.taggable')]
+        TagAwareCacheInterface $cache,
+        CacheKeyGenerator $keyGenerator,
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
         private PostRepository $repository,
-        private CacheKeyGenerator $keyGenerator,
         private Locales $locales,
     ) {
+        parent::__construct($cache, $keyGenerator, $logger, $entityManager);
     }
 
     /**
-     * @throws InvalidArgumentException
-     *
      * @return array<array-key,mixed>
      */
     public function get(string $locale): array
     {
         $key = $this->keyGenerator->entityIndex($this->getEntityName(), $locale);
 
-        return $this->cache->get($key, function (ItemInterface $item): array {
-            $item->expiresAfter(self::CACHE_TTL);
+        try {
+            return $this->cache->get($key, function (ItemInterface $item): array {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                $item->tag([
+                    'posts',
+                    'posts_index',
+                ]);
+
+                return $this->repository->findAllActive();
+            });
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Post cache read failed, using direct DB query', [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+            ]);
 
             return $this->repository->findAllActive();
-        });
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function getOne(string $locale, string $identifier): ?Post
-    {
-        $key = $this->keyGenerator->entityShow($this->getEntityName(), $locale, $identifier);
-
-        return $this->cache->get($key, function (ItemInterface $item) use ($identifier): ?Post {
-            $item->expiresAfter(self::CACHE_TTL);
-
-            return $this->repository->findOneActive($identifier);
-        });
-    }
-
-    /**
-     * @param array<string,mixed> $criteria
-     *
-     * @throws InvalidArgumentException
-     */
-    public function invalidateByCriteria(array $criteria): void
-    {
-        $posts = $this->repository->findBy($criteria);
-
-        foreach ($posts as $post) {
-            $this->invalidate($post);
         }
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function invalidate(object $entity): void
     {
         if (!$entity instanceof Post) {
             return;
         }
 
-        foreach ($this->locales->get() as $locale) {
-            $this->cache->delete($this->keyGenerator->entityIndex(self::ENTITY_NAME, $locale));
+        try {
+            $this->logger->info('Invalidating post cache', [
+                'entity' => 'Post',
+                'id' => $entity->getId(),
+            ]);
 
-            $translation = $entity->getTranslationByLocale($locale);
+            $this->cache->invalidateTags([
+                'post_' . $entity->getId(),
+                'posts_index',
+            ]);
 
-            if (!$translation instanceof PostTranslation) {
-                continue;
+            // Also invalidate slug mapping caches for all locales
+            foreach ($this->locales->get() as $locale) {
+                $translation = $entity->getTranslationByLocale($locale);
+
+                if ($translation instanceof PostTranslation) {
+                    $this->cache->delete(
+                        $this->keyGenerator->slugMapping($this->getEntityName(), $locale, $translation->getSlug()),
+                    );
+                }
             }
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Post cache invalidation failed', [
+                'exception' => $e->getMessage(),
+                'entity' => 'Post',
+                'id' => $entity->getId(),
+            ]);
+        }
+    }
 
-            $this->cache->delete(
-                $this->keyGenerator->entityShow($this->getEntityName(), $locale, $translation->getSlug()),
-            );
+    /**
+     * Invalidate all posts in a given category using cache tags.
+     */
+    public function invalidateByCategory(int $categoryId): void
+    {
+        try {
+            $this->logger->info('Invalidating posts by category tag', [
+                'category_id' => $categoryId,
+            ]);
+
+            $this->cache->invalidateTags([
+                'category_' . $categoryId,
+                'posts_index',
+            ]);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Post cache invalidation by category failed', [
+                'exception' => $e->getMessage(),
+                'category_id' => $categoryId,
+            ]);
+        }
+    }
+
+    /**
+     * Invalidate all posts with a given tag using cache tags.
+     */
+    public function invalidateByTag(int $tagId): void
+    {
+        try {
+            $this->logger->info('Invalidating posts by tag', [
+                'tag_id' => $tagId,
+            ]);
+
+            $this->cache->invalidateTags([
+                'tag_' . $tagId,
+                'posts_index',
+            ]);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error('Post cache invalidation by tag failed', [
+                'exception' => $e->getMessage(),
+                'tag_id' => $tagId,
+            ]);
         }
     }
 
@@ -102,5 +151,67 @@ readonly class PostCache implements EntityCacheInterface
     public static function supports(object $entity): bool
     {
         return $entity instanceof Post;
+    }
+
+    /**
+     * Warm up the cache for the given locale by pre-loading all active posts.
+     * This caches both the post index AND each individual post detail page.
+     *
+     * @return int Number of posts cached
+     */
+    public function warmUp(string $locale): int
+    {
+        // First, warm the index (list of all posts)
+        $posts = $this->get($locale);
+
+        // Then, warm each individual post detail page
+        // This caches both the entity and the slug-to-ID mapping
+        foreach ($posts as $post) {
+            \assert($post instanceof Post);
+            $translation = $post->getTranslationByLocale($locale);
+
+            if ($translation instanceof PostTranslation) {
+                $this->getOne($locale, $translation->getSlug());
+            }
+        }
+
+        return \count($posts);
+    }
+
+    protected function loadEntityById(int $id): ?Post
+    {
+        return $this->repository->findOneActiveById($id);
+    }
+
+    protected function loadEntityBySlug(string $slug): ?Post
+    {
+        return $this->repository->findOneActive($slug);
+    }
+
+    protected function generateCacheTags(object $entity): array
+    {
+        \assert($entity instanceof Post);
+
+        $tags = [
+            'posts',
+            'post_' . $entity->getId(),
+        ];
+
+        if ($entity->getCategory() instanceof Category) {
+            $tags[] = 'category_' . $entity->getCategory()->getId();
+        }
+
+        foreach ($entity->getTags() as $tag) {
+            $tags[] = 'tag_' . $tag->getId();
+        }
+
+        return $tags;
+    }
+
+    protected function extractEntityId(object $entity): ?int
+    {
+        \assert($entity instanceof Post);
+
+        return $entity->getId();
     }
 }

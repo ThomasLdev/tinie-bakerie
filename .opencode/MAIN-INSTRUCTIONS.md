@@ -77,9 +77,8 @@ Each specialized agent extends these main instructions with task-specific workfl
 **Correct command patterns**:
 ```bash
 # Using Makefile (PREFERRED - shortcuts to Docker commands)
-make test              # Run tests in container
+make tests              # Run tests in container
 make quality           # Run quality tools in container
-make cache-clear       # Clear cache in container
 
 # Using Docker Compose directly
 docker compose exec php bin/console ...

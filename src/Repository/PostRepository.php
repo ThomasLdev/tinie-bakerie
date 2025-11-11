@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,9 +24,6 @@ class PostRepository extends ServiceEntityRepository
      */
     public function findAllActive(): array
     {
-        // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, createdAt, updatedAt}')
             ->leftJoin('p.translations', 'pt')
@@ -46,47 +44,94 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('active', true)
             ->orderBy('p.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getResult();
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
 
         return \is_array($result) ? $result : [];
     }
 
     public function findOneActive(string $slug): ?Post
     {
-        // Clear the identity map to ensure fresh entities are loaded with the locale filter applied
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, createdAt, updatedAt}')
+            ->select('p')
             ->leftJoin('p.translations', 'pt')
-            ->addSelect('PARTIAL pt.{id, title, slug}')
+            ->addSelect('pt')
             ->leftJoin('p.category', 'c')
-            ->addSelect('PARTIAL c.{id}')
+            ->addSelect('c')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug}')
+            ->addSelect('ct')
             ->leftJoin('p.tags', 't')
-            ->addSelect('PARTIAL t.{id, backgroundColor, textColor}')
+            ->addSelect('t')
             ->leftJoin('t.translations', 'tt')
-            ->addSelect('PARTIAL tt.{id, title}')
+            ->addSelect('tt')
             ->leftJoin('p.sections', 'ps')
-            ->addSelect('PARTIAL ps.{id, position, type}')
+            ->addSelect('ps')
             ->leftJoin('ps.translations', 'pst')
-            ->addSelect('PARTIAL pst.{id, content}')
+            ->addSelect('pst')
             ->leftJoin('ps.media', 'psm')
-            ->addSelect('PARTIAL psm.{id, mediaName, type}')
+            ->addSelect('psm')
             ->leftJoin('psm.translations', 'psmt')
-            ->addSelect('PARTIAL psmt.{id, alt, title}')
+            ->addSelect('psmt')
             ->leftJoin('p.media', 'm')
-            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->addSelect('m')
             ->leftJoin('m.translations', 'mt')
-            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->addSelect('mt')
             ->where('p.active = :active')
             ->andWhere('pt.slug = :slug')
             ->setParameter('active', true)
             ->setParameter('slug', $slug)
             ->orderBy('p.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getOneOrNullResult();
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
+
+        return $result instanceof Post ? $result : null;
+    }
+
+    /**
+     * Find an active post by ID with all related data.
+     * Uses HINT_REFRESH to ensure locale filter is applied.
+     */
+    public function findOneActiveById(int $id): ?Post
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('pt')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('ct')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('t')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('tt')
+            ->leftJoin('p.sections', 'ps')
+            ->addSelect('ps')
+            ->leftJoin('ps.translations', 'pst')
+            ->addSelect('pst')
+            ->leftJoin('ps.media', 'psm')
+            ->addSelect('psm')
+            ->leftJoin('psm.translations', 'psmt')
+            ->addSelect('psmt')
+            ->leftJoin('p.media', 'm')
+            ->addSelect('m')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('mt')
+            ->where('p.active = :active')
+            ->andWhere('p.id = :id')
+            ->setParameter('active', true)
+            ->setParameter('id', $id)
+            ->setMaxResults(1);
+
+        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
 
         return $result instanceof Post ? $result : null;
     }

@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +25,6 @@ class CategoryRepository extends ServiceEntityRepository
     #[\Override]
     public function findAll(): array
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
@@ -36,7 +35,9 @@ class CategoryRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL mt.{id, title, alt}')
             ->orderBy('c.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getResult();
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
 
         return \is_array($result) ? $result : [];
     }
@@ -46,36 +47,87 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function findAllSlugs(): array
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id}')
             ->leftJoin('c.translations', 'ct')
             ->addSelect('PARTIAL ct.{id, title, slug}')
             ->orderBy('c.createdAt', 'DESC');
 
-        $result = $qb->getQuery()->getResult();
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
 
         return \is_array($result) ? $result : [];
     }
 
     public function findOne(string $slug): ?Category
     {
-        $this->getEntityManager()->clear();
-
         $qb = $this->createQueryBuilder('c')
-            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->select('c')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug, description, metaDescription, metaTitle, excerpt}')
+            ->addSelect('ct')
             ->leftJoin('c.media', 'm')
-            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->addSelect('m')
             ->leftJoin('m.translations', 'mt')
-            ->addSelect('PARTIAL mt.{id, title, alt}')
+            ->addSelect('mt')
+            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
+            ->addSelect('p')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('pt')
+            ->leftJoin('p.media', 'pm')
+            ->addSelect('pm')
+            ->leftJoin('pm.translations', 'pmt')
+            ->addSelect('pmt')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('t')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('tt')
             ->where('ct.slug = :slug')
             ->setParameter('slug', $slug)
-            ->setMaxResults(1);
+            ->setParameter('active', true);
 
-        $result = $qb->getQuery()->getOneOrNullResult();
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
+
+        return $result instanceof Category ? $result : null;
+    }
+
+    /**
+     * Find a category by ID with all related data.
+     * Uses HINT_REFRESH to ensure locale filter is applied.
+     * Eagerly loads posts to ensure they're available when entity is cached.
+     * Only loads active posts.
+     */
+    public function findOneById(int $id): ?Category
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('ct')
+            ->leftJoin('c.media', 'm')
+            ->addSelect('m')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('mt')
+            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
+            ->addSelect('p')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('pt')
+            ->leftJoin('p.media', 'pm')
+            ->addSelect('pm')
+            ->leftJoin('pm.translations', 'pmt')
+            ->addSelect('pmt')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('t')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('tt')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->setParameter('active', true);
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getOneOrNullResult();
 
         return $result instanceof Category ? $result : null;
     }

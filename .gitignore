@@ -76,6 +76,7 @@ public/bundles
 
 .env.*
 compose.override.yaml
+coverage
 
 ###> playwright ###
 node_modules/

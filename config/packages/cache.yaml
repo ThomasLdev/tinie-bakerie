@@ -1,7 +1,7 @@
 framework:
     cache:
         # Unique name of your app: used to compute stable namespaces for cache keys.
-        #prefix_seed: your_vendor_name/app_name
+        prefix_seed: 'tinie_bakerie_v1'
 
         # The "app" cache stores to the filesystem by default.
         # The data in this cache should persist between deploys.
@@ -14,6 +14,9 @@ framework:
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
 
-        # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+        # Configure tag-aware cache pools
+        pools:
+            # Tag-aware cache for entity caching (Posts, Categories, Tags)
+            cache.app.taggable:
+                adapter: cache.adapter.filesystem
+                tags: true
