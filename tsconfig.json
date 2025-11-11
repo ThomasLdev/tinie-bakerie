@@ -22,13 +22,6 @@
       "swiper/bundle": ["node_modules/swiper"]
     }
   },
-  "include": [
-    "assets/controllers/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "var",
-    "vendor",
-    "public"
-  ]
+  "include": ["assets/controllers/**/*.ts"],
+  "exclude": ["node_modules", "var", "vendor", "public"]
 }

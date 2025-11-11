@@ -111,6 +111,8 @@ jobs:
         run: make fixtures-test
       - name: Doctrine Schema Validator
         run: make doctrine-validate-schema
+      - name: Build TypeScript Assets
+        run: make typescript
       - name: Run PHPUnit Functional Suite
         run: make functional
   e2e_tests:
@@ -146,6 +148,8 @@ jobs:
         run: make node-install
       - name: Install Playwright Dependencies
         run: make e2e-install
+      - name: Build TypeScript Assets
+        run: make typescript
       - name: Run E2E Tests
         run: make e2e
         env:
