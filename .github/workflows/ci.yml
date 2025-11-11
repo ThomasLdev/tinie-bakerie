@@ -220,6 +220,9 @@ jobs:
           node-version: 20.x
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.15.x
+      - name: Add hostname to /etc/hosts
+        run: |
+          echo "127.0.0.1 local.tinie-bakerie.com" | sudo tee -a /etc/hosts
       - name: Run Lighthouse CI
         run: lhci autorun --upload.target=temporary-public-storage
         env:

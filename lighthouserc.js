@@ -1,20 +1,22 @@
 module.exports = {
   ci: {
     collect: {
-      // URLs to test - add more pages as needed
+      // URLs to test - using HTTPS for accurate scoring
       url: [
-        'http://localhost/',
-        'http://localhost/en/',
-        'http://localhost/en/posts',
-        'http://localhost/en/about',
+        'https://local.tinie-bakerie.com',
+        'https://local.tinie-bakerie.com/fr/articles',
+        'https://local.tinie-bakerie.com/fr/articles/maiores-cum-dolorem-eum/quam-nostrum-quos-non',
+        'https://local.tinie-bakerie.com/fr/categories/facere-fuga-enim-sed',
       ],
       // Number of times to run Lighthouse on each URL
       numberOfRuns: 3,
       settings: {
-        // Lighthouse settings
-        preset: 'desktop',
-        // Add Chrome flags if needed (e.g., --no-sandbox for CI environments)
-        // chromeFlags: '--no-sandbox',
+        // Lighthouse settings - mobile preset for realistic traffic simulation
+        // Mobile uses throttling to simulate 4G network conditions
+        preset: 'mobile',
+        // Chrome flags for CI environment
+        // --ignore-certificate-errors: Accept self-signed certs in CI
+        chromeFlags: '--no-sandbox --disable-gpu --ignore-certificate-errors',
       },
     },
     assert: {
