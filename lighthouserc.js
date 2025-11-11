@@ -11,9 +11,25 @@ module.exports = {
       // Number of times to run Lighthouse on each URL
       numberOfRuns: 3,
       settings: {
-        // Lighthouse settings - mobile preset for realistic traffic simulation
-        // Mobile uses throttling to simulate 4G network conditions
-        preset: 'mobile',
+        // Lighthouse defaults to mobile - no preset needed
+        // Mobile simulates slow 4G network and mobile device
+        // To explicitly configure mobile:
+        formFactor: 'mobile',
+        throttling: {
+          rttMs: 150,
+          throughputKbps: 1638.4,
+          requestLatencyMs: 150,
+          downloadThroughputKbps: 1638.4,
+          uploadThroughputKbps: 675,
+          cpuSlowdownMultiplier: 4,
+        },
+        screenEmulation: {
+          mobile: true,
+          width: 375,
+          height: 667,
+          deviceScaleFactor: 2,
+          disabled: false,
+        },
         // Chrome flags for CI environment
         // --ignore-certificate-errors: Accept self-signed certs in CI
         chromeFlags: '--no-sandbox --disable-gpu --ignore-certificate-errors',
