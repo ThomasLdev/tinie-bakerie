@@ -7,7 +7,7 @@ services:
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
       TRUSTED_HOSTS: ${TRUSTED_HOSTS:-^${SERVER_NAME:-tinie-bakerie.com}|php$$}
       # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
-#      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-15}&charset=${POSTGRES_CHARSET:-utf8}
+    #      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-15}&charset=${POSTGRES_CHARSET:-utf8}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -25,7 +25,7 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     environment:
@@ -34,7 +34,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ['CMD', 'pg_isready', '-d', '${POSTGRES_DB:-app}', '-U', '${POSTGRES_USER:-app}']
       timeout: 5s
       retries: 5
       start_period: 60s
@@ -42,27 +42,47 @@ services:
       - database_data:/var/lib/postgresql/data:rw
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
 
-###> symfony/cache ###
+  ###> symfony/cache ###
   redis:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 3s
       retries: 5
-###< symfony/cache ###
+  ###< symfony/cache ###
 
-###> node (dev tools: linting, formatting, e2e tests) ###
+  ###> meilisearch ###
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-aSampleMasterKey}
+      MEILI_ENV: ${MEILISEARCH_ENV:-development}
+      MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS:-true}
+    ports:
+      - '${MEILISEARCH_PORT:-7700}:7700'
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--spider', 'http://localhost:7700/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  ###< meilisearch ###
+
+  ###> node (dev tools: linting, formatting, e2e tests) ###
   # Node.js container for DEVELOPMENT & CI ONLY (never production)
   # Uses 'profiles: [dev]' to prevent running in production
-  # 
+  #
   # Usage:
   #   Development:     docker compose --profile dev up  (or make up-dev)
   #   CI Environment:  docker compose --profile dev up  (with CI=true env var)
@@ -92,14 +112,18 @@ volumes:
   caddy_data:
   caddy_config:
 
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database_data:
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
 
-###> symfony/cache ###
+  ###> symfony/cache ###
   redis_data:
-###< symfony/cache ###
+  ###< symfony/cache ###
 
-###> node ###
+  ###> node ###
   node_modules:
-###< node ###
+  ###< node ###
+
+  ###> meilisearch ###
+  meilisearch_data:
+###< meilisearch ###
