@@ -1,0 +1,31 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # Main async transport using Redis
+            async:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    stream: messages
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 10000
+            
+            # Failed messages also use Redis (with different stream)
+            failed:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    stream: messages_failed
+
+        routing:
+            "App\\Message\\IndexEntityMessage": async
+            "App\\Message\\RemoveEntityFromIndexMessage": async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: "sync://"

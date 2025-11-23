@@ -29,3 +29,13 @@ services:
     ports:
       - "7700"
 ###< meilisearch/search-bundle ###
+
+###> symfony/messenger ###
+  messenger-worker:
+    build:
+      context: .
+      target: frankenphp_dev
+    volumes:
+      - ./:/app
+      - ./var:/app/var
+###< symfony/messenger ###

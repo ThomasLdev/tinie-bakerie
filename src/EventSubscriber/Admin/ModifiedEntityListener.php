@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber\Admin;
 
+use App\Message\IndexEntityMessage;
+use App\Message\RemoveEntityFromIndexMessage;
 use App\Services\Cache\InvalidatableEntityCacheInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 readonly class ModifiedEntityListener implements EventSubscriberInterface
 {
@@ -17,45 +20,106 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         /** @var InvalidatableEntityCacheInterface[] $entityCaches */
         #[AutowireIterator('service.entity_cache')]
         private iterable $entityCaches,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            AfterEntityUpdatedEvent::class => 'invalidateCacheOnUpdate',
-            AfterEntityPersistedEvent::class => 'invalidateCacheOnCreate',
-            AfterEntityDeletedEvent::class => 'invalidateCacheOnDelete',
+            AfterEntityUpdatedEvent::class => 'onEntityUpdated',
+            AfterEntityPersistedEvent::class => 'onEntityCreated',
+            AfterEntityDeletedEvent::class => 'onEntityDeleted',
         ];
     }
 
     /**
      * @param AfterEntityUpdatedEvent<object> $event
      */
-    public function invalidateCacheOnUpdate(AfterEntityUpdatedEvent $event): void
+    public function onEntityUpdated(AfterEntityUpdatedEvent $event): void
     {
-        $this->invalidateCache($event->getEntityInstance());
+        $entity = $event->getEntityInstance();
+
+        // Synchronous: Invalidate cache immediately
+        $this->invalidateCache($entity);
+
+        // Asynchronous: Dispatch message to update search index
+        $this->dispatchIndexMessage($entity, 'update');
     }
 
     /**
      * @param AfterEntityPersistedEvent<object> $event
      */
-    public function invalidateCacheOnCreate(AfterEntityPersistedEvent $event): void
+    public function onEntityCreated(AfterEntityPersistedEvent $event): void
     {
-        $this->invalidateCache($event->getEntityInstance());
+        $entity = $event->getEntityInstance();
+
+        // Synchronous: Invalidate cache immediately
+        $this->invalidateCache($entity);
+
+        // Asynchronous: Dispatch message to add to search index
+        $this->dispatchIndexMessage($entity, 'create');
     }
 
     /**
      * @param AfterEntityDeletedEvent<object> $event
      */
-    public function invalidateCacheOnDelete(AfterEntityDeletedEvent $event): void
+    public function onEntityDeleted(AfterEntityDeletedEvent $event): void
     {
-        $this->invalidateCache($event->getEntityInstance());
+        $entity = $event->getEntityInstance();
+
+        // Synchronous: Invalidate cache immediately
+        $this->invalidateCache($entity);
+
+        // Asynchronous: Dispatch message to remove from search index
+        $this->dispatchRemoveMessage($entity);
     }
 
     private function invalidateCache(object $entity): void
     {
         $this->getCache($entity)->invalidate($entity);
+    }
+
+    private function dispatchIndexMessage(object $entity, string $operation): void
+    {
+        $entityId = $this->extractEntityId($entity);
+
+        if ($entityId === null) {
+            return; // Can't index entity without ID
+        }
+
+        $message = new IndexEntityMessage(
+            entityClass: $entity::class,
+            entityId: $entityId,
+            operation: $operation,
+        );
+
+        $this->messageBus->dispatch($message);
+    }
+
+    private function dispatchRemoveMessage(object $entity): void
+    {
+        $entityId = $this->extractEntityId($entity);
+
+        if ($entityId === null) {
+            return;
+        }
+
+        $message = new RemoveEntityFromIndexMessage(
+            entityClass: $entity::class,
+            entityId: $entityId,
+        );
+
+        $this->messageBus->dispatch($message);
+    }
+
+    private function extractEntityId(object $entity): ?int
+    {
+        if (method_exists($entity, 'getId')) {
+            return $entity->getId();
+        }
+
+        return null;
     }
 
     private function getCache(object $entity): InvalidatableEntityCacheInterface
