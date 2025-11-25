@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
  * to provide efficient indexed access to translations.
  *
  * @template T of Translation
+ *
  * @extends TranslationAccessor<T>
  */
 interface Translatable extends TranslationAccessor

@@ -19,6 +19,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Tag implements Translatable, \Stringable
 {
     use TimestampableEntity;
+
     /** @use TranslationAccessorTrait<TagTranslation> */
     use TranslationAccessorTrait;
 

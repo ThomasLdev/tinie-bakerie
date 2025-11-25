@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Locale;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class LocaleProvider
@@ -31,7 +32,8 @@ class LocaleProvider
 
         // Priority 2: Request locale (for web requests)
         $request = $this->requestStack->getCurrentRequest();
-        if (null !== $request) {
+
+        if ($request instanceof Request) {
             return $request->getLocale();
         }
 

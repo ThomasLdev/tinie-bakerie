@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasMediaEntities;
+use App\Entity\Contracts\MediaAttachment;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Media\Enum\MediaType;
@@ -21,11 +21,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 #[ORM\Entity]
 #[Vich\Uploadable]
-class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
+class CategoryMedia implements Translatable, MediaAttachment, \Stringable
 {
+    use TimestampableEntity;
+
     /** @use TranslationAccessorTrait<CategoryMediaTranslation> */
     use TranslationAccessorTrait;
-    use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

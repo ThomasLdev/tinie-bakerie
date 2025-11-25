@@ -22,6 +22,7 @@ class Post implements Translatable
 {
     use Activable;
     use TimestampableEntity;
+
     /** @use TranslationAccessorTrait<PostTranslation> */
     use TranslationAccessorTrait;
 

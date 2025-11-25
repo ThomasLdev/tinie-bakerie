@@ -24,9 +24,7 @@ trait TranslationAccessorTrait
      */
     private array $translationsByLocale = [];
 
-    /**
-     * The current locale to use for translation access.
-     */
+    /** The current locale to use for translation access. */
     private ?string $currentLocale = null;
 
     /**
@@ -52,6 +50,17 @@ trait TranslationAccessorTrait
     }
 
     /**
+     * Returns the translation for a specific locale, or null if not found.
+     * This method uses the indexed map for O(1) access.
+     *
+     * @return T|null
+     */
+    public function getTranslationByLocale(string $locale): ?Translation
+    {
+        return $this->translationsByLocale[$locale] ?? null;
+    }
+
+    /**
      * Returns the translation matching the current locale, or null if not found.
      * This is protected so that each entity can override it with a covariant return type.
      *
@@ -64,16 +73,5 @@ trait TranslationAccessorTrait
         }
 
         return $this->translationsByLocale[$this->currentLocale] ?? null;
-    }
-
-    /**
-     * Returns the translation for a specific locale, or null if not found.
-     * This method uses the indexed map for O(1) access.
-     *
-     * @return T|null
-     */
-    public function getTranslationByLocale(string $locale): ?Translation
-    {
-        return $this->translationsByLocale[$locale] ?? null;
     }
 }

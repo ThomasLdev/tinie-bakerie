@@ -7,7 +7,10 @@ namespace App\Entity\Contracts;
 use App\Services\Media\Enum\MediaType;
 use Symfony\Component\HttpFoundation\File\File;
 
-interface HasMediaEntities
+/**
+ * Represents an entity that contains a media file attachment with metadata.
+ */
+interface MediaAttachment
 {
     public function getMediaFile(): ?File;
 

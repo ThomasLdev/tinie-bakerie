@@ -19,9 +19,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 class PostSection implements Translatable, \Stringable
 {
+    use TimestampableEntity;
+
     /** @use TranslationAccessorTrait<PostSectionTranslation> */
     use TranslationAccessorTrait;
-    use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

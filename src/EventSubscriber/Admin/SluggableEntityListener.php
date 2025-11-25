@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber\Admin;
 
-use App\Entity\Contracts\HasSlugs;
+use App\Entity\Contracts\Sluggable;
 use App\Entity\Contracts\Translatable;
 use App\Services\Slug\Slugger;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
@@ -48,7 +48,7 @@ readonly class SluggableEntityListener implements EventSubscriberInterface
         }
 
         foreach ($entity->getTranslations() as $translation) {
-            if (!$translation instanceof HasSlugs) {
+            if (!$translation instanceof Sluggable) {
                 continue;
             }
 

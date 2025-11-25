@@ -18,6 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Category implements Translatable
 {
     use TimestampableEntity;
+
     /** @use TranslationAccessorTrait<CategoryTranslation> */
     use TranslationAccessorTrait;
 
