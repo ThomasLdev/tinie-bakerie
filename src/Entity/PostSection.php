@@ -180,17 +180,24 @@ class PostSection implements Translatable, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to PostSectionTranslation.
+     */
+    public function getCurrentTranslation(): ?PostSectionTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof PostSectionTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostSectionTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 
     public function getContent(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostSectionTranslation ? ($translation->getContent() ?? '') : '';
+        return $this->getCurrentTranslation()?->getContent() ?? '';
     }
 }

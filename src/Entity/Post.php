@@ -285,24 +285,29 @@ class Post implements Translatable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to PostTranslation.
+     */
+    public function getCurrentTranslation(): ?PostTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof PostTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 
     public function getSlug(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostTranslation ? $translation->getSlug() : '';
+        return $this->getCurrentTranslation()?->getSlug() ?? '';
     }
 
     public function getExcerpt(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostTranslation ? $translation->getExcerpt() : '';
+        return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
 }

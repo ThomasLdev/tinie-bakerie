@@ -147,45 +147,44 @@ class Category implements Translatable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to CategoryTranslation.
+     */
+    public function getCurrentTranslation(): ?CategoryTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof CategoryTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 
     public function getDescription(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getDescription() : '';
+        return $this->getCurrentTranslation()?->getDescription() ?? '';
     }
 
     public function getSlug(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getSlug() : '';
+        return $this->getCurrentTranslation()?->getSlug() ?? '';
     }
 
     public function getMetaTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getMetaTitle() : '';
+        return $this->getCurrentTranslation()?->getMetaTitle() ?? '';
     }
 
     public function getMetaDescription(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getMetaDescription() : '';
+        return $this->getCurrentTranslation()?->getMetaDescription() ?? '';
     }
 
     public function getExcerpt(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryTranslation ? $translation->getExcerpt() : '';
+        return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
 }

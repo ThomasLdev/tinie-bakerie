@@ -53,10 +53,11 @@ trait TranslationAccessorTrait
 
     /**
      * Returns the translation matching the current locale, or null if not found.
+     * This is protected so that each entity can override it with a covariant return type.
      *
      * @return T|null
      */
-    public function getCurrentTranslation(): ?Translation
+    protected function getTranslationForCurrentLocale(): ?Translation
     {
         if (null === $this->currentLocale) {
             return null;

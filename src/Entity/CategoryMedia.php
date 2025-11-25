@@ -170,17 +170,24 @@ class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to CategoryMediaTranslation.
+     */
+    public function getCurrentTranslation(): ?CategoryMediaTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof CategoryMediaTranslation ? $translation : null;
+    }
+
     public function getAlt(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryMediaTranslation ? $translation->getAlt() : '';
+        return $this->getCurrentTranslation()?->getAlt() ?? '';
     }
 
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof CategoryMediaTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 }

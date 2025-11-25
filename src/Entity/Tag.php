@@ -121,10 +121,19 @@ class Tag implements Translatable, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to TagTranslation.
+     */
+    public function getCurrentTranslation(): ?TagTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof TagTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof TagTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 }

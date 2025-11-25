@@ -165,17 +165,24 @@ class PostMedia implements Translatable, HasMediaEntities, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to PostMediaTranslation.
+     */
+    public function getCurrentTranslation(): ?PostMediaTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof PostMediaTranslation ? $translation : null;
+    }
+
     public function getAlt(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostMediaTranslation ? $translation->getAlt() : '';
+        return $this->getCurrentTranslation()?->getAlt() ?? '';
     }
 
     public function getTitle(): string
     {
-        $translation = $this->getCurrentTranslation();
-
-        return $translation instanceof PostMediaTranslation ? $translation->getTitle() : '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 }
