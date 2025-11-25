@@ -6,6 +6,8 @@ namespace App\MessageHandler;
 
 use App\Message\IndexEntityMessage;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Meilisearch\Bundle\SearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -20,13 +22,16 @@ final readonly class IndexEntityMessageHandler
     ) {
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     public function __invoke(IndexEntityMessage $message): void
     {
         $entityClass = $message->getEntityClass();
         $entityId = $message->getEntityId();
         $operation = $message->getOperation();
 
-        // Check if entity class is configured in meilisearch.yaml
         if (!$this->searchService->isSearchable($entityClass)) {
             $this->logger->debug('Entity type not searchable, skipping indexing', [
                 'entity_class' => $entityClass,
@@ -46,7 +51,6 @@ final readonly class IndexEntityMessageHandler
         ]);
 
         try {
-            // Load entity from database
             $entity = $this->entityManager->find($entityClass, $entityId);
 
             if ($entity === null) {
@@ -58,7 +62,6 @@ final readonly class IndexEntityMessageHandler
                 return;
             }
 
-            // Index the entity - SearchService handles everything automatically
             $this->searchService->index($this->entityManager, $entity);
 
             $this->logger->info('Entity indexed successfully', [
@@ -75,7 +78,6 @@ final readonly class IndexEntityMessageHandler
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            // Re-throw to trigger retry mechanism
             throw $e;
         }
     }

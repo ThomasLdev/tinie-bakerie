@@ -40,10 +40,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
     {
         $entity = $event->getEntityInstance();
 
-        // Synchronous: Invalidate cache immediately
         $this->invalidateCache($entity);
-
-        // Asynchronous: Dispatch message to update search index
         $this->dispatchIndexMessage($entity, 'update');
     }
 
@@ -54,10 +51,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
     {
         $entity = $event->getEntityInstance();
 
-        // Synchronous: Invalidate cache immediately
         $this->invalidateCache($entity);
-
-        // Asynchronous: Dispatch message to add to search index
         $this->dispatchIndexMessage($entity, 'create');
     }
 
@@ -68,10 +62,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
     {
         $entity = $event->getEntityInstance();
 
-        // Synchronous: Invalidate cache immediately
         $this->invalidateCache($entity);
-
-        // Asynchronous: Dispatch message to remove from search index
         $this->dispatchRemoveMessage($entity);
     }
 
@@ -85,7 +76,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         $entityId = $this->extractEntityId($entity);
 
         if ($entityId === null) {
-            return; // Can't index entity without ID
+            return;
         }
 
         $message = new IndexEntityMessage(

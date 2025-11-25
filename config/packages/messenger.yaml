@@ -1,9 +1,7 @@
 framework:
     messenger:
         failure_transport: failed
-
         transports:
-            # Main async transport using Redis
             async:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 options:
@@ -13,8 +11,6 @@ framework:
                     delay: 1000
                     multiplier: 2
                     max_delay: 10000
-            
-            # Failed messages also use Redis (with different stream)
             failed:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 options:

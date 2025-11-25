@@ -22,4 +22,5 @@ return [
     Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle::class => ['all' => true],
     Meilisearch\Bundle\MeilisearchBundle::class => ['all' => true],
     Symfony\UX\LiveComponent\LiveComponentBundle::class => ['all' => true],
+    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
 ];
