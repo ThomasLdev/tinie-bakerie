@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Services\Cache\WarmableCacheInterface;
+use App\Services\Locale\LocaleProvider;
 use App\Services\Locale\Locales;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -33,6 +34,7 @@ class WarmCacheCommand extends Command
         #[Autowire(service: 'cache.app.taggable')]
         private readonly AdapterInterface $cache,
         private readonly EntityManagerInterface $entityManager,
+        private readonly LocaleProvider $localeProvider,
     ) {
         parent::__construct();
     }
@@ -152,6 +154,10 @@ class WarmCacheCommand extends Command
                 }
 
                 $filters->getFilter('locale_filter')->setParameter('locale', $locale);
+
+                // Also set the locale on the LocaleProvider so the TranslatableEntitySubscriber
+                // can inject the correct locale into entities during postLoad
+                $this->localeProvider->setLocale($locale);
 
                 // Warm the cache with the correct locale filter active
                 $count = $cache->warmUp($locale);

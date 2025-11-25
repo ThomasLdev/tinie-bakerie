@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Contracts\HasMediaEntities;
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Media\Enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -22,6 +23,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
 {
+    /** @use TranslationAccessorTrait<CategoryMediaTranslation> */
+    use TranslationAccessorTrait;
     use TimestampableEntity;
 
     #[ORM\Id]
@@ -169,21 +172,15 @@ class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
 
     public function getAlt(): string
     {
-        return $this->getLocalizedTranslation()?->getAlt() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryMediaTranslation ? $translation->getAlt() : '';
     }
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
-    }
+        $translation = $this->getCurrentTranslation();
 
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?CategoryMediaTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $translation instanceof CategoryMediaTranslation ? $translation->getTitle() : '';
     }
 }

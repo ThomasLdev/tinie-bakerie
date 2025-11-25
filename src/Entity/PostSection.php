@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,6 +19,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 class PostSection implements Translatable, \Stringable
 {
+    /** @use TranslationAccessorTrait<PostSectionTranslation> */
+    use TranslationAccessorTrait;
     use TimestampableEntity;
 
     #[ORM\Id]
@@ -179,21 +182,15 @@ class PostSection implements Translatable, \Stringable
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof PostSectionTranslation ? $translation->getTitle() : '';
     }
 
     public function getContent(): string
     {
-        return $this->getLocalizedTranslation()?->getContent() ?? '';
-    }
+        $translation = $this->getCurrentTranslation();
 
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?PostSectionTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $translation instanceof PostSectionTranslation ? ($translation->getContent() ?? '') : '';
     }
 }

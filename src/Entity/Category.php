@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +18,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Category implements Translatable
 {
     use TimestampableEntity;
+    /** @use TranslationAccessorTrait<CategoryTranslation> */
+    use TranslationAccessorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -146,52 +149,43 @@ class Category implements Translatable
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryTranslation ? $translation->getTitle() : '';
     }
 
     public function getDescription(): string
     {
-        return $this->getLocalizedTranslation()?->getDescription() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryTranslation ? $translation->getDescription() : '';
     }
 
     public function getSlug(): string
     {
-        return $this->getLocalizedTranslation()?->getSlug() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryTranslation ? $translation->getSlug() : '';
     }
 
     public function getMetaTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getMetaTitle() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryTranslation ? $translation->getMetaTitle() : '';
     }
 
     public function getMetaDescription(): string
     {
-        return $this->getLocalizedTranslation()?->getMetaDescription() ?? '';
+        $translation = $this->getCurrentTranslation();
+
+        return $translation instanceof CategoryTranslation ? $translation->getMetaDescription() : '';
     }
 
     public function getExcerpt(): string
     {
-        return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
-    }
+        $translation = $this->getCurrentTranslation();
 
-    public function getTranslationByLocale(string $locale): ?CategoryTranslation
-    {
-        foreach ($this->getTranslations() as $translation) {
-            if ($translation->getLocale() === $locale) {
-                return $translation;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?CategoryTranslation
-    {
-        $translation = $this->getTranslations()->first();
-
-        return false === $translation ? null : $translation;
+        return $translation instanceof CategoryTranslation ? $translation->getExcerpt() : '';
     }
 }
