@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasSlugs;
+use App\Entity\Contracts\Sluggable;
 use App\Entity\Contracts\Translation;
 use App\Entity\Traits\Localized;
-use App\Entity\Traits\Sluggable;
+use App\Entity\Traits\SlugTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -18,10 +18,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(name: 'category_translation_unique_idx', columns: ['locale', 'title'])]
-class CategoryTranslation implements Translation, HasSlugs, \Stringable
+class CategoryTranslation implements Translation, Sluggable, \Stringable
 {
     use Localized;
-    use Sluggable;
+    use SlugTrait;
     use TimestampableEntity;
 
     #[ORM\Id]
@@ -50,7 +50,7 @@ class CategoryTranslation implements Translation, HasSlugs, \Stringable
 
     public function __toString(): string
     {
-        return $this->locale;
+        return $this->locale ?? '';
     }
 
     public function getId(): ?int

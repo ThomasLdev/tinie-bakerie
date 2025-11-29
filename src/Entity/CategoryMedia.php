@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Contracts\HasMediaEntities;
+use App\Entity\Contracts\MediaAttachment;
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Media\Enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,9 +21,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 #[ORM\Entity]
 #[Vich\Uploadable]
-class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
+class CategoryMedia implements Translatable, MediaAttachment, \Stringable
 {
     use TimestampableEntity;
+
+    /** @use TranslationAccessorTrait<CategoryMediaTranslation> */
+    use TranslationAccessorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -167,23 +171,24 @@ class CategoryMedia implements Translatable, HasMediaEntities, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to CategoryMediaTranslation.
+     */
+    public function getCurrentTranslation(): ?CategoryMediaTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof CategoryMediaTranslation ? $translation : null;
+    }
+
     public function getAlt(): string
     {
-        return $this->getLocalizedTranslation()?->getAlt() ?? '';
+        return $this->getCurrentTranslation()?->getAlt() ?? '';
     }
 
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
-    }
-
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?CategoryMediaTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 }

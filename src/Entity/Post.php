@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +22,9 @@ class Post implements Translatable
 {
     use Activable;
     use TimestampableEntity;
+
+    /** @use TranslationAccessorTrait<PostTranslation> */
+    use TranslationAccessorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -282,39 +286,29 @@ class Post implements Translatable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to PostTranslation.
+     */
+    public function getCurrentTranslation(): ?PostTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof PostTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 
     public function getSlug(): string
     {
-        return $this->getLocalizedTranslation()?->getSlug() ?? '';
+        return $this->getCurrentTranslation()?->getSlug() ?? '';
     }
 
     public function getExcerpt(): string
     {
-        return $this->getLocalizedTranslation()?->getExcerpt() ?? '';
-    }
-
-    public function getTranslationByLocale(string $locale): ?PostTranslation
-    {
-        foreach ($this->getTranslations() as $translation) {
-            if ($translation->getLocale() === $locale) {
-                return $translation;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?PostTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
 }

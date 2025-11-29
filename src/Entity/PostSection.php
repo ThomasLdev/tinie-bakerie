@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\PostSection\Enum\PostSectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,6 +20,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class PostSection implements Translatable, \Stringable
 {
     use TimestampableEntity;
+
+    /** @use TranslationAccessorTrait<PostSectionTranslation> */
+    use TranslationAccessorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -177,23 +181,24 @@ class PostSection implements Translatable, \Stringable
         return $this;
     }
 
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to PostSectionTranslation.
+     */
+    public function getCurrentTranslation(): ?PostSectionTranslation
+    {
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof PostSectionTranslation ? $translation : null;
+    }
+
     public function getTitle(): string
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 
     public function getContent(): string
     {
-        return $this->getLocalizedTranslation()?->getContent() ?? '';
-    }
-
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?PostSectionTranslation
-    {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $this->getCurrentTranslation()?->getContent() ?? '';
     }
 }

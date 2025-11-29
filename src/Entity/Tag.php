@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\TranslationAccessorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,6 +19,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Tag implements Translatable, \Stringable
 {
     use TimestampableEntity;
+
+    /** @use TranslationAccessorTrait<TagTranslation> */
+    use TranslationAccessorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -118,18 +122,19 @@ class Tag implements Translatable, \Stringable
         return $this;
     }
 
-    public function getTitle(): string
+    /**
+     * Returns the translation for the current locale with the specific type.
+     * Uses covariant return type to narrow Translation to TagTranslation.
+     */
+    public function getCurrentTranslation(): ?TagTranslation
     {
-        return $this->getLocalizedTranslation()?->getTitle() ?? '';
+        $translation = $this->getTranslationForCurrentLocale();
+
+        return $translation instanceof TagTranslation ? $translation : null;
     }
 
-    /**
-     * With the locale filter enabled, there is only one translation in the collection.
-     */
-    private function getLocalizedTranslation(): ?TagTranslation
+    public function getTitle(): string
     {
-        $translations = $this->getTranslations()->first();
-
-        return false === $translations ? null : $translations;
+        return $this->getCurrentTranslation()?->getTitle() ?? '';
     }
 }

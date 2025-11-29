@@ -7,7 +7,10 @@ namespace App\Entity\Traits;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-trait Sluggable
+/**
+ * Provides slug property and accessors for entities that implement Sluggable.
+ */
+trait SlugTrait
 {
     #[ORM\Column(type: Types::STRING)]
     private string $slug = '';

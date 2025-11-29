@@ -193,14 +193,14 @@ cache:
 tests: cache
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
-coverage: cache
+test.coverage: cache
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
 
-unit: cache
-	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests
+test.unit: cache
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests --no-results --testdox
 
-functional: cache
-	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests
+test.functional: cache
+	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests --no-results --testdox
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————
 
@@ -208,7 +208,7 @@ e2e-install: ## Install Playwright dependencies (included in node-install)
 	@echo "Installing Playwright browsers..."
 	@$(NODE_CONT) npx playwright install --with-deps
 
-e2e: ## Run E2E tests with Playwright
+test.e2e: ## Run E2E tests with Playwright
 	@$(NPM) run test:e2e
 
 e2e-headed: ## Run E2E tests with visible browser (requires X11)
@@ -227,4 +227,4 @@ e2e-show-trace: ## Show trace for last failed test
 	@echo "Opening trace viewer on http://localhost:9323..."
 	@$(NODE_CONT) npx playwright show-trace test-results/**/trace.zip --host 0.0.0.0 --port 9323
 
-test-all: test e2e ## Run all tests (PHPUnit + E2E)
+test-all: tests test.e2e ## Run all tests (PHPUnit + E2E)

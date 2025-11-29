@@ -50,7 +50,7 @@ class CategoryRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->select('PARTIAL c.{id}')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug}')
+            ->addSelect('PARTIAL ct.{id, title, slug, locale}')
             ->orderBy('c.createdAt', 'DESC');
 
         $result = $qb->getQuery()
