@@ -50,7 +50,7 @@ class CategoryTranslation implements Translation, Sluggable, \Stringable
 
     public function __toString(): string
     {
-        return $this->locale;
+        return $this->locale ?? '';
     }
 
     public function getId(): ?int

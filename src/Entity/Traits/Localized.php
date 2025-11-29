@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait Localized
 {
     #[ORM\Column(type: Types::STRING)]
-    private string $locale;
+    private ?string $locale = null;
 
     public function setLocale(string $locale): self
     {
@@ -21,6 +21,6 @@ trait Localized
 
     public function getLocale(): string
     {
-        return $this->locale;
+        return $this->locale ?? '';
     }
 }

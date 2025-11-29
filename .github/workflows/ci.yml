@@ -79,7 +79,7 @@ jobs:
       - name: TypeScript type checking
         run: make type-check
       - name: Run PHPUnit Unit Suite
-        run: make unit
+        run: make test.unit
   functional_test:
     name: Functional Tests
     runs-on: ubuntu-latest
@@ -114,7 +114,7 @@ jobs:
       - name: Build TypeScript Assets
         run: make typescript
       - name: Run PHPUnit Functional Suite
-        run: make functional
+        run: make test.functional
   e2e_tests:
     name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
@@ -151,7 +151,7 @@ jobs:
       - name: Build TypeScript Assets
         run: make typescript
       - name: Run E2E Tests
-        run: make e2e
+        run: make test.e2e
         env:
           CI: true
       - name: Upload Playwright Report
