@@ -19,9 +19,6 @@ final class SearchBar
     #[LiveProp(writable: true)]
     public string $query = '';
 
-    #[LiveProp]
-    public bool $showResults = false;
-
     private int $estimatedTotalHits = 0;
 
     private int $cachedHitsCount = 0;

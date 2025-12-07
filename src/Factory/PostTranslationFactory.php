@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\PostTranslation;
+use App\Factory\Contracts\LocaleAwareFactory;
 use App\Services\Slug\Slugger;
+use Faker\Generator;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
  * @extends PersistentProxyObjectFactory<PostTranslation>
  */
-final class PostTranslationFactory extends PersistentProxyObjectFactory
+final class PostTranslationFactory extends PersistentProxyObjectFactory implements LocaleAwareFactory
 {
     public function __construct(
         private readonly Slugger $slugger,
@@ -27,8 +29,19 @@ final class PostTranslationFactory extends PersistentProxyObjectFactory
         return PostTranslation::class;
     }
 
+    public static function defaultsForLocale(Generator $faker): array
+    {
+        return [
+            'title' => $faker->unique()->realText(15),
+            'excerpt' => $faker->realText(20),
+            'metaTitle' => $faker->realText(50),
+            'metaDescription' => $faker->realText(50),
+            'notes' => 'ingredient1|ingredient2|ingredient3|ingredient4|ingredient5',
+        ];
+    }
+
     /**
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
     protected function defaults(): array
     {
