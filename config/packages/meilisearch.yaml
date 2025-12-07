@@ -1,12 +1,15 @@
 meilisearch:
-  url: '%env(MEILISEARCH_URL)%' # URL of the Meilisearch server (mandatory)
-  api_key: '%env(MEILISEARCH_API_KEY)%' # API key to access the Meilisearch server (mandatory)
+  url: '%env(MEILISEARCH_URL)%'
+  api_key: '%env(MEILISEARCH_API_KEY)%'
   prefix: '%env(MEILISEARCH_PREFIX)%'
   indices:
-    - name: posts
+    - name: posts_fr
       class: App\Entity\Post
       enable_serializer_groups: true
       settings:
+        localizedAttributes:
+          - attributePatterns: ['*']
+            locales: ['fr']
         searchableAttributes:
           - title
           - excerpt
@@ -19,6 +22,7 @@ meilisearch:
           - difficulty
           - isActive
           - createdAt
+          - locale
         sortableAttributes:
           - createdAt
           - readingTime
@@ -37,3 +41,44 @@ meilisearch:
           - cookingTime
           - isActive
           - createdAt
+          - locale
+
+    - name: posts_en
+      class: App\Entity\Post
+      enable_serializer_groups: true
+      settings:
+        localizedAttributes:
+          - attributePatterns: ['*']
+            locales: ['en']
+        searchableAttributes:
+          - title
+          - excerpt
+          - metaDescription
+          - categoryTitle
+          - tags
+        filterableAttributes:
+          - id
+          - categoryId
+          - difficulty
+          - isActive
+          - createdAt
+          - locale
+        sortableAttributes:
+          - createdAt
+          - readingTime
+          - cookingTime
+        displayedAttributes:
+          - id
+          - title
+          - slug
+          - excerpt
+          - metaDescription
+          - categoryTitle
+          - categorySlug
+          - tags
+          - difficulty
+          - readingTime
+          - cookingTime
+          - isActive
+          - createdAt
+          - locale

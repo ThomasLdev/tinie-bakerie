@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Message\RemoveEntityFromIndexMessage;
+use App\Services\Locale\Locales;
 use Doctrine\ORM\EntityManagerInterface;
 use Meilisearch\Bundle\SearchService;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,7 @@ final readonly class RemoveEntityFromIndexMessageHandler
         private SearchService $searchService,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
+        private Locales $locales,
     ) {
     }
 
@@ -35,12 +37,9 @@ final readonly class RemoveEntityFromIndexMessageHandler
             return;
         }
 
-        $indexName = $this->searchService->searchableAs($entityClass);
-
         $this->logger->info('Processing remove from index message', [
             'entity_class' => $entityClass,
             'entity_id' => $entityId,
-            'index' => $indexName,
         ]);
 
         try {
@@ -48,19 +47,37 @@ final readonly class RemoveEntityFromIndexMessageHandler
             // since the entity is already deleted from the database
             $entity = $this->createStubEntity($entityClass, $entityId);
 
-            // Remove from index
-            $this->searchService->remove($this->entityManager, $entity);
+            // Remove from all locale-specific indexes
+            $locales = $this->locales->get();
 
-            $this->logger->info('Entity removed from index successfully', [
-                'entity_class' => $entityClass,
-                'entity_id' => $entityId,
-                'index' => $indexName,
-            ]);
+            foreach ($locales as $locale) {
+                $indexName = "posts_{$locale}";
+
+                try {
+                    // Remove from index
+                    $this->searchService->remove($this->entityManager, $entity, $indexName);
+
+                    $this->logger->info('Entity removed from index successfully', [
+                        'entity_class' => $entityClass,
+                        'entity_id' => $entityId,
+                        'index' => $indexName,
+                        'locale' => $locale,
+                    ]);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to remove entity from index', [
+                        'entity_class' => $entityClass,
+                        'entity_id' => $entityId,
+                        'index' => $indexName,
+                        'locale' => $locale,
+                        'exception' => $e->getMessage(),
+                    ]);
+                    // Continue to next locale instead of throwing
+                }
+            }
         } catch (\Exception $e) {
-            $this->logger->error('Failed to remove entity from index', [
+            $this->logger->error('Failed to remove entity', [
                 'entity_class' => $entityClass,
                 'entity_id' => $entityId,
-                'index' => $indexName,
                 'exception' => $e->getMessage(),
             ]);
 

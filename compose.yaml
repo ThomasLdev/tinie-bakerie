@@ -62,6 +62,12 @@ services:
   ###> meilisearch ###
   meilisearch:
     image: getmeili/meilisearch:v1.11
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
     restart: unless-stopped
     environment:
       MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY:-aSampleMasterKey}

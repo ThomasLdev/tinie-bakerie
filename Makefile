@@ -79,7 +79,7 @@ cache-warmup: ## Warm up entity caches (posts, categories, headers)
 cache-warmup-clear: ## Clear and warm up entity caches
 	@$(PHP_CONT) bin/console app:cache:warm --clear-first
 
-fixtures: create-upload-dirs
+fixtures: create-upload-dirs cache
 	@$(PHP_CONT) bin/console c:c
 	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction
 
@@ -228,3 +228,9 @@ e2e-show-trace: ## Show trace for last failed test
 	@$(NODE_CONT) npx playwright show-trace test-results/**/trace.zip --host 0.0.0.0 --port 9323
 
 test-all: tests test.e2e ## Run all tests (PHPUnit + E2E)
+
+search.index.create:
+	@$(PHP_CONT) bin/console meilisearch:index:locale
+
+search.index.delete:
+	@$(PHP_CONT) bin/console meilisearch:index:locale --clear

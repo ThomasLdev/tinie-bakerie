@@ -1,0 +1,16 @@
+meta {
+  name: Indexes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{meilisearch_base_url}}/indexes
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

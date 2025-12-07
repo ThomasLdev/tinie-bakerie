@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use App\Entity\Post;
-use Doctrine\ORM\EntityManagerInterface;
-use Meilisearch\Bundle\SearchService;
+use Meilisearch\Client;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
@@ -22,59 +22,65 @@ final class SearchBar
     #[LiveProp]
     public bool $showResults = false;
 
+    private int $estimatedTotalHits = 0;
+
+    private int $cachedHitsCount = 0;
+
     public function __construct(
-        private readonly SearchService $searchService,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly Client $client,
+        private readonly RequestStack $requestStack,
+        #[Autowire(param: 'meilisearch.prefix')]
+        private readonly string $prefix,
     ) {
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getResults(): array
     {
-        if (strlen($this->query) < 2) {
+        if (\strlen($this->query) < 2) {
+            $this->estimatedTotalHits = 0;
+            $this->cachedHitsCount = 0;
+
             return [];
         }
 
+        $locale = $this->requestStack->getCurrentRequest()?->getLocale() ?? 'fr';
+        $indexName = \sprintf('%sposts_%s', $this->prefix, $locale);
+
         try {
-            $results = $this->searchService->rawSearch(
-                Post::class,
+            $results = $this->client->index($indexName)->search(
                 $this->query,
                 [
                     'limit' => 5,
                     'attributesToHighlight' => ['title', 'excerpt'],
                     'filter' => 'isActive = true',
-                ]
+                    'locales' => [$locale],
+                ],
             );
 
-            return $results['hits'] ?? [];
-        } catch (\Exception $e) {
+            $hits = $results->getHits();
+
+            $this->cachedHitsCount = \count($hits);
+            $this->estimatedTotalHits = $results->getEstimatedTotalHits() ?? 0;
+
+            return $hits;
+        } catch (\Exception) {
+            $this->estimatedTotalHits = 0;
+            $this->cachedHitsCount = 0;
+
             return [];
         }
     }
 
     public function hasResults(): bool
     {
-        return strlen($this->query) >= 2 && count($this->getResults()) > 0;
+        return \strlen($this->query) >= 2 && $this->cachedHitsCount > 0;
     }
 
     public function getResultCount(): int
     {
-        if (strlen($this->query) < 2) {
-            return 0;
-        }
-
-        try {
-            $results = $this->searchService->rawSearch(
-                Post::class,
-                $this->query,
-                [
-                    'limit' => 0,
-                    'filter' => 'isActive = true',
-                ]
-            );
-
-            return $results['estimatedTotalHits'] ?? 0;
-        } catch (\Exception $e) {
-            return 0;
-        }
+        return $this->estimatedTotalHits;
     }
 }

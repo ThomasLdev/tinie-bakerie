@@ -4,58 +4,51 @@ declare(strict_types=1);
 
 namespace App\Serializer\Normalizer;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Services\Locale\Locales;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-final class PostNormalizer implements NormalizerInterface
+final readonly class PostNormalizer implements NormalizerInterface
 {
-    public function __construct(
-        #[Autowire(service: 'serializer.normalizer.object')]
-        private readonly NormalizerInterface $normalizer,
-        private readonly string $defaultLocale = 'en',
-    ) {
+    public function __construct(private Locales $locales)
+    {
     }
 
     /**
-     * @param Post $object
+     * @param Post $data
      */
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        // Get the translation for the current locale or default locale
-        $translation = $this->getTranslation($object, $this->defaultLocale);
-        
-        if (!$translation) {
+        $targetLocale = $context['meilisearch_locale'] ?? $this->locales->getDefault();
+        $translation = $this->getTranslation($data, $targetLocale);
+
+        if (null === $translation) {
             return [];
         }
 
-        $category = $object->getCategory();
-        $categoryTranslation = $category?->getTranslations()->first();
+        $category = $data->getCategory();
+        $categoryTranslation = $this->getCategoryTranslation($category, $targetLocale);
 
-        $tags = [];
-        foreach ($object->getTags() as $tag) {
-            $tagTranslation = $tag->getTranslations()->first();
-            if ($tagTranslation) {
-                $tags[] = $tagTranslation->getTitle();
-            }
-        }
+        $tags = $this->getTagsForLocale($data, $targetLocale);
 
         return [
-            'id' => $object->getId(),
+            'id' => $data->getId(),
             'title' => $translation->getTitle(),
             'slug' => $translation->getSlug(),
             'excerpt' => strip_tags($translation->getExcerpt()),
             'metaDescription' => $translation->getMetaDescription(),
             'categoryId' => $category?->getId(),
-            'categoryTitle' => $categoryTranslation?->getTitle(),
-            'categorySlug' => $categoryTranslation?->getSlug(),
+            'categoryTitle' => $categoryTranslation?->getTitle() ?? '',
+            'categorySlug' => $categoryTranslation?->getSlug() ?? '',
             'tags' => $tags,
-            'difficulty' => $object->getDifficulty()->value,
-            'readingTime' => $object->getReadingTime(),
-            'cookingTime' => $object->getCookingTime(),
-            'isActive' => $object->isActive(),
-            'createdAt' => $object->getCreatedAt()?->getTimestamp(),
+            'difficulty' => $data->getDifficulty()->value,
+            'readingTime' => $data->getReadingTime(),
+            'cookingTime' => $data->getCookingTime(),
+            'isActive' => $data->isActive(),
+            'createdAt' => $data->getCreatedAt()?->getTimestamp(),
+            'locale' => $targetLocale,
         ];
     }
 
@@ -79,7 +72,38 @@ final class PostNormalizer implements NormalizerInterface
             }
         }
 
-        // Fallback to first translation if locale not found
-        return $post->getTranslations()->first() ?: null;
+        return null;
+    }
+
+    private function getCategoryTranslation(?Category $category, string $locale): ?object
+    {
+        if (!$category instanceof Category) {
+            return null;
+        }
+
+        foreach ($category->getTranslations() as $translation) {
+            if ($translation->getLocale() === $locale) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
+    private function getTagsForLocale(Post $post, string $locale): array
+    {
+        $tags = [];
+
+        foreach ($post->getTags() as $tag) {
+            foreach ($tag->getTranslations() as $translation) {
+                if ($translation->getLocale() === $locale) {
+                    $tags[] = $translation->getTitle();
+
+                    break;
+                }
+            }
+        }
+
+        return $tags;
     }
 }
