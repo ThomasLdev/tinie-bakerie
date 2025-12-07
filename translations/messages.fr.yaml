@@ -17,6 +17,17 @@ app:
         index: 'Toutes les catégories'
     filter:
         count: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
+    search:
+        result_count:
+            label: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
+        placeholder:
+            label: 'Cherchez des recettes, étiquettes ou catégories...'
+        no_input:
+            label: 'Commencez à entrer une recherche pour avoir un résultat...'
+            help: 'Cherchez par recette, étiquette ou catégorie'
+        no_result: 
+            label: 'Pas de résultat pour cette recherche'
+            help: "Esayez d'ajuster votre recherche, ou de chercher par catégorie"
 admin:
     global:
         position: 'Position'

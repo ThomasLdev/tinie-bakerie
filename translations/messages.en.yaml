@@ -16,3 +16,14 @@ app:
         index: 'All posts'
     category:
         index: 'All categories'
+    search:
+        result_count:
+            label: '{0} No result|{1} 1 result|]1,Inf] %count% results'
+        placeholder:
+            label: 'Search for recipes, ingredients, categories...'
+        no_input:
+            label: 'Start typing to search...'
+            help: 'Search for recipes, tags, or categories'
+        no_result: 
+            label: 'No result found'
+            help: 'Try adjusting your search or browse our categories'

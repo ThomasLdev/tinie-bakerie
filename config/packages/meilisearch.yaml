@@ -42,6 +42,7 @@ meilisearch:
           - isActive
           - createdAt
           - locale
+          - url
 
     - name: posts_en
       class: App\Entity\Post
@@ -82,3 +83,4 @@ meilisearch:
           - isActive
           - createdAt
           - locale
+          - url

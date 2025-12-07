@@ -8,11 +8,17 @@ use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Services\Locale\Locales;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final readonly class PostNormalizer implements NormalizerInterface
 {
-    public function __construct(private Locales $locales)
+    public function __construct(
+        private Locales $locales,
+        private UrlGeneratorInterface $urlGenerator,
+        private LoggerInterface $logger
+    )
     {
     }
 
@@ -23,25 +29,24 @@ final readonly class PostNormalizer implements NormalizerInterface
     {
         $targetLocale = $context['meilisearch_locale'] ?? $this->locales->getDefault();
         $translation = $this->getTranslation($data, $targetLocale);
+        $categoryTranslation = $this->getCategoryTranslation($data->getCategory(), $targetLocale);
 
-        if (null === $translation) {
+        if (null === $translation || null === $categoryTranslation) {
+            $this->logger->warning('Post had no translation or category translation, skipping indexation', [
+                'locale' => $targetLocale,
+                'data' => $data,
+            ]);
+
             return [];
         }
-
-        $category = $data->getCategory();
-        $categoryTranslation = $this->getCategoryTranslation($category, $targetLocale);
 
         $tags = $this->getTagsForLocale($data, $targetLocale);
 
         return [
             'id' => $data->getId(),
             'title' => $translation->getTitle(),
-            'slug' => $translation->getSlug(),
             'excerpt' => strip_tags($translation->getExcerpt()),
-            'metaDescription' => $translation->getMetaDescription(),
-            'categoryId' => $category?->getId(),
-            'categoryTitle' => $categoryTranslation?->getTitle() ?? '',
-            'categorySlug' => $categoryTranslation?->getSlug() ?? '',
+            'categoryTitle' => $categoryTranslation->getTitle(),
             'tags' => $tags,
             'difficulty' => $data->getDifficulty()->value,
             'readingTime' => $data->getReadingTime(),
@@ -49,6 +54,7 @@ final readonly class PostNormalizer implements NormalizerInterface
             'isActive' => $data->isActive(),
             'createdAt' => $data->getCreatedAt()?->getTimestamp(),
             'locale' => $targetLocale,
+            'url' => $this->getPostUrl($targetLocale, $translation->getSlug(), $categoryTranslation->getSlug()),
         ];
     }
 
@@ -105,5 +111,17 @@ final readonly class PostNormalizer implements NormalizerInterface
         }
 
         return $tags;
+    }
+
+    private function getPostUrl(string $targetLocale, string $postSlug, string $categorySlug): string
+    {
+        return  $this->urlGenerator->generate(
+            'app_post_show',
+            [
+                '_locale' => $targetLocale,
+                'categorySlug' => $categorySlug,
+                'postSlug' => $postSlug,
+            ]
+        );
     }
 }
