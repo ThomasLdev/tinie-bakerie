@@ -149,6 +149,9 @@ final class MeilisearchIndexLocaleCommand extends Command
         return $documents;
     }
 
+    /**
+     * @param non-empty-string $indexName
+     */
     private function updateIndexSettings(SymfonyStyle $io, string $indexName): void
     {
         $io->text('Applying index settings from configuration...');

@@ -14,6 +14,9 @@ final readonly class IndexNameResolver
     ) {
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function resolve(string $entityShortName, string $locale): string
     {
         return \sprintf('%s%s_%s', $this->prefix, strtolower($entityShortName), $locale);
