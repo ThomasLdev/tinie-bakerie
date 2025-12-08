@@ -17,12 +17,6 @@ class LocaleProvider
     ) {
     }
 
-    /**
-     * Returns the current locale from various sources in this priority:
-     * 1. Explicitly set override locale (for CLI commands)
-     * 2. Request locale (for web requests)
-     * 3. Default locale fallback.
-     */
     public function getCurrentLocale(): string
     {
         if (null !== $this->overrideLocale) {
