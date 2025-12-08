@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Serializer\Normalizer;
 
 use App\Entity\Category;
+use App\Entity\CategoryTranslation;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Services\Locale\Locales;
@@ -27,10 +28,19 @@ final readonly class PostNormalizer implements NormalizerInterface
     public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
         $targetLocale = $context['meilisearch_locale'] ?? $this->locales->getDefault();
+
+        if (!\is_string($targetLocale)) {
+            $this->logger->warning('Invalid locale type provided, skipping indexation', [
+                'locale' => $targetLocale,
+            ]);
+
+            return [];
+        }
+
         $translation = $this->getTranslation($data, $targetLocale);
         $categoryTranslation = $this->getCategoryTranslation($data->getCategory(), $targetLocale);
 
-        if (!$translation instanceof PostTranslation || null === $categoryTranslation) {
+        if (!$translation instanceof PostTranslation || !$categoryTranslation instanceof CategoryTranslation) {
             $this->logger->warning('Post had no translation or category translation, skipping indexation', [
                 'locale' => $targetLocale,
                 'data' => $data,
@@ -80,7 +90,7 @@ final readonly class PostNormalizer implements NormalizerInterface
         return null;
     }
 
-    private function getCategoryTranslation(?Category $category, string $locale): ?object
+    private function getCategoryTranslation(?Category $category, string $locale): ?CategoryTranslation
     {
         if (!$category instanceof Category) {
             return null;
@@ -95,6 +105,9 @@ final readonly class PostNormalizer implements NormalizerInterface
         return null;
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getTagsForLocale(Post $post, string $locale): array
     {
         $tags = [];

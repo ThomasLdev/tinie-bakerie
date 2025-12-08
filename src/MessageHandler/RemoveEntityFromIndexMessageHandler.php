@@ -7,8 +7,10 @@ namespace App\MessageHandler;
 use App\Message\RemoveEntityFromIndexMessage;
 use App\Services\Locale\Locales;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Meilisearch\Bundle\SearchService;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -27,7 +29,15 @@ final readonly class RemoveEntityFromIndexMessageHandler
         $entityClass = $message->getEntityClass();
         $entityId = $message->getEntityId();
 
-        // Check if entity class is configured in meilisearch.yaml
+        if (!class_exists($entityClass)) {
+            $this->logger->warning('Entity class does not exist, skipping removal', [
+                'entity_class' => $entityClass,
+                'entity_id' => $entityId,
+            ]);
+
+            return;
+        }
+
         if (!$this->searchService->isSearchable($entityClass)) {
             $this->logger->debug('Entity type not searchable, skipping removal', [
                 'entity_class' => $entityClass,
@@ -46,16 +56,13 @@ final readonly class RemoveEntityFromIndexMessageHandler
             // For deletion, we need to create a stub entity with the ID
             // since the entity is already deleted from the database
             $entity = $this->createStubEntity($entityClass, $entityId);
-
-            // Remove from all locale-specific indexes
             $locales = $this->locales->get();
 
             foreach ($locales as $locale) {
                 $indexName = "posts_{$locale}";
 
                 try {
-                    // Remove from index
-                    $this->searchService->remove($this->entityManager, $entity, $indexName);
+                    $this->searchService->remove($this->entityManager, $entity);
 
                     $this->logger->info('Entity removed from index successfully', [
                         'entity_class' => $entityClass,
@@ -63,7 +70,7 @@ final readonly class RemoveEntityFromIndexMessageHandler
                         'index' => $indexName,
                         'locale' => $locale,
                     ]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Failed to remove entity from index', [
                         'entity_class' => $entityClass,
                         'entity_id' => $entityId,
@@ -71,10 +78,9 @@ final readonly class RemoveEntityFromIndexMessageHandler
                         'locale' => $locale,
                         'exception' => $e->getMessage(),
                     ]);
-                    // Continue to next locale instead of throwing
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to remove entity', [
                 'entity_class' => $entityClass,
                 'entity_id' => $entityId,
@@ -87,14 +93,16 @@ final readonly class RemoveEntityFromIndexMessageHandler
 
     /**
      * Create a stub entity with just the ID for deletion from index.
+     *
+     * @param class-string<object> $entityClass
+     *
+     * @throws \ReflectionException
      */
     private function createStubEntity(string $entityClass, int $entityId): object
     {
-        // Use reflection to create entity with ID set
-        $reflectionClass = new \ReflectionClass($entityClass);
+        $reflectionClass = new ReflectionClass($entityClass);
         $entity = $reflectionClass->newInstanceWithoutConstructor();
 
-        // Set the ID property
         $idProperty = $reflectionClass->getProperty('id');
         $idProperty->setValue($entity, $entityId);
 

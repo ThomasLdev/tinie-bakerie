@@ -21,7 +21,3 @@ services:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
-
-  # Register logging middleware for Messenger
-  App\Messenger\Middleware\LoggingMiddleware:
-    tags: ['messenger.middleware']

@@ -26,7 +26,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
-
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use function Zenstruck\Foundry\Persistence\flush_after;
 
 class AppFixtures extends Fixture
@@ -113,9 +113,11 @@ class AppFixtures extends Fixture
     /**
      * Creates translations for all configured locales using locale-specific Faker data.
      *
-     * @param class-string<LocaleAwareFactory> $factoryClass
+     * @template T of object
      *
-     * @return array<int, object>
+     * @param class-string<PersistentProxyObjectFactory<T>&LocaleAwareFactory> $factoryClass
+     *
+     * @return array<int, T>
      */
     private function createTranslations(string $factoryClass): array
     {
@@ -129,6 +131,7 @@ class AppFixtures extends Fixture
             );
         }
 
+        /** @var array<int, T> */
         return $factoryClass::createSequence($sequence);
     }
 
