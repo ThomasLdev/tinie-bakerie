@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use Exception;
 use Meilisearch\Client;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
-use function count;
-use function sprintf;
-use function strlen;
 
 #[AsLiveComponent]
 final class SearchBar
@@ -40,7 +36,7 @@ final class SearchBar
      */
     public function getResults(): array
     {
-        if (strlen($this->query) < 2) {
+        if (\strlen($this->query) < 2) {
             $this->estimatedTotalHits = 0;
             $this->cachedHitsCount = 0;
 
@@ -48,7 +44,7 @@ final class SearchBar
         }
 
         $locale = $this->requestStack->getCurrentRequest()?->getLocale() ?? 'fr';
-        $indexName = sprintf('%sposts_%s', $this->prefix, $locale);
+        $indexName = \sprintf('%sposts_%s', $this->prefix, $locale);
 
         try {
             $results = $this->client->index($indexName)->search(
@@ -63,11 +59,11 @@ final class SearchBar
 
             $hits = $results->getHits();
 
-            $this->cachedHitsCount = count($hits);
+            $this->cachedHitsCount = \count($hits);
             $this->estimatedTotalHits = $results->getEstimatedTotalHits() ?? 0;
 
             return $hits;
-        } catch (Exception) {
+        } catch (\Exception) {
             $this->estimatedTotalHits = 0;
             $this->cachedHitsCount = 0;
 

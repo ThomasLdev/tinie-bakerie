@@ -17,9 +17,8 @@ final readonly class PostNormalizer implements NormalizerInterface
     public function __construct(
         private Locales $locales,
         private UrlGeneratorInterface $urlGenerator,
-        private LoggerInterface $logger
-    )
-    {
+        private LoggerInterface $logger,
+    ) {
     }
 
     /**
@@ -31,7 +30,7 @@ final readonly class PostNormalizer implements NormalizerInterface
         $translation = $this->getTranslation($data, $targetLocale);
         $categoryTranslation = $this->getCategoryTranslation($data->getCategory(), $targetLocale);
 
-        if (null === $translation || null === $categoryTranslation) {
+        if (!$translation instanceof PostTranslation || null === $categoryTranslation) {
             $this->logger->warning('Post had no translation or category translation, skipping indexation', [
                 'locale' => $targetLocale,
                 'data' => $data,
@@ -115,13 +114,13 @@ final readonly class PostNormalizer implements NormalizerInterface
 
     private function getPostUrl(string $targetLocale, string $postSlug, string $categorySlug): string
     {
-        return  $this->urlGenerator->generate(
+        return $this->urlGenerator->generate(
             'app_post_show',
             [
                 '_locale' => $targetLocale,
                 'categorySlug' => $categorySlug,
                 'postSlug' => $postSlug,
-            ]
+            ],
         );
     }
 }

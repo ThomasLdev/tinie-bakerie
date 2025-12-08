@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 )]
 final class MeilisearchIndexLocaleCommand extends Command
 {
-    private const PRIMARY_KEY = 'id';
+    private const string PRIMARY_KEY = 'id';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

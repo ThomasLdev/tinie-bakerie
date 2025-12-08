@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 #[AsMessageHandler]
 final readonly class IndexEntityMessageHandler
 {
-    private const PRIMARY_KEY = 'id';
+    private const string PRIMARY_KEY = 'id';
 
     public function __construct(
         private SearchService $searchService,

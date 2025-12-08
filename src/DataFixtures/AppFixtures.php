@@ -31,9 +31,7 @@ use function Zenstruck\Foundry\Persistence\flush_after;
 
 class AppFixtures extends Fixture
 {
-    /**
-     * @var array<string, Generator>
-     */
+    /** @var array<string, Generator> */
     private array $fakerByLocale = [];
 
     public function __construct(

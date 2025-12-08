@@ -9,6 +9,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 use Symfony\Component\Messenger\Stamp\ReceivedStamp;
+use Symfony\Component\Messenger\Stamp\StampInterface;
 
 /**
  * Logs message handling for monitoring and debugging.
@@ -26,7 +27,7 @@ final readonly class LoggingMiddleware implements MiddlewareInterface
         $messageClass = $message::class;
 
         // Check if this is a received message (being processed by worker)
-        $isReceived = $envelope->last(ReceivedStamp::class) !== null;
+        $isReceived = $envelope->last(ReceivedStamp::class) instanceof StampInterface;
 
         if ($isReceived) {
             $this->logger->debug('Processing message', [
