@@ -100,7 +100,6 @@ final readonly class IndexEntityMessageHandler
         $indexName = \sprintf('%sposts_%s', $this->prefix, $locale);
 
         try {
-            // Check if entity has translation for this locale (if it's translatable)
             if ($entity instanceof Translatable && !$this->hasTranslationForLocale($entity, $locale)) {
                 $this->logger->debug('Entity has no translation for locale, skipping', [
                     'entity_class' => $entityClass,
@@ -111,12 +110,11 @@ final readonly class IndexEntityMessageHandler
                 return;
             }
 
-            // Normalize with locale context
             $normalized = $this->normalizer->normalize($entity, null, [
                 'meilisearch_locale' => $locale,
             ]);
 
-            if (empty($normalized) || !\is_array($normalized)) {
+            if (!\is_array($normalized) || [] === $normalized) {
                 $this->logger->debug('Normalization returned empty result, skipping', [
                     'entity_class' => $entityClass,
                     'entity_id' => $entityId,
@@ -126,7 +124,6 @@ final readonly class IndexEntityMessageHandler
                 return;
             }
 
-            // Index the document with retry on primary key mismatch
             $this->addDocumentWithRetry($indexName, $normalized, $entityClass, $entityId, $locale);
 
             $this->logger->info('Entity indexed successfully', [
@@ -143,7 +140,6 @@ final readonly class IndexEntityMessageHandler
                 'locale' => $locale,
                 'exception' => $e->getMessage(),
             ]);
-            // Continue to next locale instead of throwing
         }
     }
 
@@ -151,6 +147,8 @@ final readonly class IndexEntityMessageHandler
      * Add a document to the index, with retry on primary key mismatch.
      *
      * @param array<string, mixed> $document
+     *
+     * @throws ApiException
      */
     private function addDocumentWithRetry(string $indexName, array $document, string $entityClass, int|string $entityId, string $locale): void
     {
