@@ -78,7 +78,7 @@ services:
     volumes:
       - meilisearch_data:/meili_data
     healthcheck:
-      test: ['CMD', 'wget', '--no-verbose', '--spider', 'http://localhost:7700/health']
+      test: ['CMD', 'wget', '--no-verbose', '--spider', 'http://127.0.0.1:7700/health']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -96,7 +96,7 @@ services:
       - database
       - meilisearch
     healthcheck:
-      test: ['CMD', 'pgrep', '-f', 'messenger:consume']
+      test: ['CMD', 'php', 'bin/console', 'messenger:stats']
       interval: 30s
       timeout: 10s
       retries: 3
