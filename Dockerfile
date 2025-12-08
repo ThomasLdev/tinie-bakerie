@@ -50,7 +50,7 @@ COPY --link frankenphp/Caddyfile /etc/caddy/Caddyfile
 
 ENTRYPOINT ["docker-entrypoint"]
 
-HEALTHCHECK --start-period=60s CMD curl -f http://localhost:80 || exit 1
+HEALTHCHECK --start-period=120s --interval=10s --timeout=5s --retries=5 CMD curl -f http://127.0.0.1:80 || exit 1
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
 
 # Dev FrankenPHP image
