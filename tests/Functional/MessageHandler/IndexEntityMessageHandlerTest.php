@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageHandler;
 
 use App\Entity\Post;
+use App\Entity\PostTranslation;
 use App\Message\IndexEntityMessage;
 use App\MessageHandler\IndexEntityMessageHandler;
 use App\Serializer\Normalizer\PostNormalizer;
+use App\Services\Search\EntityIndexer;
+use App\Services\Search\IndexNameResolver;
+use App\Services\Search\MeilisearchIndexer;
 use App\Tests\Story\MeilisearchIndexingStory;
 use Meilisearch\Client;
 use Meilisearch\Contracts\TasksQuery;
@@ -24,6 +28,9 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 #[CoversClass(IndexEntityMessageHandler::class)]
 #[CoversClass(PostNormalizer::class)]
 #[CoversClass(IndexEntityMessage::class)]
+#[CoversClass(EntityIndexer::class)]
+#[CoversClass(IndexNameResolver::class)]
+#[CoversClass(MeilisearchIndexer::class)]
 final class IndexEntityMessageHandlerTest extends KernelTestCase
 {
     use Factories;
@@ -99,11 +106,16 @@ final class IndexEntityMessageHandlerTest extends KernelTestCase
     {
         $this->dispatchIndexMessage(Post::class, 999999);
 
-        $frDocument = $this->getDocument('posts_fr', 999999);
-        $enDocument = $this->getDocument('posts_en', 999999);
+        self::assertNull($this->getDocument('posts_fr', 999999));
+        self::assertNull($this->getDocument('posts_en', 999999));
+    }
 
-        self::assertNull($frDocument);
-        self::assertNull($enDocument);
+    public function testSkipsNonSearchableEntity(): void
+    {
+        $this->dispatchIndexMessage(PostTranslation::class, 1);
+
+        self::assertNull($this->getDocument('posts_fr', 1));
+        self::assertNull($this->getDocument('posts_en', 1));
     }
 
     private function clearMeilisearchIndexes(): void
@@ -130,7 +142,7 @@ final class IndexEntityMessageHandlerTest extends KernelTestCase
 
     private function dispatchIndexMessage(string $class, int $id): void
     {
-        $this->messageBus->dispatch(new IndexEntityMessage($class, $id, 'create'));
+        $this->messageBus->dispatch(new IndexEntityMessage($class, $id));
     }
 
     private function waitForPendingTasks(): void

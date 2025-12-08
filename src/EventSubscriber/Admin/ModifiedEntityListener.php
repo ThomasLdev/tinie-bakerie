@@ -41,7 +41,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         $entity = $event->getEntityInstance();
 
         $this->invalidateCache($entity);
-        $this->dispatchIndexMessage($entity, 'update');
+        $this->dispatchIndexMessage($entity);
     }
 
     /**
@@ -52,7 +52,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         $entity = $event->getEntityInstance();
 
         $this->invalidateCache($entity);
-        $this->dispatchIndexMessage($entity, 'create');
+        $this->dispatchIndexMessage($entity);
     }
 
     /**
@@ -71,7 +71,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
         $this->getCache($entity)->invalidate($entity);
     }
 
-    private function dispatchIndexMessage(object $entity, string $operation): void
+    private function dispatchIndexMessage(object $entity): void
     {
         $entityId = $this->extractEntityId($entity);
 
@@ -79,13 +79,7 @@ readonly class ModifiedEntityListener implements EventSubscriberInterface
             return;
         }
 
-        $message = new IndexEntityMessage(
-            entityClass: $entity::class,
-            entityId: $entityId,
-            operation: $operation,
-        );
-
-        $this->messageBus->dispatch($message);
+        $this->messageBus->dispatch(new IndexEntityMessage($entity::class, $entityId));
     }
 
     private function dispatchRemoveMessage(object $entity): void

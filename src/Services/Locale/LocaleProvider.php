@@ -13,7 +13,7 @@ class LocaleProvider
 
     public function __construct(
         private readonly RequestStack $requestStack,
-        private readonly string $defaultLocale = 'en',
+        private readonly Locales $locales,
     ) {
     }
 
@@ -25,36 +25,21 @@ class LocaleProvider
      */
     public function getCurrentLocale(): string
     {
-        // Priority 1: Explicit override (used by CLI commands or special contexts)
         if (null !== $this->overrideLocale) {
             return $this->overrideLocale;
         }
 
-        // Priority 2: Request locale (for web requests)
         $request = $this->requestStack->getCurrentRequest();
 
         if ($request instanceof Request) {
             return $request->getLocale();
         }
 
-        // Priority 3: Fallback to default locale
-        return $this->defaultLocale;
+        return $this->locales->getDefault();
     }
 
-    /**
-     * Explicitly sets the locale for the current context.
-     * Useful in CLI commands or tests where there's no HTTP request.
-     */
     public function setLocale(string $locale): void
     {
         $this->overrideLocale = $locale;
-    }
-
-    /**
-     * Clears the explicitly set locale, reverting to normal locale detection.
-     */
-    public function clearLocale(): void
-    {
-        $this->overrideLocale = null;
     }
 }
