@@ -35,7 +35,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validator = new ValidTranslationsValidator(new Locales('en|fr'));
+        $this->validator = new ValidTranslationsValidator(new Locales('en|fr', 'fr'));
 
         $this->context = $this->createMock(ExecutionContextInterface::class);
         $this->validator->initialize($this->context);
@@ -207,7 +207,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
     public function testValidateWithThreeLocalesConfigured(): void
     {
-        $validator = new ValidTranslationsValidator(new Locales('en|fr|de'));
+        $validator = new ValidTranslationsValidator(new Locales('en|fr|de', 'fr'));
         $validator->initialize($this->context);
 
         $translation1 = $this->createTranslationMock('en');
@@ -298,7 +298,7 @@ final class ValidTranslationsValidatorTest extends TestCase
 
     public function testRequiredCountIsSetCorrectly(): void
     {
-        $validator = new ValidTranslationsValidator(new Locales('en|fr|de'));
+        $validator = new ValidTranslationsValidator(new Locales('en|fr|de', 'fr'));
 
         self::assertSame(3, $validator->requiredCount);
     }
