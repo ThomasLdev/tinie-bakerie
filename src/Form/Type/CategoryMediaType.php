@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\CategoryMedia;
-use App\Form\Type\CategoryMediaTranslationType;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

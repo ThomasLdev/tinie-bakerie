@@ -30,7 +30,9 @@ use Symfony\Component\Form\Test\TypeTestCase;
 final class PostMediaTypeTest extends TypeTestCase
 {
     private MockObject&Resolver $resolver;
+
     private MockObject&LibraryContainer $libraryContainer;
+
     private MockObject&MediaTransformer $mediaTransformer;
 
     #[\Override]

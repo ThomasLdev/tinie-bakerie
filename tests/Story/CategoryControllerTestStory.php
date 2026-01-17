@@ -65,7 +65,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -104,7 +104,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -142,7 +142,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -183,7 +183,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([
                             'locale' => 'fr',

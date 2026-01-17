@@ -69,7 +69,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -110,7 +110,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -151,7 +151,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                                        'position' => 0,
+                    'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',

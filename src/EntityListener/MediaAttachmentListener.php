@@ -11,6 +11,7 @@ use App\Entity\PostSectionMedia;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
+use JoliCode\MediaBundle\Model\Media;
 
 #[AsEntityListener(event: Events::preRemove, entity: CategoryMedia::class)]
 #[AsEntityListener(event: Events::preRemove, entity: PostMedia::class)]
@@ -21,7 +22,7 @@ class MediaAttachmentListener
     {
         $media = $entity->getMedia();
 
-        if (null === $media) {
+        if (!$media instanceof Media) {
             return;
         }
 

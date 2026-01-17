@@ -37,10 +37,10 @@ class MediaLoader
         $content = file_get_contents($sourcePath);
 
         if (false === $content) {
-            throw new \RuntimeException(sprintf('Cannot read fixture file: %s', $sourcePath));
+            throw new \RuntimeException(\sprintf('Cannot read fixture file: %s', $sourcePath));
         }
 
-        $storagePath = sprintf('fixtures/%s', $file);
+        $storagePath = \sprintf('fixtures/%s', $file);
 
         $media = $this->libraryContainer
             ->getDefault()
@@ -59,7 +59,7 @@ class MediaLoader
             $files = array_diff(scandir($fullPath) ?: [], ['.', '..']);
             $this->files = array_values(array_filter(
                 $files,
-                static fn(string $f): bool => is_file($fullPath . $f)
+                static fn (string $f): bool => is_file($fullPath . $f),
             ));
 
             if ([] === $this->files) {

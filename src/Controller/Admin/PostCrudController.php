@@ -35,6 +35,7 @@ class PostCrudController extends AbstractCrudController
     {
     }
 
+    #[\Override]
     public function configureAssets(Assets $assets): Assets
     {
         // this should not be needed, but there is a bug in EA with assets in nested forms
@@ -46,8 +47,7 @@ class PostCrudController extends AbstractCrudController
 
         return $assets
             ->addCssFile($package->getUrl('joli-media-easy-admin.css'))
-            ->addJsFile($package->getUrl('joli-media-easy-admin.js'))
-            ;
+            ->addJsFile($package->getUrl('joli-media-easy-admin.js'));
     }
 
     public static function getEntityFqcn(): string
