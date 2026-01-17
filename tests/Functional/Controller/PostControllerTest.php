@@ -8,9 +8,6 @@ use App\Controller\PostController;
 use App\Entity\Post;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Repository\PostRepository;
-use App\Services\Cache\AbstractEntityCache;
-use App\Services\Cache\CacheKeyGenerator;
-use App\Services\Cache\PostCache;
 use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\PostControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,9 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 #[CoversClass(PostController::class)]
 #[CoversClass(PostRepository::class)]
-#[CoversClass(PostCache::class)]
-#[CoversClass(AbstractEntityCache::class)]
-#[CoversClass(CacheKeyGenerator::class)]
 #[CoversClass(LocaleFilter::class)]
 #[CoversClass(KernelRequestSubscriber::class)]
 final class PostControllerTest extends BaseControllerTestCase
@@ -182,66 +176,6 @@ final class PostControllerTest extends BaseControllerTestCase
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
-    }
-
-    /**
-     * @param array<string> $expectedTitles
-     */
-    #[DataProvider('getPostControllerIndexData')]
-    public function testIndexUsesPostCacheService(array $expectedTitles, string $baseUrl): void
-    {
-        $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
-
-        // Make request to verify cache service is properly integrated
-        $this->client->request(Request::METHOD_GET, $baseUrl);
-        self::assertResponseIsSuccessful();
-
-        /** @var PostCache $cache */
-        $cache = $this->container->get(PostCache::class);
-
-        // Verify cache returns expected locale-specific data
-        $locale = $baseUrl === self::BASE_URL_FR ? 'fr' : 'en';
-        $posts = $cache->get($locale);
-
-        self::assertNotEmpty($posts, 'Cache should contain posts from database');
-
-        // Verify cached posts contain expected locale-specific titles
-        /** @var array<Post> $posts */
-        $cachedTitles = array_map(static fn (Post $post): string => $post->getTitle(), $posts);
-
-        foreach ($expectedTitles as $expectedTitle) {
-            self::assertContains(
-                $expectedTitle,
-                $cachedTitles,
-                \sprintf('Cache for locale "%s" should contain post with title "%s"', $locale, $expectedTitle),
-            );
-        }
-    }
-
-    #[DataProvider('getPostControllerShowData')]
-    public function testShowUsesPostCacheService(string $expectedTitle, string $locale, string $baseUrl): void
-    {
-        /** @var PostControllerTestStory $story */
-        $story = $this->loadStory(static fn (): PostControllerTestStory => PostControllerTestStory::load());
-        $post = $story->getActivePost(0);
-        $postSlug = $story->getPostSlug($post, $locale);
-        $category = $post->getCategory();
-        self::assertNotNull($category, 'Post should have a category');
-        $categorySlug = $story->getCategorySlug($category, $locale);
-        $url = \sprintf('%s/%s/%s', $baseUrl, $categorySlug, $postSlug);
-
-        // Make request to verify cache service works
-        $this->client->request(Request::METHOD_GET, $url);
-        self::assertResponseIsSuccessful();
-
-        // Verify PostCache service can retrieve individual post with correct locale content
-        /** @var PostCache $cache */
-        $cache = $this->container->get(PostCache::class);
-
-        $cachedPost = $cache->getOne($locale, $postSlug);
-        self::assertNotNull($cachedPost, 'Cache should return post by slug');
-        self::assertSame($postSlug, $cachedPost->getSlug(), 'Cached post should match requested slug');
-        self::assertSame($expectedTitle, $cachedPost->getTitle(), \sprintf('Cached post should have correct %s title', $locale));
     }
 
     public static function getPostControllerIndexData(): \Generator

@@ -63,67 +63,29 @@ class CategoryRepository extends ServiceEntityRepository
     public function findOne(string $slug): ?Category
     {
         $qb = $this->createQueryBuilder('c')
-            ->select('c')
+            ->select('PARTIAL c.{id, createdAt, updatedAt}')
             ->leftJoin('c.translations', 'ct')
-            ->addSelect('ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, locale}')
             ->leftJoin('c.media', 'm')
-            ->addSelect('m')
+            ->addSelect('PARTIAL m.{id, mediaName, type}')
             ->leftJoin('m.translations', 'mt')
-            ->addSelect('mt')
+            ->addSelect('PARTIAL mt.{id, title, alt, locale}')
             ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
-            ->addSelect('p')
+            ->addSelect('PARTIAL p.{id, createdAt, updatedAt}')
             ->leftJoin('p.translations', 'pt')
-            ->addSelect('pt')
+            ->addSelect('PARTIAL pt.{id, title, slug, excerpt, locale}')
             ->leftJoin('p.media', 'pm')
-            ->addSelect('pm')
+            ->addSelect('PARTIAL pm.{id, mediaName, type}')
             ->leftJoin('pm.translations', 'pmt')
-            ->addSelect('pmt')
+            ->addSelect('PARTIAL pmt.{id, title, alt, locale}')
             ->leftJoin('p.tags', 't')
-            ->addSelect('t')
+            ->addSelect('PARTIAL t.{id, backgroundColor, textColor}')
             ->leftJoin('t.translations', 'tt')
-            ->addSelect('tt')
+            ->addSelect('PARTIAL tt.{id, title, locale}')
             ->where('ct.slug = :slug')
             ->setParameter('slug', $slug)
-            ->setParameter('active', true);
-
-        $result = $qb->getQuery()
-            ->setHint(Query::HINT_REFRESH, true)
-            ->getOneOrNullResult();
-
-        return $result instanceof Category ? $result : null;
-    }
-
-    /**
-     * Find a category by ID with all related data.
-     * Uses HINT_REFRESH to ensure locale filter is applied.
-     * Eagerly loads posts to ensure they're available when entity is cached.
-     * Only loads active posts.
-     */
-    public function findOneById(int $id): ?Category
-    {
-        $qb = $this->createQueryBuilder('c')
-            ->select('c')
-            ->leftJoin('c.translations', 'ct')
-            ->addSelect('ct')
-            ->leftJoin('c.media', 'm')
-            ->addSelect('m')
-            ->leftJoin('m.translations', 'mt')
-            ->addSelect('mt')
-            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
-            ->addSelect('p')
-            ->leftJoin('p.translations', 'pt')
-            ->addSelect('pt')
-            ->leftJoin('p.media', 'pm')
-            ->addSelect('pm')
-            ->leftJoin('pm.translations', 'pmt')
-            ->addSelect('pmt')
-            ->leftJoin('p.tags', 't')
-            ->addSelect('t')
-            ->leftJoin('t.translations', 'tt')
-            ->addSelect('tt')
-            ->where('c.id = :id')
-            ->setParameter('id', $id)
-            ->setParameter('active', true);
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC');
 
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)

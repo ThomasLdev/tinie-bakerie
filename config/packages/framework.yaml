@@ -6,6 +6,8 @@ framework:
     set_locale_from_accept_language: true
     set_content_language_from_locale: true
     session: true
+    property_info:
+        with_constructor_extractor: true
 
     #esi: true
     #fragments: true

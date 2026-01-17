@@ -9,6 +9,7 @@ use App\Entity\CategoryMediaTranslation;
 use App\Form\CategoryMediaTranslationType;
 use App\Form\CategoryMediaType;
 use App\Services\Media\Enum\MediaType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
@@ -26,6 +27,7 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  */
 #[CoversClass(CategoryMediaType::class)]
 #[CoversClass(CategoryMediaTranslationType::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class CategoryMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;

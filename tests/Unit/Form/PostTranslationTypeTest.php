@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Form;
 
 use App\Entity\PostTranslation;
 use App\Form\PostTranslationType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Form\Test\TypeTestCase;
 
@@ -16,6 +17,7 @@ use Symfony\Component\Form\Test\TypeTestCase;
  * @internal
  */
 #[CoversClass(PostTranslationType::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class PostTranslationTypeTest extends TypeTestCase
 {
     public function testSubmitValidData(): void

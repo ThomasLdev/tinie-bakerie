@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Form;
 
 use App\Entity\CategoryTranslation;
 use App\Form\CategoryTranslationType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
@@ -14,6 +15,7 @@ use Symfony\Component\Form\Test\TypeTestCase;
  *
  * @internal
  */
+#[AllowMockObjectsWithoutExpectations]
 final class CategoryTranslationTypeTest extends TypeTestCase
 {
     public function testSubmitValidData(): void

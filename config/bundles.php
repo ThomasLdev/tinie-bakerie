@@ -11,6 +11,7 @@ use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
 use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
@@ -42,4 +43,5 @@ return [
     EasyAdminBundle::class => ['all' => true],
     DAMADoctrineTestBundle::class => ['test' => true],
     SensiolabsTypeScriptBundle::class => ['all' => true],
+    MonologBundle::class => ['all' => true],
 ];

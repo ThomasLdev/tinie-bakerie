@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan cache-warmup cache-warmup-clear typescript typescript-watch assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
+.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan typescript typescript-watch assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -66,18 +66,8 @@ bash: ## Connect to the FrankenPHP container via bash so up and down arrows go t
 node-sh: ## Connect to the Node container
 	@$(NODE_CONT) sh
 
-test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
-	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
-
 create-upload-dirs: ## Create upload directories
 	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
-
-cache-warmup: ## Warm up entity caches (posts, categories, headers)
-	@$(PHP_CONT) bin/console app:cache:warm
-
-cache-warmup-clear: ## Clear and warm up entity caches
-	@$(PHP_CONT) bin/console app:cache:warm --clear-first
 
 fixtures: create-upload-dirs
 	@$(PHP_CONT) bin/console c:c
@@ -187,19 +177,16 @@ rector:
 
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
-cache:
-	@$(PHP_CONT) bin/console cache:pool:clear --all
-
-tests: cache
+test:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
 
-test.coverage: cache
+test.coverage:
 	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
 
-test.unit: cache
+test.unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests --no-results --testdox
 
-test.functional: cache
+test.functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests --no-results --testdox
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————

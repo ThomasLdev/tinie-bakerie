@@ -6,11 +6,6 @@ services:
       target: frankenphp_prod
     environment:
       APP_SECRET: ${APP_SECRET}
-  
-  redis:
-    # Production Redis configuration
-    # Consider adding Redis persistence with AOF for production
-    command: redis-server --appendonly yes --appendfsync everysec
 
 # Note: node service is excluded from production via profiles
 # The node service has 'profiles: [dev]' in compose.yaml
