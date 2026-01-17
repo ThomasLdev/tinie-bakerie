@@ -8,7 +8,6 @@ use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route([
@@ -27,7 +26,7 @@ final class CategoryController extends AbstractController
      */
     #[Route(['en' => '/{categorySlug}', 'fr' => '/{categorySlug}'], methods: ['GET'])]
     #[Template('category/show.html.twig')]
-    public function show(string $categorySlug, Request $request): array
+    public function show(string $categorySlug): array
     {
         $category = $this->categoryRepository->findOne($categorySlug);
 

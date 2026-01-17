@@ -8,7 +8,6 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route([
@@ -27,7 +26,7 @@ final class PostController extends AbstractController
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
-    public function index(Request $request): array
+    public function index(): array
     {
         return ['posts' => $this->postRepository->findAllActive()];
     }
@@ -37,7 +36,7 @@ final class PostController extends AbstractController
      */
     #[Route(['en' => '/{categorySlug}/{postSlug}', 'fr' => '/{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]
-    public function show(string $categorySlug, string $postSlug, Request $request): array
+    public function show(string $categorySlug, string $postSlug): array
     {
         $post = $this->postRepository->findOneActive($postSlug);
 
