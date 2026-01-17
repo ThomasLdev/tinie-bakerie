@@ -69,8 +69,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaPath' => 'test-image-1.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -111,8 +110,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaPath' => 'test-image-2.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -153,8 +151,7 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaPath' => 'test-image-inactive.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',

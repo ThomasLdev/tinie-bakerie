@@ -9,17 +9,16 @@ use App\Entity\PostSectionMedia;
 use App\Entity\PostSectionTranslation;
 use App\Form\Type\PostSectionTranslationType;
 use App\Form\Type\PostSectionType;
-use App\Services\Media\Enum\MediaType;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\DataTransformer\MediaTransformer;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
+use JoliCode\MediaBundle\Library\LibraryContainer;
+use JoliCode\MediaBundle\Resolver\Resolver;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Vich\UploaderBundle\Form\Type\VichFileType;
-use Vich\UploaderBundle\Handler\UploadHandler;
-use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
-use Vich\UploaderBundle\Storage\StorageInterface;
 
 /**
  * Unit tests for PostSectionType.
@@ -32,19 +31,16 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 #[AllowMockObjectsWithoutExpectations]
 final class PostSectionTypeTest extends TypeTestCase
 {
-    private MockObject&StorageInterface $storage;
-
-    private MockObject&UploadHandler $handler;
-
-    private MockObject&PropertyMappingFactory $mappingFactory;
+    private MockObject&Resolver $resolver;
+    private MockObject&LibraryContainer $libraryContainer;
+    private MockObject&MediaTransformer $mediaTransformer;
 
     #[\Override]
     protected function setUp(): void
     {
-        // Mock VichFileType dependencies
-        $this->storage = $this->createMock(StorageInterface::class);
-        $this->handler = $this->createMock(UploadHandler::class);
-        $this->mappingFactory = $this->createMock(PropertyMappingFactory::class);
+        $this->resolver = $this->createMock(Resolver::class);
+        $this->libraryContainer = $this->createMock(LibraryContainer::class);
+        $this->mediaTransformer = $this->createMock(MediaTransformer::class);
 
         parent::setUp();
     }
@@ -57,7 +53,6 @@ final class PostSectionTypeTest extends TypeTestCase
             'media' => [
                 [
                     'position' => 0,
-                    'type' => 'image',
                     'translations' => [
                         [
                             'locale' => 'fr',
@@ -107,7 +102,6 @@ final class PostSectionTypeTest extends TypeTestCase
         $media = $model->getMedia()->first();
         self::assertInstanceOf(PostSectionMedia::class, $media);
         self::assertSame(0, $media->getPosition());
-        self::assertSame(MediaType::Image, $media->getType());
     }
 
     public function testSubmitMinimalDataWithoutMedia(): void
@@ -320,15 +314,14 @@ final class PostSectionTypeTest extends TypeTestCase
     #[\Override]
     protected function getExtensions(): array
     {
-        // Create VichFileType with mocked dependencies
-        $vichFileType = new VichFileType(
-            $this->storage,
-            $this->handler,
-            $this->mappingFactory,
+        $mediaChoiceType = new MediaChoiceType(
+            $this->resolver,
+            $this->libraryContainer,
+            $this->mediaTransformer,
         );
 
         return [
-            new PreloadedExtension([$vichFileType], []),
+            new PreloadedExtension([$mediaChoiceType], []),
         ];
     }
 }

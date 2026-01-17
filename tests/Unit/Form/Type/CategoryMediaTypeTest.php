@@ -8,10 +8,11 @@ use App\Entity\CategoryMedia;
 use App\Entity\CategoryMediaTranslation;
 use App\Form\Type\CategoryMediaTranslationType;
 use App\Form\Type\CategoryMediaType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\DataTransformer\MediaTransformer;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
-use App\Services\Media\Enum\MediaType;
 use JoliCode\MediaBundle\Library\LibraryContainer;
 use JoliCode\MediaBundle\Resolver\Resolver;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
@@ -19,22 +20,25 @@ use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
  * Unit tests for CategoryMediaType.
- * Tests form structure, embedded translations, and enum field configuration.
+ * Tests form structure and embedded translations.
  *
  * @internal
  */
 #[CoversClass(CategoryMediaType::class)]
 #[CoversClass(CategoryMediaTranslationType::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class CategoryMediaTypeTest extends TypeTestCase
 {
     private MockObject&Resolver $resolver;
     private MockObject&LibraryContainer $libraryContainer;
+    private MockObject&MediaTransformer $mediaTransformer;
 
     #[\Override]
     protected function setUp(): void
     {
         $this->resolver = $this->createMock(Resolver::class);
         $this->libraryContainer = $this->createMock(LibraryContainer::class);
+        $this->mediaTransformer = $this->createMock(MediaTransformer::class);
 
         parent::setUp();
     }
@@ -43,7 +47,6 @@ final class CategoryMediaTypeTest extends TypeTestCase
     {
         $formData = [
             'position' => 1,
-            'media' => 'categories/test-image.jpg',
             'translations' => [
                 [
                     'locale' => 'fr',
@@ -68,7 +71,6 @@ final class CategoryMediaTypeTest extends TypeTestCase
         self::assertTrue($form->isSynchronized());
         self::assertTrue($form->isValid(), 'Form has errors: ' . $form->getErrors(true));
         self::assertSame(1, $model->getPosition());
-        self::assertSame('categories/test-image.jpg', $model->getMedia()?->getPath());
         self::assertCount(2, $model->getTranslations());
 
         $frTranslation = $model->getTranslations()->filter(
@@ -112,7 +114,6 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
         self::assertTrue($form->has('position'));
         self::assertTrue($form->has('media'));
-        self::assertTrue($form->has('type'));
         self::assertTrue($form->has('translations'));
     }
 
@@ -136,46 +137,6 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $view = $form->createView();
 
         self::assertFalse($view['media']->vars['required']);
-    }
-
-    public function testTypeFieldIsRequired(): void
-    {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
-
-        $view = $form->createView();
-
-        self::assertTrue($view['type']->vars['required']);
-    }
-
-    public function testTypeFieldHasCorrectChoices(): void
-    {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
-
-        $view = $form->createView();
-        $choices = $view['type']->vars['choices'];
-
-        self::assertCount(2, $choices);
-
-        // The choices array keys contain the enum name (Image, Video) from array_combine
-        $hasImage = false;
-        $hasVideo = false;
-
-        foreach ($choices as $choiceView) {
-            if ($choiceView->label === 'Image') {
-                $hasImage = true;
-            }
-
-            if ($choiceView->label === 'Video') {
-                $hasVideo = true;
-            }
-        }
-
-        self::assertTrue($hasImage, 'Image choice not found');
-        self::assertTrue($hasVideo, 'Video choice not found');
     }
 
     public function testTranslationsFieldIsRequired(): void
@@ -219,6 +180,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $mediaChoiceType = new MediaChoiceType(
             $this->resolver,
             $this->libraryContainer,
+            $this->mediaTransformer,
         );
 
         return [

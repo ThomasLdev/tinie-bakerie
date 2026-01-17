@@ -65,8 +65,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                    'mediaPath' => 'test-category-image-1.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -105,8 +104,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaPath' => 'test-post-image-1.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -144,8 +142,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaPath' => 'test-post-image-2.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
                             'locale' => 'fr',
@@ -186,8 +183,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                    'mediaPath' => 'test-category-image-2.jpg',
-                    'position' => 0,
+                                        'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([
                             'locale' => 'fr',

@@ -8,10 +8,11 @@ use App\Entity\PostSectionMedia;
 use App\Entity\PostSectionMediaTranslation;
 use App\Form\Type\PostSectionMediaTranslationType;
 use App\Form\Type\PostSectionMediaType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\DataTransformer\MediaTransformer;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
-use App\Services\Media\Enum\MediaType;
 use JoliCode\MediaBundle\Library\LibraryContainer;
 use JoliCode\MediaBundle\Resolver\Resolver;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
@@ -19,22 +20,25 @@ use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
  * Unit tests for PostSectionMediaType.
- * Tests form structure, embedded translations, and enum field configuration.
+ * Tests form structure and embedded translations.
  *
  * @internal
  */
 #[CoversClass(PostSectionMediaType::class)]
 #[CoversClass(PostSectionMediaTranslationType::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class PostSectionMediaTypeTest extends TypeTestCase
 {
     private MockObject&Resolver $resolver;
     private MockObject&LibraryContainer $libraryContainer;
+    private MockObject&MediaTransformer $mediaTransformer;
 
     #[\Override]
     protected function setUp(): void
     {
         $this->resolver = $this->createMock(Resolver::class);
         $this->libraryContainer = $this->createMock(LibraryContainer::class);
+        $this->mediaTransformer = $this->createMock(MediaTransformer::class);
 
         parent::setUp();
     }
@@ -43,8 +47,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
     {
         $formData = [
             'position' => 3,
-            'media' => 'sections/test-video.mp4',
-            'type' => 'video',
             'translations' => [
                 [
                     'locale' => 'fr',
@@ -68,8 +70,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         self::assertTrue($form->isSynchronized());
         self::assertSame(3, $model->getPosition());
-        self::assertSame('sections/test-video.mp4', $model->getMedia()?->getPath());
-        self::assertSame(MediaType::Video, $model->getType());
         self::assertCount(2, $model->getTranslations());
 
         $frTranslation = $model->getTranslations()->filter(
@@ -85,7 +85,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
     {
         $formData = [
             'position' => 1,
-            'type' => 'image',
             'translations' => [
                 [
                     'locale' => 'en',
@@ -104,7 +103,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         self::assertTrue($form->isSynchronized());
         self::assertSame(1, $model->getPosition());
-        self::assertSame(MediaType::Image, $model->getType());
     }
 
     public function testFormHasCorrectFields(): void
@@ -115,7 +113,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         self::assertTrue($form->has('position'));
         self::assertTrue($form->has('media'));
-        self::assertTrue($form->has('type'));
         self::assertTrue($form->has('translations'));
     }
 
@@ -139,46 +136,6 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $view = $form->createView();
 
         self::assertFalse($view['media']->vars['required']);
-    }
-
-    public function testTypeFieldIsRequired(): void
-    {
-        $form = $this->factory->create(PostSectionMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
-
-        $view = $form->createView();
-
-        self::assertTrue($view['type']->vars['required']);
-    }
-
-    public function testTypeFieldHasCorrectChoices(): void
-    {
-        $form = $this->factory->create(PostSectionMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
-
-        $view = $form->createView();
-        $choices = $view['type']->vars['choices'];
-
-        self::assertCount(2, $choices);
-
-        // The choices array keys contain the enum name (Image, Video) from array_combine
-        $hasImage = false;
-        $hasVideo = false;
-
-        foreach ($choices as $choiceView) {
-            if ($choiceView->label === 'Image') {
-                $hasImage = true;
-            }
-
-            if ($choiceView->label === 'Video') {
-                $hasVideo = true;
-            }
-        }
-
-        self::assertTrue($hasImage, 'Image choice not found');
-        self::assertTrue($hasVideo, 'Video choice not found');
     }
 
     public function testTranslationsFieldIsRequired(): void
@@ -222,6 +179,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $mediaChoiceType = new MediaChoiceType(
             $this->resolver,
             $this->libraryContainer,
+            $this->mediaTransformer,
         );
 
         return [
