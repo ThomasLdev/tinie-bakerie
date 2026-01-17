@@ -151,7 +151,7 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
             LIMIT :limit
             SQL;
 
-        /** @var list<array{id: int, title: string, slug: string, excerpt: string, category_title: string|null, category_slug: string|null, image_path: string|null, rank: float, headline: string|null}> */
+        // @var list<array{id: int, title: string, slug: string, excerpt: string, category_title: string|null, category_slug: string|null, image_path: string|null, rank: float, headline: string|null}>
         return $this->connection->executeQuery($sql, [
             'query' => $tsQuery,
             'raw_query' => $this->extractRawQuery($tsQuery),

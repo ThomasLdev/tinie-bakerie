@@ -15,9 +15,13 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class MediaThumbnail
 {
     public ?string $path = null;
+
     public string $alt = '';
+
     public string $title = '';
+
     public string $class = '';
+
     public string $variation = 'thumbnail-2x-webp';
 
     public function isImage(): bool
@@ -43,7 +47,8 @@ final class MediaThumbnail
             return '';
         }
 
-        $extension = strtolower(pathinfo($this->path, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo($this->path, \PATHINFO_EXTENSION));
+
         if ($extension === '') {
             return '';
         }

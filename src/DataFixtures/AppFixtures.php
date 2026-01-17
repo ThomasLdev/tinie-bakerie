@@ -19,7 +19,7 @@ use App\Factory\PostSectionTranslationFactory;
 use App\Factory\PostTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
-use App\Services\Fixtures\MediaLoader;
+use App\Tests\Fixtures\MediaLoader;
 use App\Services\Locale\Locales;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
