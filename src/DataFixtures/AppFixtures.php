@@ -19,7 +19,7 @@ use App\Factory\PostSectionTranslationFactory;
 use App\Factory\PostTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
-use App\Services\Fixtures\Media\MediaLoader;
+use App\Services\Fixtures\MediaLoader;
 use App\Services\Locale\Locales;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
                         'category' => $category, // Direct reference, no lookup
                         'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
                     ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                    ['media' => $this->mediaLoader->getRandomMedia()],
                 ));
             }
 
@@ -81,7 +81,7 @@ class AppFixtures extends Fixture
                         'post' => $post, // Direct reference, no lookup
                         'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
                     ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                    ['media' => $this->mediaLoader->getRandomMedia()],
                 ));
             }
 
@@ -105,7 +105,7 @@ class AppFixtures extends Fixture
                         'postSection' => $section, // Direct reference, no lookup (property name is postSection)
                         'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
                     ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
+                    ['media' => $this->mediaLoader->getRandomMedia()],
                 ));
             }
         });

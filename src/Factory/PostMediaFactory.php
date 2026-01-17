@@ -27,7 +27,6 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
     {
         return [
             'createdAt' => self::faker()->dateTime(),
-            'mediaPath' => '',
             'updatedAt' => self::faker()->dateTime(),
             'translations' => [],
             'position' => 0,
