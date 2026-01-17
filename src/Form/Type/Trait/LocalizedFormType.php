@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Trait;
+namespace App\Form\Type\Trait;
 
 trait LocalizedFormType
 {

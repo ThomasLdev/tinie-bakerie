@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\PostMedia;
-use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -28,10 +27,8 @@ final class PostMediaFactory extends PersistentProxyObjectFactory
     {
         return [
             'createdAt' => self::faker()->dateTime(),
-            'mediaName' => '',
+            'mediaPath' => '',
             'updatedAt' => self::faker()->dateTime(),
-            'type' => MediaType::Image,
-            'mediaFile' => null,
             'translations' => [],
             'position' => 0,
         ];

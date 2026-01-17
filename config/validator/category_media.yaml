@@ -1,21 +1,5 @@
 App\Entity\CategoryMedia:
     properties:
-        mediaName:
-            - Length:
-                max: 255
-                maxMessage: 'category_media.media_name.max_length'
-        mediaFile:
-            - File:
-                maxSize: '10M'
-                maxSizeMessage: 'category_media.media_file.max_size'
-                mimeTypes:
-                    - 'image/jpeg'
-                    - 'image/png'
-                    - 'image/gif'
-                    - 'image/webp'
-                    - 'video/mp4'
-                    - 'video/webm'
-                mimeTypesMessage: 'category_media.media_file.mime_types'
         position:
             - NotNull: ~
             - Type: 

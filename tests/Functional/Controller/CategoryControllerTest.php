@@ -80,10 +80,6 @@ final class CategoryControllerTest extends BaseControllerTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
-    /**
-     * CRITICAL TEST: Verify that only active posts appear on category pages.
-     * This prevents showing inactive posts which should return 404 when accessed directly.
-     */
     #[DataProvider('getCategoryControllerShowData')]
     public function testShowDisplaysOnlyActivePosts(string $expectedTitle, string $locale, string $baseUrl): void
     {

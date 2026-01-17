@@ -145,7 +145,7 @@
             {% set mainMedia = post.media|first %}
 
             {% if false is not same as mainMedia %}
-                {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
+                {% set mainMediaSource = "" %}
             {% endif %}
 
             <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"

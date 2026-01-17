@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Form;
+namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\PostSection;
 use App\Entity\PostSectionMedia;
 use App\Entity\PostSectionTranslation;
-use App\Form\PostSectionTranslationType;
-use App\Form\PostSectionType;
+use App\Form\Type\PostSectionTranslationType;
+use App\Form\Type\PostSectionType;
 use App\Services\Media\Enum\MediaType;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;

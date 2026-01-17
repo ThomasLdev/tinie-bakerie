@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\PostSectionMedia;
-use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -28,7 +27,6 @@ final class PostSectionMediaFactory extends PersistentProxyObjectFactory
     {
         return [
             'createdAt' => self::faker()->dateTime(),
-            'type' => self::faker()->randomElement(MediaType::cases()),
             'updatedAt' => self::faker()->dateTime(),
             'position' => 0,
         ];

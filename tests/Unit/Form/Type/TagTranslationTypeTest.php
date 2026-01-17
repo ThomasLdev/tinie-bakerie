@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Form;
+namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\TagTranslation;
-use App\Form\TagTranslationType;
+use App\Form\Type\TagTranslationType;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Form\Test\TypeTestCase;
 

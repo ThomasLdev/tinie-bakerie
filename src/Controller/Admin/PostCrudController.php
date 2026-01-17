@@ -7,11 +7,12 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
-use App\Form\PostMediaType;
-use App\Form\PostSectionType;
-use App\Form\PostTranslationType;
+use App\Form\Type\PostMediaType;
+use App\Form\Type\PostSectionType;
+use App\Form\Type\PostTranslationType;
 use App\Services\Locale\Locales;
 use App\Services\Post\Enum\Difficulty;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -22,6 +23,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
 /**
  * @extends AbstractCrudController<Post>
@@ -30,6 +33,21 @@ class PostCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
     {
+    }
+
+    public function configureAssets(Assets $assets): Assets
+    {
+        // this should not be needed, but there is a bug in EA with assets in nested forms
+        // see https://github.com/EasyCorp/EasyAdminBundle/issues/6127
+        $package = new PathPackage(
+            '/bundles/jolimediaeasyadmin',
+            new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/jolimediaeasyadmin/manifest.json'),
+        );
+
+        return $assets
+            ->addCssFile($package->getUrl('joli-media-easy-admin.css'))
+            ->addJsFile($package->getUrl('joli-media-easy-admin.js'))
+            ;
     }
 
     public static function getEntityFqcn(): string
@@ -68,7 +86,8 @@ class PostCrudController extends AbstractCrudController
             ->setPageTitle('index', 'admin.post.dashboard.index')
             ->setPageTitle('new', 'admin.post.dashboard.create')
             ->setPageTitle('edit', 'admin.post.dashboard.edit')
-            ->setPageTitle('detail', 'admin.post.dashboard.detail');
+            ->setPageTitle('detail', 'admin.post.dashboard.detail')
+            ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig');
     }
 
     private function getIndexFields(): \Generator

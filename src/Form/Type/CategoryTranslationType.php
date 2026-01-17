@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Type;
 
-use App\Entity\PostTranslation;
-use App\Form\Trait\LocalizedFormType;
+use App\Entity\CategoryTranslation;
+use App\Form\Type\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -14,9 +14,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @extends AbstractType<PostTranslationType>
+ * @extends AbstractType<CategoryTranslationType>
  */
-class PostTranslationType extends AbstractType
+class CategoryTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
@@ -38,10 +38,21 @@ class PostTranslationType extends AbstractType
                 'label' => 'admin.global.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-                'empty_data' => '',
             ])
             ->add('metaTitle', TextType::class, [
                 'label' => 'admin.global.meta_title',
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+                'empty_data' => '',
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'admin.global.title',
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+                'empty_data' => '',
+            ])
+            ->add('metaDescription', TextareaType::class, [
+                'label' => 'admin.global.meta_description',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'empty_data' => '',
@@ -52,25 +63,11 @@ class PostTranslationType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'help' => 'admin.global.slug.help',
-                'empty_data' => '',
-            ])
-            ->add('metaDescription', TextareaType::class, [
-                'label' => 'admin.global.meta_description',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'empty_data' => '',
             ])
             ->add('excerpt', TextareaType::class, [
                 'label' => 'admin.global.excerpt',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-                'empty_data' => '',
-            ])
-            ->add('notes', TextareaType::class, [
-                'label' => 'admin.post.notes.label',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'help' => 'admin.post.notes.help',
                 'empty_data' => '',
             ]);
     }
@@ -78,7 +75,7 @@ class PostTranslationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PostTranslation::class,
+            'data_class' => CategoryTranslation::class,
             'supported_locales' => [],
         ]);
 

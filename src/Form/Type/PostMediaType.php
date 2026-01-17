@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Type;
 
 use App\Entity\PostMedia;
-use App\Services\Media\Enum\MediaType;
-use JoliCode\MediaBundle\Form\MediaChoiceType;
+use App\Form\Type\PostMediaTranslationType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,18 +27,9 @@ class PostMediaType extends AbstractType
                 'attr' => ['min' => 0],
                 'empty_data' => '0',
             ])
-            ->add('mediaPath', MediaChoiceType::class, [
+            ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
-            ])
-            ->add('type', ChoiceType::class, [
-                'label' => 'admin.global.media.type',
-                'choices' => array_combine(
-                    array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
-                    MediaType::cases(),
-                ),
-                'choice_value' => static fn (?MediaType $type) => $type?->value,
-                'required' => true,
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',

@@ -89,22 +89,22 @@ final class PostCrudTestStory extends Story
 
     public function getCategory(): Category
     {
-        return $this->get('category')->_real();
+        return self::get('category')->_real();
     }
 
     public function getTag1(): Tag
     {
-        return $this->get('tag1')->_real();
+        return self::get('tag1')->_real();
     }
 
     public function getTag2(): Tag
     {
-        return $this->get('tag2')->_real();
+        return self::get('tag2')->_real();
     }
 
     public function getTag3(): Tag
     {
-        return $this->get('tag3')->_real();
+        return self::get('tag3')->_real();
     }
 
     /**

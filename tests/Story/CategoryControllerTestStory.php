@@ -15,7 +15,6 @@ use App\Factory\PostMediaTranslationFactory;
 use App\Factory\PostTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
-use App\Services\Media\Enum\MediaType;
 use Zenstruck\Foundry\Story;
 
 /**
@@ -66,8 +65,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                    'mediaName' => 'test-category-image-1.jpg',
-                    'type' => MediaType::Image,
+                    'mediaPath' => 'test-category-image-1.jpg',
                     'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([
@@ -107,8 +105,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaName' => 'test-post-image-1.jpg',
-                    'type' => MediaType::Image,
+                    'mediaPath' => 'test-post-image-1.jpg',
                     'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
@@ -147,8 +144,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaName' => 'test-post-image-2.jpg',
-                    'type' => MediaType::Image,
+                    'mediaPath' => 'test-post-image-2.jpg',
                     'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
@@ -190,8 +186,7 @@ final class CategoryControllerTestStory extends Story
             ],
             'media' => [
                 CategoryMediaFactory::new([
-                    'mediaName' => 'test-category-image-2.jpg',
-                    'type' => MediaType::Image,
+                    'mediaPath' => 'test-category-image-2.jpg',
                     'position' => 0,
                     'translations' => [
                         CategoryMediaTranslationFactory::new([

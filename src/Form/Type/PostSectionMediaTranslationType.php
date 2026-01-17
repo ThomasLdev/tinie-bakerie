@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Type;
 
-use App\Entity\PostSectionTranslation;
-use App\Form\Trait\LocalizedFormType;
+use App\Entity\PostSectionMediaTranslation;
+use App\Form\Type\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @extends AbstractType<PostSectionTranslationType>
+ * @extends AbstractType<PostSectionMediaTranslationType>
  */
-class PostSectionTranslationType extends AbstractType
+class PostSectionMediaTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
@@ -35,13 +34,13 @@ class PostSectionTranslationType extends AbstractType
                 ],
             ])
             ->add('title', TextType::class, [
-                'label' => 'admin.post_section.section_title',
+                'label' => 'admin.global.media.title',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'empty_data' => '',
             ])
-            ->add('content', TextareaType::class, [
-                'label' => 'admin.post_section.content',
+            ->add('alt', TextType::class, [
+                'label' => 'admin.global.media.alt',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'empty_data' => '',
@@ -51,7 +50,7 @@ class PostSectionTranslationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PostSectionTranslation::class,
+            'data_class' => PostSectionMediaTranslation::class,
             'supported_locales' => [],
         ]);
 

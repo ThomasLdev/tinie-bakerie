@@ -69,8 +69,7 @@ phpstan.neon
 ###< friendsofphp/php-cs-fixer ###
 
 ###> tinie-bakerie - upload system ###
-public/upload/*
-public/coverage
+public/media/*
 public/bundles
 ###< tinie-bakerie - upload system ###
 

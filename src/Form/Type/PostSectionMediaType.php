@@ -2,22 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Type;
 
-use App\Entity\CategoryMedia;
-use App\Services\Media\Enum\MediaType;
-use JoliCode\MediaBundle\Form\MediaChoiceType;
+use App\Entity\PostSectionMedia;
+use App\Form\Type\PostSectionMediaTranslationType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @extends AbstractType<CategoryMediaType>
+ * @extends AbstractType<PostSectionMediaType>
  */
-class CategoryMediaType extends AbstractType
+class PostSectionMediaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,22 +25,13 @@ class CategoryMediaType extends AbstractType
                 'label' => 'admin.global.position',
                 'required' => true,
             ])
-            ->add('mediaPath', MediaChoiceType::class, [
+            ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
             ])
-            ->add('type', ChoiceType::class, [
-                'label' => 'admin.global.media.type',
-                'choices' => array_combine(
-                    array_map(static fn (MediaType $type) => $type->name, MediaType::cases()),
-                    MediaType::cases(),
-                ),
-                'choice_value' => static fn (?MediaType $type) => $type?->value,
-                'required' => true,
-            ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
-                'entry_type' => CategoryMediaTranslationType::class,
+                'entry_type' => PostSectionMediaTranslationType::class,
                 'entry_options' => [
                     'supported_locales' => $options['supported_locales'],
                 ],
@@ -57,7 +47,7 @@ class CategoryMediaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => CategoryMedia::class,
+            'data_class' => PostSectionMedia::class,
             'supported_locales' => [],
         ]);
     }

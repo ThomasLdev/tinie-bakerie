@@ -14,13 +14,17 @@
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ category.description }}</p>
             </div>
             {% for medium in category.media %}
-                {% set src = vich_uploader_asset(medium) %}
+                {% set mediaObject = medium.media %}
 
-                {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                    <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
+                {% if mediaObject.mimeType is same as 'image/jpeg' %}
+                    <twig:joli:Img
+                        path="{{ mediaObject.path }}"
+                        variation="thumbnail-webp"
+                        alt="{{ medium.alt }}"
+                    />
                 {% else %}
-                    <video autoplay loop poster="{{ src }}" title="{{ medium.title }}" width="300">
-                        <source src="{{ src }}" type="video/mp4">
+                    <video autoplay loop poster="{{ mediaObject.path }}" title="{{ medium.title }}" width="300">
+                        <source src="{{ mediaObject.path }}" type="video/mp4">
                     </video>
                 {% endif %}
             {% endfor %}
@@ -33,23 +37,22 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for post in posts %}
                 {% set mainMedia = post.media|first %}
-                {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
 
                 <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
                    href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
                 >
                     <div class="aspect-square overflow-hidden">
-                        {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                            <picture>
-                                <source srcset="{{ mainMediaSource }}" type="image/webp">
-                                <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}"
-                                     class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            </picture>
+                        {% set mediaObject = mainMedia.media %}
+
+                        {% if mediaObject.mimeType is same as 'image/jpeg' %}
+                            <twig:joli:Img
+                                path="{{ mediaObject.path }}"
+                                variation="thumbnail-2x-webp"
+                                alt="{{ mainMedia.alt }}"
+                            />
                         {% else %}
-                            <video
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
-                                <source src="{{ mainMediaSource }}" type="video/mp4">
+                            <video autoplay="autoplay" loop="loop" poster="{{ mediaObject.url }}" title="{{ mainMedia.title }}" width="300">
+                                <source src="{{ mediaObject.url }}" type="video/mp4">
                             </video>
                         {% endif %}
                     </div>

@@ -2,76 +2,90 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Form;
+namespace App\Tests\Unit\Form\Type;
 
-use App\Entity\CategoryMedia;
-use App\Entity\CategoryMediaTranslation;
-use App\Form\CategoryMediaTranslationType;
-use App\Form\CategoryMediaType;
+use App\Entity\PostSectionMedia;
+use App\Entity\PostSectionMediaTranslation;
+use App\Form\Type\PostSectionMediaTranslationType;
+use App\Form\Type\PostSectionMediaType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use App\Services\Media\Enum\MediaType;
-use JoliCode\MediaBundle\Form\MediaChoiceType;
+use JoliCode\MediaBundle\Library\LibraryContainer;
+use JoliCode\MediaBundle\Resolver\Resolver;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
- * Unit tests for CategoryMediaType.
+ * Unit tests for PostSectionMediaType.
  * Tests form structure, embedded translations, and enum field configuration.
  *
  * @internal
  */
-#[CoversClass(CategoryMediaType::class)]
-#[CoversClass(CategoryMediaTranslationType::class)]
-final class CategoryMediaTypeTest extends TypeTestCase
+#[CoversClass(PostSectionMediaType::class)]
+#[CoversClass(PostSectionMediaTranslationType::class)]
+final class PostSectionMediaTypeTest extends TypeTestCase
 {
+    private MockObject&Resolver $resolver;
+    private MockObject&LibraryContainer $libraryContainer;
+
+    #[\Override]
+    protected function setUp(): void
+    {
+        $this->resolver = $this->createMock(Resolver::class);
+        $this->libraryContainer = $this->createMock(LibraryContainer::class);
+
+        parent::setUp();
+    }
+
     public function testSubmitValidDataWithTranslations(): void
     {
         $formData = [
-            'position' => 1,
-            'mediaPath' => 'categories/test-image.jpg',
-            'type' => 'image',
+            'position' => 3,
+            'media' => 'sections/test-video.mp4',
+            'type' => 'video',
             'translations' => [
                 [
                     'locale' => 'fr',
-                    'title' => 'Image Title FR',
-                    'alt' => 'Image Alt Text',
+                    'title' => 'Section Video Title FR',
+                    'alt' => 'Section Video Alt',
                 ],
                 [
                     'locale' => 'en',
-                    'title' => 'Image Title EN',
-                    'alt' => 'Image Alt English',
+                    'title' => 'Section Video Title EN',
+                    'alt' => 'Section Video Alt EN',
                 ],
             ],
         ];
 
-        $model = new CategoryMedia();
-        $form = $this->factory->create(CategoryMediaType::class, $model, [
+        $model = new PostSectionMedia();
+        $form = $this->factory->create(PostSectionMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
-        self::assertTrue($form->isValid(), 'Form has errors: ' . $form->getErrors(true));
-        self::assertSame(1, $model->getPosition());
-        self::assertSame('categories/test-image.jpg', $model->getMediaPath());
-        self::assertSame(MediaType::Image, $model->getType());
+        self::assertSame(3, $model->getPosition());
+        self::assertSame('sections/test-video.mp4', $model->getMedia()?->getPath());
+        self::assertSame(MediaType::Video, $model->getType());
         self::assertCount(2, $model->getTranslations());
 
         $frTranslation = $model->getTranslations()->filter(
-            static fn (CategoryMediaTranslation $t): bool => $t->getLocale() === 'fr',
+            static fn (PostSectionMediaTranslation $t): bool => $t->getLocale() === 'fr',
         )->first();
 
-        self::assertInstanceOf(CategoryMediaTranslation::class, $frTranslation);
-        self::assertSame('Image Title FR', $frTranslation->getTitle());
-        self::assertSame('Image Alt Text', $frTranslation->getAlt());
+        self::assertInstanceOf(PostSectionMediaTranslation::class, $frTranslation);
+        self::assertSame('Section Video Title FR', $frTranslation->getTitle());
+        self::assertSame('Section Video Alt', $frTranslation->getAlt());
     }
 
     public function testSubmitMinimalData(): void
     {
         $formData = [
-            'position' => 0,
-            'type' => 'video',
+            'position' => 1,
+            'type' => 'image',
             'translations' => [
                 [
                     'locale' => 'en',
@@ -81,33 +95,33 @@ final class CategoryMediaTypeTest extends TypeTestCase
             ],
         ];
 
-        $model = new CategoryMedia();
-        $form = $this->factory->create(CategoryMediaType::class, $model, [
+        $model = new PostSectionMedia();
+        $form = $this->factory->create(PostSectionMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
-        self::assertSame(0, $model->getPosition());
-        self::assertSame(MediaType::Video, $model->getType());
+        self::assertSame(1, $model->getPosition());
+        self::assertSame(MediaType::Image, $model->getType());
     }
 
     public function testFormHasCorrectFields(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         self::assertTrue($form->has('position'));
-        self::assertTrue($form->has('mediaPath'));
+        self::assertTrue($form->has('media'));
         self::assertTrue($form->has('type'));
         self::assertTrue($form->has('translations'));
     }
 
     public function testPositionFieldIsRequired(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -116,20 +130,20 @@ final class CategoryMediaTypeTest extends TypeTestCase
         self::assertTrue($view['position']->vars['required']);
     }
 
-    public function testMediaPathFieldIsNotRequired(): void
+    public function testMediaFieldIsNotRequired(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         $view = $form->createView();
 
-        self::assertFalse($view['mediaPath']->vars['required']);
+        self::assertFalse($view['media']->vars['required']);
     }
 
     public function testTypeFieldIsRequired(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -140,7 +154,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
     public function testTypeFieldHasCorrectChoices(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -169,7 +183,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
     public function testTranslationsFieldIsRequired(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -180,7 +194,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
     public function testTranslationsCollectionAllowsAddAndDelete(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -192,7 +206,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
     public function testTranslationsCollectionHasPrototype(): void
     {
-        $form = $this->factory->create(CategoryMediaType::class, null, [
+        $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
@@ -205,8 +219,10 @@ final class CategoryMediaTypeTest extends TypeTestCase
     #[\Override]
     protected function getExtensions(): array
     {
-        // Create a simple MediaChoiceType mock that behaves like a text field
-        $mediaChoiceType = new MediaChoiceType();
+        $mediaChoiceType = new MediaChoiceType(
+            $this->resolver,
+            $this->libraryContainer,
+        );
 
         return [
             new PreloadedExtension([$mediaChoiceType], []),

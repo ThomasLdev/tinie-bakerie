@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Form\CategoryMediaType;
-use App\Form\CategoryTranslationType;
+use App\Form\Type\CategoryMediaType;
+use App\Form\Type\CategoryTranslationType;
 use App\Services\Locale\Locales;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
 /**
  * @extends AbstractCrudController<Category>
@@ -21,6 +24,21 @@ class CategoryCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
     {
+    }
+
+    public function configureAssets(Assets $assets): Assets
+    {
+        // this should not be needed, but there is a bug in EA with assets in nested forms
+        // see https://github.com/EasyCorp/EasyAdminBundle/issues/6127
+        $package = new PathPackage(
+            '/bundles/jolimediaeasyadmin',
+            new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/jolimediaeasyadmin/manifest.json'),
+        );
+
+        return $assets
+            ->addCssFile($package->getUrl('joli-media-easy-admin.css'))
+            ->addJsFile($package->getUrl('joli-media-easy-admin.js'))
+            ;
     }
 
     public static function getEntityFqcn(): string
@@ -47,7 +65,8 @@ class CategoryCrudController extends AbstractCrudController
             ->setPageTitle('index', 'admin.category.dashboard.index')
             ->setPageTitle('new', 'admin.category.dashboard.create')
             ->setPageTitle('edit', 'admin.category.dashboard.edit')
-            ->setPageTitle('detail', 'admin.category.dashboard.detail');
+            ->setPageTitle('detail', 'admin.category.dashboard.detail')
+            ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig');
     }
 
     private function getIndexFields(): \Generator

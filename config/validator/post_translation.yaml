@@ -8,23 +8,3 @@ App\Entity\PostTranslation:
                 max: 255
                 minMessage: 'post_translation.title.min_length'
                 maxMessage: 'post_translation.title.max_length'
-        metaTitle:
-            - Length:
-                max: 60
-                maxMessage: 'post_translation.meta_title.max_length'
-        metaDescription:
-            - Length:
-                min: 120
-                max: 160
-                minMessage: 'post_translation.meta_description.min_length'
-                maxMessage: 'post_translation.meta_description.max_length'
-        excerpt:
-            - Length:
-                min: 50
-                max: 500
-                minMessage: 'post_translation.excerpt.min_length'
-                maxMessage: 'post_translation.excerpt.max_length'
-        notes:
-            - Length:
-                max: 2000
-                maxMessage: 'post_translation.notes.max_length'

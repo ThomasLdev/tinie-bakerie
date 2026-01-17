@@ -7,12 +7,13 @@ namespace App\Entity;
 use App\Entity\Contracts\MediaAttachment;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
-use App\Services\Media\Enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use JoliCode\MediaBundle\Doctrine\Types as JoliMediaTypes;
+use JoliCode\MediaBundle\Model\Media;
 
 /**
  * @implements Translatable<CategoryMediaTranslation>
@@ -30,15 +31,12 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(nullable: true)]
-    private ?string $mediaPath = null;
+    #[ORM\Column(type: JoliMediaTypes::MEDIA, nullable: true)]
+    private ?Media $media = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Category $category = null;
-
-    #[ORM\Column(enumType: MediaType::class)]
-    private MediaType $type;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
     private int $position = 0;
@@ -59,7 +57,7 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
 
     public function __toString(): string
     {
-        return $this->getMediaPath() ?? '';
+        return $this->media?->getPath() ?? '';
     }
 
     public function getId(): ?int
@@ -67,14 +65,14 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
         return $this->id ?? null;
     }
 
-    public function getMediaPath(): ?string
+    public function getMedia(): ?Media
     {
-        return $this->mediaPath;
+        return $this->media;
     }
 
-    public function setMediaPath(?string $mediaPath): self
+    public function setMedia(?Media $media): self
     {
-        $this->mediaPath = $mediaPath;
+        $this->media = $media;
 
         return $this;
     }
@@ -87,18 +85,6 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    public function getType(): MediaType
-    {
-        return $this->type;
-    }
-
-    public function setType(MediaType $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }

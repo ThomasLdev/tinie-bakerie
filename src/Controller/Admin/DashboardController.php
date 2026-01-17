@@ -31,14 +31,6 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[\Override]
-    public function configureCrud(): Crud
-    {
-        return parent::configureCrud()
-            // Add custom form theme with data-test-id attributes (dev/test only)
-            ->addFormTheme('admin/form_theme.html.twig');
-    }
-
-    #[\Override]
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToUrl('admin.website.label', 'fa fa-home', '/');

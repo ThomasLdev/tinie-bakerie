@@ -26,7 +26,7 @@ class MediaLoader
     }
 
     /**
-     * @return array{mediaName: string, mediaFile: UploadedFile, type: MediaType}
+     * @return array{mediaPath: string, mediaFile: UploadedFile, type: MediaType}
      */
     public function getRandomMediaFactoryFields(): array
     {

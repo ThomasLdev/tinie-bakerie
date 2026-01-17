@@ -5,7 +5,7 @@
         {% if media is not same as null %}
             <div>
                 {% for medium in media %}
-                    {% set src = vich_uploader_asset(medium) %}
+                    {% set src = "" %}
 
                     {% if medium.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
                         <img src="{{ src }}" alt="{{ medium.alt }}" width="300">
