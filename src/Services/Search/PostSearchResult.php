@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\Search;
 
-/**
- * Lightweight DTO containing all data needed to display a search result.
- * No Doctrine entity hydration required.
- */
 final readonly class PostSearchResult
 {
     public function __construct(
