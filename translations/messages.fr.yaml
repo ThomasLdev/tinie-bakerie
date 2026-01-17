@@ -83,3 +83,5 @@ admin:
         title: 'Sections'
         section_title: 'Titre de la section'
         content: 'Contenu'
+    
+media_library: Galerie Media

@@ -9,15 +9,10 @@ use App\Entity\PostSectionMediaTranslation;
 use App\Form\PostSectionMediaTranslationType;
 use App\Form\PostSectionMediaType;
 use App\Services\Media\Enum\MediaType;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use JoliCode\MediaBundle\Form\MediaChoiceType;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Vich\UploaderBundle\Form\Type\VichFileType;
-use Vich\UploaderBundle\Handler\UploadHandler;
-use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
-use Vich\UploaderBundle\Storage\StorageInterface;
 
 /**
  * Unit tests for PostSectionMediaType.
@@ -27,30 +22,13 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  */
 #[CoversClass(PostSectionMediaType::class)]
 #[CoversClass(PostSectionMediaTranslationType::class)]
-#[AllowMockObjectsWithoutExpectations]
 final class PostSectionMediaTypeTest extends TypeTestCase
 {
-    private MockObject&StorageInterface $storage;
-
-    private MockObject&UploadHandler $handler;
-
-    private MockObject&PropertyMappingFactory $mappingFactory;
-
-    #[\Override]
-    protected function setUp(): void
-    {
-        // Mock VichFileType dependencies
-        $this->storage = $this->createMock(StorageInterface::class);
-        $this->handler = $this->createMock(UploadHandler::class);
-        $this->mappingFactory = $this->createMock(PropertyMappingFactory::class);
-
-        parent::setUp();
-    }
-
     public function testSubmitValidDataWithTranslations(): void
     {
         $formData = [
             'position' => 3,
+            'mediaPath' => 'sections/test-video.mp4',
             'type' => 'video',
             'translations' => [
                 [
@@ -75,6 +53,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         self::assertTrue($form->isSynchronized());
         self::assertSame(3, $model->getPosition());
+        self::assertSame('sections/test-video.mp4', $model->getMediaPath());
         self::assertSame(MediaType::Video, $model->getType());
         self::assertCount(2, $model->getTranslations());
 
@@ -120,7 +99,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         ]);
 
         self::assertTrue($form->has('position'));
-        self::assertTrue($form->has('mediaFile'));
+        self::assertTrue($form->has('mediaPath'));
         self::assertTrue($form->has('type'));
         self::assertTrue($form->has('translations'));
     }
@@ -136,7 +115,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         self::assertTrue($view['position']->vars['required']);
     }
 
-    public function testMediaFileFieldIsNotRequired(): void
+    public function testMediaPathFieldIsNotRequired(): void
     {
         $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -144,7 +123,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertFalse($view['mediaFile']->vars['required']);
+        self::assertFalse($view['mediaPath']->vars['required']);
     }
 
     public function testTypeFieldIsRequired(): void
@@ -225,15 +204,11 @@ final class PostSectionMediaTypeTest extends TypeTestCase
     #[\Override]
     protected function getExtensions(): array
     {
-        // Create VichFileType with mocked dependencies
-        $vichFileType = new VichFileType(
-            $this->storage,
-            $this->handler,
-            $this->mappingFactory,
-        );
+        // Create a simple MediaChoiceType mock that behaves like a text field
+        $mediaChoiceType = new MediaChoiceType();
 
         return [
-            new PreloadedExtension([$vichFileType], []),
+            new PreloadedExtension([$mediaChoiceType], []),
         ];
     }
 }

@@ -45,5 +45,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('admin.post.dashboard.plural', 'fas fa-newspaper', Post::class);
         yield MenuItem::linkToCrud('admin.category.dashboard.plural', 'fas fa-layer-group', Category::class);
         yield MenuItem::linkToCrud('admin.tag.dashboard.plural', 'fas fa-tag', Tag::class);
+        yield MenuItem::linkToRoute('Media Library', 'fa fa-image', 'joli_media_easy_admin_explore');
     }
 }

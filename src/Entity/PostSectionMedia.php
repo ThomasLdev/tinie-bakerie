@@ -13,14 +13,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @implements Translatable<PostSectionMediaTranslation>
  */
 #[ORM\Entity]
-#[Vich\Uploadable]
 class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
 {
     use TimestampableEntity;
@@ -34,10 +31,7 @@ class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
     private int $id;
 
     #[ORM\Column(nullable: true)]
-    private ?string $mediaName = null;
-
-    #[Vich\UploadableField(mapping: 'post_section_media', fileNameProperty: 'mediaName')]
-    private ?File $mediaFile = null;
+    private ?string $mediaPath = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     #[ORM\JoinColumn(nullable: true)]
@@ -65,7 +59,7 @@ class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
 
     public function __toString(): string
     {
-        return $this->getMediaName() ?? '';
+        return $this->getMediaPath() ?? '';
     }
 
     public function getId(): ?int
@@ -73,32 +67,14 @@ class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
         return $this->id ?? null;
     }
 
-    public function getMediaName(): ?string
+    public function getMediaPath(): ?string
     {
-        return $this->mediaName;
+        return $this->mediaPath;
     }
 
-    public function setMediaName(?string $mediaName): self
+    public function setMediaPath(?string $mediaPath): self
     {
-        $this->mediaName = $mediaName;
-
-        return $this;
-    }
-
-    public function getMediaFile(): ?File
-    {
-        return $this->mediaFile;
-    }
-
-    public function setMediaFile(?File $mediaFile = null): self
-    {
-        $this->mediaFile = $mediaFile;
-
-        if ($mediaFile instanceof File) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTime();
-        }
+        $this->mediaPath = $mediaPath;
 
         return $this;
     }

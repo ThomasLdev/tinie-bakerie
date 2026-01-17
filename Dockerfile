@@ -22,7 +22,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	file \
 	gettext \
 	git \
+	exiftran \
+	gifsicle \
+	imagemagick \
+	jpegoptim \
+	libheif1 \
+	libheif-plugins-all \
+	libimage-exiftool-perl \
+	libmagickcore-dev \
+	pngquant \
+	webp \
 	&& rm -rf /var/lib/apt/lists/*
+
+# Configure git to trust /app directory to avoid safe.directory warnings
+RUN git config --global --add safe.directory /app
+
+# Create symlinks for JoliCode Media Bundle binaries
+RUN ln -s /usr/bin/exiftool /usr/local/bin/exiftool && \
+    ln -s /usr/bin/cwebp /usr/local/bin/cwebp && \
+    ln -s /usr/bin/gif2webp /usr/local/bin/gif2webp && \
+    ln -s /usr/bin/gifsicle /usr/local/bin/gifsicle && \
+    ln -s /usr/bin/identify /usr/local/bin/identify && \
+    ln -s /usr/bin/jpegoptim /usr/local/bin/jpegoptim && \
+    ln -s /usr/bin/pngquant /usr/local/bin/pngquant
 
 RUN set -eux; \
 	install-php-extensions \

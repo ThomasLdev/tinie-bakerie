@@ -6,13 +6,13 @@ namespace App\Form;
 
 use App\Entity\CategoryMedia;
 use App\Services\Media\Enum\MediaType;
+use JoliCode\MediaBundle\Form\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
 /**
  * @extends AbstractType<CategoryMediaType>
@@ -26,12 +26,9 @@ class CategoryMediaType extends AbstractType
                 'label' => 'admin.global.position',
                 'required' => true,
             ])
-            ->add('mediaFile', VichFileType::class, [
+            ->add('mediaPath', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
-                'allow_delete' => true,
-                'download_label' => 'Télécharger le fichier',
-                'asset_helper' => true,
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'admin.global.media.type',
