@@ -37,10 +37,11 @@ final class LocaleProviderTest extends KernelTestCase
         $this->requestStack = $requestStack;
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         // Clean up any pushed requests
-        while ($this->requestStack->getCurrentRequest() !== null) {
+        while ($this->requestStack->getCurrentRequest() instanceof Request) {
             $this->requestStack->pop();
         }
 
@@ -70,7 +71,7 @@ final class LocaleProviderTest extends KernelTestCase
     public function testReturnsDefaultLocaleWhenNoRequest(): void
     {
         // Ensure no request is on the stack
-        while ($this->requestStack->getCurrentRequest() !== null) {
+        while ($this->requestStack->getCurrentRequest() instanceof Request) {
             $this->requestStack->pop();
         }
 
@@ -94,7 +95,7 @@ final class LocaleProviderTest extends KernelTestCase
     public function testOverrideLocaleWorksWithoutRequest(): void
     {
         // Ensure no request is on the stack
-        while ($this->requestStack->getCurrentRequest() !== null) {
+        while ($this->requestStack->getCurrentRequest() instanceof Request) {
             $this->requestStack->pop();
         }
 

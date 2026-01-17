@@ -43,8 +43,8 @@ final class MediaAttachmentListenerTest extends TestCase
     public function testDeletesStoredMediaOnRemove(string $entityClass): void
     {
         $media = $this->createMock(Media::class);
-        $media->expects($this->once())->method('isStored')->willReturn(true);
-        $media->expects($this->once())->method('delete');
+        $media->expects(self::once())->method('isStored')->willReturn(true);
+        $media->expects(self::once())->method('delete');
 
         /** @var MediaAttachment&MockObject $entity */
         $entity = $this->createMock($entityClass);
@@ -66,8 +66,8 @@ final class MediaAttachmentListenerTest extends TestCase
     public function testDoesNotDeleteWhenMediaNotStored(): void
     {
         $media = $this->createMock(Media::class);
-        $media->expects($this->once())->method('isStored')->willReturn(false);
-        $media->expects($this->never())->method('delete');
+        $media->expects(self::once())->method('isStored')->willReturn(false);
+        $media->expects(self::never())->method('delete');
 
         $entity = $this->createMock(PostMedia::class);
         $entity->method('getMedia')->willReturn($media);

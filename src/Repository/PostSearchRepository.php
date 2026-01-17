@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Services\Locale\LocaleProvider;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 /**
  * PostgreSQL Full-Text Search implementation with:
@@ -22,6 +23,11 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
     ) {
     }
 
+    /**
+     * @throws Exception
+     *
+     * @return array<array-key, mixed>
+     */
     public function search(string $tsQuery, int $limit): array
     {
         $sql = <<<'SQL'
@@ -151,7 +157,6 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
             LIMIT :limit
             SQL;
 
-        // @var list<array{id: int, title: string, slug: string, excerpt: string, category_title: string|null, category_slug: string|null, image_path: string|null, rank: float, headline: string|null}>
         return $this->connection->executeQuery($sql, [
             'query' => $tsQuery,
             'raw_query' => $this->extractRawQuery($tsQuery),

@@ -59,36 +59,6 @@ final class PostSearchTest extends KernelTestCase
         $this->postSearch = $postSearch;
     }
 
-    private function setLocale(string $locale): void
-    {
-        $requestStack = self::getContainer()->get(RequestStack::class);
-        \assert($requestStack instanceof RequestStack);
-
-        $request = new Request();
-        $request->setLocale($locale);
-        $requestStack->push($request);
-    }
-
-    private function loadStoryAndClear(): PostSearchTestStory
-    {
-        $this->story = PostSearchTestStory::load();
-        $this->entityManager->clear();
-
-        return $this->story;
-    }
-
-    /**
-     * Extract titles from search results.
-     *
-     * @param PostSearchResult[] $results
-     *
-     * @return string[]
-     */
-    private function extractTitles(array $results): array
-    {
-        return array_map(static fn (PostSearchResult $r): string => $r->title, $results);
-    }
-
     // ========== Title Search Tests ==========
 
     #[TestDox('Search by title returns matching post as first result ($locale)')]
@@ -133,7 +103,7 @@ final class PostSearchTest extends KernelTestCase
         self::assertContains(
             $story->getExpectedTitle($expectedPostKey, $locale),
             $this->extractTitles($results),
-            "Results should contain post with matching excerpt",
+            'Results should contain post with matching excerpt',
         );
     }
 
@@ -162,7 +132,7 @@ final class PostSearchTest extends KernelTestCase
         self::assertContains(
             $story->getExpectedTitle($expectedPostKey, $locale),
             $this->extractTitles($results),
-            "Results should contain post with matching section content",
+            'Results should contain post with matching section content',
         );
     }
 
@@ -191,7 +161,7 @@ final class PostSearchTest extends KernelTestCase
         self::assertContains(
             $story->getExpectedTitle($expectedPostKey, $locale),
             $this->extractTitles($results),
-            "Results should contain post with matching tag",
+            'Results should contain post with matching tag',
         );
     }
 
@@ -402,7 +372,7 @@ final class PostSearchTest extends KernelTestCase
             self::assertStringNotContainsString(
                 $unexpectedSlugPattern,
                 $result->categorySlug,
-                "Category slug should not contain other locale pattern",
+                'Category slug should not contain other locale pattern',
             );
         }
     }
@@ -411,5 +381,35 @@ final class PostSearchTest extends KernelTestCase
     {
         yield 'French locale returns French slugs' => ['fr', 'gourmands', 'gourmet'];
         yield 'English locale returns English slugs' => ['en', 'gourmet', 'gourmands'];
+    }
+
+    private function setLocale(string $locale): void
+    {
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        \assert($requestStack instanceof RequestStack);
+
+        $request = new Request();
+        $request->setLocale($locale);
+        $requestStack->push($request);
+    }
+
+    private function loadStoryAndClear(): PostSearchTestStory
+    {
+        $this->story = PostSearchTestStory::load();
+        $this->entityManager->clear();
+
+        return $this->story;
+    }
+
+    /**
+     * Extract titles from search results.
+     *
+     * @param PostSearchResult[] $results
+     *
+     * @return string[]
+     */
+    private function extractTitles(array $results): array
+    {
+        return array_map(static fn (PostSearchResult $r): string => $r->title, $results);
     }
 }

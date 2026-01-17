@@ -17,6 +17,7 @@ use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use App\Services\Post\Enum\Difficulty;
 use App\Services\PostSection\Enum\PostSectionType;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Story;
 
 /**
@@ -58,6 +59,89 @@ final class PostSearchTestStory extends Story
         $this->createTags();
         $this->createCategory();
         $this->createPosts();
+    }
+
+    // ========== Accessor Methods ==========
+
+    public function getChocolateCake(): Post
+    {
+        /** @var Proxy<Post> $proxy */
+        $proxy = self::get(self::POST_CHOCOLATE_CAKE);
+
+        return $proxy->_real();
+    }
+
+    public function getVeganCookies(): Post
+    {
+        /** @var Proxy<Post> $proxy */
+        $proxy = self::get(self::POST_VEGAN_COOKIES);
+
+        return $proxy->_real();
+    }
+
+    public function getTiramisu(): Post
+    {
+        /** @var Proxy<Post> $proxy */
+        $proxy = self::get(self::POST_TIRAMISU);
+
+        return $proxy->_real();
+    }
+
+    public function getInactivePost(): Post
+    {
+        /** @var Proxy<Post> $proxy */
+        $proxy = self::get(self::POST_INACTIVE);
+
+        return $proxy->_real();
+    }
+
+    /**
+     * @return Post[]
+     */
+    public function getActivePosts(): array
+    {
+        return [
+            $this->getChocolateCake(),
+            $this->getVeganCookies(),
+            $this->getTiramisu(),
+        ];
+    }
+
+    public function getActivePostCount(): int
+    {
+        return 3;
+    }
+
+    // ========== Expected Title Helpers ==========
+
+    /**
+     * @return array<string, array{fr: string, en: string}>
+     */
+    public function getExpectedTitles(): array
+    {
+        return [
+            self::POST_CHOCOLATE_CAKE => [
+                'fr' => 'Gâteau au Chocolat Fondant',
+                'en' => 'Molten Chocolate Cake',
+            ],
+            self::POST_VEGAN_COOKIES => [
+                'fr' => 'Cookies aux Pépites',
+                'en' => 'Chip Cookies',
+            ],
+            self::POST_TIRAMISU => [
+                'fr' => 'Tiramisu Classique',
+                'en' => 'Classic Tiramisu',
+            ],
+            self::POST_INACTIVE => [
+                'fr' => 'Recette Secrète Chocolat',
+                'en' => 'Secret Chocolate Recipe',
+            ],
+        ];
+    }
+
+    public function getExpectedTitle(string $postKey, string $locale): string
+    {
+        return $this->getExpectedTitles()[$postKey][$locale];
     }
 
     private function createTags(): void
@@ -286,88 +370,5 @@ final class PostSearchTestStory extends Story
                 ]),
             ],
         ]));
-    }
-
-    // ========== Accessor Methods ==========
-
-    public function getChocolateCake(): Post
-    {
-        /** @var \Zenstruck\Foundry\Persistence\Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_CHOCOLATE_CAKE);
-
-        return $proxy->_real();
-    }
-
-    public function getVeganCookies(): Post
-    {
-        /** @var \Zenstruck\Foundry\Persistence\Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_VEGAN_COOKIES);
-
-        return $proxy->_real();
-    }
-
-    public function getTiramisu(): Post
-    {
-        /** @var \Zenstruck\Foundry\Persistence\Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_TIRAMISU);
-
-        return $proxy->_real();
-    }
-
-    public function getInactivePost(): Post
-    {
-        /** @var \Zenstruck\Foundry\Persistence\Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_INACTIVE);
-
-        return $proxy->_real();
-    }
-
-    /**
-     * @return Post[]
-     */
-    public function getActivePosts(): array
-    {
-        return [
-            $this->getChocolateCake(),
-            $this->getVeganCookies(),
-            $this->getTiramisu(),
-        ];
-    }
-
-    public function getActivePostCount(): int
-    {
-        return 3;
-    }
-
-    // ========== Expected Title Helpers ==========
-
-    /**
-     * @return array<string, array{fr: string, en: string}>
-     */
-    public function getExpectedTitles(): array
-    {
-        return [
-            self::POST_CHOCOLATE_CAKE => [
-                'fr' => 'Gâteau au Chocolat Fondant',
-                'en' => 'Molten Chocolate Cake',
-            ],
-            self::POST_VEGAN_COOKIES => [
-                'fr' => 'Cookies aux Pépites',
-                'en' => 'Chip Cookies',
-            ],
-            self::POST_TIRAMISU => [
-                'fr' => 'Tiramisu Classique',
-                'en' => 'Classic Tiramisu',
-            ],
-            self::POST_INACTIVE => [
-                'fr' => 'Recette Secrète Chocolat',
-                'en' => 'Secret Chocolate Recipe',
-            ],
-        ];
-    }
-
-    public function getExpectedTitle(string $postKey, string $locale): string
-    {
-        return $this->getExpectedTitles()[$postKey][$locale];
     }
 }
