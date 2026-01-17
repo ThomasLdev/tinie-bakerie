@@ -40,19 +40,14 @@
                 {# Recipe Results #}
                 <div class="divide-y divide-gray-100" data-loading="hide">
                     {% for result in results %}
-                        {% set post = result.post %}
-                        {% set category = post.category %}
-                        {% set mainMedia = post.media|first %}
-                        {% set mediaObject = mainMedia.media|default(null) %}
-
-                        <a href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
+                        <a href="{{ path('app_post_show', {'postSlug': result.slug, 'categorySlug': result.categorySlug}) }}"
                            class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
                             <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-                                {% if mediaObject is not null and mediaObject.mimeType is same as 'image/jpeg' %}
+                                {% if result.imagePath is not null %}
                                     <twig:joli:Img
-                                        path="{{ mediaObject.path }}"
+                                        path="{{ result.imagePath }}"
                                         variation="thumbnail-2x-webp"
-                                        alt="{{ mainMedia.alt }}"
+                                        alt="{{ result.title }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
                                 {% else %}
@@ -65,8 +60,8 @@
                                 {% endif %}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="text-sm font-medium text-gray-900 truncate">{{ post.title }}</h4>
-                                <p class="text-xs text-gray-500 mt-1">{{ category.title }}</p>
+                                <h4 class="text-sm font-medium text-gray-900 truncate">{{ result.title }}</h4>
+                                <p class="text-xs text-gray-500 mt-1">{{ result.categoryTitle }}</p>
                             </div>
                             <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150"
                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
