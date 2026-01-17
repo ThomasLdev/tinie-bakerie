@@ -2,48 +2,27 @@
 
 declare(strict_types=1);
 
-use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
-use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
-use JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle;
-use JoliCode\MediaBundle\JoliMediaBundle;
-use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
-use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Bundle\MakerBundle\MakerBundle;
-use Symfony\Bundle\MonologBundle\MonologBundle;
-use Symfony\Bundle\SecurityBundle\SecurityBundle;
-use Symfony\Bundle\TwigBundle\TwigBundle;
-use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
-use Symfony\UX\StimulusBundle\StimulusBundle;
-use Symfony\UX\Turbo\TurboBundle;
-use Symfony\UX\TwigComponent\TwigComponentBundle;
-use Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle;
-use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
-use Zenstruck\Foundry\ZenstruckFoundryBundle;
-
 return [
-    FrameworkBundle::class => ['all' => true],
-    TwigBundle::class => ['all' => true],
-    WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    StimulusBundle::class => ['all' => true],
-    SymfonycastsTailwindBundle::class => ['all' => true],
-    DoctrineBundle::class => ['all' => true],
-    DoctrineMigrationsBundle::class => ['all' => true],
-    TwigExtraBundle::class => ['all' => true],
-    TurboBundle::class => ['all' => true],
-    MakerBundle::class => ['dev' => true],
-    SecurityBundle::class => ['all' => true],
-    DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
-    StofDoctrineExtensionsBundle::class => ['all' => true],
-    ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
-    TwigComponentBundle::class => ['all' => true],
-    EasyAdminBundle::class => ['all' => true],
-    DAMADoctrineTestBundle::class => ['test' => true],
-    SensiolabsTypeScriptBundle::class => ['all' => true],
-    MonologBundle::class => ['all' => true],
-    JoliMediaBundle::class => ['all' => true],
-    JoliMediaEasyAdminBundle::class => ['all' => true],
+    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
+    Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
+    Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle::class => ['all' => true],
+    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
+    Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
+    Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
+    Symfony\UX\Turbo\TurboBundle::class => ['all' => true],
+    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+    Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
+    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
+    Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
+    Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
+    EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => ['all' => true],
+    DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
+    Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle::class => ['all' => true],
+    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
+    JoliCode\MediaBundle\JoliMediaBundle::class => ['all' => true],
+    JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle::class => ['all' => true],
+    Symfony\UX\LiveComponent\LiveComponentBundle::class => ['all' => true],
 ];
