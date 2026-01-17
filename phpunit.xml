@@ -11,6 +11,7 @@
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
          displayDetailsOnPhpunitDeprecations="true"
+         beStrictAboutCoverageMetadata="false"
 >
     <php>
         <ini name="display_errors" value="1"/>

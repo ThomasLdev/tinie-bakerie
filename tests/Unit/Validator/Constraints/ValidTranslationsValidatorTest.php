@@ -9,6 +9,7 @@ use App\Services\Locale\Locales;
 use App\Validator\Constraints\ValidTranslations;
 use App\Validator\Constraints\ValidTranslationsValidator;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -25,6 +26,7 @@ use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
  */
 #[CoversClass(ValidTranslationsValidator::class)]
 #[CoversClass(ValidTranslations::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class ValidTranslationsValidatorTest extends TestCase
 {
     private ValidTranslationsValidator $validator;

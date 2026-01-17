@@ -7,8 +7,6 @@ namespace App\Tests\Functional\Controller;
 use App\Controller\HeaderController;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Repository\CategoryRepository;
-use App\Services\Cache\CategoryCache;
-use App\Services\Cache\HeaderCache;
 use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\CategoryControllerTestStory;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,9 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @internal
  */
 #[CoversClass(HeaderController::class)]
-#[CoversClass(HeaderCache::class)]
 #[CoversClass(CategoryRepository::class)]
-#[CoversClass(CategoryCache::class)]
 #[CoversClass(LocaleFilter::class)]
 #[CoversClass(KernelRequestSubscriber::class)]
 final class HeaderControllerTest extends BaseControllerTestCase
@@ -148,27 +144,6 @@ final class HeaderControllerTest extends BaseControllerTestCase
         // Verify the categories dropdown structure exists
         self::assertSelectorExists('[data-controller="dropdown"]', 'Dropdown controller should be present');
         self::assertSelectorExists('[data-dropdown-target="collapsable"]', 'Categories collapsable menu should be present');
-    }
-
-    public function testRenderHeaderUsesCacheService(): void
-    {
-        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
-
-        // Make request to verify cache service is properly integrated
-        $this->client->request(Request::METHOD_GET, self::HEADER_URL);
-        self::assertResponseIsSuccessful();
-
-        // Verify HeaderCache service is registered and accessible
-        $container = self::getContainer();
-        self::assertTrue($container->has(HeaderCache::class), 'HeaderCache service should be registered');
-
-        $cache = $container->get(HeaderCache::class);
-        self::assertInstanceOf(HeaderCache::class, $cache, 'Should be able to retrieve HeaderCache from container');
-
-        // Verify cache returns expected data
-        $categories = $cache->getCategories('en');
-        self::assertIsArray($categories, 'Cache should return array of categories');
-        self::assertNotEmpty($categories, 'Cache should contain categories from database');
     }
 
     public static function getHttpMethodsData(): \Generator

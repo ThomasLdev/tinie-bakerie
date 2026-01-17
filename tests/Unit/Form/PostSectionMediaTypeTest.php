@@ -9,6 +9,7 @@ use App\Entity\PostSectionMediaTranslation;
 use App\Form\PostSectionMediaTranslationType;
 use App\Form\PostSectionMediaType;
 use App\Services\Media\Enum\MediaType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\PreloadedExtension;
@@ -26,6 +27,7 @@ use Vich\UploaderBundle\Storage\StorageInterface;
  */
 #[CoversClass(PostSectionMediaType::class)]
 #[CoversClass(PostSectionMediaTranslationType::class)]
+#[AllowMockObjectsWithoutExpectations]
 final class PostSectionMediaTypeTest extends TypeTestCase
 {
     private MockObject&StorageInterface $storage;
