@@ -17,7 +17,7 @@
     </div>
 
     {# Search Results #}
-    <div class="max-h-96 overflow-y-auto">
+    <div class="max-h-96 overflow-y-auto overscroll-contain">
         {# Loading indicator #}
         <div data-loading="show" class="hidden p-4 text-center">
             <svg class="animate-spin h-5 w-5 mx-auto text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -43,21 +43,11 @@
                         <a href="{{ path('app_post_show', {'postSlug': result.slug, 'categorySlug': result.categorySlug}) }}"
                            class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
                             <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-                                {% if result.imagePath is not null %}
-                                    <twig:joli:Img
-                                        path="{{ result.imagePath }}"
-                                        variation="thumbnail-2x-webp"
-                                        alt="{{ result.title }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                {% else %}
-                                    <div class="w-full h-full bg-gray-300 flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                {% endif %}
+                                <twig:MediaThumbnail
+                                    path="{{ result.mediaPath }}"
+                                    alt="{{ result.title }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-medium text-gray-900 truncate">{{ result.title }}</h4>

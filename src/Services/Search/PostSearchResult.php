@@ -17,7 +17,7 @@ final readonly class PostSearchResult
         public string $excerpt,
         public string $categoryTitle,
         public string $categorySlug,
-        public ?string $imagePath,
+        public ?string $mediaPath,
         public float $rank,
         public ?string $headline,
     ) {

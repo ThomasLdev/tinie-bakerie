@@ -31,7 +31,7 @@ final readonly class PostSearchResultFactory
             excerpt: $row['excerpt'],
             categoryTitle: $row['category_title'] ?? '',
             categorySlug: $row['category_slug'] ?? '',
-            imagePath: $this->normalizeImagePath($row['image_path']),
+            mediaPath: $this->normalizeMediaPath($row['image_path']),
             rank: (float) $row['rank'],
             headline: $this->cleanHeadline($row['headline']),
         );
@@ -58,9 +58,9 @@ final readonly class PostSearchResultFactory
     }
 
     /**
-     * Normalize the image path from database storage format.
+     * Normalize the media path from database storage format.
      */
-    private function normalizeImagePath(?string $path): ?string
+    private function normalizeMediaPath(?string $path): ?string
     {
         if ($path === null || $path === '') {
             return null;
