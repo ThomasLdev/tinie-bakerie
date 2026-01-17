@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Services\Cache\PostCache;
-use Psr\Cache\InvalidArgumentException;
+use App\Repository\PostRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,32 +18,28 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PostController extends AbstractController
 {
     public function __construct(
-        private readonly PostCache $cache,
+        private readonly PostRepository $postRepository,
     ) {
     }
 
     /**
-     * @throws InvalidArgumentException
-     *
      * @return array<'posts', array<array-key,mixed>>
      */
     #[Route(methods: ['GET'])]
     #[Template('post/index.html.twig')]
     public function index(Request $request): array
     {
-        return ['posts' => $this->cache->get($request->getLocale())];
+        return ['posts' => $this->postRepository->findAllActive()];
     }
 
     /**
-     * @throws InvalidArgumentException
-     *
      * @return array<'post',Post>
      */
     #[Route(['en' => '/{categorySlug}/{postSlug}', 'fr' => '/{categorySlug}/{postSlug}'], methods: ['GET'])]
     #[Template('post/show.html.twig')]
     public function show(string $categorySlug, string $postSlug, Request $request): array
     {
-        $post = $this->cache->getOne($request->getLocale(), $postSlug);
+        $post = $this->postRepository->findOneActive($postSlug);
 
         if (!$post instanceof Post) {
             throw $this->createNotFoundException();
