@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use App\Services\Locale\LocaleProvider;
 use App\Services\Search\PostSearch;
 use App\Services\Search\PostSearchResult;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -21,7 +20,6 @@ final class Search
 
     public function __construct(
         private readonly PostSearch $postSearch,
-        private readonly LocaleProvider $localeProvider,
     ) {
     }
 
@@ -34,6 +32,6 @@ final class Search
             return [];
         }
 
-        return $this->postSearch->search($this->query, $this->localeProvider->getCurrentLocale(), limit: 5);
+        return $this->postSearch->search($this->query, limit: 15);
     }
 }

@@ -12,6 +12,7 @@ interface PostSearchRepositoryInterface
 {
     /**
      * Search posts using full-text search.
+     * Locale is determined internally by the implementation.
      *
      * @return list<array{
      *     id: int,
@@ -21,8 +22,9 @@ interface PostSearchRepositoryInterface
      *     category_title: string|null,
      *     category_slug: string|null,
      *     image_path: string|null,
-     *     rank: float
+     *     rank: float,
+     *     headline: string|null
      * }>
      */
-    public function search(string $tsQuery, string $locale, int $limit): array;
+    public function search(string $tsQuery, int $limit): array;
 }

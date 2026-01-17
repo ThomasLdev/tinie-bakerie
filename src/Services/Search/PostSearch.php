@@ -24,7 +24,7 @@ final readonly class PostSearch
      *
      * @return PostSearchResult[]
      */
-    public function search(string $query, string $locale, int $limit = 5): array
+    public function search(string $query, int $limit = 5): array
     {
         $tsQuery = $this->sanitizer->toTsQuery($query);
 
@@ -32,7 +32,7 @@ final readonly class PostSearch
             return [];
         }
 
-        $rows = $this->repository->search($tsQuery, $locale, $limit);
+        $rows = $this->repository->search($tsQuery, $limit);
 
         return $this->resultFactory->createFromRows($rows);
     }

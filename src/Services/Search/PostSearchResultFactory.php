@@ -18,7 +18,8 @@ final readonly class PostSearchResultFactory
      *     category_title: string|null,
      *     category_slug: string|null,
      *     image_path: string|null,
-     *     rank: float|string
+     *     rank: float|string,
+     *     headline: string|null
      * } $row
      */
     public function createFromRow(array $row): PostSearchResult
@@ -32,6 +33,7 @@ final readonly class PostSearchResultFactory
             categorySlug: $row['category_slug'] ?? '',
             imagePath: $this->normalizeImagePath($row['image_path']),
             rank: (float) $row['rank'],
+            headline: $this->cleanHeadline($row['headline']),
         );
     }
 
@@ -44,7 +46,8 @@ final readonly class PostSearchResultFactory
      *     category_title: string|null,
      *     category_slug: string|null,
      *     image_path: string|null,
-     *     rank: float|string
+     *     rank: float|string,
+     *     headline: string|null
      * }> $rows
      *
      * @return PostSearchResult[]
@@ -56,7 +59,6 @@ final readonly class PostSearchResultFactory
 
     /**
      * Normalize the image path from database storage format.
-     * JoliCode MediaBundle stores paths that may need cleanup.
      */
     private function normalizeImagePath(?string $path): ?string
     {
@@ -65,5 +67,22 @@ final readonly class PostSearchResultFactory
         }
 
         return $path;
+    }
+
+    /**
+     * Clean the ts_headline output for display.
+     * Converts <b> tags and strips any unwanted HTML.
+     */
+    private function cleanHeadline(?string $headline): ?string
+    {
+        if ($headline === null || $headline === '') {
+            return null;
+        }
+
+        // ts_headline uses StartSel/StopSel markers, we configured <b></b>
+        // Keep only the <b> tags, strip everything else for safety
+        $allowed = '<b>';
+
+        return strip_tags($headline, $allowed);
     }
 }

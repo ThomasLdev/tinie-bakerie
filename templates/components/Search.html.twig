@@ -61,9 +61,15 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-medium text-gray-900 truncate">{{ result.title }}</h4>
-                                <p class="text-xs text-gray-500 mt-1">{{ result.categoryTitle }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">{{ result.categoryTitle }}</p>
+                                {# Display highlighted snippet - raw filter allows <b> tags from ts_headline #}
+                                {% if result.headline %}
+                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2 [&>b]:font-semibold [&>b]:text-gray-900">
+                                        {{ result.headline|raw }}
+                                    </p>
+                                {% endif %}
                             </div>
-                            <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150"
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150 flex-shrink-0 ml-2"
                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -82,7 +88,7 @@
                 </div>
             {% endif %}
         {% else %}
-            {# Initial State - Popular Searches / Suggestions #}
+            {# Initial State #}
             <div class="p-4">
                 <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{{ 'app.search.popular'|trans }}</h3>
                 <div class="space-y-2">

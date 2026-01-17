@@ -19,6 +19,23 @@ final readonly class PostSearchResult
         public string $categorySlug,
         public ?string $imagePath,
         public float $rank,
+        public ?string $headline,
     ) {
+    }
+
+    /**
+     * Returns the headline if available, otherwise truncates the excerpt.
+     */
+    public function getDisplaySnippet(int $maxLength = 150): string
+    {
+        if ($this->headline !== null && $this->headline !== '') {
+            return $this->headline;
+        }
+
+        if (mb_strlen($this->excerpt) <= $maxLength) {
+            return $this->excerpt;
+        }
+
+        return mb_substr($this->excerpt, 0, $maxLength) . '...';
     }
 }
