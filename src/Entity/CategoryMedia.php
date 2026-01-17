@@ -7,20 +7,18 @@ namespace App\Entity;
 use App\Entity\Contracts\MediaAttachment;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
-use App\Services\Media\Enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use JoliCode\MediaBundle\Doctrine\Types as JoliMediaTypes;
+use JoliCode\MediaBundle\Model\Media;
 
 /**
  * @implements Translatable<CategoryMediaTranslation>
  */
 #[ORM\Entity]
-#[Vich\Uploadable]
 class CategoryMedia implements Translatable, MediaAttachment, \Stringable
 {
     use TimestampableEntity;
@@ -33,18 +31,12 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(nullable: true)]
-    private ?string $mediaName = null;
-
-    #[Vich\UploadableField(mapping: 'category_media', fileNameProperty: 'mediaName')]
-    private ?File $mediaFile = null;
+    #[ORM\Column(type: JoliMediaTypes::MEDIA, nullable: true)]
+    private ?Media $media = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Category $category = null;
-
-    #[ORM\Column(enumType: MediaType::class)]
-    private MediaType $type;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
     private int $position = 0;
@@ -65,7 +57,7 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
 
     public function __toString(): string
     {
-        return $this->getMediaName() ?? '';
+        return $this->media?->getPath() ?? '';
     }
 
     public function getId(): ?int
@@ -73,32 +65,14 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
         return $this->id ?? null;
     }
 
-    public function getMediaName(): ?string
+    public function getMedia(): ?Media
     {
-        return $this->mediaName;
+        return $this->media;
     }
 
-    public function setMediaName(?string $mediaName): self
+    public function setMedia(?Media $media): self
     {
-        $this->mediaName = $mediaName;
-
-        return $this;
-    }
-
-    public function getMediaFile(): ?File
-    {
-        return $this->mediaFile;
-    }
-
-    public function setMediaFile(?File $mediaFile = null): self
-    {
-        $this->mediaFile = $mediaFile;
-
-        if ($mediaFile instanceof File) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTime();
-        }
+        $this->media = $media;
 
         return $this;
     }
@@ -111,18 +85,6 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    public function getType(): MediaType
-    {
-        return $this->type;
-    }
-
-    public function setType(MediaType $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }

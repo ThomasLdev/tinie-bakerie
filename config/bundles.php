@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle;
+use JoliCode\MediaBundle\JoliMediaBundle;
 use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
 use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -20,7 +22,6 @@ use Symfony\UX\Turbo\TurboBundle;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
-use Vich\UploaderBundle\VichUploaderBundle;
 use Zenstruck\Foundry\ZenstruckFoundryBundle;
 
 return [
@@ -37,11 +38,12 @@ return [
     SecurityBundle::class => ['all' => true],
     DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     StofDoctrineExtensionsBundle::class => ['all' => true],
-    VichUploaderBundle::class => ['all' => true],
     ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
     TwigComponentBundle::class => ['all' => true],
     EasyAdminBundle::class => ['all' => true],
     DAMADoctrineTestBundle::class => ['test' => true],
     SensiolabsTypeScriptBundle::class => ['all' => true],
     MonologBundle::class => ['all' => true],
+    JoliMediaBundle::class => ['all' => true],
+    JoliMediaEasyAdminBundle::class => ['all' => true],
 ];

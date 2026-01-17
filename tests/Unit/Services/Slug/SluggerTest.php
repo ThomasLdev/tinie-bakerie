@@ -22,6 +22,18 @@ final class SluggerTest extends TestCase
         $this->slugger = new Slugger();
     }
 
+    #[DataProvider('provideBasicSlugificationScenarios')]
+    #[DataProvider('provideSpecialCharacterScenarios')]
+    #[DataProvider('provideAccentedCharacterScenarios')]
+    #[DataProvider('provideNumberScenarios')]
+    #[DataProvider('provideEdgeCaseScenarios')]
+    #[DataProvider('provideUnicodeScenarios')]
+    #[DataProvider('provideRealWorldScenarios')]
+    public function testSlugification(string $input, string $expected): void
+    {
+        self::assertSame($expected, $this->slugger->slugify($input));
+    }
+
     public static function provideBasicSlugificationScenarios(): iterable
     {
         yield 'simple lowercase text returns as-is' => [
@@ -541,17 +553,5 @@ final class SluggerTest extends TestCase
             'input' => 'C++ Programming Guide',
             'expected' => 'c-programming-guide',
         ];
-    }
-
-    #[DataProvider('provideBasicSlugificationScenarios')]
-    #[DataProvider('provideSpecialCharacterScenarios')]
-    #[DataProvider('provideAccentedCharacterScenarios')]
-    #[DataProvider('provideNumberScenarios')]
-    #[DataProvider('provideEdgeCaseScenarios')]
-    #[DataProvider('provideUnicodeScenarios')]
-    #[DataProvider('provideRealWorldScenarios')]
-    public function testSlugification(string $input, string $expected): void
-    {
-        self::assertSame($expected, $this->slugger->slugify($input));
     }
 }

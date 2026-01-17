@@ -12,7 +12,6 @@ use App\Factory\PostFactory;
 use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
 use App\Factory\PostTranslationFactory;
-use App\Services\Media\Enum\MediaType;
 use App\Services\Post\Enum\Difficulty;
 use Zenstruck\Foundry\Story;
 
@@ -70,8 +69,6 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaName' => 'test-image-1.jpg',
-                    'type' => MediaType::Image,
                     'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
@@ -113,8 +110,6 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaName' => 'test-image-2.jpg',
-                    'type' => MediaType::Image,
                     'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([
@@ -156,8 +151,6 @@ final class PostControllerTestStory extends Story
             ],
             'media' => [
                 PostMediaFactory::new([
-                    'mediaName' => 'test-image-inactive.jpg',
-                    'type' => MediaType::Image,
                     'position' => 0,
                     'translations' => [
                         PostMediaTranslationFactory::new([

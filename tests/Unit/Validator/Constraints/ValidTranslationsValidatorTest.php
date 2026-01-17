@@ -281,7 +281,7 @@ final class ValidTranslationsValidatorTest extends TestCase
             ->method('setParameter')
             ->willReturnCallback(static function (string $key, string $value) use ($violationBuilder): MockObject {
                 if ($key === '{{ entity }}') {
-                    self::assertSame('Entité', $value);
+                    self::assertSame('Entity', $value);
                 }
 
                 return $violationBuilder;

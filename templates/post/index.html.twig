@@ -143,28 +143,24 @@
         {% for post in posts %}
             {% set category = post.category %}
             {% set mainMedia = post.media|first %}
-
-            {% if false is not same as mainMedia %}
-                {% set mainMediaSource = vich_uploader_asset(mainMedia) %}
-            {% endif %}
+            {% set mediaObject = mainMedia.media %}
 
             <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
                href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
                {{ test_id('post-card-' ~ post.id) }}
             >
-                {% if mainMediaSource is defined %}
-                    <div class="aspect-square overflow-hidden">
-                        {% if mainMedia.type is same as constant('App\\Services\\Media\\Enum\\MediaType::Image') %}
-                            <picture>
-                                <source srcset="{{ mainMediaSource }}" type="image/webp">
-                                <img loading="lazy" src="{{ mainMediaSource }}" alt="{{ mainMedia.alt }}" class="lazy-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            </picture>
-                        {% else %}
-                            <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" autoplay loop poster="{{ mainMediaSource }}" title="{{ mainMedia.title }}">
-                                <source src="{{ mainMediaSource }}" type="video/mp4">
-                            </video>
-                        {% endif %}
-                    </div>
+                {% if null is not same as mediaObject %}
+                    {% if mediaObject.mimeType is same as 'image/jpeg' %}
+                        <twig:joli:Img
+                            path="{{ mediaObject.path }}"
+                            variation="thumbnail-2x-webp"
+                            alt="{{ mainMedia.alt }}"
+                        />
+                    {% else %}
+                        <video autoplay="autoplay" loop="loop" poster="{{ mediaObject.url }}" title="{{ mainMedia.title }}" width="300">
+                            <source src="{{ mediaObject.url }}" type="video/mp4">
+                        </video>
+                    {% endif %}
                 {% endif %}
                 <div class="p-4">
                     <div class="flex items-center gap-2 mb-2">

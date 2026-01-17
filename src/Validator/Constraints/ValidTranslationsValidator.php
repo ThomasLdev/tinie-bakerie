@@ -72,7 +72,7 @@ class ValidTranslationsValidator extends ConstraintValidator
         $object = $this->context->getObject();
 
         if (!\is_object($object)) {
-            return 'Entité';
+            return 'Entity';
         }
 
         $className = $object::class;

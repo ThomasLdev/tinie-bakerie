@@ -1,0 +1,14 @@
+joli_media_easy_admin:
+    pagination:
+        per_page: 20
+    upload:
+        max_files: 10
+        max_file_size: 20
+        accepted_files:
+            - image/*
+            - video/*
+    visibility:
+        show_variations_stored: true
+        show_variations_action_regenerate: true
+        show_html_code: false
+        show_markdown_code: false

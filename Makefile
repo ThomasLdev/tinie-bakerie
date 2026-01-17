@@ -66,14 +66,13 @@ bash: ## Connect to the FrankenPHP container via bash so up and down arrows go t
 node-sh: ## Connect to the Node container
 	@$(NODE_CONT) sh
 
-create-upload-dirs: ## Create upload directories
-	@$(PHP_CONT) bin/console app:create-upload-dirs --clear
-
-fixtures: create-upload-dirs
+fixtures:
+	@$(PHP_CONT) rm -rf public/media/original/fixtures/*
 	@$(PHP_CONT) bin/console c:c
 	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction
 
-fixtures-test: create-upload-dirs
+fixtures-test:
+	@$(PHP_CONT) rm -rf public/media/original/fixtures/*
 	@$(PHP_CONT) bin/console c:c --env=test
 	@$(PHP_CONT) bin/console doctrine:fixtures:load --no-interaction --env=test
 
@@ -178,10 +177,10 @@ rector:
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
 test:
-	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
+	@$(PHP_CONT) vendor/bin/phpunit
 
 test.coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
+	@$(PHP_CONT) vendor/bin/phpunit --coverage-html coverage
 
 test.unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests --no-results --testdox

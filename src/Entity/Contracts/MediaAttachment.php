@@ -4,23 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity\Contracts;
 
-use App\Services\Media\Enum\MediaType;
-use Symfony\Component\HttpFoundation\File\File;
+use JoliCode\MediaBundle\Model\Media;
 
 /**
  * Represents an entity that contains a media file attachment with metadata.
  */
 interface MediaAttachment
 {
-    public function getMediaFile(): ?File;
+    public function getMedia(): ?Media;
 
-    public function setMediaFile(?File $mediaFile = null): self;
-
-    public function getMediaName(): ?string;
-
-    public function setMediaName(string $mediaName): self;
-
-    public function getType(): MediaType;
-
-    public function setType(MediaType $type): self;
+    public function setMedia(?Media $media): self;
 }

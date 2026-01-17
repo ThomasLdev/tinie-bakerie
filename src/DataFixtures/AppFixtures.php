@@ -19,7 +19,7 @@ use App\Factory\PostSectionTranslationFactory;
 use App\Factory\PostTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
-use App\Services\Fixtures\Media\MediaLoader;
+use App\Services\Fixtures\MediaLoader;
 use App\Services\Locale\Locales;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -44,13 +44,7 @@ class AppFixtures extends Fixture
             ]);
 
             foreach ($categories as $category) {
-                CategoryMediaFactory::createRange(1, 3, fn (): array => array_merge(
-                    [
-                        'category' => $category, // Direct reference, no lookup
-                        'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()),
-                    ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
-                ));
+                CategoryMediaFactory::createRange(1, 3, fn (): array => ['category' => $category, 'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
 
             $tags = TagFactory::createMany(15, fn (): array => [
@@ -76,13 +70,7 @@ class AppFixtures extends Fixture
 
             // Create post media with direct post references
             foreach ($posts as $post) {
-                PostMediaFactory::createRange(1, 3, fn (): array => array_merge(
-                    [
-                        'post' => $post, // Direct reference, no lookup
-                        'translations' => $this->createTranslations(PostMediaTranslationFactory::new()),
-                    ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
-                ));
+                PostMediaFactory::createRange(1, 3, fn (): array => ['post' => $post, 'translations' => $this->createTranslations(PostMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
 
             // Create post sections WITHOUT their media (will add media separately)
@@ -100,13 +88,7 @@ class AppFixtures extends Fixture
 
             // Create post section media with direct section references
             foreach ($sections as $section) {
-                PostSectionMediaFactory::createRange(1, 3, fn (): array => array_merge(
-                    [
-                        'postSection' => $section, // Direct reference, no lookup (property name is postSection)
-                        'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
-                    ],
-                    $this->mediaLoader->getRandomMediaFactoryFields(),
-                ));
+                PostSectionMediaFactory::createRange(1, 3, fn (): array => ['postSection' => $section, 'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
         });
     }

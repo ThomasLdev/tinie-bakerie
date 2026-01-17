@@ -37,7 +37,7 @@ class PostRepository extends ServiceEntityRepository
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title, locale}')
             ->leftJoin('p.media', 'm')
-            ->addSelect('PARTIAL m.{id, mediaName, type}')
+            ->addSelect('PARTIAL m.{id, media}')
             ->leftJoin('m.translations', 'mt')
             ->addSelect('PARTIAL mt.{id, title, alt, locale}')
             ->where('p.active = :active')

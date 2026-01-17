@@ -38,7 +38,10 @@ readonly class TestExtension
             return '';
         }
 
-        $attribute = \sprintf('data-test-id="%s"', htmlspecialchars($identifier, \ENT_COMPAT, 'UTF-8'));
+        $attribute = \sprintf(
+            'data-test-id="%s"',
+            htmlspecialchars($identifier, \ENT_COMPAT, 'UTF-8'),
+        );
 
         return new Markup($attribute, 'UTF-8');
     }

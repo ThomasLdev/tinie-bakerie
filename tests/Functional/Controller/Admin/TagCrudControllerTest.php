@@ -8,7 +8,7 @@ use App\Controller\Admin\TagCrudController;
 use App\Entity\Tag;
 use App\EventSubscriber\KernelRequestSubscriber;
 use App\Factory\TagFactory;
-use App\Form\TagTranslationType;
+use App\Form\Type\TagTranslationType;
 use App\Services\Locale\Locales;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

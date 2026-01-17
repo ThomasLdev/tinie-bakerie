@@ -1098,7 +1098,7 @@ public static function provideTestCases(): iterable
 namespace App\Tests\Unit\Form;
 
 use App\Entity\PostTranslation;
-use App\Form\PostTranslationType;
+use App\Form\Type\PostTranslationType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 final class PostTranslationTypeTest extends TypeTestCase

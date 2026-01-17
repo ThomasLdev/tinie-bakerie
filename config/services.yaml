@@ -6,6 +6,9 @@
 parameters:
     default_locale: fr
     app.supported_locales: 'fr|en'
+    media_original_path: '%kernel.project_dir%/public/media/original'
+    media_cache_path: '%kernel.project_dir%/public/media/cache'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -20,3 +23,24 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    # Flysystem adapters for JoliCode Media Bundle
+    filesystem.adapter.original:
+        class: League\Flysystem\Local\LocalFilesystemAdapter
+        arguments:
+            - '%media_original_path%'
+
+    filesystem.adapter.cache:
+        class: League\Flysystem\Local\LocalFilesystemAdapter
+        arguments:
+            - '%media_cache_path%'
+
+    filesystem.original.storage:
+        class: League\Flysystem\Filesystem
+        arguments:
+            - '@filesystem.adapter.original'
+
+    filesystem.cache.storage:
+        class: League\Flysystem\Filesystem
+        arguments:
+            - '@filesystem.adapter.cache'
