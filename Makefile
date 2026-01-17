@@ -177,10 +177,10 @@ rector:
 ## —— Tests 🎵 ———————————————————————————————————————————————————————————————
 
 test:
-	@$(PHP_CONT) vendor/bin/phpunit --testsuite All
+	@$(PHP_CONT) vendor/bin/phpunit
 
 test.coverage:
-	@$(PHP_CONT) vendor/bin/phpunit --configuration phpunit.xml --testsuite All --coverage-html coverage
+	@$(PHP_CONT) vendor/bin/phpunit --coverage-html coverage
 
 test.unit:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite UnitTests --no-results --testdox
