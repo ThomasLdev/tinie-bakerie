@@ -33,7 +33,7 @@ final class TrigramIndexSchemaSubscriber
             $table->addIndex(
                 ['title'],
                 'post_translation_title_trgm_idx',
-                options: ['comment' => 'GIN trigram index managed via migration']
+                options: ['comment' => 'GIN trigram index managed via migration'],
             );
         }
     }
