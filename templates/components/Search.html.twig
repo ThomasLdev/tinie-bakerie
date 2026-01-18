@@ -43,11 +43,11 @@
                         <a href="{{ path('app_post_show', {'postSlug': result.slug, 'categorySlug': result.categorySlug}) }}"
                            class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
                             <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-                                <twig:MediaThumbnail
-                                    path="{{ result.mediaPath }}"
-                                    alt="{{ result.title }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
+                                {% include 'partials/_media_thumbnail.html.twig' with {
+                                    path: result.mediaPath,
+                                    alt: result.title,
+                                    class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+                                } only %}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-medium text-gray-900 truncate">{{ result.title }}</h4>
