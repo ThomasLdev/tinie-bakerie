@@ -91,48 +91,4 @@ class PostRepository extends ServiceEntityRepository
 
         return $result instanceof Post ? $result : null;
     }
-
-    /**
-     * Find an active post by ID with all related data.
-     * Uses HINT_REFRESH to ensure locale filter is applied.
-     */
-    public function findOneActiveById(int $id): ?Post
-    {
-        $qb = $this->createQueryBuilder('p')
-            ->select('p')
-            ->leftJoin('p.translations', 'pt')
-            ->addSelect('pt')
-            ->leftJoin('p.category', 'c')
-            ->addSelect('c')
-            ->leftJoin('c.translations', 'ct')
-            ->addSelect('ct')
-            ->leftJoin('p.tags', 't')
-            ->addSelect('t')
-            ->leftJoin('t.translations', 'tt')
-            ->addSelect('tt')
-            ->leftJoin('p.sections', 'ps')
-            ->addSelect('ps')
-            ->leftJoin('ps.translations', 'pst')
-            ->addSelect('pst')
-            ->leftJoin('ps.media', 'psm')
-            ->addSelect('psm')
-            ->leftJoin('psm.translations', 'psmt')
-            ->addSelect('psmt')
-            ->leftJoin('p.media', 'm')
-            ->addSelect('m')
-            ->leftJoin('m.translations', 'mt')
-            ->addSelect('mt')
-            ->where('p.active = :active')
-            ->andWhere('p.id = :id')
-            ->setParameter('active', true)
-            ->setParameter('id', $id)
-            ->setMaxResults(1);
-
-        // Use HINT_REFRESH to bypass identity map and ensure locale filter is applied
-        $result = $qb->getQuery()
-            ->setHint(Query::HINT_REFRESH, true)
-            ->getOneOrNullResult();
-
-        return $result instanceof Post ? $result : null;
-    }
 }

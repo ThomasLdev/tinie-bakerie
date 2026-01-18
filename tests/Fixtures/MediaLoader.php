@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Fixtures;
+namespace App\Tests\Fixtures;
 
 use JoliCode\MediaBundle\Library\LibraryContainer;
 use JoliCode\MediaBundle\Model\Media;

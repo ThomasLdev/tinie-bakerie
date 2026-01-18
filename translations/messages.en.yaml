@@ -12,7 +12,18 @@ app:
             categories: 'Categories'
             tags: 'Tags'
             about: 'About'
+            search: 'Search'
+    search:
+        placeholder: 'Search for recipes, ingredients...'
+        loading: 'Searching...'
+        results_count: '{1} 1 result|]1,Inf] %count% results'
+        no_results: 'No recipes found'
+        no_results_hint: 'Try adjusting your search or browse our categories'
+        popular: 'Popular Searches'
+        type_to_search: 'Type at least 2 characters to search'
     post:
         index: 'All posts'
     category:
         index: 'All categories'
+    filter:
+        count: '{0} No results|{1} 1 result|]1,Inf] %count% results'

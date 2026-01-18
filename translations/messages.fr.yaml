@@ -11,6 +11,14 @@ app:
             explore: 'Explorer'
             categories: 'Catégories'
             search: 'Rechercher'
+    search:
+        placeholder: 'Rechercher des recettes, ingrédients...'
+        loading: 'Recherche en cours...'
+        results_count: '{1} 1 résultat|]1,Inf] %count% résultats'
+        no_results: 'Aucune recette trouvée'
+        no_results_hint: 'Essayez de modifier votre recherche ou parcourez nos catégories'
+        popular: 'Recherches populaires'
+        type_to_search: 'Tapez au moins 2 caractères pour rechercher'
     post:
         index: 'Tous les articles'
     category:

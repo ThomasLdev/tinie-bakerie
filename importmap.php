@@ -37,4 +37,7 @@ return [
     'swiper/bundle' => [
         'version' => '12.0.2',
     ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
 ];

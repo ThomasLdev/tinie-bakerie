@@ -22,29 +22,6 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * @return array<array-key,mixed>
      */
-    #[\Override]
-    public function findAll(): array
-    {
-        $qb = $this->createQueryBuilder('c')
-            ->select('PARTIAL c.{id, createdAt, updatedAt}')
-            ->leftJoin('c.translations', 'ct')
-            ->addSelect('PARTIAL ct.{id, title, slug}')
-            ->leftJoin('c.media', 'm')
-            ->addSelect('PARTIAL m.{id, media}')
-            ->leftJoin('m.translations', 'mt')
-            ->addSelect('PARTIAL mt.{id, title, alt}')
-            ->orderBy('c.createdAt', 'DESC');
-
-        $result = $qb->getQuery()
-            ->setHint(Query::HINT_REFRESH, true)
-            ->getResult();
-
-        return \is_array($result) ? $result : [];
-    }
-
-    /**
-     * @return array<array-key,mixed>
-     */
     public function findAllSlugs(): array
     {
         $qb = $this->createQueryBuilder('c')

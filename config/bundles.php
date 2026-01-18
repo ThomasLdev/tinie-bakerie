@@ -17,6 +17,7 @@ use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\UX\LiveComponent\LiveComponentBundle;
 use Symfony\UX\StimulusBundle\StimulusBundle;
 use Symfony\UX\Turbo\TurboBundle;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
@@ -46,4 +47,5 @@ return [
     MonologBundle::class => ['all' => true],
     JoliMediaBundle::class => ['all' => true],
     JoliMediaEasyAdminBundle::class => ['all' => true],
+    LiveComponentBundle::class => ['all' => true],
 ];

@@ -24,6 +24,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # Interface bindings
+    App\Repository\PostSearchRepositoryInterface:
+        alias: App\Repository\PostSearchRepository
+
     # Flysystem adapters for JoliCode Media Bundle
     filesystem.adapter.original:
         class: League\Flysystem\Local\LocalFilesystemAdapter

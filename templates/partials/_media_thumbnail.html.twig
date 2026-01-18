@@ -1,0 +1,71 @@
+{#
+    Media thumbnail partial - lightweight alternative to TwigComponent.
+
+    Variables:
+        - path: string|null - Media file path
+        - alt: string (optional) - Alt text for images
+        - title: string (optional) - Title for videos
+        - class: string (optional) - CSS classes
+        - variation: string (optional) - Image variation (default: 'thumbnail-2x-webp')
+
+    Usage:
+        {% include 'partials/_media_thumbnail.html.twig' with {
+            path: media.path,
+            alt: 'Description',
+            class: 'w-full h-48 object-cover'
+        } only %}
+#}
+
+{%- set alt = alt|default('') -%}
+{%- set title = title|default('') -%}
+{%- set class = class|default('') -%}
+{%- set variation = variation|default('thumbnail-2x-webp') -%}
+
+{%- set image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'] -%}
+{%- set video_extensions = ['mp4', 'webm', 'ogg', 'mov'] -%}
+{%- set video_mime_types = {
+    'mp4': 'video/mp4',
+    'webm': 'video/webm',
+    'ogg': 'video/ogg',
+    'mov': 'video/quicktime'
+} -%}
+
+{%- if path is defined and path is not null -%}
+    {%- set extension = path|split('.')|last|lower -%}
+
+    {%- if extension in image_extensions -%}
+        <twig:joli:Img
+            path="{{ path }}"
+            variation="{{ variation }}"
+            alt="{{ alt }}"
+            class="{{ class }}"
+        />
+    {%- elseif extension in video_extensions -%}
+        <video
+            autoplay
+            loop
+            muted
+            playsinline
+            title="{{ title }}"
+            class="{{ class }}"
+        >
+            <source src="{{ path|joli_media_url }}" type="{{ video_mime_types[extension]|default('video/mp4') }}">
+        </video>
+    {%- else -%}
+        {# Unknown media type, show placeholder #}
+        <div class="{{ class }} bg-gray-200 flex items-center justify-center">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+        </div>
+    {%- endif -%}
+{%- else -%}
+    {# No media, show placeholder #}
+    <div class="{{ class }} bg-gray-300 flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+    </div>
+{%- endif -%}
