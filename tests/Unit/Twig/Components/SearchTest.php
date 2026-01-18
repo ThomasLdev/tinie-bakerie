@@ -23,7 +23,7 @@ final class SearchTest extends TestCase
     public function testReturnsEmptyForShortQuery(string $query): void
     {
         $postSearch = $this->createMock(PostSearch::class);
-        $postSearch->expects($this->never())->method('search');
+        $postSearch->expects(self::never())->method('search');
 
         $component = new Search($postSearch);
         $component->query = $query;
@@ -56,7 +56,7 @@ final class SearchTest extends TestCase
         ];
 
         $postSearch = $this->createMock(PostSearch::class);
-        $postSearch->expects($this->once())
+        $postSearch->expects(self::once())
             ->method('search')
             ->with('chocolate', 15)
             ->willReturn($expectedResults);
@@ -71,7 +71,7 @@ final class SearchTest extends TestCase
     public function testHandlesMultibyteCharacters(): void
     {
         $postSearch = $this->createMock(PostSearch::class);
-        $postSearch->expects($this->once())
+        $postSearch->expects(self::once())
             ->method('search')
             ->with('日本', 15)
             ->willReturn([]);
@@ -86,7 +86,7 @@ final class SearchTest extends TestCase
     public function testSingleMultibyteCharacterIsTooShort(): void
     {
         $postSearch = $this->createMock(PostSearch::class);
-        $postSearch->expects($this->never())->method('search');
+        $postSearch->expects(self::never())->method('search');
 
         $component = new Search($postSearch);
         $component->query = '日';
