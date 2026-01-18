@@ -41,7 +41,7 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
             section_vectors AS (
                 SELECT
                     ps.post_id,
-                    string_agg(COALESCE(pst.title, '') || ' ' || COALESCE(pst.content, ''), ' ') AS combined_text
+                    string_agg(pst.title || ' ' || pst.content, ' ') AS combined_text
                 FROM post_section ps
                 JOIN post_section_translation pst ON ps.id = pst.translatable_id AND pst.locale = :locale
                 GROUP BY ps.post_id
@@ -51,7 +51,7 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
             tag_vectors AS (
                 SELECT
                     pt.post_id,
-                    string_agg(COALESCE(tt.title, ''), ' ') AS combined_text
+                    string_agg(tt.title, ' ') AS combined_text
                 FROM post_tag pt
                 JOIN tag_translation tt ON pt.tag_id = tt.translatable_id AND tt.locale = :locale
                 GROUP BY pt.post_id
@@ -70,21 +70,21 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
                         SELECT pm.media
                         FROM post_media pm
                         WHERE pm.post_id = p.id
-                        ORDER BY pm.position ASC
+                        ORDER BY pm.position
                         LIMIT 1
                     ) AS image_path,
 
                     -- Combined weighted tsvector for the entire document
                     (
-                        setweight(to_tsvector('simple', COALESCE(ptr.title, '')), 'A') ||
-                        setweight(to_tsvector('simple', COALESCE(ptr.excerpt, '')), 'B') ||
+                        setweight(to_tsvector('simple', ptr.title), 'A') ||
+                        setweight(to_tsvector('simple', ptr.excerpt), 'B') ||
                         setweight(to_tsvector('simple', COALESCE(sv.combined_text, '')), 'C') ||
                         setweight(to_tsvector('simple', COALESCE(ctr.title, '')), 'D') ||
                         setweight(to_tsvector('simple', COALESCE(tv.combined_text, '')), 'D')
                     ) AS document_vector,
 
                     -- Primary text for headline generation (title + excerpt)
-                    COALESCE(ptr.title, '') || ' ' || COALESCE(ptr.excerpt, '') AS headline_source
+                    ptr.title || ' ' || ptr.excerpt AS headline_source
 
                 FROM post p
                 JOIN post_translation ptr ON p.id = ptr.translatable_id AND ptr.locale = :locale
@@ -171,7 +171,6 @@ final readonly class PostSearchRepository implements PostSearchRepositoryInterfa
      */
     private function extractRawQuery(string $tsQuery): string
     {
-        // Remove :* prefix markers and & operators
         $raw = preg_replace('/:\*/', '', $tsQuery) ?? $tsQuery;
         $raw = preg_replace('/\s*&\s*/', ' ', $raw) ?? $raw;
 
