@@ -84,3 +84,7 @@ playwright-report/
 test-results/
 /playwright/.cache/
 ###< playwright ###
+
+###> kubernetes secrets ###
+k8s/secrets.yaml
+###< kubernetes secrets ###
