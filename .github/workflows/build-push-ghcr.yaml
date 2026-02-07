@@ -1,4 +1,4 @@
-name: Build and Deploy to preprod
+name: Build and Push to GHCR
 
 on:
   push:
@@ -40,12 +40,10 @@ jobs:
         run: |
           # Build assets using x86 Docker (fast, native)
           docker build --target frankenphp_dev -t tinie-bakerie:dev .
-          docker run --rm -v ${{ github.workspace }}:/app-host tinie-bakerie:dev sh -c "
+          docker run --rm -v ${{ github.workspace }}:/app tinie-bakerie:dev sh -c "
             composer install --no-interaction
             bin/console tailwind:build --minify
             bin/console asset-map:compile
-            cp -r var/tailwind /app-host/var/
-            cp -r public/assets /app-host/public/
           "
 
       - name: Generate image tag
