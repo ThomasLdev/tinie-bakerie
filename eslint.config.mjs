@@ -1,7 +1,7 @@
-import tseslint from 'typescript-eslint';
+import js from '@eslint/js';
 import prettierConfig from 'eslint-config-prettier';
 
-export default tseslint.config(
+export default [
   {
     ignores: [
       'var/**',
@@ -9,35 +9,30 @@ export default tseslint.config(
       'public/**',
       'node_modules/**',
       'tests/**',
-      '*.js',
-      '*.mjs',
+      'assets/vendor/**',
     ],
   },
-  ...tseslint.configs.recommended,
+  js.configs.recommended,
   prettierConfig,
   {
-    files: ['assets/controllers/**/*.ts'],
+    files: ['assets/**/*.js'],
     languageOptions: {
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
       },
     },
     rules: {
-      // TypeScript specific
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', {
+      'no-unused-vars': ['error', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
       }],
-      '@typescript-eslint/no-non-null-assertion': 'warn',
-      
-      // General code quality
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'error',
       'no-var': 'error',
     },
-  }
-);
+  },
+];

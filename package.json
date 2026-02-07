@@ -7,25 +7,21 @@
     "test:e2e:debug": "PWDEBUG=1 playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 9323",
-    "lint": "eslint assets/controllers/**/*.ts",
-    "lint:fix": "eslint assets/controllers/**/*.ts --fix",
-    "format": "prettier --write \"assets/controllers/**/*.ts\"",
-    "format:check": "prettier --check \"assets/controllers/**/*.ts\"",
-    "type-check": "tsc --noEmit"
+    "lint": "eslint assets/**/*.js",
+    "lint:fix": "eslint assets/**/*.js --fix",
+    "format": "prettier --write \"assets/**/*.js\"",
+    "format:check": "prettier --check \"assets/**/*.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@hotwired/stimulus": "^3.2.2",
     "@playwright/test": "^1.48.0",
-    "@types/node": "^22.9.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
-    "swiper": "^11.1.15",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.15.0"
+    "swiper": "^11.1.15"
   }
 }
