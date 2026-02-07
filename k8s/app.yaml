@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-pvc
+  namespace: tinie-bakerie
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinie-bakerie
+  namespace: tinie-bakerie
+  labels:
+    app: tinie-bakerie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tinie-bakerie
+  template:
+    metadata:
+      labels:
+        app: tinie-bakerie
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: tinie-bakerie
+          image: ghcr.io/thomasldev/tinie-bakerie:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: APP_ENV
+              value: "prod"
+            - name: APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tinie-bakerie-secrets
+                  key: APP_SECRET
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tinie-bakerie-secrets
+                  key: DATABASE_URL
+            - name: TRUSTED_PROXIES
+              value: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            - name: TRUSTED_HOSTS
+              value: "^.*$"
+          volumeMounts:
+            - name: caddy-config
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+            - name: media-storage
+              mountPath: /app/public/media
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: caddy-config
+          configMap:
+            name: caddy-config
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: media-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinie-bakerie
+  namespace: tinie-bakerie
+spec:
+  selector:
+    app: tinie-bakerie
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort

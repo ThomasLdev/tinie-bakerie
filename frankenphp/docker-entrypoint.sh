@@ -35,8 +35,11 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		fi
 	fi
 
-	echo "Downloading tailwind binary..."
-	php bin/console tailwind:build
+	# Build assets in dev (in prod they're pre-built in the image)
+	if [ "$APP_ENV" != 'prod' ]; then
+		echo "Building tailwind CSS..."
+		php bin/console tailwind:build
+	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var

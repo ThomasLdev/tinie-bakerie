@@ -71,6 +71,7 @@ phpstan.neon
 ###> tinie-bakerie - upload system ###
 public/media/*
 public/bundles
+public/assets
 ###< tinie-bakerie - upload system ###
 
 .env.*

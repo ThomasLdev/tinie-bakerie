@@ -1,0 +1,8 @@
+zenstruck_foundry:
+    enable_auto_refresh_with_lazy_objects: true
+    persistence:
+        flush_once: true
+    orm:
+        reset:
+            # Use 'migrate' mode to ensure pg_trgm extension is installed via migrations
+            mode: !php/enum Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::MIGRATE

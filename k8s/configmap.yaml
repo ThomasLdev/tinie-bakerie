@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-config
+  namespace: tinie-bakerie
+data:
+  Caddyfile: |
+    {
+      {$CADDY_GLOBAL_OPTIONS}
+
+      frankenphp {
+        {$FRANKENPHP_CONFIG}
+      }
+    }
+
+    :80 {
+      log
+      root * /app/public
+      encode zstd br gzip
+
+      vulcain
+      {$CADDY_SERVER_EXTRA_DIRECTIVES}
+      header ?Permissions-Policy "browsing-topics=()"
+      php_server
+    }

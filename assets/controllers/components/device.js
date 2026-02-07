@@ -1,24 +1,5 @@
-type BreakpointName = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
-
-interface Breakpoints {
-  xs: number;
-  sm: number;
-  md: number;
-  lg: number;
-  xl: number;
-  xxl: number;
-}
-
-interface DeviceOptions {
-  breakpoints?: Partial<Breakpoints>;
-}
-
 export default class Device {
-  private breakpoints: Breakpoints;
-  private mediaQueries: Record<string, MediaQueryList>;
-  public current: BreakpointName;
-
-  constructor(options: DeviceOptions = {}) {
+  constructor(options = {}) {
     this.breakpoints = {
       xs: 0,
       sm: 640,
@@ -41,9 +22,9 @@ export default class Device {
     this._setupListeners();
   }
 
-  detect(): BreakpointName {
+  detect() {
     // Use matchMedia for more efficient detection
-    const breakpointNames = Object.keys(this.breakpoints).reverse() as BreakpointName[];
+    const breakpointNames = Object.keys(this.breakpoints).reverse();
 
     for (const name of breakpointNames) {
       if (name === 'xs' || this.mediaQueries[name]?.matches) {
@@ -56,7 +37,7 @@ export default class Device {
     return 'xs';
   }
 
-  private _setupListeners(): void {
+  _setupListeners() {
     // Use matchMedia listeners instead of resize for better performance
     Object.values(this.mediaQueries).forEach(mq => {
       mq.addEventListener('change', () => this.detect());
@@ -64,55 +45,55 @@ export default class Device {
   }
 
   // Better device type detection
-  get isTouchDevice(): boolean {
+  get isTouchDevice() {
     return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   }
 
-  get isHoverCapable(): boolean {
+  get isHoverCapable() {
     return window.matchMedia('(hover: hover)').matches;
   }
 
-  get hasFinePointer(): boolean {
+  get hasFinePointer() {
     return window.matchMedia('(pointer: fine)').matches;
   }
 
-  get prefersReducedMotion(): boolean {
+  get prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  get isDarkMode(): boolean {
+  get isDarkMode() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
-  isMobile(): boolean {
+  isMobile() {
     return (this.current === 'xs' || this.current === 'sm') && this.isTouchDevice;
   }
 
-  isTablet(): boolean {
+  isTablet() {
     return this.current === 'md' && this.isTouchDevice;
   }
 
-  isDesktop(): boolean {
+  isDesktop() {
     return ['lg', 'xl', 'xxl'].includes(this.current) || this.hasFinePointer;
   }
 
-  is(breakpoint: BreakpointName): boolean {
+  is(breakpoint) {
     return this.current === breakpoint;
   }
 
-  isAtLeast(breakpoint: BreakpointName): boolean {
+  isAtLeast(breakpoint) {
     return window.innerWidth >= this.breakpoints[breakpoint];
   }
 
-  get width(): number {
+  get width() {
     return window.innerWidth;
   }
 
-  get height(): number {
+  get height() {
     return window.innerHeight;
   }
 
-  destroy(): void {
+  destroy() {
     Object.values(this.mediaQueries).forEach(mq => {
       mq.removeEventListener('change', () => this.detect());
     });

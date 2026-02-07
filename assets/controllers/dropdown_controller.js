@@ -1,20 +1,17 @@
 import { Controller } from '@hotwired/stimulus';
 
-export default class extends Controller<HTMLElement> {
+export default class extends Controller {
   static targets = ['collapsable', 'icon'];
 
-  declare readonly collapsableTarget: HTMLElement;
-  declare readonly iconTarget: HTMLElement;
+  hiddenClass = 'hidden';
+  rotateClass = 'rotate-180';
+  handleDocumentClickBound;
 
-  private hiddenClass = 'hidden';
-  private rotateClass = 'rotate-180';
-  private handleDocumentClickBound!: (event: MouseEvent) => void;
-
-  connect(): void {
+  connect() {
     this.handleDocumentClickBound = this.handleDocumentClick.bind(this);
   }
 
-  displayCollapsable(): void {
+  displayCollapsable() {
     const isVisible = !this.collapsableTarget.classList.contains(this.hiddenClass);
 
     if (isVisible) {
@@ -27,23 +24,23 @@ export default class extends Controller<HTMLElement> {
     document.addEventListener('click', this.handleDocumentClickBound);
   }
 
-  hideDropdown(): void {
+  hideDropdown() {
     this.collapsableTarget.classList.add(this.hiddenClass);
     this.iconTarget.classList.remove(this.rotateClass);
     document.removeEventListener('click', this.handleDocumentClickBound);
   }
 
-  handleDocumentClick(event: MouseEvent): void {
+  handleDocumentClick(event) {
     if (this.collapsableTarget.classList.contains(this.hiddenClass)) return;
 
-    const isOutsideDropdown = !this.element.contains(event.target as Node);
+    const isOutsideDropdown = !this.element.contains(event.target);
 
     if (isOutsideDropdown) {
       this.hideDropdown();
     }
   }
 
-  disconnect(): void {
+  disconnect() {
     document.removeEventListener('click', this.handleDocumentClickBound);
   }
 }
