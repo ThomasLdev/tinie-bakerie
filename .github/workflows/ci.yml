@@ -72,12 +72,8 @@ jobs:
         run: make twig-linter
       - name: Install Node.js dependencies
         run: make node-install
-      - name: Run ESLint (TypeScript)
+      - name: Run ESLint
         run: make lint
-      - name: Check TypeScript formatting
-        run: make format-check
-      - name: TypeScript type checking
-        run: make type-check
       - name: Run PHPUnit Unit Suite
         run: make test.unit
   functional_test:
@@ -111,8 +107,6 @@ jobs:
         run: make fixtures-test
       - name: Doctrine Schema Validator
         run: make doctrine-validate-schema
-      - name: Build TypeScript Assets
-        run: make typescript
       - name: Run PHPUnit Functional Suite
         run: make test.functional
   e2e_tests:
@@ -148,8 +142,6 @@ jobs:
         run: make node-install
       - name: Install Playwright Dependencies
         run: make e2e-install
-      - name: Build TypeScript Assets
-        run: make typescript
       - name: Run E2E Tests
         run: make test.e2e
         env:

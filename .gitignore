@@ -71,6 +71,7 @@ phpstan.neon
 ###> tinie-bakerie - upload system ###
 public/media/*
 public/bundles
+public/assets
 ###< tinie-bakerie - upload system ###
 
 .env.*
@@ -83,3 +84,7 @@ playwright-report/
 test-results/
 /playwright/.cache/
 ###< playwright ###
+
+###> kubernetes secrets ###
+k8s/secrets.yaml
+###< kubernetes secrets ###

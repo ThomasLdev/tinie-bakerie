@@ -122,9 +122,6 @@
             "tests/bootstrap.php"
         ]
     },
-    "sensiolabs/typescript-bundle": {
-        "version": "v0.2.2"
-    },
     "stof/doctrine-extensions-bundle": {
         "version": "1.13",
         "recipe": {

@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan typescript typescript-watch assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
+.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -35,7 +35,7 @@ up-ci: ## Start services for CI environment (includes Node.js for testing)
 	@$(DOCKER_COMP_DEV) up --detach
 	@echo "✅ CI environment ready (Node.js available for linting/testing)"
 
-start: up-dev assets-install typescript ## Start development environment
+start: up-dev assets-install ## Start development environment
 
 build: build up ## Build and start the containers
 
@@ -97,14 +97,8 @@ doctrine-db-test-create:
 assets-install: ## Install assets in the public directory
 	@$(PHP_CONT) bin/console assets:install
 
-assets-compile: typescript tailwind ## Compile all assets (TypeScript + Tailwind) for production
+assets-compile: tailwind ## Compile all assets (Tailwind) for production
 	@$(PHP_CONT) bin/console asset-map:compile
-
-typescript: ## Build TypeScript files
-	@$(PHP_CONT) bin/console typescript:build
-
-typescript-watch: ## Watch and rebuild TypeScript files on changes
-	@$(PHP_CONT) bin/console typescript:build --watch
 
 tailwind: ## Build Tailwind CSS
 	@$(PHP_CONT) bin/console tailwind:build
@@ -112,18 +106,14 @@ tailwind: ## Build Tailwind CSS
 tailwind-watch: ## Watch and rebuild Tailwind CSS on changes
 	@$(PHP_CONT) bin/console tailwind:build --watch
 
-watch: ## Watch both TypeScript and Tailwind (run in separate terminals)
-	@echo "💡 Run 'make typescript-watch' and 'make tailwind-watch' in separate terminals for watch mode"
-	@echo "   Or use Symfony CLI: 'symfony server:start' (will auto-run TypeScript worker)"
-
 ## —— Node.js 📦 ———————————————————————————————————————————————————————————————
 node-install: ## Install Node.js dependencies
 	@$(NPM) install
 
-lint: ## Lint TypeScript files with ESLint
+lint: ## Lint JS files with ESLint
 	@$(NPM) run lint
 
-lint-fix: ## Lint and auto-fix TypeScript files
+lint-fix: ## Lint and auto-fix JS files
 	@$(NPM) run lint:fix
 
 format: ## Format code with Prettier
@@ -131,9 +121,6 @@ format: ## Format code with Prettier
 
 format-check: ## Check code formatting with Prettier
 	@$(NPM) run format:check
-
-type-check: ## Type check TypeScript files
-	@$(NPM) run type-check
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
@@ -166,7 +153,7 @@ phpcs-dry:
 twig-linter:
 	@$(PHP_CONT) bin/console lint:twig templates
 
-quality: rector phpcs phpstan twig-linter lint format-check ## Run all quality checks (PHP + TypeScript)
+quality: rector phpcs phpstan twig-linter lint format-check ## Run all quality checks (PHP + JS)
 
 doctrine-validate-schema:
 	@$(PHP_CONT) bin/console -e app doctrine:schema:validate

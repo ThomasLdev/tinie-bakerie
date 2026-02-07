@@ -24,8 +24,11 @@
 .github/
 docs/
 public/bundles/
+public/media/
 tests/
-var/
+# Ignore var except built assets
+var/*
+!var/tailwind/
 vendor/
 .editorconfig
 .env.*.local

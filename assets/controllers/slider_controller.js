@@ -1,16 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
 import Swiper from 'swiper/bundle';
-import Device from './components/device.ts';
+import Device from './components/device.js';
 
-export default class extends Controller<HTMLElement> {
+export default class extends Controller {
   static values = {
     mobileOnly: { type: Boolean, default: false },
   };
 
-  declare readonly mobileOnlyValue: boolean;
-  private swiper?: Swiper;
-
-  connect(): void {
+  connect() {
     const device = new Device();
 
     if (!device.isMobile() && this.mobileOnlyValue) {
@@ -23,7 +20,7 @@ export default class extends Controller<HTMLElement> {
     });
   }
 
-  disconnect(): void {
+  disconnect() {
     if (this.swiper) {
       this.swiper.destroy(true, true);
       this.swiper = undefined;
