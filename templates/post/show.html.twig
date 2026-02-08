@@ -118,7 +118,7 @@
                                             <div class="relative">
                                                 {% if section.media|length > 1 %}
                                                     {# Carousel for multiple images #}
-                                                    <div class="swiper" {{ stimulus_controller('slider') }}>
+                                                    <div class="swiper h-[30rem]" {{ stimulus_controller('slider', {pagination: true}) }}>
                                                         <div class="swiper-wrapper">
                                                             {% for media in section.media %}
                                                                 <div class="swiper-slide">
@@ -127,13 +127,11 @@
                                                                         alt: media.alt ?? '',
                                                                         title: media.title ?? '',
                                                                         variation: 'medium-2x-webp',
-                                                                        class: 'w-full h-64 object-cover'
+                                                                        class: 'w-full h-full object-cover'
                                                                     } only %}
                                                                 </div>
                                                             {% endfor %}
                                                         </div>
-                                                        <div class="swiper-button-prev"></div>
-                                                        <div class="swiper-button-next"></div>
                                                         <div class="swiper-pagination"></div>
                                                     </div>
                                                 {% else %}
