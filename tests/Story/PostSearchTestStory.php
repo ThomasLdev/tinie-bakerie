@@ -64,25 +64,25 @@ final class PostSearchTestStory extends Story
 
     public function getChocolateCake(): Post
     {
-        /** @var Post $proxy */
+        // @var Post $proxy
         return self::get(self::POST_CHOCOLATE_CAKE);
     }
 
     public function getVeganCookies(): Post
     {
-        /** @var Post $proxy */
+        // @var Post $proxy
         return self::get(self::POST_VEGAN_COOKIES);
     }
 
     public function getTiramisu(): Post
     {
-        /** @var Post $proxy */
+        // @var Post $proxy
         return self::get(self::POST_TIRAMISU);
     }
 
     public function getInactivePost(): Post
     {
-        /** @var Post $proxy */
+        // @var Post $proxy
         return self::get(self::POST_INACTIVE);
     }
 

@@ -7,7 +7,6 @@ use PhpCsFixer\Finder;
 
 $finder = Finder::create()
     ->in([
-        __DIR__ . '/config',
         __DIR__ . '/public',
         __DIR__ . '/src',
         __DIR__ . '/tests',
@@ -41,6 +40,7 @@ return (new Config())
         '@PHP81Migration' => true,
         '@PHP82Migration' => true,
         '@PHP83Migration' => true,
+        '@PHP84Migration' => true,
 
         // Array notation
         'array_syntax' => ['syntax' => 'short'],
