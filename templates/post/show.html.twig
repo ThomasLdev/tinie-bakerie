@@ -6,26 +6,174 @@
     {% if post is defined and post is not same as null %}
         {% set mainMedia = post.media|first %}
 
-        <div>
-            <h1 {{ test_id('post-show-title') }}>{{ post.title }}</h1>
-            <hr>
-            <h2>Category : {{ post.category.title }}</h2>
+        <main class="min-h-screen bg-neutral-50">
+            <div class="max-w-7xl mx-auto xl:px-0 px-6 py-12">
 
-            <div>
-                {% include 'partials/_media_thumbnail.html.twig' with {
-                    path: mainMedia.media.path ?? null,
-                    alt: mainMedia.alt ?? '',
-                    title: mainMedia.title ?? ''
-                } only %}
+                {# Recipe Header #}
+                <div class="mb-8">
+                    {# Tags #}
+                    {% if post.tags is not empty %}
+                        <div class="flex items-center gap-2 mb-4">
+                            {% for tag in post.tags %}
+                                <span class="inline-block px-3 py-1 text-xs font-medium rounded-full"
+                                      style="background-color:{{ tag.backgroundColor }}; color:{{ tag.textColor }};"
+                                >
+                                    {{ tag.title }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <h1 {{ test_id('post-show-title') }} class="text-4xl font-playfair font-bold text-gray-900 mb-4">
+                        {{ post.title }}
+                    </h1>
+
+                    {% if post.excerpt is defined and post.excerpt is not empty %}
+                        <p class="text-lg text-neutral-600">
+                            {{ post.excerpt }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                {# Recipe Image #}
+                <div class="mb-12">
+                    <div class="rounded-xl overflow-hidden shadow-lg">
+                        {% include 'partials/_media_thumbnail.html.twig' with {
+                            path: mainMedia.media.path ?? null,
+                            alt: mainMedia.alt ?? '',
+                            title: mainMedia.title ?? '',
+                            variation: 'large-2x-webp',
+                            class: 'w-full h-[500px] object-cover'
+                        } only %}
+                    </div>
+                </div>
+
+                {# Quick Info #}
+                <div class="grid grid-cols-3 gap-6 mb-12 bg-white rounded-xl p-8 shadow-sm">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-3">
+                            <svg class="w-6 h-6 text-amber-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-neutral-600 mb-1">Préparation</div>
+                        <div class="text-xl font-medium">{{ post.cookingTime }} min</div>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-3">
+                            <svg class="w-6 h-6 text-rose-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-neutral-600 mb-1">Difficulté</div>
+                        <div class="text-xl font-medium">{{ post.difficulty.value|capitalize }}</div>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+                            <svg class="w-6 h-6 text-blue-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-neutral-600 mb-1">Lecture</div>
+                        <div class="text-xl font-medium">{{ post.readingTime }} min</div>
+                    </div>
+                </div>
+
+                {# Notes & Sections grid #}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    {# Notes sidebar — sticky on desktop, above sections on mobile #}
+                    {% if post.notes is defined and post.notes is not empty %}
+                        {% set formattedNotes = post.notes|split('|') %}
+
+                        <div class="lg:col-span-1">
+                            <div class="sticky top-6">
+                                <section class="bg-white rounded-xl p-8 shadow-sm">
+                                    <h2 class="text-2xl font-playfair font-bold mb-6">Notes</h2>
+                                    <div class="prose prose-gray prose-sm max-w-none">
+                                        <ul>
+                                            {% for note in formattedNotes %}
+                                                <li>
+                                                    {{ note }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# Sections #}
+                    {% if post.sections is not empty %}
+                        <section class="{% if post.notes is defined and post.notes is not empty %}lg:col-span-2{% else %}lg:col-span-3{% endif %}">
+                            <h2 class="text-2xl font-playfair font-bold mb-6">Préparation</h2>
+
+                            <div class="space-y-8">
+                                {% for section in post.sections %}
+                                    <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+                                        {# Section media #}
+                                        {% if section.media is not empty %}
+                                            <div class="relative">
+                                                {% if section.media|length > 1 %}
+                                                    {# Carousel for multiple images #}
+                                                    <div class="swiper" {{ stimulus_controller('slider') }}>
+                                                        <div class="swiper-wrapper">
+                                                            {% for media in section.media %}
+                                                                <div class="swiper-slide">
+                                                                    {% include 'partials/_media_thumbnail.html.twig' with {
+                                                                        path: media.media.path ?? null,
+                                                                        alt: media.alt ?? '',
+                                                                        title: media.title ?? '',
+                                                                        variation: 'medium-2x-webp',
+                                                                        class: 'w-full h-64 object-cover'
+                                                                    } only %}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="swiper-button-prev"></div>
+                                                        <div class="swiper-button-next"></div>
+                                                        <div class="swiper-pagination"></div>
+                                                    </div>
+                                                {% else %}
+                                                    {# Single image #}
+                                                    {% set sectionMedia = section.media|first %}
+                                                    {% include 'partials/_media_thumbnail.html.twig' with {
+                                                        path: sectionMedia.media.path ?? null,
+                                                        alt: sectionMedia.alt ?? '',
+                                                        title: sectionMedia.title ?? '',
+                                                        variation: 'medium-2x-webp',
+                                                        class: 'w-full h-64 object-cover'
+                                                    } only %}
+                                                {% endif %}
+
+                                                {# Step number badge #}
+                                                <div class="absolute top-4 left-4 w-12 h-12 rounded-full bg-amber-900 text-white flex items-center justify-center text-xl font-semibold shadow-lg z-10">
+                                                    {{ loop.index }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                        {# Section content #}
+                                        <div class="p-6">
+                                            {% if section.title is defined and section.title is not empty %}
+                                                <h3 class="text-lg font-semibold mb-3">{{ section.title }}</h3>
+                                            {% endif %}
+
+                                            {% if section.content is defined and section.content is not empty %}
+                                                <div class="prose prose-gray max-w-none prose-neutral">
+                                                    {{ section.content|raw }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+                </div>
             </div>
-
-            {% if post.sections is not empty %}
-                {% for section in post.sections %}
-                    <section class="post-section post-section--{{ section.type.value }}">
-                        {{ section.content|raw }}
-                    </section>
-                {% endfor %}
-            {% endif %}
-        </div>
+        </main>
     {% endif %}
 {% endblock %}
