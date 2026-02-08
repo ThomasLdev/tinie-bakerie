@@ -1,0 +1,33 @@
+{% block ea_text_editor_widget %}
+    {% set ea_field = form.vars.ea_vars.field|default(null) %}
+    {% set num_of_rows = ea_field ? ea_field.customOptions.get('numOfRows')|default(5) : 5 %}
+    {% set trix_config = ea_field ? ea_field.customOptions.get('trixEditorConfig')|default(null) : null %}
+
+    <div
+        id="modal-media-choice_{{ id }}"
+        class="modal-media-choice modal fade"
+        tabindex="-1"
+        data-href="{{ ea_url().setRoute('joli_media_easy_admin_choose') }}&routeParams%5Bkey%5D="
+    >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary">
+                        <span class="btn-label">{{ 'action.cancel'|trans(domain: 'EasyAdminBundle') }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_widget(form, { attr: attr|merge({
+        class: 'ea-text-editor-content d-none',
+        'data-number-of-rows': num_of_rows,
+        'data-trix-editor-config': trix_config|json_encode,
+    }) }) }}
+
+    <div class="ea-text-editor-wrapper {{ row_attr.class|default('') ~ (not valid ? ' has-error') }}">
+        <trix-editor input="{{ id }}" class="trix-content"></trix-editor>
+    </div>
+{% endblock %}
