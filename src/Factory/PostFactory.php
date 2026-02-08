@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\Post;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Post>

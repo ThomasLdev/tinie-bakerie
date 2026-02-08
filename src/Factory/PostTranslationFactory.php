@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\PostTranslation;
 use App\Services\Slug\Slugger;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<PostTranslation>

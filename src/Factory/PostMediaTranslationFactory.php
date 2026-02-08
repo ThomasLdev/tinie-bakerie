@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\PostMediaTranslation;
 use App\Entity\PostTranslation;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<PostTranslation>
