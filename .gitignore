@@ -21,6 +21,10 @@ var/*
 /var/log/*
 !var/log/.gitkeep
 
+###> symfony 7.4 ###
+/config/reference.php
+###< symfony 7.4 ###
+
 # Parameters
 /app/config/parameters.yml
 /app/config/parameters.ini
