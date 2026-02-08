@@ -43,8 +43,7 @@ class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
         targetEntity: PostSectionMediaTranslation::class,
         mappedBy: 'translatable',
         cascade: ['persist', 'remove'],
-    )
-    ]
+    )]
     private Collection $translations;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
