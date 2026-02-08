@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\CategoryMedia;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CategoryMedia>
+ * @extends PersistentObjectFactory<CategoryMedia>
  */
-final class CategoryMediaFactory extends PersistentProxyObjectFactory
+final class CategoryMediaFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<CategoryMedia>

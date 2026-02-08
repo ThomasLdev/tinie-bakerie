@@ -17,7 +17,6 @@ use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use App\Services\Post\Enum\Difficulty;
 use App\Services\PostSection\Enum\PostSectionType;
-use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Story;
 
 /**
@@ -65,34 +64,26 @@ final class PostSearchTestStory extends Story
 
     public function getChocolateCake(): Post
     {
-        /** @var Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_CHOCOLATE_CAKE);
-
-        return $proxy->_real();
+        // @var Post $proxy
+        return self::get(self::POST_CHOCOLATE_CAKE);
     }
 
     public function getVeganCookies(): Post
     {
-        /** @var Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_VEGAN_COOKIES);
-
-        return $proxy->_real();
+        // @var Post $proxy
+        return self::get(self::POST_VEGAN_COOKIES);
     }
 
     public function getTiramisu(): Post
     {
-        /** @var Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_TIRAMISU);
-
-        return $proxy->_real();
+        // @var Post $proxy
+        return self::get(self::POST_TIRAMISU);
     }
 
     public function getInactivePost(): Post
     {
-        /** @var Proxy<Post> $proxy */
-        $proxy = self::get(self::POST_INACTIVE);
-
-        return $proxy->_real();
+        // @var Post $proxy
+        return self::get(self::POST_INACTIVE);
     }
 
     /**

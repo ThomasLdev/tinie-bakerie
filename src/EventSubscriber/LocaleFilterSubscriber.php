@@ -25,6 +25,10 @@ readonly class LocaleFilterSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
         $request = $event->getRequest();
         $filters = $this->entityManager->getFilters();
 

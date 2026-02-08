@@ -6,12 +6,12 @@ namespace App\Factory;
 
 use App\Entity\CategoryTranslation;
 use App\Services\Slug\Slugger;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CategoryTranslation>
+ * @extends PersistentObjectFactory<CategoryTranslation>
  */
-final class CategoryTranslationFactory extends PersistentProxyObjectFactory
+final class CategoryTranslationFactory extends PersistentObjectFactory
 {
     public function __construct(
         private readonly Slugger $slugger,

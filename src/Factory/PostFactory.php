@@ -7,12 +7,12 @@ namespace App\Factory;
 use App\Entity\Post;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Post>
+ * @extends PersistentObjectFactory<Post>
  */
-final class PostFactory extends PersistentProxyObjectFactory
+final class PostFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<Post>

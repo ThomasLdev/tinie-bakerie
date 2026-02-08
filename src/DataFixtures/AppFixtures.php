@@ -23,8 +23,7 @@ use App\Services\Locale\Locales;
 use App\Tests\Fixtures\MediaLoader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 use function Zenstruck\Foundry\Persistence\flush_after;
 
@@ -96,11 +95,11 @@ class AppFixtures extends Fixture
     /**
      * Creates translations for all configured locales.
      *
-     * @return array<array-key,Proxy>
+     * @return array<array-key, mixed>
      *
      * @phpstan-ignore-next-line
      */
-    private function createTranslations(PersistentProxyObjectFactory $factory): array
+    private function createTranslations(PersistentObjectFactory $factory): array
     {
         $locales = $this->locales->get();
 

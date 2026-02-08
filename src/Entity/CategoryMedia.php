@@ -46,8 +46,7 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
         targetEntity: CategoryMediaTranslation::class,
         mappedBy: 'translatable',
         cascade: ['persist', 'remove'],
-    )
-    ]
+    )]
     private Collection $translations;
 
     public function __construct()

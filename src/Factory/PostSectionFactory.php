@@ -6,12 +6,12 @@ namespace App\Factory;
 
 use App\Entity\PostSection;
 use App\Services\PostSection\Enum\PostSectionType;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostSection>
+ * @extends PersistentObjectFactory<PostSection>
  */
-final class PostSectionFactory extends PersistentProxyObjectFactory
+final class PostSectionFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<PostSection>

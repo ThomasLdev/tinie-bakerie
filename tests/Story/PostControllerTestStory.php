@@ -179,12 +179,12 @@ final class PostControllerTestStory extends Story
 
     public function getActivePost(int $index): Post
     {
-        return $this->getActivePosts()[$index]->_real();
+        return $this->getActivePosts()[$index];
     }
 
     public function getInactivePost(): Post
     {
-        return self::get('inactivePost')->_real();
+        return self::get('inactivePost');
     }
 
     /**

@@ -211,7 +211,7 @@ final class CategoryControllerTestStory extends Story
 
     public function getCategory(int $index): Category
     {
-        return $this->getCategories()[$index]->_real();
+        return $this->getCategories()[$index];
     }
 
     /**

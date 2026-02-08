@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\PostSectionMedia;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostSectionMedia>
+ * @extends PersistentObjectFactory<PostSectionMedia>
  */
-final class PostSectionMediaFactory extends PersistentProxyObjectFactory
+final class PostSectionMediaFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<PostSectionMedia>
