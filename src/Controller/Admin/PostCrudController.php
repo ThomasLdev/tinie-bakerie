@@ -40,14 +40,21 @@ class PostCrudController extends AbstractCrudController
     {
         // this should not be needed, but there is a bug in EA with assets in nested forms
         // see https://github.com/EasyCorp/EasyAdminBundle/issues/6127
-        $package = new PathPackage(
+        $joliMediaPackage = new PathPackage(
             '/bundles/jolimediaeasyadmin',
             new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/jolimediaeasyadmin/manifest.json'),
         );
 
+        $eaPackage = new PathPackage(
+            '/bundles/easyadmin',
+            new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/easyadmin/manifest.json'),
+        );
+
         return $assets
-            ->addCssFile($package->getUrl('joli-media-easy-admin.css'))
-            ->addJsFile($package->getUrl('joli-media-easy-admin.js'));
+            ->addCssFile($joliMediaPackage->getUrl('joli-media-easy-admin.css'))
+            ->addJsFile($joliMediaPackage->getUrl('joli-media-easy-admin.js'))
+            ->addCssFile($eaPackage->getUrl('field-text-editor.css'))
+            ->addJsFile($eaPackage->getUrl('field-text-editor.js'));
     }
 
     public static function getEntityFqcn(): string
@@ -87,7 +94,8 @@ class PostCrudController extends AbstractCrudController
             ->setPageTitle('new', 'admin.post.dashboard.create')
             ->setPageTitle('edit', 'admin.post.dashboard.edit')
             ->setPageTitle('detail', 'admin.post.dashboard.detail')
-            ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig');
+            ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig')
+            ->addFormTheme('admin/form/text_editor_theme.html.twig');
     }
 
     private function getIndexFields(): \Generator

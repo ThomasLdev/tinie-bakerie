@@ -8,7 +8,7 @@ use App\Entity\PostSectionTranslation;
 use App\Form\Type\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,7 +40,7 @@ class PostSectionTranslationType extends AbstractType
                 'required' => true,
                 'empty_data' => '',
             ])
-            ->add('content', TextareaType::class, [
+            ->add('content', TextEditorType::class, [
                 'label' => 'admin.post_section.content',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
