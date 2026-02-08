@@ -1,0 +1,32 @@
+{% if post.media is not empty %}
+    <div class="mb-12">
+        <div class="rounded-xl overflow-hidden shadow-lg">
+            {% if post.media|length > 1 %}
+                <div class="swiper h-[500px]" {{ stimulus_controller('slider', {pagination: true}) }}>
+                    <div class="swiper-wrapper">
+                        {% for media in post.media %}
+                            <div class="swiper-slide">
+                                {% include 'partials/_media_thumbnail.html.twig' with {
+                                    path: media.media.path ?? null,
+                                    alt: media.alt ?? '',
+                                    title: media.title ?? '',
+                                    variation: 'large-2x-webp',
+                                    class: 'w-full h-full object-cover'
+                                } only %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            {% else %}
+                {% include 'partials/_media_thumbnail.html.twig' with {
+                    path: mainMedia.media.path ?? null,
+                    alt: mainMedia.alt ?? '',
+                    title: mainMedia.title ?? '',
+                    variation: 'large-2x-webp',
+                    class: 'w-full h-[500px] object-cover'
+                } only %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

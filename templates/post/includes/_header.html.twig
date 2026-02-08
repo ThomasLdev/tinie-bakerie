@@ -1,0 +1,23 @@
+<div class="mb-8">
+    {% if post.tags is not empty %}
+        <div class="flex items-center gap-2 mb-4">
+            {% for tag in post.tags %}
+                <span class="inline-block px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color:{{ tag.backgroundColor }}; color:{{ tag.textColor }};"
+                >
+                    {{ tag.title }}
+                </span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1 {{ test_id('post-show-title') }} class="text-4xl font-playfair font-bold text-gray-900 mb-4">
+        {{ post.title }}
+    </h1>
+
+    {% if post.excerpt is defined and post.excerpt is not empty %}
+        <p class="text-lg text-neutral-600">
+            {{ post.excerpt }}
+        </p>
+    {% endif %}
+</div>
