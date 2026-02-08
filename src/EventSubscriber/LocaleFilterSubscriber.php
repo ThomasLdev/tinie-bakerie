@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Services\Filter\LocaleFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
-readonly class KernelRequestSubscriber implements EventSubscriberInterface
+readonly class LocaleFilterSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -25,17 +26,18 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
+        $filters = $this->entityManager->getFilters();
 
         if (str_contains($request->getPathInfo(), '/admin')) {
+            if ($filters->isEnabled(LocaleFilter::NAME)) {
+                $filters->disable(LocaleFilter::NAME);
+            }
+
             return;
         }
 
-        $this->entityManager
-            ->getFilters()
-            ->enable('locale_filter')
-            ->setParameter(
-                'locale',
-                $request->getLocale(),
-            );
+        $filters
+            ->enable(LocaleFilter::NAME)
+            ->setParameter(LocaleFilter::PARAMETER_NAME, $request->getLocale());
     }
 }

@@ -27,6 +27,7 @@ class CategoryMediaType extends AbstractType
             ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
+                'translation_domain' => 'admin',
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
@@ -48,6 +49,7 @@ class CategoryMediaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CategoryMedia::class,
             'supported_locales' => [],
+            'translation_domain' => 'admin',
         ]);
     }
 }

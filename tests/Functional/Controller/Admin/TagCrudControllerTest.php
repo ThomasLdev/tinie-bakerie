@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\TagCrudController;
 use App\Entity\Tag;
-use App\EventSubscriber\KernelRequestSubscriber;
+use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Factory\TagFactory;
 use App\Form\Type\TagTranslationType;
 use App\Services\Locale\Locales;
@@ -25,7 +25,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 #[CoversClass(TagCrudController::class)]
 #[CoversClass(Locales::class)]
 #[CoversClass(TagTranslationType::class)]
-#[CoversClass(KernelRequestSubscriber::class)]
+#[CoversClass(LocaleFilterSubscriber::class)]
 final class TagCrudControllerTest extends WebTestCase
 {
     use Factories;

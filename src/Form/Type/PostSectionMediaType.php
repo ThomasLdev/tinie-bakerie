@@ -27,6 +27,7 @@ class PostSectionMediaType extends AbstractType
             ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
+                'translation_domain' => 'admin',
             ])
             ->add('translations', CollectionType::class, [
                 'label' => 'admin.global.translations',
@@ -48,6 +49,7 @@ class PostSectionMediaType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostSectionMedia::class,
             'supported_locales' => [],
+            'translation_domain' => 'admin',
         ]);
     }
 }

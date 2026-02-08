@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\DashboardController;
-use App\EventSubscriber\KernelRequestSubscriber;
+use App\EventSubscriber\LocaleFilterSubscriber;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -21,7 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @internal
  */
 #[CoversClass(DashboardController::class)]
-#[CoversClass(KernelRequestSubscriber::class)]
+#[CoversClass(LocaleFilterSubscriber::class)]
 final class DashboardControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

@@ -10,7 +10,9 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 
 class LocaleFilter extends SQLFilter
 {
-    private const string PARAMETER_NAME = 'locale';
+    public const string NAME = 'locale_filter';
+
+    public const string PARAMETER_NAME = 'locale';
 
     public function addFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string
     {

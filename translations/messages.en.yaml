@@ -10,8 +10,6 @@ app:
         menu:
             explore: 'Explore'
             categories: 'Categories'
-            tags: 'Tags'
-            about: 'About'
             search: 'Search'
     search:
         placeholder: 'Search for recipes, ingredients...'
