@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\Category;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Category>
+ * @extends PersistentObjectFactory<Category>
  */
-final class CategoryFactory extends PersistentProxyObjectFactory
+final class CategoryFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<Category>

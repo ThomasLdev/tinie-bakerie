@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\PostSectionTranslation;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostSectionTranslation>
+ * @extends PersistentObjectFactory<PostSectionTranslation>
  */
-final class PostSectionTranslationFactory extends PersistentProxyObjectFactory
+final class PostSectionTranslationFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<PostSectionTranslation>

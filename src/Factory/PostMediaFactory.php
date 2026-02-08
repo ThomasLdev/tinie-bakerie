@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\PostMedia;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostMedia>
+ * @extends PersistentObjectFactory<PostMedia>
  */
-final class PostMediaFactory extends PersistentProxyObjectFactory
+final class PostMediaFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<PostMedia>

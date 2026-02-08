@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\PostSection;
 use App\Services\PostSection\Enum\PostSectionType;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<PostSection>
+ * @extends PersistentObjectFactory<PostSection>
  */
-final class PostSectionFactory extends PersistentProxyObjectFactory
+final class PostSectionFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<PostSection>

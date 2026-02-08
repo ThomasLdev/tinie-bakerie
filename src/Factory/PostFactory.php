@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\Post;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Post>
+ * @extends PersistentObjectFactory<Post>
  */
-final class PostFactory extends PersistentProxyObjectFactory
+final class PostFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<Post>

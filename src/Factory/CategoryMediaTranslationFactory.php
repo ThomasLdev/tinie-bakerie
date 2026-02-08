@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\CategoryMediaTranslation;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CategoryMediaTranslation>
+ * @extends PersistentObjectFactory<CategoryMediaTranslation>
  */
-final class CategoryMediaTranslationFactory extends PersistentProxyObjectFactory
+final class CategoryMediaTranslationFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<CategoryMediaTranslation>

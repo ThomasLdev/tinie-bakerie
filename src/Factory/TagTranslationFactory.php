@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 use App\Entity\TagTranslation;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<TagTranslation>
+ * @extends PersistentObjectFactory<TagTranslation>
  */
-final class TagTranslationFactory extends PersistentProxyObjectFactory
+final class TagTranslationFactory extends PersistentObjectFactory
 {
     /**
      * @return class-string<TagTranslation>
