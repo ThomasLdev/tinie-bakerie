@@ -6,7 +6,7 @@
     {% if post is defined and post is not same as null %}
         {% set mainMedia = post.media|first %}
 
-        <main class="min-h-screen bg-neutral-50">
+        <main class="min-h-screen">
             <div class="max-w-7xl mx-auto xl:px-0 px-6 py-12">
 
                 {# Recipe Header #}
@@ -110,62 +110,80 @@
                         <section class="{% if post.notes is defined and post.notes is not empty %}lg:col-span-2{% else %}lg:col-span-3{% endif %}">
                             <h2 class="text-2xl font-playfair font-bold mb-6">Préparation</h2>
 
-                            <div class="space-y-8">
+                            <div class="space-y-10">
                                 {% for section in post.sections %}
-                                    <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-                                        {# Section media #}
-                                        {% if section.media is not empty %}
-                                            <div class="relative">
-                                                {% if section.media|length > 1 %}
-                                                    {# Carousel for multiple images #}
-                                                    <div class="swiper h-[30rem]" {{ stimulus_controller('slider', {pagination: true}) }}>
-                                                        <div class="swiper-wrapper">
-                                                            {% for media in section.media %}
-                                                                <div class="swiper-slide">
-                                                                    {% include 'partials/_media_thumbnail.html.twig' with {
-                                                                        path: media.media.path ?? null,
-                                                                        alt: media.alt ?? '',
-                                                                        title: media.title ?? '',
-                                                                        variation: 'medium-2x-webp',
-                                                                        class: 'w-full h-full object-cover'
-                                                                    } only %}
-                                                                </div>
-                                                            {% endfor %}
+                                    {% set stepIndex = loop.index %}
+                                    {% set isOdd = loop.index is odd %}
+
+                                    <div class="flex gap-4">
+                                        {# Left gutter: vertical bar then large number #}
+                                        <div class="hidden md:flex flex-col items-center shrink-0 w-16">
+                                            <div class="flex-1 w-1 rounded-full mb-2 {{ isOdd ? 'bg-amber-800' : 'bg-rose-800' }}"></div>
+                                            <span class="text-8xl font-playfair font-bold leading-none {{ isOdd ? 'text-amber-800/25' : 'text-rose-800/25' }}">
+                                                {{ stepIndex }}
+                                            </span>
+                                        </div>
+
+                                        {# Card #}
+                                        <div class="flex-1 bg-white overflow-hidden">
+                                            {# Section media #}
+                                            {% if section.media is not empty %}
+                                                <div class="relative {{ not isOdd ? 'section-media-cut' : '' }}">
+                                                    {% if section.media|length > 1 %}
+                                                        <div class="swiper h-[30rem]" {{ stimulus_controller('slider', {pagination: true}) }}>
+                                                            <div class="swiper-wrapper">
+                                                                {% for media in section.media %}
+                                                                    <div class="swiper-slide">
+                                                                        {% include 'partials/_media_thumbnail.html.twig' with {
+                                                                            path: media.media.path ?? null,
+                                                                            alt: media.alt ?? '',
+                                                                            title: media.title ?? '',
+                                                                            variation: 'medium-2x-webp',
+                                                                            class: 'w-full h-full object-cover'
+                                                                        } only %}
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                            <div class="swiper-pagination"></div>
                                                         </div>
-                                                        <div class="swiper-pagination"></div>
+                                                    {% else %}
+                                                        {% set sectionMedia = section.media|first %}
+                                                        {% include 'partials/_media_thumbnail.html.twig' with {
+                                                            path: sectionMedia.media.path ?? null,
+                                                            alt: sectionMedia.alt ?? '',
+                                                            title: sectionMedia.title ?? '',
+                                                            variation: 'medium-2x-webp',
+                                                            class: 'w-full h-64 object-cover'
+                                                        } only %}
+                                                    {% endif %}
+
+                                                    {# Step number badge — bottom right, overlapping #}
+                                                    <div class="absolute -bottom-5 right-6 w-12 h-12 rounded-full {{ isOdd ? 'bg-amber-900' : 'bg-rose-900' }} text-white flex items-center justify-center text-xl font-semibold shadow-lg z-10 ring-4 ring-white">
+                                                        {{ stepIndex }}
                                                     </div>
-                                                {% else %}
-                                                    {# Single image #}
-                                                    {% set sectionMedia = section.media|first %}
-                                                    {% include 'partials/_media_thumbnail.html.twig' with {
-                                                        path: sectionMedia.media.path ?? null,
-                                                        alt: sectionMedia.alt ?? '',
-                                                        title: sectionMedia.title ?? '',
-                                                        variation: 'medium-2x-webp',
-                                                        class: 'w-full h-64 object-cover'
-                                                    } only %}
+                                                </div>
+                                            {% endif %}
+
+                                            {# Section content #}
+                                            <div class="p-6 pt-8">
+                                                <span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-amber-50 {{ isOdd ? 'text-amber-800' : 'text-rose-800' }} mb-3">
+                                                    Étape {{ stepIndex }}
+                                                </span>
+
+                                                {% if section.title is defined and section.title is not empty %}
+                                                    <h3 class="text-xl font-semibold mb-3">{{ section.title }}</h3>
                                                 {% endif %}
 
-                                                {# Step number badge #}
-                                                <div class="absolute top-4 left-4 w-12 h-12 rounded-full bg-amber-900 text-white flex items-center justify-center text-xl font-semibold shadow-lg z-10">
-                                                    {{ loop.index }}
-                                                </div>
+                                                {% if section.content is defined and section.content is not empty %}
+                                                    <div class="prose prose-gray max-w-none prose-neutral">
+                                                        {{ section.content|raw }}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
-
-                                        {# Section content #}
-                                        <div class="p-6">
-                                            {% if section.title is defined and section.title is not empty %}
-                                                <h3 class="text-lg font-semibold mb-3">{{ section.title }}</h3>
-                                            {% endif %}
-
-                                            {% if section.content is defined and section.content is not empty %}
-                                                <div class="prose prose-gray max-w-none prose-neutral">
-                                                    {{ section.content|raw }}
-                                                </div>
-                                            {% endif %}
                                         </div>
                                     </div>
+
+                                    <hr class="ml-20 text-neutral-100">
                                 {% endfor %}
                             </div>
                         </section>
