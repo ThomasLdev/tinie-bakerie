@@ -7,7 +7,7 @@
         {% set mainMedia = post.media|first %}
 
         <div>
-            <h1>{{ post.title }}</h1>
+            <h1 {{ test_id('post-show-title') }}>{{ post.title }}</h1>
             <hr>
             <h2>Category : {{ post.category.title }}</h2>
 
