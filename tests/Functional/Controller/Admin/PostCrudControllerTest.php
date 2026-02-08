@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\PostCrudController;
 use App\Entity\Post;
-use App\EventSubscriber\KernelRequestSubscriber;
+use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Factory\PostFactory;
 use App\Form\Type\PostMediaType;
 use App\Form\Type\PostSectionType;
@@ -31,7 +31,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 #[CoversClass(PostTranslationType::class)]
 #[CoversClass(PostMediaType::class)]
 #[CoversClass(PostSectionType::class)]
-#[CoversClass(KernelRequestSubscriber::class)]
+#[CoversClass(LocaleFilterSubscriber::class)]
 final class PostCrudControllerTest extends WebTestCase
 {
     use Factories;

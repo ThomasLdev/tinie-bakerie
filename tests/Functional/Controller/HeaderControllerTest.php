@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\HeaderController;
-use App\EventSubscriber\KernelRequestSubscriber;
+use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Repository\CategoryRepository;
 use App\Services\Filter\LocaleFilter;
 use App\Tests\Story\CategoryControllerTestStory;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(HeaderController::class)]
 #[CoversClass(CategoryRepository::class)]
 #[CoversClass(LocaleFilter::class)]
-#[CoversClass(KernelRequestSubscriber::class)]
+#[CoversClass(LocaleFilterSubscriber::class)]
 final class HeaderControllerTest extends BaseControllerTestCase
 {
     private const string HEADER_URL = '/header';

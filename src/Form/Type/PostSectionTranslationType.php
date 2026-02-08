@@ -53,6 +53,7 @@ class PostSectionTranslationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PostSectionTranslation::class,
             'supported_locales' => [],
+            'translation_domain' => 'admin',
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

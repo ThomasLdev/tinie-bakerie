@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\CategoryCrudController;
 use App\Entity\Category;
-use App\EventSubscriber\KernelRequestSubscriber;
+use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Factory\CategoryFactory;
 use App\Form\Type\CategoryMediaType;
 use App\Form\Type\CategoryTranslationType;
@@ -27,7 +27,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 #[CoversClass(Locales::class)]
 #[CoversClass(CategoryTranslationType::class)]
 #[CoversClass(CategoryMediaType::class)]
-#[CoversClass(KernelRequestSubscriber::class)]
+#[CoversClass(LocaleFilterSubscriber::class)]
 final class CategoryCrudControllerTest extends WebTestCase
 {
     use Factories;
