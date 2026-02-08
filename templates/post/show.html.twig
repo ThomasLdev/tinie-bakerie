@@ -6,26 +6,20 @@
     {% if post is defined and post is not same as null %}
         {% set mainMedia = post.media|first %}
 
-        <div>
-            <h1 {{ test_id('post-show-title') }}>{{ post.title }}</h1>
-            <hr>
-            <h2>Category : {{ post.category.title }}</h2>
+        <main class="min-h-screen">
+            <div class="max-w-7xl mx-auto xl:px-0 px-6 py-12">
+                {% include('post/includes/_header.html.twig') %}
+                {% include('post/includes/_hero.html.twig') %}
+                {% include('post/includes/_quick-infos.html.twig') %}
 
-            <div>
-                {% include 'partials/_media_thumbnail.html.twig' with {
-                    path: mainMedia.media.path ?? null,
-                    alt: mainMedia.alt ?? '',
-                    title: mainMedia.title ?? ''
-                } only %}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    {% include('post/includes/_sidebar-left.html.twig') %}
+
+                    {% if post.sections is not empty %}
+                        {% include('post/includes/_section.html.twig') %}
+                    {% endif %}
+                </div>
             </div>
-
-            {% if post.sections is not empty %}
-                {% for section in post.sections %}
-                    <section class="post-section post-section--{{ section.type.value }}">
-                        {{ section.content|raw }}
-                    </section>
-                {% endfor %}
-            {% endif %}
-        </div>
+        </main>
     {% endif %}
 {% endblock %}

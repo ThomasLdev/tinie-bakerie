@@ -311,4 +311,9 @@ class Post implements Translatable
     {
         return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
+
+    public function getNotes(): string
+    {
+        return $this->getCurrentTranslation()?->getNotes() ?? '';
+    }
 }

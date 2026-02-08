@@ -1,0 +1,20 @@
+{% if post.notes is defined and post.notes is not empty %}
+    {% set formattedNotes = post.notes|split('|') %}
+
+    <div class="lg:col-span-1">
+        <div class="sticky top-6">
+            <section class="bg-white rounded-xl p-8 shadow-sm">
+                <h2 class="text-2xl font-playfair font-bold mb-6">Notes</h2>
+                <div class="prose prose-gray prose-sm max-w-none">
+                    <ul>
+                        {% for note in formattedNotes %}
+                            <li>
+                                {{ note }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endif %}
