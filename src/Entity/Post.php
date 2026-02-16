@@ -311,4 +311,19 @@ class Post implements Translatable
     {
         return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
+
+    public function getNotes(): string
+    {
+        return $this->getCurrentTranslation()?->getNotes() ?? '';
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->getCurrentTranslation()?->getMetaDescription() ?? '';
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->getCurrentTranslation()?->getMetaTitle() ?? '';
+    }
 }

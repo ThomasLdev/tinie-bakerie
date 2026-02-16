@@ -1,0 +1,21 @@
+{% if post.notes is defined and post.notes is not empty %}
+    {% set formattedNotes = post.notes|split('|') %}
+
+    <div class="lg:col-span-1">
+        <div class="sticky top-[9rem]">
+            <section class="bg-white rounded-xl p-8 shadow-sm">
+                <h2 class="text-2xl font-playfair font-bold mb-6">{{ 'app.post.titles.notes.label'|trans }}</h2>
+                <div class="prose prose-gray prose-sm max-w-none">
+                    <div class="flex flex-col gap-5">
+                        {% for note in formattedNotes %}
+                            <label class="note-label flex items-center w-fit" for="ingredient-{{ note }}">
+                                <input value="{{ note }}" id="ingredient-{{ note }}" type="checkbox">
+                                <span class="ml-2 note-value">{{ note }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endif %}

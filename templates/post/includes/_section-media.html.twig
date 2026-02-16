@@ -1,0 +1,29 @@
+<div class="relative {{ not isOdd ? 'section-media-cut' : '' }}">
+    {% if section.media|length > 1 %}
+        <div class="swiper h-[30rem]" {{ stimulus_controller('slider', {pagination: true}) }}>
+            <div class="swiper-wrapper">
+                {% for media in section.media %}
+                    <div class="swiper-slide">
+                        {% include 'partials/_media_thumbnail.html.twig' with {
+                            path: media.media.path ?? null,
+                            alt: media.alt ?? '',
+                            title: media.title ?? '',
+                            variation: 'medium-2x-webp',
+                            class: 'w-full h-full object-cover'
+                        } only %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    {% else %}
+        {% set sectionMedia = section.media|first %}
+        {% include 'partials/_media_thumbnail.html.twig' with {
+            path: sectionMedia.media.path ?? null,
+            alt: sectionMedia.alt ?? '',
+            title: sectionMedia.title ?? '',
+            variation: 'medium-2x-webp',
+            class: 'w-full h-64 object-cover'
+        } only %}
+    {% endif %}
+</div>

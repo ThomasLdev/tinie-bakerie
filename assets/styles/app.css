@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@import "swiper/swiper-bundle.css";
+@import "./components/_swiper.css";
+@import "./components/_notes.css";
+@import "./layout/form/_checkbox.css";
+
+@plugin "@tailwindcss/typography";
+

@@ -1,31 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ post.category.title }} - {{ post.title }}{% endblock %}
+{% block title %}{{ post.metaTitle }}{% endblock %}
+
+{% block extra_header %}
+    <meta name="description" content="{{ post.metaDescription }}">
+    <meta property="og:title" content="{{ post.metaTitle }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': post.category.slug}) }}" />
+    <meta property="og:image" content="{{ post.media|first.media.path }}" />
+    <meta property="og:site_name" content="Tinie Bakerie" />
+{% endblock %}
 
 {% block body %}
     {% if post is defined and post is not same as null %}
-        {% set mainMedia = post.media|first %}
+        <main class="min-h-screen">
+            <div class="max-w-7xl mx-auto xl:px-0 px-6 py-12">
+                {% include('post/includes/_header.html.twig') %}
 
-        <div>
-            <h1 {{ test_id('post-show-title') }}>{{ post.title }}</h1>
-            <hr>
-            <h2>Category : {{ post.category.title }}</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    {% include('post/includes/_sidebar-left.html.twig') %}
 
-            <div>
-                {% include 'partials/_media_thumbnail.html.twig' with {
-                    path: mainMedia.media.path ?? null,
-                    alt: mainMedia.alt ?? '',
-                    title: mainMedia.title ?? ''
-                } only %}
+                    {% if post.sections is not empty %}
+                        {% include('post/includes/_section.html.twig') %}
+                    {% endif %}
+                </div>
             </div>
-
-            {% if post.sections is not empty %}
-                {% for section in post.sections %}
-                    <section class="post-section post-section--{{ section.type.value }}">
-                        {{ section.content|raw }}
-                    </section>
-                {% endfor %}
-            {% endif %}
-        </div>
+        </main>
     {% endif %}
 {% endblock %}
