@@ -1,0 +1,3 @@
+.note-label:has(*:checked) .note-value {
+    text-decoration: line-through;
+}
