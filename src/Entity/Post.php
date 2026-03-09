@@ -68,7 +68,12 @@ class Post implements Translatable
     private int $readingTime = 0;
 
     /** @var Collection<int,PostTranslation> */
-    #[ORM\OneToMany(targetEntity: PostTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: PostTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
     private Collection $translations;
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
@@ -258,6 +263,13 @@ class Post implements Translatable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(PostTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }

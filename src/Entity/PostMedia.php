@@ -39,7 +39,12 @@ class PostMedia implements Translatable, MediaAttachment, \Stringable
     private ?Post $post = null;
 
     /** @var Collection<int,PostMediaTranslation> */
-    #[ORM\OneToMany(targetEntity: PostMediaTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: PostMediaTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
     private Collection $translations;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false, options: ['default' => 0])]
@@ -124,6 +129,13 @@ class PostMedia implements Translatable, MediaAttachment, \Stringable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(PostMediaTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }
