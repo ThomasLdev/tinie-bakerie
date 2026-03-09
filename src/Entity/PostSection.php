@@ -155,20 +155,6 @@ class PostSection implements Translatable, \Stringable
     }
 
     /**
-     * @param iterable<PostSectionTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,PostSectionTranslation>
      */
     public function getTranslations(): Collection

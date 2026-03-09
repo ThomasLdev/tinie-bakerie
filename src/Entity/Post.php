@@ -236,20 +236,6 @@ class Post implements Translatable
     }
 
     /**
-     * @param iterable<PostTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,PostTranslation>
      */
     public function getTranslations(): Collection

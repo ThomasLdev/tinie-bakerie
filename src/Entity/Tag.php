@@ -96,20 +96,6 @@ class Tag implements Translatable, \Stringable
     }
 
     /**
-     * @param iterable<TagTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,TagTranslation>
      */
     public function getTranslations(): Collection

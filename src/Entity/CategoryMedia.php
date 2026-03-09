@@ -101,20 +101,6 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
     }
 
     /**
-     * @param iterable<CategoryMediaTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,CategoryMediaTranslation>
      */
     public function getTranslations(): Collection
@@ -128,6 +114,13 @@ class CategoryMedia implements Translatable, MediaAttachment, \Stringable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(CategoryMediaTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }

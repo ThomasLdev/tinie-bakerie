@@ -122,20 +122,6 @@ class Category implements Translatable
     }
 
     /**
-     * @param iterable<CategoryTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,CategoryTranslation>
      */
     public function getTranslations(): Collection
