@@ -102,20 +102,6 @@ class PostMedia implements Translatable, MediaAttachment, \Stringable
     }
 
     /**
-     * @param iterable<PostMediaTranslation> $translations
-     */
-    public function setTranslations(iterable $translations): self
-    {
-        $this->translations->clear();
-
-        foreach ($translations as $translation) {
-            $this->addTranslation($translation);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int,PostMediaTranslation>
      */
     public function getTranslations(): Collection
