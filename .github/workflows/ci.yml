@@ -52,7 +52,7 @@ jobs:
       - name: Load Docker image
         run: zstd -d < /tmp/app-php.tar.zst | docker load
       - name: Start services (including Node.js for linting)
-        run: docker compose --profile dev up php node --wait --no-build
+        run: docker compose --profile dev up --wait --no-build
       - name: Run PHPStan
         run: make phpstan
       - name: Run PHPMD
