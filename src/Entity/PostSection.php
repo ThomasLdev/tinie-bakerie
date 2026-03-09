@@ -54,7 +54,12 @@ class PostSection implements Translatable, \Stringable
     private Collection $media;
 
     /** @var Collection<int,PostSectionTranslation> */
-    #[ORM\OneToMany(targetEntity: PostSectionTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: PostSectionTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
     private Collection $translations;
 
     public function __construct()
@@ -177,6 +182,13 @@ class PostSection implements Translatable, \Stringable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(PostSectionTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }

@@ -9,8 +9,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  static_analysis:
-    name: Static Analysis
+  build:
+    name: Build Docker Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,6 +29,28 @@ jobs:
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
+      - name: Export Docker image
+        run: docker save app-php | zstd -T0 -3 > /tmp/app-php.tar.zst
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-app-php
+          path: /tmp/app-php.tar.zst
+          retention-days: 1
+  static_analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image-app-php
+          path: /tmp
+      - name: Load Docker image
+        run: zstd -d < /tmp/app-php.tar.zst | docker load
       - name: Start services (including Node.js for linting)
         run: docker compose --profile dev up --wait --no-build
       - name: Check HTTP reachability
@@ -76,24 +98,17 @@ jobs:
   functional_test:
     name: Functional Tests
     runs-on: ubuntu-latest
-    needs: static_analysis
+    needs: [build, static_analysis]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build Docker images
-        uses: docker/bake-action@v5
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
         with:
-          pull: true
-          load: true
-          files: |
-            compose.yaml
-            compose.override.yaml
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+          name: docker-image-app-php
+          path: /tmp
+      - name: Load Docker image
+        run: zstd -d < /tmp/app-php.tar.zst | docker load
       - name: Start services (production mode - no Node.js needed for PHP tests)
         run: docker compose up --wait --no-build
       - name: Create Test Database
@@ -109,24 +124,17 @@ jobs:
   e2e_tests:
     name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
-    needs: static_analysis
+    needs: [build, static_analysis]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build Docker images
-        uses: docker/bake-action@v5
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
         with:
-          pull: true
-          load: true
-          files: |
-            compose.yaml
-            compose.override.yaml
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+          name: docker-image-app-php
+          path: /tmp
+      - name: Load Docker image
+        run: zstd -d < /tmp/app-php.tar.zst | docker load
       - name: Start services (including Node.js for E2E)
         run: docker compose --profile dev up --wait --no-build
       - name: Create Test Database

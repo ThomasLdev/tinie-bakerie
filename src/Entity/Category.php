@@ -46,7 +46,12 @@ class Category implements Translatable
     private Collection $media;
 
     /** @var Collection<int,CategoryTranslation> */
-    #[ORM\OneToMany(targetEntity: CategoryTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: CategoryTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
     private Collection $translations;
 
     private int $postCount = 0;
@@ -144,6 +149,13 @@ class Category implements Translatable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(CategoryTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }

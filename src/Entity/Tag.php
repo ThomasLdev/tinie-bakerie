@@ -39,7 +39,12 @@ class Tag implements Translatable, \Stringable
     private string $textColor = '#FFFFFF';
 
     /** @var Collection<int,TagTranslation> */
-    #[ORM\OneToMany(targetEntity: TagTranslation::class, mappedBy: 'translatable', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: TagTranslation::class,
+        mappedBy: 'translatable',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+    )]
     private Collection $translations;
 
     public function __construct()
@@ -118,6 +123,13 @@ class Tag implements Translatable, \Stringable
             $this->translations[] = $translation;
             $translation->setTranslatable($this);
         }
+
+        return $this;
+    }
+
+    public function removeTranslation(TagTranslation $translation): self
+    {
+        $this->translations->removeElement($translation);
 
         return $this;
     }
