@@ -21,6 +21,19 @@ app:
         type_to_search: 'Tapez au moins 2 caractères pour rechercher'
     post:
         index: 'Tous les articles'
+        titles:
+            prep:
+                label: 'Préparation'
+            notes:
+                label: 'Ingrédients'
+        quick_infos:
+            difficulty:
+                easy:
+                    label: 'Facile'
+                medium:
+                    label: 'Medium'
+                advanced:
+                    label: 'Avancée'
     category:
         index: 'Toutes les catégories'
     filter:
