@@ -104,16 +104,16 @@ assets-compile: ## Compile all assets for production
 node-install: ## Install Node.js dependencies
 	@$(NPM) install
 
-lint: ## Lint JS files with ESLint
+lint: ## Lint JS + CSS with Biome
 	@$(NPM) run lint
 
-lint-fix: ## Lint and auto-fix JS files
+lint-fix: ## Lint + auto-fix JS + CSS with Biome
 	@$(NPM) run lint:fix
 
-format: ## Format code with Prettier
+format: ## Format JS + CSS with Biome
 	@$(NPM) run format
 
-format-check: ## Check code formatting with Prettier
+format-check: ## Check JS + CSS formatting with Biome
 	@$(NPM) run format:check
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————

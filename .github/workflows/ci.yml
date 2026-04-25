@@ -63,7 +63,7 @@ jobs:
         run: make twig-linter
       - name: Install Node.js dependencies
         run: make node-install
-      - name: Run ESLint
+      - name: Run Biome (JS + CSS lint + format check)
         run: make lint
       - name: Run PHPUnit Unit Suite
         run: make test.unit

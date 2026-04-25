@@ -13,7 +13,9 @@ h3,
 h4 {
   font-family: var(--font-serif);
   font-weight: 400;
-  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50;
   line-height: 1.05;
   color: var(--ink);
   text-wrap: balance;
