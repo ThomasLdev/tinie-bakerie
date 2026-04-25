@@ -14,6 +14,7 @@ use App\Services\Locale\Locales;
 use App\Services\Post\Enum\Difficulty;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -23,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
@@ -98,9 +100,18 @@ class PostCrudController extends AbstractCrudController
             ->addFormTheme('admin/form/text_editor_theme.html.twig');
     }
 
+    #[\Override]
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(BooleanFilter::new('isFeatured', 'admin.post.is_featured'));
+    }
+
     private function getIndexFields(): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
+
+        yield BooleanField::new('isFeatured', 'admin.post.is_featured');
 
         yield TextField::new('title', 'admin.global.title');
 
@@ -117,6 +128,8 @@ class PostCrudController extends AbstractCrudController
     private function getFormFields(): \Generator
     {
         yield BooleanField::new('active', 'admin.post.active');
+
+        yield BooleanField::new('isFeatured', 'admin.post.is_featured');
 
         yield IntegerField::new('preparationTime', 'admin.post.preparation_time.label');
 

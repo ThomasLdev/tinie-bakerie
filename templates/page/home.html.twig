@@ -7,41 +7,30 @@
         </section>
     {% endif %}
 
-    {% set demoCategories = [
-        { title: 'Viennoiseries', slug: 'viennoiseries', recipeCount: 28, imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop' },
-        { title: 'Tartes & gâteaux', slug: 'tartes-gateaux', recipeCount: 42, imageUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop' },
-        { title: 'Biscuits & sablés', slug: 'biscuits-sables', recipeCount: 19, imageUrl: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?q=80&w=600&auto=format&fit=crop' },
-        { title: 'Crèmes & entremets', slug: 'cremes-entremets', recipeCount: 24, imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=600&auto=format&fit=crop' },
-        { title: 'Confiseries', slug: 'confiseries', recipeCount: 15, imageUrl: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop' },
-    ] %}
+    {% if featuredCategories|length > 0 %}
+        <section class="section">
+            <div class="wrap">
+                <header class="section-head">
+                    <div>
+                        <span class="kicker">{{ 'home.categories.kicker'|trans }}</span>
+                        <h2>{{ 'home.categories.title_before'|trans }} <em>{{ 'home.categories.title_em'|trans }}</em></h2>
+                    </div>
+                    <p class="sub">{{ 'home.categories.sub'|trans }}</p>
+                </header>
+            </div>
+            <div class="wrap">
+                <ul class="categories">
+                    {% for category in featuredCategories %}
+                        <li>
+                            <twig:CategoryCard :category="category" />
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    {% endif %}
 
-    <section class="section">
-        <div class="wrap">
-            <header class="section-head">
-                <div>
-                    <span class="kicker">{{ 'home.categories.kicker'|trans }}</span>
-                    <h2>{{ 'home.categories.title_before'|trans }} <em>{{ 'home.categories.title_em'|trans }}</em></h2>
-                </div>
-                <p class="sub">{{ 'home.categories.sub'|trans }}</p>
-            </header>
-        </div>
-        <div class="wrap">
-            <ul class="categories">
-                {% for category in demoCategories %}
-                    <li>
-                        <twig:CategoryCard
-                            title="{{ category.title }}"
-                            href="{{ path('app_category_show', { categorySlug: category.slug }) }}"
-                            recipeCount="{{ category.recipeCount }}"
-                            imageUrl="{{ category.imageUrl }}"
-                        />
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </section>
-
-    {% if latestPosts|length > 0 %}
+    {% if featuredPosts|length > 0 %}
         <section class="section">
             <div class="wrap">
                 <header class="section-head">
@@ -54,7 +43,7 @@
             </div>
             <div class="wrap">
                 <div class="popular">
-                    {% for post in latestPosts %}
+                    {% for post in featuredPosts %}
                         <twig:RecipeCard
                             :post="post"
                             :featured="loop.first"

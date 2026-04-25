@@ -85,8 +85,25 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return list<Post>
      */
-    public function findLatestUpdated(int $limit = 5): array
+    public function findFeatured(int $limit = 5): array
     {
+        $idsResult = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->where('p.active = :active')
+            ->andWhere('p.isFeatured = :featured')
+            ->setParameter('active', true)
+            ->setParameter('featured', true)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        $ids = array_column($idsResult, 'id');
+
+        if ([] === $ids) {
+            return [];
+        }
+
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, createdAt, updatedAt, cookingTime, preparationTime, difficulty}')
             ->leftJoin('p.translations', 'pt')
@@ -99,10 +116,9 @@ class PostRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL m.{id, media, position}')
             ->leftJoin('m.translations', 'mt')
             ->addSelect('PARTIAL mt.{id, alt, locale}')
-            ->where('p.active = :active')
-            ->setParameter('active', true)
-            ->orderBy('p.updatedAt', 'DESC')
-            ->setMaxResults($limit);
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('p.updatedAt', 'DESC');
 
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)

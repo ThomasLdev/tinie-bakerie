@@ -38,9 +38,15 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         flush_after(function (): void {
-            $categories = CategoryFactory::createMany(5, fn (): array => [
-                'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
-            ]);
+            $categoryIndex = 0;
+            $categories = CategoryFactory::createMany(5, function () use (&$categoryIndex): array {
+                $isFeatured = $categoryIndex++ < 3;
+
+                return [
+                    'translations' => $this->createTranslations(CategoryTranslationFactory::new()),
+                    'isFeatured' => $isFeatured,
+                ];
+            });
 
             foreach ($categories as $category) {
                 CategoryMediaFactory::createRange(1, 3, fn (): array => ['category' => $category, 'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
@@ -50,42 +56,43 @@ class AppFixtures extends Fixture
                 'translations' => $this->createTranslations(TagTranslationFactory::new()),
             ]);
 
+            $postIndex = 0;
+
             /** @var Post[] $posts */
-            $posts = PostFactory::createMany(30, function () use ($categories, $tags): array {
+            $posts = PostFactory::createMany(30, function () use ($categories, $tags, &$postIndex): array {
                 // Pick random category and tags from the already-created arrays
                 $randomCategory = $categories[array_rand($categories)];
                 $randomTagCount = random_int(1, 3);
                 $randomTags = (array) array_rand(array_flip(array_keys($tags)), min($randomTagCount, \count($tags)));
                 $selectedTags = array_map(static fn (int $index) => $tags[$index], $randomTags);
 
+                $isFeatured = ($postIndex++ % 10) < 2;
+
                 return [
                     'translations' => $this->createTranslations(PostTranslationFactory::new()),
-                    'category' => $randomCategory, // Direct reference from array
-                    'tags' => $selectedTags, // Direct references from array
-                    'media' => [], // Will add separately to avoid nested creation
-                    'sections' => [], // Will add separately to avoid nested creation
+                    'category' => $randomCategory,
+                    'tags' => $selectedTags,
+                    'media' => [],
+                    'sections' => [],
+                    'isFeatured' => $isFeatured,
                 ];
             });
 
-            // Create post media with direct post references
             foreach ($posts as $post) {
                 PostMediaFactory::createRange(1, 3, fn (): array => ['post' => $post, 'translations' => $this->createTranslations(PostMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
 
-            // Create post sections WITHOUT their media (will add media separately)
-            // Collect all sections to add media later
             $sections = [];
 
             foreach ($posts as $post) {
                 $postSections = PostSectionFactory::createRange(2, 5, fn (): array => [
-                    'post' => $post, // Direct reference, no lookup
+                    'post' => $post,
                     'translations' => $this->createTranslations(PostSectionTranslationFactory::new()),
-                    'media' => [], // Will add separately to avoid nested creation
+                    'media' => [],
                 ]);
                 $sections = array_merge($sections, $postSections);
             }
 
-            // Create post section media with direct section references
             foreach ($sections as $section) {
                 PostSectionMediaFactory::createRange(1, 3, fn (): array => ['postSection' => $section, 'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }

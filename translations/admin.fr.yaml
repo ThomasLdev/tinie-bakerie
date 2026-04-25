@@ -33,6 +33,7 @@ admin:
         title_placeholder: "Titre de l'article (doit être unique)"
         slug: 'Slug (crée automatiquement)'
         active: 'Actif'
+        is_featured: 'Mis en avant'
         cooking_time:
             label: 'Temps de cuisson (en minutes)'
         preparation_time:
@@ -55,6 +56,7 @@ admin:
             edit: 'Modifier une étiquette'
             detail: "Détail de l'étiquette"
     category:
+        is_featured: 'Mise en avant'
         dashboard:
             singular: 'Catégorie'
             plural: 'Catégories'

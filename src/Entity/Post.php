@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
+use App\Entity\Traits\Featurable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +22,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Post implements Translatable
 {
     use Activable;
+    use Featurable;
     use TimestampableEntity;
 
     /** @use TranslationAccessorTrait<PostTranslation> */

@@ -1,21 +1,14 @@
-{% props
-    title,
-    href = '#',
-    recipeCount = null,
-    imageUrl = null,
-    imageAlt = ''
-%}
-
-<a {{ attributes.defaults({class: 'category-card'}) }} href="{{ href }}">
+<a {{ attributes.defaults({class: 'category-card'}) }} href="{{ this.href }}">
     <div class="category-card__media">
-        {% if imageUrl %}
-            <img class="category-card__image" src="{{ imageUrl }}" alt="{{ imageAlt }}" loading="lazy" decoding="async">
-        {% endif %}
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            variation="medium"
+            alt=""
+            class="category-card__image"
+        />
     </div>
     <div class="category-card__body">
-        <h3 class="category-card__name">{{ title }}</h3>
-        {% if recipeCount is not null %}
-            <span class="category-card__meta">{{ 'category.recipes_count'|trans({'%count%': recipeCount}, 'messages') }}</span>
-        {% endif %}
+        <h3 class="category-card__name">{{ this.category.title }}</h3>
+        <span class="category-card__meta">{{ 'category.recipes_count'|trans({'%count%': this.recipeCount}, 'messages') }}</span>
     </div>
 </a>
