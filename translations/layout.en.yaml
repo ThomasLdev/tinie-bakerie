@@ -25,3 +25,26 @@ search:
     close: 'Close search'
     clear: 'Clear search'
     esc_hint: 'esc'
+
+footer:
+    tagline: "The notebook of a Sunday baker who made precision her Sunday ritual. Paris — Brittany."
+    copyright: 'All rights reserved'
+    recipes:
+        title: 'Recipes'
+    notebook:
+        title: 'Journal'
+        techniques: 'Techniques'
+        seasonal: 'Seasonal'
+        ingredients: 'Ingredients'
+        interviews: 'Interviews'
+    newsletter:
+        title: 'Newsletter'
+        note: 'A new notebook, every first Sunday of the month.'
+        email_label: 'Your email address'
+        email_placeholder: 'your@email.com'
+        submit: 'OK'
+    socials:
+        aria_label: 'Social media'
+        instagram: 'Instagram'
+        pinterest: 'Pinterest'
+        youtube: 'YouTube'

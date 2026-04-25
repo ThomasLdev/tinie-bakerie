@@ -25,3 +25,26 @@ search:
     close: 'Fermer la recherche'
     clear: 'Effacer la recherche'
     esc_hint: 'esc'
+
+footer:
+    tagline: "Le carnet d'une pâtissière du dimanche qui a fait de la précision son dimanche. Paris — Bretagne."
+    copyright: 'Tous droits réservés'
+    recipes:
+        title: 'Recettes'
+    notebook:
+        title: 'Carnet'
+        techniques: 'Techniques'
+        seasonal: 'Saison'
+        ingredients: 'Ingrédients'
+        interviews: 'Interviews'
+    newsletter:
+        title: 'Newsletter'
+        note: 'Un nouveau carnet, le premier dimanche du mois.'
+        email_label: 'Votre adresse email'
+        email_placeholder: 'votre@email.fr'
+        submit: 'OK'
+    socials:
+        aria_label: 'Réseaux sociaux'
+        instagram: 'Instagram'
+        pinterest: 'Pinterest'
+        youtube: 'YouTube'

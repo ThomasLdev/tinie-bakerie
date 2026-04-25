@@ -12,6 +12,13 @@
   --accent-ink: #b5532e;
   --on-accent: #ffffff;
   --on-ink: #ffffff;
+  --on-ink-soft: color-mix(in oklab, var(--on-ink) 88%, var(--ink));
+  --on-ink-muted: color-mix(in oklab, var(--on-ink) 72%, var(--ink));
+  --on-ink-dim: color-mix(in oklab, var(--on-ink) 50%, var(--ink));
+  --on-ink-line: color-mix(in oklab, var(--on-ink) 10%, transparent);
+  --on-ink-border: color-mix(in oklab, var(--on-ink) 18%, transparent);
+  --on-ink-surface: color-mix(in oklab, var(--on-ink) 6%, transparent);
+  --on-ink-placeholder: color-mix(in oklab, var(--on-ink) 40%, transparent);
   --overlay: color-mix(in oklab, var(--ink) 40%, transparent);
   --surface-translucent: color-mix(in oklab, var(--surface) 92%, transparent);
 

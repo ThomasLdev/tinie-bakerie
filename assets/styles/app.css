@@ -14,5 +14,6 @@
 @import "./components/search.css" layer(components);
 @import "./components/category-card.css" layer(components);
 @import "./components/recipe-card.css" layer(components);
+@import "./components/footer.css" layer(components);
 
 @import "./utilities.css" layer(utilities);
