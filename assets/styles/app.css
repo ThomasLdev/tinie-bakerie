@@ -4,4 +4,10 @@
 @import "./tokens.css" layer(tokens);
 @import "./base.css" layer(base);
 @import "./layout.css" layer(layout);
+
+@import "./components/button.css" layer(components);
+@import "./components/icon-button.css" layer(components);
+@import "./components/header.css" layer(components);
+@import "./components/drawer.css" layer(components);
+
 @import "./utilities.css" layer(utilities);

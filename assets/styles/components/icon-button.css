@@ -1,0 +1,17 @@
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  flex-shrink: 0;
+  transition:
+    background var(--transition-base),
+    color var(--transition-base);
+
+  &:hover {
+    background: var(--accent-bg);
+    color: var(--accent-ink);
+  }
+}

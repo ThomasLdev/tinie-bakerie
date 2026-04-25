@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  color-scheme: light;
+}
+
 html,
 body {
   margin: 0;
@@ -15,6 +21,8 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  accent-color: var(--accent);
 }
 
 img,
@@ -32,6 +40,12 @@ textarea,
 select {
   font: inherit;
   color: inherit;
+}
+
+input,
+select,
+textarea {
+  font-size: 1rem;
 }
 
 button {

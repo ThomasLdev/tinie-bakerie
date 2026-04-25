@@ -1,0 +1,16 @@
+header:
+    skip_to_content: 'Aller au contenu'
+    nav:
+        aria_label: 'Navigation principale'
+        home: 'Accueil'
+        recipes: 'Recettes'
+        notebook: 'Carnet'
+        about: 'À propos'
+    menu:
+        open: 'Ouvrir le menu'
+        close: 'Fermer le menu'
+        aria_label: 'Menu principal'
+        mobile_aria_label: 'Menu principal mobile'
+    search: 'Recherche'
+    newsletter: 'Newsletter'
+    follow: 'Suivre Tinie'

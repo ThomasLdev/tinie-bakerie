@@ -22,8 +22,11 @@
         {% block header %}{% endblock %}
     </head>
     <body>
-        {{ render(controller('App\\Controller\\HeaderController::renderHeader')) }}
-        {% block body %}{% endblock %}
+        <a href="#main-content" class="skip-link">{{ 'header.skip_to_content'|trans({}, 'layout') }}</a>
+        <twig:Header />
+        <main id="main-content" tabindex="-1">
+            {% block body %}{% endblock %}
+        </main>
         {% include 'page/layout/footer.html.twig' %}
     </body>
 </html>

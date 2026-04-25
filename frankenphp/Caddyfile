@@ -9,7 +9,7 @@
 {$CADDY_EXTRA_CONFIG}
 
 local.tinie-bakerie.com {
-	tls internal
+	tls /etc/caddy/certs/local.tinie-bakerie.com.pem /etc/caddy/certs/local.tinie-bakerie.com-key.pem
 	log {
 		format filter {
 			request>uri query {

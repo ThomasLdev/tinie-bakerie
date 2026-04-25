@@ -1,3 +1,23 @@
+.skip-link {
+  position: absolute;
+  inset-block-start: -6.25rem;
+  inset-inline-start: var(--gutter);
+  padding: 0.75rem 1.125rem;
+  background: var(--ink);
+  color: var(--on-ink);
+  z-index: 100;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: inset-block-start var(--transition-base);
+
+  &:focus-visible {
+    inset-block-start: 0;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -19,17 +39,51 @@
 
 .kicker {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.625rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent-ink);
   font-weight: 500;
+
+  @media (min-width: 600px) {
+    font-size: 0.6875rem;
+  }
 }
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.625rem;
   letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.view-all {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1px solid var(--accent);
+  padding-block-end: 2px;
+  align-self: flex-start;
+  transition: color var(--transition-base);
+
+  &:hover {
+    color: var(--accent-ink);
+  }
+
+  @media (min-width: 720px) {
+    align-self: end;
+  }
+}
+
+.rotate-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
