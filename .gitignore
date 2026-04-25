@@ -92,3 +92,5 @@ test-results/
 ###> kubernetes secrets ###
 k8s/secrets.yaml
 ###< kubernetes secrets ###
+
+doc/

@@ -324,6 +324,9 @@
             "config/routes/ux_live_component.yaml"
         ]
     },
+    "symfony/ux-toolkit": {
+        "version": "v3.0.0"
+    },
     "symfony/ux-turbo": {
         "version": "v2.18.0"
     },
@@ -363,9 +366,6 @@
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
         ]
-    },
-    "symfonycasts/tailwind-bundle": {
-        "version": "v0.5.3"
     },
     "twig/extra-bundle": {
         "version": "v3.10.0"

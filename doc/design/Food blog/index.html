@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tinie Bakerie — Pâtisseries maison & douceurs de saison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+<script src="assets/shared.js"></script>
+<style>
+  /* --------- Homepage-specific --------- */
+  .hero-wrap { padding: var(--space-5) 0 var(--space-6); }
+  .hero {
+    background: var(--surface);
+    border-radius: 28px;
+    box-shadow: var(--shadow-card);
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1.05fr 1.3fr;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left { padding: 40px 36px 32px; display: flex; flex-direction: column; gap: 20px; position: relative; }
+  .hero-left::before {
+    content: "";
+    position: absolute;
+    left: 36px; top: 54px; bottom: 40px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-soft) 40%, transparent 100%);
+  }
+  .hero-left-inner { padding-left: 22px; display: flex; flex-direction: column; gap: 22px; }
+  .hero-left h1 { font-size: clamp(34px, 3.6vw, 48px); }
+  .hero-left h1 em { font-style: italic; font-weight: 300; color: var(--accent-ink); }
+  .hero-desc { color: var(--ink-2); max-width: 42ch; }
+
+  .hero-meta {
+    display: flex; gap: 28px; padding: 4px 0 0;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .hero-meta-item .ico {
+    width: 28px; height: 28px;
+    color: var(--accent-ink);
+    margin-bottom: 6px;
+  }
+  .hero-meta-item .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .hero-meta-item .val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 2px; }
+
+  .hero-right {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 520px;
+    background: var(--accent-soft);
+  }
+  .hero-right img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute; inset: 0;
+  }
+  .hero-next {
+    position: absolute;
+    right: 10px; top: 0; bottom: 80px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-cta {
+    position: absolute;
+    left: 50%; bottom: 22px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .hero-dots {
+    position: absolute;
+    left: 28px; bottom: 24px;
+    display: flex; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    mix-blend-mode: difference;
+  }
+  .hero-dots b { color: var(--accent-soft); }
+
+  /* ---------- Section headers ---------- */
+  .section {
+    padding: var(--space-5) 0;
+  }
+  .section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .section-head h2 em { font-style: italic; color: var(--accent-ink); font-weight: 300; }
+  .section-head .sub { color: var(--ink-3); max-width: 40ch; margin-top: 10px; }
+  .view-all {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+  .view-all:hover { color: var(--accent-ink); }
+
+  /* ---------- Categories ---------- */
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .cat-card {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+    border: 1px solid transparent;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .cat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-soft);
+    box-shadow: var(--shadow-soft);
+  }
+  .cat-img {
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--accent-bg);
+  }
+  .cat-img img { width: 100%; height: 100%; object-fit: cover; }
+  .cat-name { font-family: var(--font-serif); font-size: 18px; line-height: 1.2; }
+  .cat-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* ---------- Popular (asymmetric grid) ---------- */
+  .popular {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 24px;
+  }
+  .rec-card { display: flex; flex-direction: column; gap: 14px; }
+  .rec-card .media {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--accent-soft);
+    position: relative;
+  }
+  .rec-card .media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+  .rec-card:hover .media img { transform: scale(1.04); }
+  .rec-card .badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: rgba(255,255,255,0.92);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .rec-card .media.large { aspect-ratio: 4 / 5; }
+  .rec-meta {
+    display: flex; gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .rec-meta b { color: var(--accent-ink); font-weight: 500; }
+  .rec-card h3 { transition: color .2s; }
+  .rec-card:hover h3 { color: var(--accent-ink); }
+  .rec-card p { margin: 0; color: var(--ink-3); font-size: 14px; }
+
+  /* ---------- Quote strip ---------- */
+  .quote-strip {
+    padding: var(--space-6) 0;
+    background: var(--bg-deep);
+    margin: var(--space-5) 0 0;
+    border-radius: 28px;
+    text-align: center;
+  }
+  .quote-strip .inner { max-width: 720px; margin: 0 auto; padding: 0 var(--space-4); }
+  .quote-strip blockquote {
+    font-family: var(--font-serif);
+    font-size: clamp(26px, 3vw, 36px);
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 14px 0 22px;
+  }
+  .quote-strip cite {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    font-style: normal;
+  }
+
+  /* ---------- Seasonal editorial band ---------- */
+  .editorial {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: var(--space-6) 0;
+  }
+  .editorial .img {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--accent-soft);
+  }
+  .editorial .img img { width: 100%; height: 100%; object-fit: cover; }
+  .editorial .copy .num {
+    font-family: var(--font-serif);
+    font-size: 90px;
+    line-height: 1;
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .editorial .copy h2 { margin-top: 10px; margin-bottom: 20px; }
+  .editorial .copy p { font-size: 16px; }
+
+  @media (max-width: 980px) {
+    .hero { grid-template-columns: 1fr; }
+    .cats { grid-template-columns: repeat(2, 1fr); }
+    .popular { grid-template-columns: 1fr; }
+    .editorial { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Homepage">
+
+  <!-- ========== NAV ========== -->
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">t</span>
+        <span>TINIE <b>BAKERIE</b></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="recettes.html">Recettes</a></li>
+        <li><a href="#">Carnet</a></li>
+        <li><a href="#">À propos</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="icon-btn" aria-label="Recherche">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <button class="btn btn-ghost" style="padding: 10px 18px;">Newsletter</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero-wrap">
+    <div class="wrap">
+      <div class="hero">
+        <!-- Left column -->
+        <div class="hero-left">
+          <div class="hero-left-inner">
+            <span class="kicker">15 avril 2026 · Recette à la une</span>
+            <h1>Tarte Tatin <em>aux pommes</em> caramélisées</h1>
+            <p class="hero-desc">Une tarte renversée à l'ancienne, pommes dorées dans leur caramel de beurre salé, pâte brisée maison qui craque sous la dent. La recette du dimanche, avec juste ce qu'il faut d'audace.</p>
+
+            <div class="hero-meta">
+              <div class="hero-meta-item">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 6V3M8 3h8M6 8h12l-1 11H7L6 8Z"/><path d="M9 12v4M15 12v4"/></svg>
+                <span class="label">Préparation</span>
+                <span class="val">25 min</span>
+              </div>
+              <div class="hero-meta-item">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14c0-3 2-5 8-5s8 2 8 5v1H4v-1Z"/><path d="M3 17h18M10 7V4M14 7V4"/></svg>
+                <span class="label">Cuisson</span>
+                <span class="val">45 min</span>
+              </div>
+              <div class="hero-meta-item">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                <span class="label">Total</span>
+                <span class="val">1 h 10</span>
+              </div>
+            </div>
+
+            <div class="hero-tags">
+              <span class="chip">Dessert</span>
+              <span class="chip">Classique</span>
+              <span class="chip">De saison</span>
+            </div>
+
+            <div style="margin-top: auto; padding-top: 22px;">
+              <a href="article.html" class="btn btn-primary">Voir la recette
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="hero-right">
+          <img src="https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=1400&auto=format&fit=crop" alt="Tarte Tatin dorée sortant du four" onerror="this.style.display='none';this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Photo tarte tatin');" />
+          <div class="hero-next">
+            <span class="rotate-label">Recette suivante →</span>
+          </div>
+          <div class="hero-dots"><b>01</b>&nbsp;/&nbsp;06</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CATEGORIES ========== -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Par envie</span>
+          <h2 style="margin-top: 10px;">Parcourir les <em>catégories</em></h2>
+        </div>
+        <p class="sub">De la viennoiserie du matin aux desserts de grande fête — trouvez la douceur qui vous ressemble.</p>
+      </div>
+
+      <div class="cats">
+        <a href="recettes.html" class="cat-card">
+          <div class="cat-img"><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop" alt="Viennoiseries" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Viennoiseries');this.remove();"/></div>
+          <div>
+            <div class="cat-name">Viennoiseries</div>
+            <div class="cat-meta">28 recettes</div>
+          </div>
+        </a>
+        <a href="recettes.html" class="cat-card">
+          <div class="cat-img"><img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop" alt="Tartes et gâteaux" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Tartes');this.remove();"/></div>
+          <div>
+            <div class="cat-name">Tartes & gâteaux</div>
+            <div class="cat-meta">42 recettes</div>
+          </div>
+        </a>
+        <a href="recettes.html" class="cat-card">
+          <div class="cat-img"><img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?q=80&w=600&auto=format&fit=crop" alt="Biscuits et sablés" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Biscuits');this.remove();"/></div>
+          <div>
+            <div class="cat-name">Biscuits & sablés</div>
+            <div class="cat-meta">19 recettes</div>
+          </div>
+        </a>
+        <a href="recettes.html" class="cat-card">
+          <div class="cat-img"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=600&auto=format&fit=crop" alt="Crèmes et entremets" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Cr\u00e8mes');this.remove();"/></div>
+          <div>
+            <div class="cat-name">Crèmes & entremets</div>
+            <div class="cat-meta">24 recettes</div>
+          </div>
+        </a>
+        <a href="recettes.html" class="cat-card">
+          <div class="cat-img"><img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop" alt="Macarons et confiseries" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Confiseries');this.remove();"/></div>
+          <div>
+            <div class="cat-name">Confiseries</div>
+            <div class="cat-meta">15 recettes</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EDITORIAL ========== -->
+  <section class="wrap">
+    <div class="editorial">
+      <div class="img">
+        <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?q=80&w=1000&auto=format&fit=crop" alt="Fruits de saison" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Fruits de saison');this.remove();"/>
+      </div>
+      <div class="copy">
+        <span class="kicker">Dossier · Printemps 2026</span>
+        <div class="num">01.</div>
+        <h2>Quand la <em>rhubarbe</em> se met au parfum.</h2>
+        <p>Six recettes pour célébrer le retour de la saison rose. Des crumbles au gingembre aux compotes vanille-cardamome, on explore les accords qui changent tout. Un petit carnet de pâtissière à emporter dans votre cuisine.</p>
+        <div style="margin-top: 24px;">
+          <a href="#" class="btn btn-ghost">Lire le dossier
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== POPULAR ========== -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Cette semaine</span>
+          <h2 style="margin-top: 10px;">Les plus <em>aimées</em></h2>
+        </div>
+        <a href="recettes.html" class="view-all">Toutes les recettes →</a>
+      </div>
+
+      <div class="popular">
+        <a href="article.html" class="rec-card">
+          <div class="media large">
+            <span class="badge">Signature</span>
+            <img src="https://images.unsplash.com/photo-1599785209707-a456fc1337bb?q=80&w=900&auto=format&fit=crop" alt="Éclair au chocolat" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','\u00c9clair chocolat');this.remove();"/>
+          </div>
+          <div>
+            <div class="rec-meta"><span>12 avril</span> · <b>45 min</b> · <span>Difficulté moyenne</span></div>
+            <h3 style="margin: 8px 0;">Éclairs au chocolat noir, glaçage brillant</h3>
+            <p>Pâte à choux aérienne, crème pâtissière au grand cru de Saint-Domingue, glaçage miroir.</p>
+          </div>
+        </a>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <a href="article.html" class="rec-card">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1567171466295-4afa63d45416?q=80&w=700&auto=format&fit=crop" alt="Madeleines" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Madeleines');this.remove();"/>
+            </div>
+            <div>
+              <div class="rec-meta"><span>08 avril</span> · <b>30 min</b></div>
+              <h3 style="margin: 8px 0; font-size: 22px;">Madeleines au miel & zeste de citron</h3>
+            </div>
+          </a>
+          <a href="article.html" class="rec-card">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=700&auto=format&fit=crop" alt="Tarte au citron" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Tarte citron');this.remove();"/>
+            </div>
+            <div>
+              <div class="rec-meta"><span>04 avril</span> · <b>1 h</b></div>
+              <h3 style="margin: 8px 0; font-size: 22px;">Tarte au citron meringuée façon grand-mère</h3>
+            </div>
+          </a>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <a href="article.html" class="rec-card">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=700&auto=format&fit=crop" alt="Cheesecake" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Cheesecake');this.remove();"/>
+            </div>
+            <div>
+              <div class="rec-meta"><span>02 avril</span> · <b>1 h 20</b></div>
+              <h3 style="margin: 8px 0; font-size: 22px;">Cheesecake japonais ultra-moelleux</h3>
+            </div>
+          </a>
+          <a href="article.html" class="rec-card">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1612203985729-70726954388c?q=80&w=700&auto=format&fit=crop" alt="Pavlova" onerror="this.parentElement.classList.add('img-ph');this.parentElement.setAttribute('data-ph','Pavlova');this.remove();"/>
+            </div>
+            <div>
+              <div class="rec-meta"><span>29 mars</span> · <b>50 min</b></div>
+              <h3 style="margin: 8px 0; font-size: 22px;">Pavlova aux fraises des bois & basilic</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== QUOTE ========== -->
+  <section class="wrap">
+    <div class="quote-strip">
+      <div class="inner">
+        <span class="kicker">La philosophie</span>
+        <blockquote>« La pâtisserie, c'est de la précision amoureuse. On mesure, on pèse, on tempère — et puis on laisse faire le temps. »</blockquote>
+        <cite>— Tinie, fondatrice</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="color: #fff; margin-bottom: 20px;">
+            <span class="logo-mark" style="background: var(--accent); color: #fff;">t</span>
+            <span style="color: #fff;">TINIE <b>BAKERIE</b></span>
+          </div>
+          <p style="color: #C8B8AA; max-width: 32ch;">Le carnet d'une pâtissière du dimanche qui a fait de la précision son dimanche. Paris — Bretagne.</p>
+        </div>
+        <div>
+          <h4>Recettes</h4>
+          <ul>
+            <li><a href="recettes.html">Viennoiseries</a></li>
+            <li><a href="recettes.html">Tartes & gâteaux</a></li>
+            <li><a href="recettes.html">Biscuits</a></li>
+            <li><a href="recettes.html">Crèmes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Carnet</h4>
+          <ul>
+            <li><a href="#">Techniques</a></li>
+            <li><a href="#">Saison</a></li>
+            <li><a href="#">Ingrédients</a></li>
+            <li><a href="#">Interviews</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Newsletter</h4>
+          <p style="color: #C8B8AA; font-size: 14px;">Un nouveau carnet, le premier dimanche du mois.</p>
+          <form style="display: flex; gap: 8px; margin-top: 12px;" onsubmit="event.preventDefault()">
+            <input type="email" placeholder="votre@email.fr" style="flex:1; padding: 12px 14px; border-radius: var(--radius-pill); border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #fff; font-family: var(--font-sans); font-size: 13px;" />
+            <button class="btn btn-primary" type="submit" style="padding: 10px 18px;">OK</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Tinie Bakerie · Tous droits réservés</span>
+        <span>Instagram · Pinterest · YouTube</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -25,15 +25,6 @@ return [
     '@hotwired/turbo' => [
         'version' => '8.0.13',
     ],
-    'tailwindcss/plugin' => [
-        'version' => '4.1.13',
-    ],
-    'tailwindcss/defaultTheme' => [
-        'version' => '4.1.13',
-    ],
-    'tailwindcss/colors' => [
-        'version' => '4.1.13',
-    ],
     'swiper/bundle' => [
         'version' => '12.0.2',
     ],
