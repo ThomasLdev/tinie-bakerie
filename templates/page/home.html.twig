@@ -1,22 +1,43 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <section class="hero-wrap wrap">
-        <twig:Hero
-            eyebrow="15 avril 2026 · Recette à la une"
-            description="Une tarte renversée à l'ancienne, pommes dorées dans leur caramel de beurre salé, pâte brisée maison qui craque sous la dent. La recette du dimanche."
-            imageSrc="https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?q=80&w=1400&auto=format&fit=crop"
-            imageAlt="Tarte Tatin dorée sortant du four"
-            prepTime="25 min"
-            cookTime="45 min"
-            totalTime="1 h 10"
-            :tags="['Dessert', 'Classique', 'De saison']"
-            pagerCurrent="01"
-            pagerTotal="06"
-            featured
-            ctaHref="#"
-        >
-            <twig:block name="title">Tarte Tatin <em>aux pommes</em> caramélisées</twig:block>
-        </twig:Hero>
+    {% if featuredPost %}
+        <section class="hero-wrap wrap">
+            <twig:Hero :post="featuredPost" />
+        </section>
+    {% endif %}
+
+    {% set demoCategories = [
+        { title: 'Viennoiseries', slug: 'viennoiseries', recipeCount: 28, imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop' },
+        { title: 'Tartes & gâteaux', slug: 'tartes-gateaux', recipeCount: 42, imageUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop' },
+        { title: 'Biscuits & sablés', slug: 'biscuits-sables', recipeCount: 19, imageUrl: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?q=80&w=600&auto=format&fit=crop' },
+        { title: 'Crèmes & entremets', slug: 'cremes-entremets', recipeCount: 24, imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=600&auto=format&fit=crop' },
+        { title: 'Confiseries', slug: 'confiseries', recipeCount: 15, imageUrl: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop' },
+    ] %}
+
+    <section class="section">
+        <div class="wrap">
+            <header class="section-head">
+                <div>
+                    <span class="kicker">{{ 'home.categories.kicker'|trans }}</span>
+                    <h2>{{ 'home.categories.title_before'|trans }} <em>{{ 'home.categories.title_em'|trans }}</em></h2>
+                </div>
+                <p class="sub">{{ 'home.categories.sub'|trans }}</p>
+            </header>
+        </div>
+        <div class="wrap">
+            <ul class="categories">
+                {% for category in demoCategories %}
+                    <li>
+                        <twig:CategoryCard
+                            title="{{ category.title }}"
+                            href="{{ path('app_category_show', { categorySlug: category.slug }) }}"
+                            recipeCount="{{ category.recipeCount }}"
+                            imageUrl="{{ category.imageUrl }}"
+                        />
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </section>
 {% endblock %}

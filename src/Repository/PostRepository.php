@@ -52,6 +52,49 @@ class PostRepository extends ServiceEntityRepository
         return \is_array($result) ? $result : [];
     }
 
+    public function findLatestActive(string $locale): ?Post
+    {
+        $idResult = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->where('p.active = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->enableResultCache(300, sprintf('post.latest_active.id.%s', $locale))
+            ->getOneOrNullResult();
+
+        if (!\is_array($idResult) || !isset($idResult['id'])) {
+            return null;
+        }
+
+        $qb = $this->createQueryBuilder('p')
+            ->select('PARTIAL p.{id, createdAt, cookingTime}')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('PARTIAL pt.{id, title, slug, excerpt, locale}')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, locale}')
+            ->leftJoin('p.tags', 't')
+            ->addSelect('PARTIAL t.{id}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title, locale}')
+            ->leftJoin('p.media', 'm')
+            ->addSelect('PARTIAL m.{id, media, position}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, alt, locale}')
+            ->where('p.id = :id')
+            ->setParameter('id', $idResult['id']);
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->enableResultCache(300, sprintf('post.latest_active.full.%s.%d', $locale, $idResult['id']))
+            ->getOneOrNullResult();
+
+        return $result instanceof Post ? $result : null;
+    }
+
     public function findOneActive(string $slug): ?Post
     {
         $qb = $this->createQueryBuilder('p')

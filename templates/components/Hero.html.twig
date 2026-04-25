@@ -1,83 +1,53 @@
-{% props
-    eyebrow = null,
-    description = null,
-    imageSrc = null,
-    imageAlt = '',
-    prepTime = null,
-    cookTime = null,
-    totalTime = null,
-    tags = [],
-    pagerCurrent = null,
-    pagerTotal = null,
-    featured = false,
-    ctaHref,
-    ctaLabel = null
-%}
-
 <article {{ attributes.defaults({class: 'hero'}) }}>
     <div class="hero__media">
-        {% if imageSrc %}
-            <img class="hero__image" src="{{ imageSrc }}" alt="{{ imageAlt }}" loading="eager" decoding="async">
+        {% if this.coverIsImage %}
+            <img class="hero__cover"
+                 src="{{ this.coverPath|joli_media_url('large') }}"
+                 alt="{{ this.coverAlt }}"
+                 loading="eager"
+                 decoding="async">
+        {% elseif this.coverIsVideo %}
+            <video class="hero__cover"
+                   autoplay loop muted playsinline
+                   aria-label="{{ this.coverAlt }}">
+                <source src="{{ this.coverPath|joli_media_url }}" type="{{ this.coverMimeType }}">
+            </video>
         {% endif %}
 
-        {% if pagerCurrent and pagerTotal %}
-            <span class="hero__pager" aria-label="{{ 'hero.pager_aria'|trans({ '%current%': pagerCurrent, '%total%': pagerTotal }, 'layout') }}">
-                <span class="hero__pager-current">{{ pagerCurrent }}</span>&nbsp;/&nbsp;{{ pagerTotal }}
-            </span>
-        {% endif %}
-
-        {% if featured %}
-            <span class="hero__badge">{{ 'hero.featured'|trans({}, 'layout') }}</span>
-        {% endif %}
+        <span class="hero__badge">{{ 'hero.featured'|trans({}, 'layout') }}</span>
     </div>
 
     <div class="hero__body">
-        {% if eyebrow %}
-            <span class="kicker">{{ eyebrow }}</span>
+        <span class="kicker">
+            {{ this.post.createdAt|format_date('long') }} · {{ 'home.featured_recipe_label'|trans }}
+        </span>
+
+        <h1 class="hero__title">{{ this.post.title }}</h1>
+
+        {% if this.post.excerpt %}
+            <p class="hero__desc">{{ this.post.excerpt }}</p>
         {% endif %}
 
-        <h1 class="hero__title">{% block title %}{% endblock %}</h1>
-
-        {% if description %}
-            <p class="hero__desc">{{ description }}</p>
-        {% endif %}
-
-        {% if prepTime or cookTime or totalTime %}
+        {% if this.cookingTimeFormatted %}
             <dl class="hero__meta">
-                {% if prepTime %}
-                    <div class="hero__meta-item">
-                        <twig:ux:icon name="lucide:cooking-pot" class="hero__meta-icon" aria-hidden="true" />
-                        <dt class="hero__meta-label">{{ 'recipe.prep'|trans({}, 'messages') }}</dt>
-                        <dd class="hero__meta-value">{{ prepTime }}</dd>
-                    </div>
-                {% endif %}
-                {% if cookTime %}
-                    <div class="hero__meta-item">
-                        <twig:ux:icon name="lucide:flame" class="hero__meta-icon" aria-hidden="true" />
-                        <dt class="hero__meta-label">{{ 'recipe.cook'|trans({}, 'messages') }}</dt>
-                        <dd class="hero__meta-value">{{ cookTime }}</dd>
-                    </div>
-                {% endif %}
-                {% if totalTime %}
-                    <div class="hero__meta-item">
-                        <twig:ux:icon name="lucide:clock" class="hero__meta-icon" aria-hidden="true" />
-                        <dt class="hero__meta-label">{{ 'recipe.total'|trans({}, 'messages') }}</dt>
-                        <dd class="hero__meta-value">{{ totalTime }}</dd>
-                    </div>
-                {% endif %}
+                <div class="hero__meta-item">
+                    <twig:ux:icon name="lucide:flame" class="hero__meta-icon" aria-hidden="true" />
+                    <dt class="hero__meta-label">{{ 'recipe.cook'|trans }}</dt>
+                    <dd class="hero__meta-value">{{ this.cookingTimeFormatted }}</dd>
+                </div>
             </dl>
         {% endif %}
 
-        {% if tags|length > 0 %}
+        {% if this.tagTitles|length > 0 %}
             <ul class="hero__tags">
-                {% for tag in tags %}
-                    <li><twig:Chip>{{ tag }}</twig:Chip></li>
+                {% for title in this.tagTitles %}
+                    <li><twig:Chip>{{ title }}</twig:Chip></li>
                 {% endfor %}
             </ul>
         {% endif %}
 
-        <twig:Button variant="primary" href="{{ ctaHref }}" class="hero__cta">
-            {{ ctaLabel ?? 'recipe.view'|trans({}, 'messages') }}
+        <twig:Button variant="primary" href="{{ this.ctaHref }}" class="hero__cta">
+            {{ 'recipe.view'|trans }}
             <twig:ux:icon name="lucide:arrow-right" width="14" height="14" aria-hidden="true" />
         </twig:Button>
     </div>

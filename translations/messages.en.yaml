@@ -28,6 +28,15 @@ recipe:
     cook: 'Cook time'
     total: 'Total'
     view: 'View recipe'
+category:
+    recipes_count: '{0} No recipes|{1} 1 recipe|]1,Inf] %count% recipes'
+home:
+    featured_recipe_label: 'Featured recipe'
+    categories:
+        kicker: 'By craving'
+        title_before: 'Browse'
+        title_em: 'categories'
+        sub: 'From morning pastries to celebration desserts.'
 search:
     placeholder: 'A recipe, an ingredient, a technique…'
     suggestions: 'Suggestions'

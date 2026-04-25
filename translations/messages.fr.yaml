@@ -28,6 +28,15 @@ recipe:
     cook: 'Cuisson'
     total: 'Total'
     view: 'Voir la recette'
+category:
+    recipes_count: '{0} Aucune recette|{1} 1 recette|]1,Inf] %count% recettes'
+home:
+    featured_recipe_label: 'Recette à la une'
+    categories:
+        kicker: 'Par envie'
+        title_before: 'Parcourir les'
+        title_em: 'catégories'
+        sub: 'De la viennoiserie du matin aux desserts de grande fête.'
 search:
     placeholder: 'Une recette, un ingrédient, une technique…'
     suggestions: 'Suggestions'

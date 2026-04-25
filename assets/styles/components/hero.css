@@ -22,7 +22,7 @@
     order: 1;
   }
 
-  & .hero__image {
+  & .hero__cover {
     position: absolute;
     inset: 0;
     width: 100%;

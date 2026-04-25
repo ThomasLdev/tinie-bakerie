@@ -1,0 +1,21 @@
+{% props
+    title,
+    href = '#',
+    recipeCount = null,
+    imageUrl = null,
+    imageAlt = ''
+%}
+
+<a {{ attributes.defaults({class: 'category-card'}) }} href="{{ href }}">
+    <div class="category-card__media">
+        {% if imageUrl %}
+            <img class="category-card__image" src="{{ imageUrl }}" alt="{{ imageAlt }}" loading="lazy" decoding="async">
+        {% endif %}
+    </div>
+    <div class="category-card__body">
+        <h3 class="category-card__name">{{ title }}</h3>
+        {% if recipeCount is not null %}
+            <span class="category-card__meta">{{ 'category.recipes_count'|trans({'%count%': recipeCount}, 'messages') }}</span>
+        {% endif %}
+    </div>
+</a>
