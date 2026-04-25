@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\PostSection;
+use App\Entity\PostSectionTranslation;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -63,10 +65,8 @@ class PostSectionType extends AbstractType
                 ],
                 'required' => true,
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
             ]);
     }
 
@@ -76,6 +76,15 @@ class PostSectionType extends AbstractType
             'data_class' => PostSection::class,
             'supported_locales' => [],
             'translation_domain' => 'admin',
+            'empty_data' => function (FormInterface $form) {
+                $entity = new PostSection();
+                $locales = $form->getConfig()->getOption('supported_locales');
+                foreach ($locales as $locale) {
+                    $entity->addTranslation((new PostSectionTranslation())->setLocale($locale));
+                }
+
+                return $entity;
+            },
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

@@ -156,15 +156,12 @@ class PostCrudController extends AbstractCrudController
             ->setEntryType(PostTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
                 'entry_options' => [
                     'supported_locales' => $this->locales->get(),
                 ],
             ])
-            ->allowAdd()
-            ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
 

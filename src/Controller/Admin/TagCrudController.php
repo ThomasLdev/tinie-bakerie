@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Tag;
+use App\Entity\TagTranslation;
 use App\Form\Type\TagTranslationType;
 use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -26,6 +27,18 @@ class TagCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Tag::class;
+    }
+
+    #[\Override]
+    public function createEntity(string $entityFqcn): Tag
+    {
+        $tag = new Tag();
+
+        foreach ($this->locales->get() as $locale) {
+            $tag->addTranslation(new TagTranslation()->setLocale($locale));
+        }
+
+        return $tag;
     }
 
     #[\Override]
@@ -73,15 +86,12 @@ class TagCrudController extends AbstractCrudController
             ->setEntryType(TagTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
                 'entry_options' => [
                     'supported_locales' => $this->locales->get(),
                 ],
             ])
-            ->allowAdd()
-            ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
     }
