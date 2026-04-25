@@ -23,6 +23,11 @@ app:
         index: 'Tous les articles'
     category:
         index: 'Toutes les catégories'
+recipe:
+    prep: 'Préparation'
+    cook: 'Cuisson'
+    total: 'Total'
+    view: 'Voir la recette'
     filter:
         count: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
     

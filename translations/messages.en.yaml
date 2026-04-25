@@ -23,5 +23,10 @@ app:
         index: 'All posts'
     category:
         index: 'All categories'
+recipe:
+    prep: 'Prep time'
+    cook: 'Cook time'
+    total: 'Total'
+    view: 'View recipe'
     filter:
         count: '{0} No results|{1} 1 result|]1,Inf] %count% results'

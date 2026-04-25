@@ -69,7 +69,6 @@
   & .drawer__small {
     font-family: var(--font-mono);
     font-size: 0.625rem;
-    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-3);
   }
@@ -82,7 +81,6 @@
   & .drawer__social {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
-    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-2);
   }

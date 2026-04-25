@@ -9,7 +9,6 @@
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.18em;
   text-transform: uppercase;
   transition: inset-block-start var(--transition-base);
 
@@ -40,7 +39,6 @@
 .kicker {
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent-ink);
   font-weight: 500;
@@ -53,7 +51,6 @@
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -61,7 +58,6 @@
 .view-all {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
   border-bottom: 1px solid var(--accent);
@@ -83,7 +79,6 @@
   transform: rotate(180deg);
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-3);
 }

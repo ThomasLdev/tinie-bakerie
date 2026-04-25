@@ -7,7 +7,9 @@
 
 @import "./components/button.css" layer(components);
 @import "./components/icon-button.css" layer(components);
+@import "./components/chip.css" layer(components);
 @import "./components/header.css" layer(components);
 @import "./components/drawer.css" layer(components);
+@import "./components/hero.css" layer(components);
 
 @import "./utilities.css" layer(utilities);

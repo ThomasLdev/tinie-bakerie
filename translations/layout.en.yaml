@@ -14,3 +14,7 @@ header:
     search: 'Search'
     newsletter: 'Newsletter'
     follow: 'Follow Tinie'
+
+hero:
+    featured: 'Featured'
+    pager_aria: 'Recipe %current% of %total%'

@@ -14,3 +14,7 @@ header:
     search: 'Recherche'
     newsletter: 'Newsletter'
     follow: 'Suivre Tinie'
+
+hero:
+    featured: 'À la une'
+    pager_aria: 'Recette %current% sur %total%'

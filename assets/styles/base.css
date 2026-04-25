@@ -14,7 +14,6 @@ h4 {
   font-family: var(--font-serif);
   font-weight: 400;
   font-variation-settings: "opsz" 144, "SOFT" 50;
-  letter-spacing: -0.015em;
   line-height: 1.05;
   color: var(--ink);
   text-wrap: balance;
@@ -22,12 +21,10 @@ h4 {
 
 h1 {
   font-size: clamp(2.125rem, 9vw, 4.5rem);
-  line-height: 1;
 }
 
 h2 {
   font-size: clamp(1.625rem, 5.5vw, 3.25rem);
-  line-height: 1.05;
 }
 
 h3 {
@@ -47,6 +44,12 @@ p {
   & + & {
     margin-top: 1em;
   }
+}
+
+em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent-ink);
 }
 
 :focus-visible {
