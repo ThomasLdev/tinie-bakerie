@@ -18,3 +18,10 @@ header:
 hero:
     featured: 'À la une'
     pager_aria: 'Recette %current% sur %total%'
+
+search:
+    label: 'Rechercher sur le site'
+    aria_label: 'Recherche'
+    close: 'Fermer la recherche'
+    clear: 'Effacer la recherche'
+    esc_hint: 'esc'

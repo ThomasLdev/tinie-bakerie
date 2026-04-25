@@ -28,6 +28,15 @@ recipe:
     cook: 'Cuisson'
     total: 'Total'
     view: 'Voir la recette'
+search:
+    placeholder: 'Une recette, un ingrédient, une technique…'
+    suggestions: 'Suggestions'
+    results_aria: '{0}Aucun résultat|{1}1 résultat|]1,Inf]%count% résultats'
+    no_results_title_before: 'Rien ne ressort du four pour'
+    no_results_hint: 'Essayez avec un autre mot, ou parcourez nos catégories.'
+    no_results_cta: 'Voir toutes les recettes'
+    type:
+        recipe: 'Recette'
     filter:
         count: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
     

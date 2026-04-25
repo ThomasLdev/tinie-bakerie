@@ -18,3 +18,10 @@ header:
 hero:
     featured: 'Featured'
     pager_aria: 'Recipe %current% of %total%'
+
+search:
+    label: 'Search the site'
+    aria_label: 'Search'
+    close: 'Close search'
+    clear: 'Clear search'
+    esc_hint: 'esc'

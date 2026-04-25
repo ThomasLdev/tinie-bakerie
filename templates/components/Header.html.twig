@@ -27,7 +27,9 @@
             </ul>
 
             <div class="nav__right">
-                <twig:IconButton label="{{ 'header.search'|trans({}, 'layout') }}">
+                <twig:IconButton label="{{ 'header.search'|trans({}, 'layout') }}"
+                                 data-search-open
+                                 aria-controls="search-panel">
                     <twig:ux:icon name="lucide:search" width="18" height="18" aria-hidden="true" />
                 </twig:IconButton>
                 <twig:Button variant="ghost" size="sm" href="#" class="nav__newsletter">{{ 'header.newsletter'|trans({}, 'layout') }}</twig:Button>
