@@ -1,26 +1,49 @@
 <?php
 
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\UX\StimulusBundle\StimulusBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
+use Symfony\UX\Turbo\TurboBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
+use Zenstruck\Foundry\ZenstruckFoundryBundle;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
+use JoliCode\MediaBundle\JoliMediaBundle;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle;
+use Symfony\UX\LiveComponent\LiveComponentBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\UX\Toolkit\UXToolkitBundle;
+use Symfony\UX\Icons\UXIconsBundle;
+
 return [
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
-    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
-    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
-    Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
-    Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
-    Symfony\UX\Turbo\TurboBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-    Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
-    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
-    Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
-    Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
-    Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
-    EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => ['all' => true],
-    DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
-    JoliCode\MediaBundle\JoliMediaBundle::class => ['all' => true],
-    JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle::class => ['all' => true],
-    Symfony\UX\LiveComponent\LiveComponentBundle::class => ['all' => true],
-    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
-    Symfony\UX\Toolkit\UXToolkitBundle::class => ['dev' => true, 'test' => true],
-    Symfony\UX\Icons\UXIconsBundle::class => ['all' => true],
+    FrameworkBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
+    WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    StimulusBundle::class => ['all' => true],
+    DoctrineBundle::class => ['all' => true],
+    DoctrineMigrationsBundle::class => ['all' => true],
+    TwigExtraBundle::class => ['all' => true],
+    TurboBundle::class => ['all' => true],
+    MakerBundle::class => ['dev' => true],
+    SecurityBundle::class => ['all' => true],
+    DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    StofDoctrineExtensionsBundle::class => ['all' => true],
+    ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
+    TwigComponentBundle::class => ['all' => true],
+    EasyAdminBundle::class => ['all' => true],
+    DAMADoctrineTestBundle::class => ['test' => true],
+    JoliMediaBundle::class => ['all' => true],
+    JoliMediaEasyAdminBundle::class => ['all' => true],
+    LiveComponentBundle::class => ['all' => true],
+    MonologBundle::class => ['all' => true],
+    UXToolkitBundle::class => ['dev' => true, 'test' => true],
+    UXIconsBundle::class => ['all' => true],
 ];

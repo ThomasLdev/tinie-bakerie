@@ -49,12 +49,12 @@ final class Hero
 
     public function getCoverIsImage(): bool
     {
-        return in_array($this->getCoverExtension(), self::IMAGE_EXTS, true);
+        return \in_array($this->getCoverExtension(), self::IMAGE_EXTS, true);
     }
 
     public function getCoverIsVideo(): bool
     {
-        return in_array($this->getCoverExtension(), self::VIDEO_EXTS, true);
+        return \in_array($this->getCoverExtension(), self::VIDEO_EXTS, true);
     }
 
     public function getCoverMimeType(): ?string
@@ -75,8 +75,10 @@ final class Hero
     public function getTagTitles(): array
     {
         $titles = [];
+
         foreach ($this->post->getTags() as $tag) {
             $title = $tag->getTitle();
+
             if ($title !== '') {
                 $titles[] = $title;
             }
@@ -103,11 +105,12 @@ final class Hero
     private function getCoverExtension(): ?string
     {
         $path = $this->getCoverPath();
+
         if ($path === null) {
             return null;
         }
 
-        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($path, \PATHINFO_EXTENSION));
 
         return $ext !== '' ? $ext : null;
     }

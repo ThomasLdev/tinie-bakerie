@@ -12,6 +12,7 @@ final class DurationExtension extends AbstractExtension
     /**
      * @return TwigFilter[]
      */
+    #[\Override]
     public function getFilters(): array
     {
         return [
@@ -30,16 +31,16 @@ final class DurationExtension extends AbstractExtension
         }
 
         if ($minutes < 60) {
-            return sprintf('%d min', $minutes);
+            return \sprintf('%d min', $minutes);
         }
 
         $hours = intdiv($minutes, 60);
         $remainder = $minutes % 60;
 
         if ($remainder === 0) {
-            return sprintf('%d h', $hours);
+            return \sprintf('%d h', $hours);
         }
 
-        return sprintf('%d h %d', $hours, $remainder);
+        return \sprintf('%d h %d', $hours, $remainder);
     }
 }

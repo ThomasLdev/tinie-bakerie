@@ -18,11 +18,10 @@ final class Search
     use DefaultActionTrait;
 
     private const int MIN_QUERY_LENGTH = 2;
+
     private const int RESULT_LIMIT = 24;
 
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     private const array SUGGESTIONS = [
         'Tarte tatin',
         'Chocolat',

@@ -52,22 +52,8 @@ class PostRepository extends ServiceEntityRepository
         return \is_array($result) ? $result : [];
     }
 
-    public function findLatestActive(string $locale): ?Post
+    public function findLatestActive(): ?Post
     {
-        $idResult = $this->createQueryBuilder('p')
-            ->select('p.id')
-            ->where('p.active = :active')
-            ->setParameter('active', true)
-            ->orderBy('p.createdAt', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->enableResultCache(300, sprintf('post.latest_active.id.%s', $locale))
-            ->getOneOrNullResult();
-
-        if (!\is_array($idResult) || !isset($idResult['id'])) {
-            return null;
-        }
-
         $qb = $this->createQueryBuilder('p')
             ->select('PARTIAL p.{id, createdAt, cookingTime}')
             ->leftJoin('p.translations', 'pt')
@@ -84,12 +70,13 @@ class PostRepository extends ServiceEntityRepository
             ->addSelect('PARTIAL m.{id, media, position}')
             ->leftJoin('m.translations', 'mt')
             ->addSelect('PARTIAL mt.{id, alt, locale}')
-            ->where('p.id = :id')
-            ->setParameter('id', $idResult['id']);
+            ->where('p.active = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(1);
 
         $result = $qb->getQuery()
             ->setHint(Query::HINT_REFRESH, true)
-            ->enableResultCache(300, sprintf('post.latest_active.full.%s.%d', $locale, $idResult['id']))
             ->getOneOrNullResult();
 
         return $result instanceof Post ? $result : null;
