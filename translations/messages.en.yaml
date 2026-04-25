@@ -37,6 +37,12 @@ home:
         title_before: 'Browse'
         title_em: 'categories'
         sub: 'From morning pastries to celebration desserts.'
+    popular:
+        kicker: 'This week'
+        title_before: 'Most'
+        title_em: 'loved'
+        view_all: 'All recipes'
+        badge_signature: 'Signature'
 search:
     placeholder: 'A recipe, an ingredient, a technique…'
     suggestions: 'Suggestions'

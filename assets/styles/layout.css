@@ -33,6 +33,23 @@
   }
 }
 
+.view-all {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  align-self: start;
+  transition: opacity var(--transition-base);
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  @media (min-width: 720px) {
+    align-self: end;
+  }
+}
+
 .h-scroll {
   display: flex;
   gap: 1rem;

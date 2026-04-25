@@ -40,4 +40,29 @@
             </ul>
         </div>
     </section>
+
+    {% if latestPosts|length > 0 %}
+        <section class="section">
+            <div class="wrap">
+                <header class="section-head">
+                    <div>
+                        <span class="kicker">{{ 'home.popular.kicker'|trans }}</span>
+                        <h2>{{ 'home.popular.title_before'|trans }} <em>{{ 'home.popular.title_em'|trans }}</em></h2>
+                    </div>
+                    <a href="#" class="view-all">{{ 'home.popular.view_all'|trans }} →</a>
+                </header>
+            </div>
+            <div class="wrap">
+                <div class="popular">
+                    {% for post in latestPosts %}
+                        <twig:RecipeCard
+                            :post="post"
+                            :featured="loop.first"
+                            :badge="loop.first ? 'home.popular.badge_signature'|trans : null"
+                        />
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

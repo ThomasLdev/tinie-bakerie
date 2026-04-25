@@ -37,6 +37,12 @@ home:
         title_before: 'Parcourir les'
         title_em: 'catégories'
         sub: 'De la viennoiserie du matin aux desserts de grande fête.'
+    popular:
+        kicker: 'Cette semaine'
+        title_before: 'Les plus'
+        title_em: 'aimées'
+        view_all: 'Toutes les recettes'
+        badge_signature: 'Signature'
 search:
     placeholder: 'Une recette, un ingrédient, une technique…'
     suggestions: 'Suggestions'

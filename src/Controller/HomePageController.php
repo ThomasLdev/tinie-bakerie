@@ -21,7 +21,7 @@ class HomePageController extends AbstractController
     }
 
     /**
-     * @return array{featuredPost: ?Post}
+     * @return array{featuredPost: ?Post, latestPosts: list<Post>}
      */
     #[Route('{_locale<%app.supported_locales%>}')]
     #[Template('page/home.html.twig')]
@@ -29,6 +29,7 @@ class HomePageController extends AbstractController
     {
         return [
             'featuredPost' => $this->postRepository->findLatestActive(),
+            'latestPosts' => $this->postRepository->findLatestUpdated(5),
         ];
     }
 

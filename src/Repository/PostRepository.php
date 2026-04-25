@@ -82,6 +82,35 @@ class PostRepository extends ServiceEntityRepository
         return $result instanceof Post ? $result : null;
     }
 
+    /**
+     * @return list<Post>
+     */
+    public function findLatestUpdated(int $limit = 5): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('PARTIAL p.{id, createdAt, updatedAt, cookingTime, preparationTime, difficulty}')
+            ->leftJoin('p.translations', 'pt')
+            ->addSelect('PARTIAL pt.{id, title, slug, excerpt, locale}')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, slug, locale}')
+            ->leftJoin('p.media', 'm')
+            ->addSelect('PARTIAL m.{id, media, position}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, alt, locale}')
+            ->where('p.active = :active')
+            ->setParameter('active', true)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->setMaxResults($limit);
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
+
+        return \is_array($result) ? array_values($result) : [];
+    }
+
     public function findOneActive(string $slug): ?Post
     {
         $qb = $this->createQueryBuilder('p')
