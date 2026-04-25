@@ -25,10 +25,10 @@ class HomePageController extends AbstractController
      */
     #[Route('{_locale<%app.supported_locales%>}')]
     #[Template('page/home.html.twig')]
-    public function index(string $_locale): array
+    public function index(): array
     {
         return [
-            'featuredPost' => $this->postRepository->findLatestActive($_locale),
+            'featuredPost' => $this->postRepository->findLatestActive(),
         ];
     }
 
