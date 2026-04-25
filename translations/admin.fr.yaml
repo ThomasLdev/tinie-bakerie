@@ -34,6 +34,8 @@ admin:
         slug: 'Slug (crée automatiquement)'
         active: 'Actif'
         cooking_time:
+            label: 'Temps de cuisson (en minutes)'
+        preparation_time:
             label: 'Temps de préparation (en minutes)'
         difficulty:
             label: 'Difficulté'

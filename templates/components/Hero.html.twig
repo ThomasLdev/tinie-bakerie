@@ -1,18 +1,13 @@
 <article {{ attributes.defaults({class: 'hero'}) }}>
     <div class="hero__media">
-        {% if this.coverIsImage %}
-            <img class="hero__cover"
-                 src="{{ this.coverPath|joli_media_url('large') }}"
-                 alt="{{ this.coverAlt }}"
-                 loading="eager"
-                 decoding="async">
-        {% elseif this.coverIsVideo %}
-            <video class="hero__cover"
-                   autoplay loop muted playsinline
-                   aria-label="{{ this.coverAlt }}">
-                <source src="{{ this.coverPath|joli_media_url }}" type="{{ this.coverMimeType }}">
-            </video>
-        {% endif %}
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            variation="large"
+            :alt="this.post.title"
+            eager
+            autoplay
+            class="hero__cover"
+        />
 
         <span class="hero__badge">{{ 'hero.featured'|trans({}, 'layout') }}</span>
     </div>
@@ -28,13 +23,31 @@
             <p class="hero__desc">{{ this.post.excerpt }}</p>
         {% endif %}
 
-        {% if this.cookingTimeFormatted %}
+        {% if this.preparationTimeFormatted or this.cookingTimeFormatted %}
             <dl class="hero__meta">
-                <div class="hero__meta-item">
-                    <twig:ux:icon name="lucide:flame" class="hero__meta-icon" aria-hidden="true" />
-                    <dt class="hero__meta-label">{{ 'recipe.cook'|trans }}</dt>
-                    <dd class="hero__meta-value">{{ this.cookingTimeFormatted }}</dd>
-                </div>
+                {% if this.preparationTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:utensils-crossed" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.prep'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.preparationTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+
+                {% if this.cookingTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:flame" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.cook'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.cookingTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+
+                {% if this.preparationTimeFormatted and this.cookingTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:clock" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.total'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.totalTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
             </dl>
         {% endif %}
 

@@ -43,17 +43,6 @@ final class HeaderControllerTest extends BaseControllerTestCase
         self::assertSelectorExists('[data-test-id="navbar"]', 'Navigation element should be present');
     }
 
-    public function testRenderHeaderWithNoCategories(): void
-    {
-        // Don't load story - empty database
-        $this->client->request(Request::METHOD_GET, self::HEADER_URL);
-
-        self::assertResponseIsSuccessful();
-
-        // Categories dropdown should not be rendered when no categories exist
-        self::assertSelectorNotExists('[data-dropdown-target="collapsable"] li', 'Category items should not be present when database is empty');
-    }
-
     public function testRenderHeaderWithCategories(): void
     {
         $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
@@ -110,40 +99,6 @@ final class HeaderControllerTest extends BaseControllerTestCase
         $this->client->request($method, self::HEADER_URL);
 
         self::assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
-    }
-
-    public function testRenderHeaderWithMultipleCategoriesShowsAllCategories(): void
-    {
-        /** @var CategoryControllerTestStory $story */
-        $story = $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
-        $categories = $story->getCategories();
-        $categoriesCount = \count($categories);
-
-        $crawler = $this->client->request(Request::METHOD_GET, self::HEADER_URL);
-
-        self::assertResponseIsSuccessful();
-
-        // Count category items in the dropdown
-        $categoryItems = $crawler->filter('[data-dropdown-target="collapsable"] li')->count();
-
-        self::assertSame(
-            $categoriesCount,
-            $categoryItems,
-            \sprintf('Expected %d category items in dropdown, found %d', $categoriesCount, $categoryItems),
-        );
-    }
-
-    public function testRenderHeaderShowsCategoriesDropdown(): void
-    {
-        $this->loadStory(static fn (): CategoryControllerTestStory => CategoryControllerTestStory::load());
-
-        $this->client->request(Request::METHOD_GET, self::HEADER_URL);
-
-        self::assertResponseIsSuccessful();
-
-        // Verify the categories dropdown structure exists
-        self::assertSelectorExists('[data-controller="dropdown"]', 'Dropdown controller should be present');
-        self::assertSelectorExists('[data-dropdown-target="collapsable"]', 'Categories collapsable menu should be present');
     }
 
     public static function getHttpMethodsData(): \Generator

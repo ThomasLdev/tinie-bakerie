@@ -17,9 +17,9 @@ final class Search
 {
     use DefaultActionTrait;
 
-    private const int MIN_QUERY_LENGTH = 2;
+    public const int RESULT_LIMIT = 24;
 
-    private const int RESULT_LIMIT = 24;
+    private const int MIN_QUERY_LENGTH = 2;
 
     /** @var list<string> */
     private const array SUGGESTIONS = [

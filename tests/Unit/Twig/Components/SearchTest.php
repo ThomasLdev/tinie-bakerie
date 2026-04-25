@@ -49,7 +49,7 @@ final class SearchTest extends TestCase
                 excerpt: 'A delicious cake',
                 categoryTitle: 'Desserts',
                 categorySlug: 'desserts',
-                mediaPath: null,
+                media: null,
                 rank: 1.0,
                 headline: null,
             ),
@@ -58,7 +58,7 @@ final class SearchTest extends TestCase
         $postSearch = $this->createMock(PostSearch::class);
         $postSearch->expects(self::once())
             ->method('search')
-            ->with('chocolate', 15)
+            ->with('chocolate', Search::RESULT_LIMIT)
             ->willReturn($expectedResults);
 
         $component = new Search($postSearch);
@@ -73,7 +73,7 @@ final class SearchTest extends TestCase
         $postSearch = $this->createMock(PostSearch::class);
         $postSearch->expects(self::once())
             ->method('search')
-            ->with('日本', 15)
+            ->with('日本', Search::RESULT_LIMIT)
             ->willReturn([]);
 
         $component = new Search($postSearch);

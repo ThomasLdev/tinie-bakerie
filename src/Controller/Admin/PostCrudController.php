@@ -118,6 +118,8 @@ class PostCrudController extends AbstractCrudController
     {
         yield BooleanField::new('active', 'admin.post.active');
 
+        yield IntegerField::new('preparationTime', 'admin.post.preparation_time.label');
+
         yield IntegerField::new('cookingTime', 'admin.post.cooking_time.label');
 
         yield ChoiceField::new('difficulty', 'admin.post.difficulty.label')

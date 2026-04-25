@@ -55,7 +55,7 @@ class PostRepository extends ServiceEntityRepository
     public function findLatestActive(): ?Post
     {
         $qb = $this->createQueryBuilder('p')
-            ->select('PARTIAL p.{id, createdAt, cookingTime}')
+            ->select('PARTIAL p.{id, createdAt, cookingTime, preparationTime}')
             ->leftJoin('p.translations', 'pt')
             ->addSelect('PARTIAL pt.{id, title, slug, excerpt, locale}')
             ->leftJoin('p.category', 'c')

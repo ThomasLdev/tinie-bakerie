@@ -71,11 +71,12 @@
                                    class="search__card{% if isHero %} search__card--hero{% endif %}"
                                    data-action="search#close">
                                     <div class="search__card-media">
-                                        {% include 'partials/_media_thumbnail.html.twig' with {
-                                            path: result.mediaPath,
-                                            alt: '',
-                                            class: 'search__card-image'
-                                        } only %}
+                                        <twig:Cover
+                                            :media="result.media"
+                                            variation="thumbnail"
+                                            alt=""
+                                            class="search__card-image"
+                                        />
                                         <span class="search__card-type search__card-type--recipe">{{ 'search.type.recipe'|trans({}, 'messages') }}</span>
                                     </div>
                                     <div class="search__card-body">

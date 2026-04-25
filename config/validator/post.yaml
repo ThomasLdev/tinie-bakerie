@@ -21,7 +21,7 @@ App\Entity\Post:
                 message: 'post.reading_time.lte'
         cookingTime:
             - NotNull: ~
-            - Type: 
+            - Type:
                 type: integer
             - GreaterThanOrEqual:
                 value: 0
@@ -29,6 +29,16 @@ App\Entity\Post:
             - LessThanOrEqual:
                 value: 1440
                 message: 'post.cooking_time.lte'
+        preparationTime:
+            - NotNull: ~
+            - Type:
+                type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'post.preparation_time.gte'
+            - LessThanOrEqual:
+                value: 1440
+                message: 'post.preparation_time.lte'
         difficulty:
             - NotNull: ~
         translations:

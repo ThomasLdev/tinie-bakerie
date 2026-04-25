@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 namespace App\Services\Search;
 
+use JoliCode\MediaBundle\Exception\MediaNotFoundException;
+use JoliCode\MediaBundle\Model\Media;
+use JoliCode\MediaBundle\Resolver\Resolver;
+
 /**
  * Factory for creating PostSearchResult DTOs from raw database rows.
  */
 final readonly class PostSearchResultFactory
 {
+    public function __construct(
+        private Resolver $resolver,
+    ) {
+    }
+
     /**
      * @param array{
      *     id: int|string,
@@ -31,7 +40,7 @@ final readonly class PostSearchResultFactory
             excerpt: $row['excerpt'],
             categoryTitle: $row['category_title'] ?? '',
             categorySlug: $row['category_slug'] ?? '',
-            mediaPath: $this->normalizeMediaPath($row['image_path']),
+            media: $this->resolveMedia($row['image_path']),
             rank: (float) $row['rank'],
             headline: $this->cleanHeadline($row['headline']),
         );
@@ -57,16 +66,17 @@ final readonly class PostSearchResultFactory
         return array_map($this->createFromRow(...), $rows);
     }
 
-    /**
-     * Normalize the media path from database storage format.
-     */
-    private function normalizeMediaPath(?string $path): ?string
+    private function resolveMedia(?string $path): ?Media
     {
         if ($path === null || $path === '') {
             return null;
         }
 
-        return $path;
+        try {
+            return $this->resolver->resolveMedia($path);
+        } catch (MediaNotFoundException) {
+            return null;
+        }
     }
 
     /**
@@ -80,7 +90,6 @@ final readonly class PostSearchResultFactory
         }
 
         // ts_headline uses StartSel/StopSel markers, we configured <b></b>
-        // Keep only the <b> tags, strip everything else for safety
         $allowed = '<b>';
 
         return strip_tags($headline, $allowed);

@@ -1,0 +1,21 @@
+{%- if this.isImage -%}
+    <twig:joli:Img
+        :media="this.media"
+        :variation="this.variation"
+        :alt="this.resolvedAlt"
+        attributes="{{ attributes.defaults({
+            loading: this.eager ? 'eager' : 'lazy',
+            decoding: 'async',
+        }) }}"
+    />
+{%- elseif this.isVideo -%}
+    <video
+        {{- attributes }}
+        {%- if this.autoplay %} autoplay loop muted playsinline{% endif %}
+        preload="metadata"
+        aria-label="{{ this.resolvedAlt }}"
+        {%- if this.resolvedTitle %} title="{{ this.resolvedTitle }}"{% endif %}
+    >
+        <source src="{{ this.media.url }}" type="{{ this.media.mimeType }}">
+    </video>
+{%- endif -%}

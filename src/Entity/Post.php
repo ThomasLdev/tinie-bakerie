@@ -79,6 +79,9 @@ class Post implements Translatable
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $cookingTime = 0;
 
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $preparationTime = 0;
+
     #[ORM\Column(enumType: Difficulty::class, options: ['default' => Difficulty::Easy])]
     private Difficulty $difficulty = Difficulty::Easy;
 
@@ -268,6 +271,18 @@ class Post implements Translatable
     public function setCookingTime(int $cookingTime): self
     {
         $this->cookingTime = $cookingTime;
+
+        return $this;
+    }
+
+    public function getPreparationTime(): int
+    {
+        return $this->preparationTime;
+    }
+
+    public function setPreparationTime(int $preparationTime): self
+    {
+        $this->preparationTime = $preparationTime;
 
         return $this;
     }

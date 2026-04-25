@@ -1,4 +1,9 @@
 # JoliCode Media Bundle Configuration
+#
+# Côté Twig, passer uniquement les noms de variation déclarés ci-dessous
+# (`thumbnail`, `small`, `medium`, `large`, `xlarge`). Les suffixes `-2x` et
+# `-webp` sont générés automatiquement par le bundle (cf. `pixel_ratios` et
+# `enable_auto_webp`) et ne doivent jamais être écrits à la main.
 joli_media:
     default_library: default
 

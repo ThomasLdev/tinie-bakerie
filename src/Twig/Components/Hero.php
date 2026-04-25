@@ -13,20 +13,6 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 final class Hero
 {
-    /** @var list<string> */
-    private const array IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'];
-
-    /** @var list<string> */
-    private const array VIDEO_EXTS = ['mp4', 'webm', 'ogg', 'mov'];
-
-    /** @var array<string,string> */
-    private const array VIDEO_MIME_TYPES = [
-        'mp4' => 'video/mp4',
-        'webm' => 'video/webm',
-        'ogg' => 'video/ogg',
-        'mov' => 'video/quicktime',
-    ];
-
     public Post $post;
 
     public function __construct(
@@ -35,38 +21,28 @@ final class Hero
     ) {
     }
 
-    public function getCoverPath(): ?string
+    public function getCoverAttachment(): ?PostMedia
     {
-        return $this->getCoverMedia()?->getMedia()?->getPath();
+        $first = $this->post->getMedia()->first();
+
+        return $first instanceof PostMedia ? $first : null;
     }
 
-    public function getCoverAlt(): string
+    public function getPreparationTimeFormatted(): ?string
     {
-        $alt = $this->getCoverMedia()?->getCurrentTranslation()?->getAlt();
-
-        return $alt !== null && $alt !== '' ? $alt : $this->post->getTitle();
-    }
-
-    public function getCoverIsImage(): bool
-    {
-        return \in_array($this->getCoverExtension(), self::IMAGE_EXTS, true);
-    }
-
-    public function getCoverIsVideo(): bool
-    {
-        return \in_array($this->getCoverExtension(), self::VIDEO_EXTS, true);
-    }
-
-    public function getCoverMimeType(): ?string
-    {
-        $ext = $this->getCoverExtension();
-
-        return $ext !== null ? (self::VIDEO_MIME_TYPES[$ext] ?? null) : null;
+        return $this->durationFormatter->formatDuration($this->post->getPreparationTime());
     }
 
     public function getCookingTimeFormatted(): ?string
     {
         return $this->durationFormatter->formatDuration($this->post->getCookingTime());
+    }
+
+    public function getTotalTimeFormatted(): ?string
+    {
+        return $this->durationFormatter->formatDuration(
+            $this->post->getPreparationTime() + $this->post->getCookingTime(),
+        );
     }
 
     /**
@@ -93,25 +69,5 @@ final class Hero
             'categorySlug' => $this->post->getCategory()?->getSlug() ?? '',
             'postSlug' => $this->post->getSlug(),
         ]);
-    }
-
-    private function getCoverMedia(): ?PostMedia
-    {
-        $first = $this->post->getMedia()->first();
-
-        return $first instanceof PostMedia ? $first : null;
-    }
-
-    private function getCoverExtension(): ?string
-    {
-        $path = $this->getCoverPath();
-
-        if ($path === null) {
-            return null;
-        }
-
-        $ext = strtolower(pathinfo($path, \PATHINFO_EXTENSION));
-
-        return $ext !== '' ? $ext : null;
     }
 }
