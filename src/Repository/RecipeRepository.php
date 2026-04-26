@@ -98,6 +98,42 @@ class RecipeRepository extends ServiceEntityRepository
         return array_values(array_filter($result, static fn ($row): bool => $row instanceof Recipe));
     }
 
+    /**
+     * @return list<Recipe>
+     */
+    public function findAllActive(): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('PARTIAL r.{id, createdAt, updatedAt, cookingTime, preparationTime, difficulty, servings}')
+            ->leftJoin('r.translations', 'rt')
+            ->addSelect('PARTIAL rt.{id, title, slug, excerpt, locale}')
+            ->leftJoin('r.category', 'c')
+            ->addSelect('PARTIAL c.{id}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, locale}')
+            ->leftJoin('r.tags', 't')
+            ->addSelect('PARTIAL t.{id}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title, locale}')
+            ->leftJoin('r.media', 'm')
+            ->addSelect('PARTIAL m.{id, media, position}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt, locale}')
+            ->where('r.active = :active')
+            ->setParameter('active', true)
+            ->orderBy('r.createdAt', 'DESC');
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
+
+        if (!\is_array($result)) {
+            return [];
+        }
+
+        return array_values(array_filter($result, static fn ($row): bool => $row instanceof Recipe));
+    }
+
     public function findOneActive(string $slug): ?Recipe
     {
         $qb = $this->createQueryBuilder('r')

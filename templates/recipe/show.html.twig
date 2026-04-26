@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% set category = recipe.category %}
+{% set heroMedia = recipe.media|first %}
+{% set steps = recipe.steps %}
+{% set narrativeSections = recipe.narrativeSections %}
+{% set tags = recipe.tags %}
+
+{% block title %}{{ recipe.title }}{% if category %} — {{ category.title }}{% endif %}{% endblock %}
+
+{% block body %}
+<div data-controller="recipe-portions"
+     data-recipe-portions-base-value="{{ recipe.servings }}"
+     data-recipe-portions-min-value="1"
+     data-recipe-portions-max-value="24">
+    <div class="wrap">
+        <twig:Breadcrumb
+            :items="[
+                { label: 'recipe.show.breadcrumb_home'|trans, href: path('app_homepage_index') },
+                { label: 'recipe.show.breadcrumb_recipes'|trans, href: path('app_recipe_index') },
+                category ? { label: category.title, href: path('app_category_show', {categorySlug: category.slug}) } : null,
+            ]|filter(i => i)"
+            :current="recipe.title"
+        />
+
+        <header class="recipe-head">
+            <div class="recipe-head__lede">
+                <span class="kicker">
+                    {% if recipe.isFeatured %}{{ 'home.popular.badge_signature'|trans }} · {% endif -%}
+                    {{ recipe.createdAt|format_date('long') }}
+                </span>
+                <h1 class="recipe-head__title" {{ test_id('recipe-show-title') }}>{{ recipe.title }}</h1>
+
+                <div class="recipe-head__meta">
+                    {% if category %}<span>{{ category.title }}</span><span class="recipe-head__meta-dot">·</span>{% endif %}
+                    <span>{{ ('recipe.difficulty.' ~ recipe.difficulty.value)|trans }}</span>
+                    {% if steps|length > 0 %}
+                        <span class="recipe-head__meta-dot">·</span>
+                        <span>{{ 'recipe.show.meta.steps'|trans({'%count%': steps|length}) }}</span>
+                    {% endif %}
+                    {% if recipe.ingredientCount > 0 %}
+                        <span class="recipe-head__meta-dot">·</span>
+                        <span>{{ 'recipe.show.meta.ingredients'|trans({'%count%': recipe.ingredientCount}) }}</span>
+                    {% endif %}
+                </div>
+
+                {% if tags|length > 0 %}
+                    <ul class="recipe-head__tags">
+                        {% for tag in tags %}
+                            <li><twig:Chip>{{ tag.title }}</twig:Chip></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if recipe.excerpt %}
+                    <p class="recipe-head__intro">{{ recipe.excerpt }}</p>
+                {% endif %}
+
+                <div class="recipe-head__author">
+                    <div class="recipe-head__avatar" aria-hidden="true">T</div>
+                    <div>
+                        <div class="recipe-head__author-name">Tinie Berthier</div>
+                        <div class="recipe-head__author-role">Pâtissière · Fondatrice</div>
+                    </div>
+                    <div class="recipe-head__actions">
+                        <twig:IconButton label="{{ 'recipe.show.actions.print'|trans }}">
+                            <twig:ux:icon name="lucide:printer" aria-hidden="true" />
+                        </twig:IconButton>
+                        <twig:IconButton label="{{ 'recipe.show.actions.share'|trans }}">
+                            <twig:ux:icon name="lucide:share-2" aria-hidden="true" />
+                        </twig:IconButton>
+                        <twig:IconButton label="{{ 'recipe.show.actions.save'|trans }}">
+                            <twig:ux:icon name="lucide:bookmark" aria-hidden="true" />
+                        </twig:IconButton>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        {% if heroMedia %}
+            <figure class="recipe-hero">
+                <twig:Cover :attachment="heroMedia" variation="large" :alt="recipe.title" eager class="recipe-hero__cover" />
+                {% if heroMedia.title %}
+                    <figcaption class="recipe-hero__caption">{{ heroMedia.title }}</figcaption>
+                {% endif %}
+            </figure>
+        {% endif %}
+
+        <twig:RecipeStats :recipe="recipe" />
+    </div>
+
+    {% if steps|length > 0 %}
+        <div data-controller="recipe-checklist"
+             data-recipe-checklist-storage-key-value="recipe-{{ recipe.id }}-steps"
+             data-recipe-checklist-total-value="{{ steps|length }}">
+            <div class="recipe-progress">
+                <div class="wrap recipe-progress__inner">
+                    <span class="recipe-progress__label">
+                        {{ 'recipe.show.progress.label'|trans }}
+                        <span class="recipe-progress__count"><span data-recipe-checklist-target="count">0</span> / {{ steps|length }}</span>
+                    </span>
+                    <div class="recipe-progress__track" data-recipe-checklist-target="progress">
+                        <div class="recipe-progress__bar"></div>
+                    </div>
+                    <div class="recipe-progress__actions">
+                        <twig:IconButton label="{{ 'recipe.show.progress.reset'|trans }}" data-action="recipe-checklist#reset">
+                            <twig:ux:icon name="lucide:rotate-ccw" aria-hidden="true" />
+                        </twig:IconButton>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrap">
+                <div class="recipe-body">
+                    <twig:Ingredients :recipe="recipe" />
+
+                    <section class="recipe-steps">
+                        <span class="kicker">{{ 'recipe.show.steps.kicker'|trans }}</span>
+                        <h2 class="recipe-steps__title">
+                            {{ 'recipe.show.steps.title_before'|trans }}
+                            <em>{{ 'recipe.show.steps.title_em'|trans }}</em>
+                        </h2>
+                        <p class="recipe-steps__intro">{{ 'recipe.show.steps.intro'|trans }}</p>
+
+                        {% for step in steps %}
+                            <twig:RecipeStep :step="step" :index="loop.index" />
+                        {% endfor %}
+
+                        {% if recipe.chefNoteTitle or recipe.notes %}
+                            <twig:ChefNote
+                                :title="recipe.chefNoteTitle"
+                                :body="recipe.notes"
+                                initial="T"
+                            />
+                        {% endif %}
+                    </section>
+                </div>
+            </div>
+        </div>
+    {% elseif narrativeSections|length > 0 %}
+        <div class="wrap">
+            {% for section in narrativeSections %}
+                <section class="post-section post-section--{{ section.type.value }}">
+                    {% if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+                    {{ section.content|raw }}
+                </section>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

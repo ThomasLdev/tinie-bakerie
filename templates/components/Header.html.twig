@@ -1,7 +1,7 @@
 {% set currentRoute = app.request.attributes.get('_route') %}
 {% set items = [
     { label: 'header.nav.home'|trans({}, 'layout'),     href: path('app_homepage_index'), route: 'app_homepage_index' },
-    { label: 'header.nav.recipes'|trans({}, 'layout'),  href: path('app_post_index'),     route: 'app_post_index' },
+    { label: 'header.nav.recipes'|trans({}, 'layout'),  href: path('app_recipe_index'),     route: 'app_recipe_index' },
     { label: 'header.nav.notebook'|trans({}, 'layout'), href: '#',                        route: null },
     { label: 'header.nav.about'|trans({}, 'layout'),    href: '#',                        route: null },
 ] %}

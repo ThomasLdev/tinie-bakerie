@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Story;
 
 use App\Entity\Category;
-use App\Entity\Post;
+use App\Entity\Recipe;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryTranslationFactory;
 use App\Factory\PostMediaFactory;
@@ -16,10 +16,10 @@ use App\Services\Post\Enum\Difficulty;
 use Zenstruck\Foundry\Story;
 
 /**
- * Story for PostController functional tests.
- * Provides predictable test data for testing post display functionality.
+ * Story for RecipeController functional tests.
+ * Provides predictable test data for testing recipe display functionality.
  */
-final class PostControllerTestStory extends Story
+final class RecipeControllerTestStory extends Story
 {
     public function build(): void
     {
@@ -42,7 +42,7 @@ final class PostControllerTestStory extends Story
             ],
         ]));
 
-        $this->addState('activePost1', RecipeFactory::createOne([
+        $this->addState('activeRecipe1', RecipeFactory::createOne([
             'active' => true,
             'category' => self::get('category'),
             'cookingTime' => 30,
@@ -51,17 +51,17 @@ final class PostControllerTestStory extends Story
             'translations' => [
                 RecipeTranslationFactory::new([
                     'locale' => 'fr',
-                    'title' => 'Article Test 1 FR',
-                    'slug' => 'article-test-1-fr',
+                    'title' => 'Recette Test 1 FR',
+                    'slug' => 'recette-test-1-fr',
                     'metaDescription' => str_repeat('C', 120),
-                    'excerpt' => 'Premier article de test',
+                    'excerpt' => 'Première recette de test',
                 ]),
                 RecipeTranslationFactory::new([
                     'locale' => 'en',
-                    'title' => 'Test Post 1 EN',
-                    'slug' => 'test-post-1-en',
+                    'title' => 'Test Recipe 1 EN',
+                    'slug' => 'test-recipe-1-en',
                     'metaDescription' => str_repeat('D', 120),
-                    'excerpt' => 'First test post',
+                    'excerpt' => 'First test recipe',
                 ]),
             ],
             'media' => [
@@ -83,7 +83,7 @@ final class PostControllerTestStory extends Story
             ],
         ]));
 
-        $this->addState('activePost2', RecipeFactory::createOne([
+        $this->addState('activeRecipe2', RecipeFactory::createOne([
             'active' => true,
             'category' => self::get('category'),
             'cookingTime' => 45,
@@ -92,17 +92,17 @@ final class PostControllerTestStory extends Story
             'translations' => [
                 RecipeTranslationFactory::new([
                     'locale' => 'fr',
-                    'title' => 'Article Test 2 FR',
-                    'slug' => 'article-test-2-fr',
+                    'title' => 'Recette Test 2 FR',
+                    'slug' => 'recette-test-2-fr',
                     'metaDescription' => str_repeat('E', 120),
-                    'excerpt' => 'Deuxième article de test',
+                    'excerpt' => 'Deuxième recette de test',
                 ]),
                 RecipeTranslationFactory::new([
                     'locale' => 'en',
-                    'title' => 'Test Post 2 EN',
-                    'slug' => 'test-post-2-en',
+                    'title' => 'Test Recipe 2 EN',
+                    'slug' => 'test-recipe-2-en',
                     'metaDescription' => str_repeat('F', 120),
-                    'excerpt' => 'Second test post',
+                    'excerpt' => 'Second test recipe',
                 ]),
             ],
             'media' => [
@@ -124,7 +124,7 @@ final class PostControllerTestStory extends Story
             ],
         ]));
 
-        $this->addState('inactivePost', RecipeFactory::createOne([
+        $this->addState('inactiveRecipe', RecipeFactory::createOne([
             'active' => false,
             'category' => self::get('category'),
             'cookingTime' => 60,
@@ -132,17 +132,17 @@ final class PostControllerTestStory extends Story
             'translations' => [
                 RecipeTranslationFactory::new([
                     'locale' => 'fr',
-                    'title' => 'Article Inactif FR',
-                    'slug' => 'article-inactif-fr',
+                    'title' => 'Recette Inactive FR',
+                    'slug' => 'recette-inactive-fr',
                     'metaDescription' => str_repeat('G', 120),
-                    'excerpt' => 'Article inactif',
+                    'excerpt' => 'Recette inactive',
                 ]),
                 RecipeTranslationFactory::new([
                     'locale' => 'en',
-                    'title' => 'Inactive Post EN',
-                    'slug' => 'inactive-post-en',
+                    'title' => 'Inactive Recipe EN',
+                    'slug' => 'inactive-recipe-en',
                     'metaDescription' => str_repeat('H', 120),
-                    'excerpt' => 'Inactive post',
+                    'excerpt' => 'Inactive recipe',
                 ]),
             ],
             'media' => [
@@ -166,24 +166,24 @@ final class PostControllerTestStory extends Story
     }
 
     /**
-     * @return list<Post>
+     * @return list<Recipe>
      */
-    public function getActivePosts(): array
+    public function getActiveRecipes(): array
     {
         return [
-            $this->getPost('activePost1'),
-            $this->getPost('activePost2'),
+            $this->getRecipe('activeRecipe1'),
+            $this->getRecipe('activeRecipe2'),
         ];
     }
 
-    public function getActivePost(int $index): Post
+    public function getActiveRecipe(int $index): Recipe
     {
-        return $this->getActivePosts()[$index];
+        return $this->getActiveRecipes()[$index];
     }
 
-    public function getInactivePost(): Post
+    public function getInactiveRecipe(): Recipe
     {
-        return $this->getPost('inactivePost');
+        return $this->getRecipe('inactiveRecipe');
     }
 
     public function getCategorySlug(Category $category, string $locale): string
@@ -191,16 +191,16 @@ final class PostControllerTestStory extends Story
         return $category->getTranslationByLocale($locale)?->getSlug() ?? '';
     }
 
-    public function getPostSlug(Post $post, string $locale): string
+    public function getRecipeSlug(Recipe $recipe, string $locale): string
     {
-        return $post->getTranslationByLocale($locale)?->getSlug() ?? '';
+        return $recipe->getTranslationByLocale($locale)?->getSlug() ?? '';
     }
 
-    private function getPost(string $key): Post
+    private function getRecipe(string $key): Recipe
     {
-        $post = self::get($key);
-        \assert($post instanceof Post);
+        $recipe = self::get($key);
+        \assert($recipe instanceof Recipe);
 
-        return $post;
+        return $recipe;
     }
 }

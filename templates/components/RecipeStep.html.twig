@@ -1,0 +1,38 @@
+{% set stepId = 'step-' ~ this.step.id %}
+<article {{ attributes.defaults({class: 'step'}) }}>
+    <input type="checkbox"
+           id="{{ stepId }}"
+           class="step__check"
+           data-recipe-checklist-target="item"
+           data-action="change->recipe-checklist#updateCount" />
+    <label for="{{ stepId }}" class="step__num" aria-label="{{ 'recipe.show.steps.mark_done'|trans }}">
+        <span class="step__num-bullet" aria-hidden="true"></span>
+        <span class="step__num-text">{{ this.number }}</span>
+    </label>
+
+    <div class="step__body">
+        {% if this.step.title %}
+            <h3 class="step__title">{{ this.step.title }}</h3>
+        {% endif %}
+        {% if this.step.content %}
+            <div class="step__content">{{ this.step.content|raw }}</div>
+        {% endif %}
+
+        {% if this.coverAttachment %}
+            <figure class="step__media">
+                <twig:Cover :attachment="this.coverAttachment" variation="medium" class="step__cover" />
+            </figure>
+        {% endif %}
+
+        {% if this.tipText %}
+            {% set tipClass = this.tipType and this.tipType.value == 'warning' ? 'step__tip step__tip--warning' : 'step__tip' %}
+            <aside class="{{ tipClass }}">
+                <twig:ux:icon name="{{ this.tipIcon }}" class="step__tip-icon" aria-hidden="true" />
+                <p class="step__tip-text">
+                    <strong class="step__tip-label">{{ this.tipLabelKey|trans }}</strong>
+                    {{ this.tipText }}
+                </p>
+            </aside>
+        {% endif %}
+    </div>
+</article>

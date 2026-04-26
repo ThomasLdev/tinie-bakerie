@@ -17,5 +17,11 @@
 @import "./components/recipe-card.css" layer(components);
 @import "./components/quote-strip.css" layer(components);
 @import "./components/footer.css" layer(components);
+@import "./components/breadcrumb.css" layer(components);
+@import "./components/recipe-show.css" layer(components);
+@import "./components/recipe-stats.css" layer(components);
+@import "./components/ingredients.css" layer(components);
+@import "./components/recipe-step.css" layer(components);
+@import "./components/chef-note.css" layer(components);
 
 @import "./utilities.css" layer(utilities);

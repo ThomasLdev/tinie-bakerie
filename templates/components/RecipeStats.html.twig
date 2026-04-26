@@ -1,0 +1,55 @@
+<dl {{ attributes.defaults({class: 'recipe-stats'}) }}>
+    {% if this.preparationTimeFormatted %}
+        <div class="recipe-stats__item">
+            <twig:ux:icon name="lucide:utensils-crossed" class="recipe-stats__icon" aria-hidden="true" />
+            <dt class="recipe-stats__label">{{ 'recipe.prep'|trans }}</dt>
+            <dd class="recipe-stats__value">{{ this.preparationTimeFormatted }}</dd>
+        </div>
+    {% endif %}
+
+    {% if this.cookingTimeFormatted %}
+        <div class="recipe-stats__item">
+            <twig:ux:icon name="lucide:flame" class="recipe-stats__icon" aria-hidden="true" />
+            <dt class="recipe-stats__label">{{ 'recipe.cook'|trans }}</dt>
+            <dd class="recipe-stats__value">{{ this.cookingTimeFormatted }}</dd>
+        </div>
+    {% endif %}
+
+    {% if this.totalTimeFormatted %}
+        <div class="recipe-stats__item">
+            <twig:ux:icon name="lucide:clock" class="recipe-stats__icon" aria-hidden="true" />
+            <dt class="recipe-stats__label">{{ 'recipe.total'|trans }}</dt>
+            <dd class="recipe-stats__value">{{ this.totalTimeFormatted }}</dd>
+        </div>
+    {% endif %}
+
+    <div class="recipe-stats__item">
+        <twig:ux:icon name="lucide:chef-hat" class="recipe-stats__icon" aria-hidden="true" />
+        <dt class="recipe-stats__label">{{ 'recipe.difficulty.label'|trans }}</dt>
+        <dd class="recipe-stats__value">{{ this.difficultyLabel|trans }}</dd>
+    </div>
+
+    <div class="recipe-stats__item recipe-stats__item--portions">
+        <twig:ux:icon name="lucide:users" class="recipe-stats__icon" aria-hidden="true" />
+        <dt class="recipe-stats__label">{{ 'recipe.show.servings.label'|trans }}</dt>
+        <dd class="recipe-stats__value">
+            <div class="portions">
+                <button type="button"
+                        class="portions__btn"
+                        data-action="recipe-portions#decrease"
+                        data-recipe-portions-target="decreaseBtn"
+                        aria-label="{{ 'recipe.show.servings.decrease'|trans }}">
+                    <twig:ux:icon name="lucide:minus" aria-hidden="true" />
+                </button>
+                <output class="portions__value" data-recipe-portions-target="value">{{ this.recipe.servings }}</output>
+                <button type="button"
+                        class="portions__btn"
+                        data-action="recipe-portions#increase"
+                        data-recipe-portions-target="increaseBtn"
+                        aria-label="{{ 'recipe.show.servings.increase'|trans }}">
+                    <twig:ux:icon name="lucide:plus" aria-hidden="true" />
+                </button>
+            </div>
+        </dd>
+    </div>
+</dl>

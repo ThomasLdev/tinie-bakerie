@@ -63,9 +63,9 @@ final class Hero
 
     public function getCtaHref(): string
     {
-        return $this->urlGenerator->generate('app_post_show', [
+        return $this->urlGenerator->generate('app_recipe_show', [
             'categorySlug' => $this->recipe->getCategory()?->getSlug() ?? '',
-            'postSlug' => $this->recipe->getSlug(),
+            'recipeSlug' => $this->recipe->getSlug(),
         ]);
     }
 }
