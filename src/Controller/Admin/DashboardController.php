@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Entity\Post;
+use App\Entity\Recipe;
 use App\Entity\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -35,7 +35,7 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToUrl('admin.website.label', 'fa fa-home', '/');
-        yield MenuItem::linkToCrud('admin.post.dashboard.plural', 'fas fa-newspaper', Post::class);
+        yield MenuItem::linkToCrud('admin.recipe.dashboard.plural', 'fas fa-utensils', Recipe::class);
         yield MenuItem::linkToCrud('admin.category.dashboard.plural', 'fas fa-layer-group', Category::class);
         yield MenuItem::linkToCrud('admin.tag.dashboard.plural', 'fas fa-tag', Tag::class);
         yield MenuItem::linkToRoute('Media Library', 'fa fa-image', 'joli_media_easy_admin_explore');

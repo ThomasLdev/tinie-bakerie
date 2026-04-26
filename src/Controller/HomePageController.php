@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Post;
+use App\Entity\Recipe;
 use App\Entity\Tag;
-use App\Repository\PostRepository;
+use App\Repository\RecipeRepository;
 use App\Repository\TagRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,21 +18,21 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomePageController extends AbstractController
 {
     public function __construct(
-        private readonly PostRepository $postRepository,
+        private readonly RecipeRepository $recipeRepository,
         private readonly TagRepository $tagRepository,
     ) {
     }
 
     /**
-     * @return array{featuredPost: ?Post, featuredPosts: list<Post>, featuredTags: list<Tag>}
+     * @return array{featuredRecipe: ?Recipe, featuredRecipes: list<Recipe>, featuredTags: list<Tag>}
      */
     #[Route('{_locale<%app.supported_locales%>}')]
     #[Template('page/home.html.twig')]
     public function index(): array
     {
         return [
-            'featuredPost' => $this->postRepository->findLatestActive(),
-            'featuredPosts' => $this->postRepository->findFeatured(5),
+            'featuredRecipe' => $this->recipeRepository->findLatestActive(),
+            'featuredRecipes' => $this->recipeRepository->findFeatured(5),
             'featuredTags' => $this->tagRepository->findFeatured(5),
         ];
     }

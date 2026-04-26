@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\Form\Type;
 
-use App\Entity\PostTranslation;
+use App\Entity\IngredientTranslation;
 use App\Form\Type\Trait\LocalizedFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @extends AbstractType<PostTranslationType>
+ * @extends AbstractType<IngredientTranslation>
  */
-class PostTranslationType extends AbstractType
+class IngredientTranslationType extends AbstractType
 {
     use LocalizedFormType;
 
@@ -30,48 +29,34 @@ class PostTranslationType extends AbstractType
                 'choices' => $this->getLocales($options['supported_locales']),
                 'label' => 'admin.global.locale',
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-control',
-                ],
+                'attr' => ['class' => 'form-control'],
             ])
-            ->add('title', TextType::class, [
-                'label' => 'admin.global.title',
+            ->add('name', TextType::class, [
+                'label' => 'admin.ingredient.name.label',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'empty_data' => '',
             ])
-            ->add('metaTitle', TextType::class, [
-                'label' => 'admin.global.meta_title',
+            ->add('unit', TextType::class, [
+                'label' => 'admin.ingredient.unit.label',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'empty_data' => '',
+                'help' => 'admin.ingredient.unit.help',
             ])
-            ->add('slug', TextType::class, [
-                'label' => 'admin.global.slug.title',
-                'disabled' => true,
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'help' => 'admin.global.slug.help',
-                'empty_data' => '',
-            ])
-            ->add('metaDescription', TextareaType::class, [
-                'label' => 'admin.global.meta_description',
+            ->add('quantityDisplay', TextType::class, [
+                'label' => 'admin.ingredient.quantity_display.label',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'empty_data' => '',
-            ])
-            ->add('excerpt', TextareaType::class, [
-                'label' => 'admin.global.excerpt',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'empty_data' => '',
+                'help' => 'admin.ingredient.quantity_display.help',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PostTranslation::class,
+            'data_class' => IngredientTranslation::class,
             'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);

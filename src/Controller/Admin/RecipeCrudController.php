@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Entity\Post;
-use App\Entity\PostTranslation;
+use App\Entity\Recipe;
+use App\Entity\RecipeTranslation;
+use App\Form\Type\IngredientGroupType;
 use App\Form\Type\PostMediaType;
 use App\Form\Type\PostSectionType;
-use App\Form\Type\PostTranslationType;
+use App\Form\Type\RecipeStepType;
+use App\Form\Type\RecipeTranslationType;
 use App\Services\Locale\Locales;
 use App\Services\Post\Enum\Difficulty;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -29,9 +31,9 @@ use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
 /**
- * @extends AbstractCrudController<Post>
+ * @extends AbstractCrudController<Recipe>
  */
-class PostCrudController extends AbstractCrudController
+class RecipeCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
     {
@@ -40,8 +42,6 @@ class PostCrudController extends AbstractCrudController
     #[\Override]
     public function configureAssets(Assets $assets): Assets
     {
-        // this should not be needed, but there is a bug in EA with assets in nested forms
-        // see https://github.com/EasyCorp/EasyAdminBundle/issues/6127
         $joliMediaPackage = new PathPackage(
             '/bundles/jolimediaeasyadmin',
             new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/jolimediaeasyadmin/manifest.json'),
@@ -61,19 +61,19 @@ class PostCrudController extends AbstractCrudController
 
     public static function getEntityFqcn(): string
     {
-        return Post::class;
+        return Recipe::class;
     }
 
     #[\Override]
-    public function createEntity(string $entityFqcn): Post
+    public function createEntity(string $entityFqcn): Recipe
     {
-        $post = new Post();
+        $recipe = new Recipe();
 
         foreach ($this->locales->get() as $locale) {
-            $post->addTranslation(new PostTranslation()->setLocale($locale));
+            $recipe->addTranslation(new RecipeTranslation()->setLocale($locale));
         }
 
-        return $post;
+        return $recipe;
     }
 
     #[\Override]
@@ -90,12 +90,12 @@ class PostCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('admin.post.dashboard.singular')
-            ->setEntityLabelInPlural('admin.post.dashboard.plural')
-            ->setPageTitle('index', 'admin.post.dashboard.index')
-            ->setPageTitle('new', 'admin.post.dashboard.create')
-            ->setPageTitle('edit', 'admin.post.dashboard.edit')
-            ->setPageTitle('detail', 'admin.post.dashboard.detail')
+            ->setEntityLabelInSingular('admin.recipe.dashboard.singular')
+            ->setEntityLabelInPlural('admin.recipe.dashboard.plural')
+            ->setPageTitle('index', 'admin.recipe.dashboard.index')
+            ->setPageTitle('new', 'admin.recipe.dashboard.create')
+            ->setPageTitle('edit', 'admin.recipe.dashboard.edit')
+            ->setPageTitle('detail', 'admin.recipe.dashboard.detail')
             ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig')
             ->addFormTheme('admin/form/text_editor_theme.html.twig');
     }
@@ -120,6 +120,8 @@ class PostCrudController extends AbstractCrudController
         yield AssociationField::new('category', 'admin.category.dashboard.singular')
             ->formatValue(static fn (?Category $category): string => $category?->getTitle() ?? '-');
 
+        yield IntegerField::new('servings', 'admin.recipe.servings.label');
+
         yield DateField::new('createdAt', 'admin.global.created_at');
 
         yield DateField::new('updatedAt', 'admin.global.updated_at');
@@ -131,17 +133,19 @@ class PostCrudController extends AbstractCrudController
 
         yield BooleanField::new('isFeatured', 'admin.post.is_featured');
 
-        yield IntegerField::new('preparationTime', 'admin.post.preparation_time.label');
+        yield IntegerField::new('preparationTime', 'admin.recipe.preparation_time.label');
 
-        yield IntegerField::new('cookingTime', 'admin.post.cooking_time.label');
+        yield IntegerField::new('cookingTime', 'admin.recipe.cooking_time.label');
 
-        yield ChoiceField::new('difficulty', 'admin.post.difficulty.label')
+        yield IntegerField::new('servings', 'admin.recipe.servings.label');
+
+        yield ChoiceField::new('difficulty', 'admin.recipe.difficulty.label')
             ->setChoices(Difficulty::cases())
             ->renderExpanded()
             ->renderAsBadges([
                 'easy' => 'success',
                 'medium' => 'warning',
-                'hard' => 'danger',
+                'advanced' => 'danger',
             ]);
 
         yield AssociationField::new('tags', 'admin.tag.dashboard.plural')
@@ -168,7 +172,7 @@ class PostCrudController extends AbstractCrudController
             ->setColumns('col-12');
 
         yield CollectionField::new('translations', 'admin.global.translations')
-            ->setEntryType(PostTranslationType::class)
+            ->setEntryType(RecipeTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
                 'allow_add' => true,
@@ -183,8 +187,42 @@ class PostCrudController extends AbstractCrudController
             ->renderExpanded(false)
             ->setColumns('col-12');
 
-        yield CollectionField::new('sections', 'admin.post_section.title')
+        yield CollectionField::new('ingredientGroups', 'admin.ingredient_group.dashboard.plural')
+            ->setEntryType(IngredientGroupType::class)
+            ->setFormTypeOptions([
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'prototype' => true,
+                'entry_options' => [
+                    'supported_locales' => $this->locales->get(),
+                ],
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded(false)
+            ->setColumns('col-12');
+
+        yield CollectionField::new('narrativeSections', 'admin.post_section.title')
             ->setEntryType(PostSectionType::class)
+            ->setFormTypeOptions([
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'prototype' => true,
+                'entry_options' => [
+                    'supported_locales' => $this->locales->get(),
+                ],
+            ])
+            ->allowAdd()
+            ->allowDelete()
+            ->renderExpanded(false)
+            ->setColumns('col-12');
+
+        yield CollectionField::new('steps', 'admin.recipe_step.dashboard.plural')
+            ->setEntryType(RecipeStepType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
                 'allow_add' => true,

@@ -17,6 +17,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translatable<PostSectionTranslation>
  */
 #[ORM\Entity]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'kind', type: 'string', length: 16)]
+#[ORM\DiscriminatorMap(['post_section' => PostSection::class, 'recipe_step' => RecipeStep::class])]
 class PostSection implements Translatable, \Stringable
 {
     use TimestampableEntity;

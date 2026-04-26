@@ -3,7 +3,7 @@
         <twig:Cover
             :attachment="this.coverAttachment"
             variation="large"
-            :alt="this.post.title"
+            :alt="this.recipe.title"
             eager
             autoplay
             class="hero__cover"
@@ -17,10 +17,10 @@
             {{ 'home.featured_recipe_label'|trans }}
         </span>
 
-        <h1 class="hero__title">{{ this.post.title }}</h1>
+        <h1 class="hero__title">{{ this.recipe.title }}</h1>
 
-        {% if this.post.excerpt %}
-            <p class="hero__desc">{{ this.post.excerpt }}</p>
+        {% if this.recipe.excerpt %}
+            <p class="hero__desc">{{ this.recipe.excerpt }}</p>
         {% endif %}
 
         {% if this.preparationTimeFormatted or this.cookingTimeFormatted %}

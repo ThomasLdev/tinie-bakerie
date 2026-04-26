@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use App\Entity\PostTranslation;
+use App\Entity\RecipeTranslation;
 use App\Services\Slug\Slugger;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<PostTranslation>
+ * @extends PersistentObjectFactory<RecipeTranslation>
  */
-final class PostTranslationFactory extends PersistentObjectFactory
+final class RecipeTranslationFactory extends PersistentObjectFactory
 {
     public function __construct(
         private readonly Slugger $slugger,
@@ -20,11 +20,11 @@ final class PostTranslationFactory extends PersistentObjectFactory
     }
 
     /**
-     * @return class-string<PostTranslation>
+     * @return class-string<RecipeTranslation>
      */
     public static function class(): string
     {
-        return PostTranslation::class;
+        return RecipeTranslation::class;
     }
 
     /**
@@ -39,6 +39,8 @@ final class PostTranslationFactory extends PersistentObjectFactory
             'metaDescription' => self::faker()->text(),
             'metaTitle' => self::faker()->text(60),
             'title' => self::faker()->text(25),
+            'notes' => self::faker()->paragraph(3),
+            'chefNoteTitle' => self::faker()->sentence(6),
         ];
     }
 
@@ -46,8 +48,8 @@ final class PostTranslationFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function (PostTranslation $postTranslation): void {
-                $postTranslation->setSlug($this->slugger->slugify($postTranslation->getTitle()));
+            ->afterInstantiate(function (RecipeTranslation $translation): void {
+                $translation->setSlug($this->slugger->slugify($translation->getTitle()));
             });
     }
 }

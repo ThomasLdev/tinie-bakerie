@@ -29,7 +29,6 @@ final class PostTranslationTypeTest extends TypeTestCase
             'slug' => '', // disabled field, value should be ignored
             'metaDescription' => str_repeat('A', 120),
             'excerpt' => str_repeat('B', 50),
-            'notes' => 'Some test notes',
         ];
 
         $model = new PostTranslation();
@@ -45,7 +44,6 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertSame('Test Meta Title', $model->getMetaTitle());
         self::assertSame(str_repeat('A', 120), $model->getMetaDescription());
         self::assertSame(str_repeat('B', 50), $model->getExcerpt());
-        self::assertSame('Some test notes', $model->getNotes());
     }
 
     public function testSubmitMinimalData(): void
@@ -68,7 +66,6 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertSame('', $model->getMetaTitle());
         self::assertSame('', $model->getMetaDescription());
         self::assertSame('', $model->getExcerpt());
-        self::assertSame('', $model->getNotes());
     }
 
     public function testFormHasCorrectFields(): void
@@ -83,7 +80,6 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertTrue($form->has('slug'));
         self::assertTrue($form->has('metaDescription'));
         self::assertTrue($form->has('excerpt'));
-        self::assertTrue($form->has('notes'));
     }
 
     public function testLocaleFieldChoices(): void
@@ -132,7 +128,6 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertFalse($view['metaTitle']->vars['required']);
         self::assertFalse($view['metaDescription']->vars['required']);
         self::assertFalse($view['excerpt']->vars['required']);
-        self::assertFalse($view['notes']->vars['required']);
     }
 
     public function testEmptyDataForTextFields(): void
@@ -143,7 +138,6 @@ final class PostTranslationTypeTest extends TypeTestCase
             'metaTitle' => null,
             'metaDescription' => null,
             'excerpt' => null,
-            'notes' => null,
         ];
 
         $model = new PostTranslation();
@@ -157,6 +151,5 @@ final class PostTranslationTypeTest extends TypeTestCase
         self::assertSame('', $model->getMetaTitle());
         self::assertSame('', $model->getMetaDescription());
         self::assertSame('', $model->getExcerpt());
-        self::assertSame('', $model->getNotes());
     }
 }

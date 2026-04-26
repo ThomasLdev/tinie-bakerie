@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use App\Entity\Post;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\IngredientGroup;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Post>
+ * @extends PersistentObjectFactory<IngredientGroup>
  */
-final class PostFactory extends PersistentObjectFactory
+final class IngredientGroupFactory extends PersistentObjectFactory
 {
     /**
-     * @return class-string<Post>
+     * @return class-string<IngredientGroup>
      */
     public static function class(): string
     {
-        return Post::class;
+        return IngredientGroup::class;
     }
 
     /**
@@ -29,11 +28,7 @@ final class PostFactory extends PersistentObjectFactory
         return [
             'createdAt' => self::faker()->dateTime(),
             'updatedAt' => self::faker()->dateTime(),
-            'active' => self::faker()->boolean(80),
-            'tags' => [],
-            'media' => [],
-            'sections' => [],
-            'translations' => new ArrayCollection(),
+            'position' => 0,
         ];
     }
 }

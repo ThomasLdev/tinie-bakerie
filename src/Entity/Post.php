@@ -8,7 +8,6 @@ use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
 use App\Entity\Traits\Featurable;
 use App\Entity\Traits\TranslationAccessorTrait;
-use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -19,6 +18,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translatable<PostTranslation>
  */
 #[ORM\Entity]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string', length: 16)]
+#[ORM\DiscriminatorMap(['post' => Post::class, 'recipe' => Recipe::class])]
 class Post implements Translatable
 {
     use Activable;
@@ -77,15 +79,6 @@ class Post implements Translatable
         orphanRemoval: true,
     )]
     private Collection $translations;
-
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
-    private int $cookingTime = 0;
-
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
-    private int $preparationTime = 0;
-
-    #[ORM\Column(enumType: Difficulty::class, options: ['default' => Difficulty::Easy])]
-    private Difficulty $difficulty = Difficulty::Easy;
 
     public function __construct()
     {
@@ -180,7 +173,6 @@ class Post implements Translatable
 
     public function removeMedium(PostMedia $medium): self
     {
-        // set the owning side to null (unless already changed)
         if ($this->media->removeElement($medium) && $medium->getPost() === $this) {
             $medium->setPost(null);
         }
@@ -220,7 +212,6 @@ class Post implements Translatable
 
     public function removeSection(PostSection $section): self
     {
-        // set the owning side to null (unless already changed)
         if ($this->sections->removeElement($section) && $section->getPost() === $this) {
             $section->setPost(null);
         }
@@ -265,42 +256,6 @@ class Post implements Translatable
         return $this;
     }
 
-    public function getCookingTime(): int
-    {
-        return $this->cookingTime;
-    }
-
-    public function setCookingTime(int $cookingTime): self
-    {
-        $this->cookingTime = $cookingTime;
-
-        return $this;
-    }
-
-    public function getPreparationTime(): int
-    {
-        return $this->preparationTime;
-    }
-
-    public function setPreparationTime(int $preparationTime): self
-    {
-        $this->preparationTime = $preparationTime;
-
-        return $this;
-    }
-
-    public function getDifficulty(): Difficulty
-    {
-        return $this->difficulty;
-    }
-
-    public function setDifficulty(Difficulty $difficulty): self
-    {
-        $this->difficulty = $difficulty;
-
-        return $this;
-    }
-
     /**
      * Returns the translation for the current locale with the specific type.
      * Uses covariant return type to narrow Translation to PostTranslation.
@@ -325,10 +280,5 @@ class Post implements Translatable
     public function getExcerpt(): string
     {
         return $this->getCurrentTranslation()?->getExcerpt() ?? '';
-    }
-
-    public function getTotalRecipeTime(): int
-    {
-        return $this->cookingTime + $this->preparationTime;
     }
 }
