@@ -33,7 +33,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: tinie-bakerie
-          image: ghcr.io/thomasldev/tinie-bakerie:20260309071508-eaccd13
+          image: ghcr.io/thomasldev/tinie-bakerie:20260426070949-e25983d
           imagePullPolicy: Always
           ports:
             - containerPort: 80
