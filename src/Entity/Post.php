@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\Activable;
+use App\Entity\Traits\Featurable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +22,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Post implements Translatable
 {
     use Activable;
+    use Featurable;
     use TimestampableEntity;
 
     /** @use TranslationAccessorTrait<PostTranslation> */
@@ -78,6 +80,9 @@ class Post implements Translatable
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $cookingTime = 0;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $preparationTime = 0;
 
     #[ORM\Column(enumType: Difficulty::class, options: ['default' => Difficulty::Easy])]
     private Difficulty $difficulty = Difficulty::Easy;
@@ -272,6 +277,18 @@ class Post implements Translatable
         return $this;
     }
 
+    public function getPreparationTime(): int
+    {
+        return $this->preparationTime;
+    }
+
+    public function setPreparationTime(int $preparationTime): self
+    {
+        $this->preparationTime = $preparationTime;
+
+        return $this;
+    }
+
     public function getDifficulty(): Difficulty
     {
         return $this->difficulty;
@@ -308,5 +325,10 @@ class Post implements Translatable
     public function getExcerpt(): string
     {
         return $this->getCurrentTranslation()?->getExcerpt() ?? '';
+    }
+
+    public function getTotalRecipeTime(): int
+    {
+        return $this->cookingTime + $this->preparationTime;
     }
 }

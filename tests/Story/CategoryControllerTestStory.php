@@ -27,8 +27,6 @@ final class CategoryControllerTestStory extends Story
     {
         // Create a test tag for posts
         $tag = TagFactory::createOne([
-            'backgroundColor' => '#FF5733',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -201,12 +199,20 @@ final class CategoryControllerTestStory extends Story
         ]));
     }
 
+    /**
+     * @return list<Category>
+     */
     public function getCategories(): array
     {
-        return [
-            self::get('category1'),
-            self::get('category2'),
-        ];
+        return array_map(
+            static function (string $key): Category {
+                $category = self::get($key);
+                \assert($category instanceof Category);
+
+                return $category;
+            },
+            ['category1', 'category2'],
+        );
     }
 
     public function getCategory(int $index): Category

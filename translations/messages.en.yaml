@@ -23,5 +23,43 @@ app:
         index: 'All posts'
     category:
         index: 'All categories'
+recipe:
+    prep: 'Prep time'
+    cook: 'Cook time'
+    total: 'Total'
+    view: 'View recipe'
+    difficulty:
+        label: 'Difficulty'
+        easy: 'Easy'
+        medium: 'Medium'
+        advanced: 'Advanced'
+category:
+    recipes_count: '{0} No recipes|{1} 1 recipe|]1,Inf] %count% recipes'
+home:
+    featured_recipe_label: 'Featured recipe'
+    tags:
+        kicker: 'By craving'
+        title_before: 'Browse'
+        title_em: 'cravings'
+        sub: 'From morning pastries to celebration desserts.'
+    popular:
+        kicker: 'This week'
+        title_before: 'Most'
+        title_em: 'loved'
+        view_all: 'All recipes'
+        badge_signature: 'Signature'
+    philosophy:
+        kicker: 'Philosophy'
+        quote: '“Pastry is loving precision.”'
+        author: '— Tinie, founder'
+search:
+    placeholder: 'A recipe, an ingredient, a technique…'
+    suggestions: 'Suggestions'
+    results_aria: '{0}No results|{1}1 result|]1,Inf]%count% results'
+    no_results_title_before: 'Nothing comes out of the oven for'
+    no_results_hint: 'Try another word, or browse our categories.'
+    no_results_cta: 'View all recipes'
+    type:
+        recipe: 'Recipe'
     filter:
         count: '{0} No results|{1} 1 result|]1,Inf] %count% results'

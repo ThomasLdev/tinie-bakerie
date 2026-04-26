@@ -1,0 +1,50 @@
+header:
+    skip_to_content: 'Skip to content'
+    nav:
+        aria_label: 'Main navigation'
+        home: 'Home'
+        recipes: 'Recipes'
+        notebook: 'Journal'
+        about: 'About'
+    menu:
+        open: 'Open menu'
+        close: 'Close menu'
+        aria_label: 'Main menu'
+        mobile_aria_label: 'Mobile main menu'
+    search: 'Search'
+    newsletter: 'Newsletter'
+    follow: 'Follow Tinie'
+
+hero:
+    featured: 'Featured'
+    pager_aria: 'Recipe %current% of %total%'
+
+search:
+    label: 'Search the site'
+    aria_label: 'Search'
+    close: 'Close search'
+    clear: 'Clear search'
+    esc_hint: 'esc'
+
+footer:
+    tagline: "The notebook of a Sunday baker who made precision her Sunday ritual. Paris — Brittany."
+    copyright: 'All rights reserved'
+    recipes:
+        title: 'Recipes'
+    notebook:
+        title: 'Journal'
+        techniques: 'Techniques'
+        seasonal: 'Seasonal'
+        ingredients: 'Ingredients'
+        interviews: 'Interviews'
+    newsletter:
+        title: 'Newsletter'
+        note: 'A new notebook, every first Sunday of the month.'
+        email_label: 'Your email address'
+        email_placeholder: 'your@email.com'
+        submit: 'OK'
+    socials:
+        aria_label: 'Social media'
+        instagram: 'Instagram'
+        pinterest: 'Pinterest'
+        youtube: 'YouTube'

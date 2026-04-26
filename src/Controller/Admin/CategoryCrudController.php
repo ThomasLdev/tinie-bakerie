@@ -10,10 +10,13 @@ use App\Form\Type\CategoryTranslationType;
 use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
@@ -69,8 +72,17 @@ class CategoryCrudController extends AbstractCrudController
             ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig');
     }
 
+    #[\Override]
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(BooleanFilter::new('isFeatured', 'admin.category.is_featured'));
+    }
+
     private function getIndexFields(): \Generator
     {
+        yield BooleanField::new('isFeatured', 'admin.category.is_featured');
+
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
             ->setRequired(true);
@@ -82,6 +94,8 @@ class CategoryCrudController extends AbstractCrudController
 
     private function getFormFields(string $pageName): \Generator
     {
+        yield BooleanField::new('isFeatured', 'admin.category.is_featured');
+
         yield CollectionField::new('media', 'admin.global.media.label')
             ->setEntryType(CategoryMediaType::class)
             ->setFormTypeOptions([

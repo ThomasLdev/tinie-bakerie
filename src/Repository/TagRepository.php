@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,7 +26,7 @@ class TagRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         $qb = $this->createQueryBuilder('t')
-            ->select('PARTIAL t.{id, backgroundColor, textColor, createdAt, updatedAt}')
+            ->select('PARTIAL t.{id, isFeatured, createdAt, updatedAt}')
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title}')
             ->orderBy('t.createdAt', 'DESC');
@@ -38,7 +39,7 @@ class TagRepository extends ServiceEntityRepository
     public function findOne(int $id): ?Tag
     {
         $qb = $this->createQueryBuilder('t')
-            ->select('PARTIAL t.{id, backgroundColor, textColor, createdAt, updatedAt}')
+            ->select('PARTIAL t.{id, isFeatured, createdAt, updatedAt}')
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title}')
             ->where('t.id = :id')
@@ -48,5 +49,46 @@ class TagRepository extends ServiceEntityRepository
         $result = $qb->getQuery()->getOneOrNullResult();
 
         return $result instanceof Tag ? $result : null;
+    }
+
+    /**
+     * @return list<Tag>
+     */
+    public function findFeatured(int $limit = 5): array
+    {
+        $idsResult = $this->createQueryBuilder('t')
+            ->select('t.id')
+            ->where('t.isFeatured = :featured')
+            ->setParameter('featured', true)
+            ->orderBy('t.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        $ids = array_column($idsResult, 'id');
+
+        if ([] === $ids) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('t')
+            ->select('PARTIAL t.{id, image, isFeatured, createdAt, updatedAt}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title, locale}')
+            ->leftJoin('t.posts', 'p')
+            ->addSelect('PARTIAL p.{id}')
+            ->where('t.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('t.updatedAt', 'DESC');
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
+
+        if (!\is_array($result)) {
+            return [];
+        }
+
+        return array_values(array_filter($result, static fn ($row): bool => $row instanceof Tag));
     }
 }

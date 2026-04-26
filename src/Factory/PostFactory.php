@@ -36,6 +36,7 @@ final class PostFactory extends PersistentObjectFactory
             'sections' => [],
             'translations' => new ArrayCollection(),
             'cookingTime' => self::faker()->numberBetween(5, 120),
+            'preparationTime' => self::faker()->numberBetween(5, 120),
             'difficulty' => Difficulty::Easy,
         ];
     }

@@ -1,0 +1,96 @@
+:root {
+  --bg: #fdf6f1;
+  --bg-deep: #f8eadf;
+  --surface: #ffffff;
+  --ink: #1f1a17;
+  --ink-2: #4a3f37;
+  --ink-3: #8a7b70;
+  --line: #eadfd3;
+  --accent: #e89b7c;
+  --accent-soft: #f6d1be;
+  --accent-bg: #fceadc;
+  --accent-ink: #b5532e;
+  --on-accent: #ffffff;
+  --on-ink: #ffffff;
+  --on-ink-soft: color-mix(in oklab, var(--on-ink) 88%, var(--ink));
+  --on-ink-muted: color-mix(in oklab, var(--on-ink) 72%, var(--ink));
+  --on-ink-dim: color-mix(in oklab, var(--on-ink) 50%, var(--ink));
+  --on-ink-line: color-mix(in oklab, var(--on-ink) 10%, transparent);
+  --on-ink-border: color-mix(in oklab, var(--on-ink) 18%, transparent);
+  --on-ink-surface: color-mix(in oklab, var(--on-ink) 6%, transparent);
+  --on-ink-placeholder: color-mix(in oklab, var(--on-ink) 40%, transparent);
+  --overlay: color-mix(in oklab, var(--ink) 40%, transparent);
+  --surface-translucent: color-mix(in oklab, var(--surface) 92%, transparent);
+
+  --space-1: clamp(0.25rem, 1vw, 0.375rem);
+  --space-2: clamp(0.5rem, 1.6vw, 0.75rem);
+  --space-3: clamp(0.75rem, 2.4vw, 1.25rem);
+  --space-4: clamp(1.25rem, 3.6vw, 2rem);
+  --space-5: clamp(1.75rem, 5vw, 3.25rem);
+  --space-6: clamp(2.5rem, 7vw, 5.25rem);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "DM Sans", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-card:
+    0 24px 50px -28px color-mix(in oklab, var(--accent-ink) 18%, transparent),
+    0 6px 18px -10px color-mix(in oklab, var(--accent-ink) 12%, transparent);
+  --shadow-soft: 0 12px 28px -18px color-mix(in oklab, var(--accent-ink) 22%, transparent);
+  --shadow-drawer: -20px 0 50px -20px color-mix(in oklab, var(--ink) 25%, transparent);
+
+  --max-width: 80rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --nav-h: 3.75rem;
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-drawer: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --bp-sm: 600px;
+  --bp-md: 720px;
+  --bp-lg: 900px;
+  --bp-xl: 1200px;
+}
+
+[data-palette="sage"] {
+  --bg: #f5f2ec;
+  --bg-deep: #e8e4d8;
+  --surface: #ffffff;
+  --ink: #1e241d;
+  --ink-2: #3f4a3b;
+  --ink-3: #7b856f;
+  --line: #dddace;
+  --accent: #88a17a;
+  --accent-soft: #c9d6be;
+  --accent-bg: #e4ecda;
+  --accent-ink: #4a6341;
+}
+
+[data-palette="cream"] {
+  --bg: #faf6ef;
+  --bg-deep: #f1e9d8;
+  --surface: #ffffff;
+  --ink: #1c1a14;
+  --ink-2: #4b4433;
+  --ink-3: #8a7f65;
+  --line: #e8dec7;
+  --accent: #c9974a;
+  --accent-soft: #ecd6a6;
+  --accent-bg: #f6ebce;
+  --accent-ink: #7f5a1e;
+}
+
+[data-density="compact"] {
+  --space-1: clamp(0.1875rem, 0.7vw, 0.25rem);
+  --space-2: clamp(0.375rem, 1.2vw, 0.5rem);
+  --space-3: clamp(0.625rem, 1.8vw, 0.875rem);
+  --space-4: clamp(0.875rem, 2.6vw, 1.375rem);
+  --space-5: clamp(1.25rem, 3.6vw, 2.25rem);
+  --space-6: clamp(1.75rem, 4.8vw, 3.5rem);
+}

@@ -1,0 +1,7 @@
+{% props variant = null %}
+
+{% set classes = ['chip', variant ? 'chip--' ~ variant : null]|filter(c => c)|join(' ') %}
+
+<span {{ attributes.defaults({class: classes}) }}>
+    {% block content %}{% endblock %}
+</span>

@@ -1,0 +1,50 @@
+header:
+    skip_to_content: 'Aller au contenu'
+    nav:
+        aria_label: 'Navigation principale'
+        home: 'Accueil'
+        recipes: 'Recettes'
+        notebook: 'Carnet'
+        about: 'À propos'
+    menu:
+        open: 'Ouvrir le menu'
+        close: 'Fermer le menu'
+        aria_label: 'Menu principal'
+        mobile_aria_label: 'Menu principal mobile'
+    search: 'Recherche'
+    newsletter: 'Newsletter'
+    follow: 'Suivre Tinie'
+
+hero:
+    featured: 'À la une'
+    pager_aria: 'Recette %current% sur %total%'
+
+search:
+    label: 'Rechercher sur le site'
+    aria_label: 'Recherche'
+    close: 'Fermer la recherche'
+    clear: 'Effacer la recherche'
+    esc_hint: 'esc'
+
+footer:
+    tagline: "Le carnet d'une pâtissière du dimanche qui a fait de la précision son dimanche. Paris — Bretagne."
+    copyright: 'Tous droits réservés'
+    recipes:
+        title: 'Recettes'
+    notebook:
+        title: 'Carnet'
+        techniques: 'Techniques'
+        seasonal: 'Saison'
+        ingredients: 'Ingrédients'
+        interviews: 'Interviews'
+    newsletter:
+        title: 'Newsletter'
+        note: 'Un nouveau carnet, le premier dimanche du mois.'
+        email_label: 'Votre adresse email'
+        email_placeholder: 'votre@email.fr'
+        submit: 'OK'
+    socials:
+        aria_label: 'Réseaux sociaux'
+        instagram: 'Instagram'
+        pinterest: 'Pinterest'
+        youtube: 'YouTube'

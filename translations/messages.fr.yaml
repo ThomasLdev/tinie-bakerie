@@ -23,6 +23,44 @@ app:
         index: 'Tous les articles'
     category:
         index: 'Toutes les catégories'
+recipe:
+    prep: 'Préparation'
+    cook: 'Cuisson'
+    total: 'Total'
+    view: 'Voir la recette'
+    difficulty:
+        label: 'Difficulté'
+        easy: 'Facile'
+        medium: 'Moyen'
+        advanced: 'Avancé'
+category:
+    recipes_count: '{0} Aucune recette|{1} 1 recette|]1,Inf] %count% recettes'
+home:
+    featured_recipe_label: 'Recette à la une'
+    tags:
+        kicker: 'Par envie'
+        title_before: 'Parcourir les'
+        title_em: 'envies'
+        sub: 'De la viennoiserie du matin aux desserts de grande fête.'
+    popular:
+        kicker: 'Cette semaine'
+        title_before: 'Les plus'
+        title_em: 'aimées'
+        view_all: 'Toutes les recettes'
+        badge_signature: 'Signature'
+    philosophy:
+        kicker: 'La philosophie'
+        quote: '« La pâtisserie, c''est de la précision amoureuse. »'
+        author: '— Tinie, fondatrice'
+search:
+    placeholder: 'Une recette, un ingrédient, une technique…'
+    suggestions: 'Suggestions'
+    results_aria: '{0}Aucun résultat|{1}1 résultat|]1,Inf]%count% résultats'
+    no_results_title_before: 'Rien ne ressort du four pour'
+    no_results_hint: 'Essayez avec un autre mot, ou parcourez nos catégories.'
+    no_results_cta: 'Voir toutes les recettes'
+    type:
+        recipe: 'Recette'
     filter:
         count: '{0} Aucun résultat|{1} 1 résultat|]1,Inf] %count% résultats'
     

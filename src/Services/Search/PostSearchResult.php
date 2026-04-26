@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Search;
 
+use JoliCode\MediaBundle\Model\Media;
+
 final readonly class PostSearchResult
 {
     public function __construct(
@@ -13,7 +15,7 @@ final readonly class PostSearchResult
         public string $excerpt,
         public string $categoryTitle,
         public string $categorySlug,
-        public ?string $mediaPath,
+        public ?Media $media,
         public float $rank,
         public ?string $headline,
     ) {

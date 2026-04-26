@@ -1,0 +1,11 @@
+{% props variant = 'primary', size = 'md', href = null %}
+
+{% set tag = href ? 'a' : 'button' %}
+{% set classes = ['btn', 'btn--' ~ variant, size != 'md' ? 'btn--' ~ size : null]|filter(c => c)|join(' ') %}
+
+<{{ tag }}
+    {% if href %}href="{{ href }}"{% else %}type="button"{% endif %}
+    {{ attributes.defaults({class: classes}) }}
+>
+    {% block content %}{% endblock %}
+</{{ tag }}>

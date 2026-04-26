@@ -12,11 +12,7 @@
             <h2>Category : {{ post.category.title }}</h2>
 
             <div>
-                {% include 'partials/_media_thumbnail.html.twig' with {
-                    path: mainMedia.media.path ?? null,
-                    alt: mainMedia.alt ?? '',
-                    title: mainMedia.title ?? ''
-                } only %}
+                <twig:Cover :attachment="mainMedia" variation="medium" autoplay />
             </div>
 
             {% if post.sections is not empty %}

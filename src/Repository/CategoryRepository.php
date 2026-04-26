@@ -37,6 +37,52 @@ class CategoryRepository extends ServiceEntityRepository
         return \is_array($result) ? $result : [];
     }
 
+    /**
+     * @return list<Category>
+     */
+    public function findFeatured(int $limit = 5): array
+    {
+        $idsResult = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('c.isFeatured = :featured')
+            ->setParameter('featured', true)
+            ->orderBy('c.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        $ids = array_column($idsResult, 'id');
+
+        if ([] === $ids) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('c')
+            ->select('PARTIAL c.{id, createdAt, updatedAt}')
+            ->leftJoin('c.translations', 'ct')
+            ->addSelect('PARTIAL ct.{id, title, slug, locale}')
+            ->leftJoin('c.media', 'm')
+            ->addSelect('PARTIAL m.{id, media, position}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, alt, locale}')
+            ->leftJoin('c.posts', 'p', 'WITH', 'p.active = :active')
+            ->addSelect('PARTIAL p.{id}')
+            ->where('c.id IN (:ids)')
+            ->setParameter('active', true)
+            ->setParameter('ids', $ids)
+            ->orderBy('c.updatedAt', 'DESC');
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
+
+        if (!\is_array($result)) {
+            return [];
+        }
+
+        return array_values(array_filter($result, static fn ($row): bool => $row instanceof Category));
+    }
+
     public function findOne(string $slug): ?Category
     {
         $qb = $this->createQueryBuilder('c')
@@ -56,7 +102,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->leftJoin('pm.translations', 'pmt')
             ->addSelect('PARTIAL pmt.{id, title, alt, locale}')
             ->leftJoin('p.tags', 't')
-            ->addSelect('PARTIAL t.{id, backgroundColor, textColor}')
+            ->addSelect('PARTIAL t.{id}')
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title, locale}')
             ->where('ct.slug = :slug')

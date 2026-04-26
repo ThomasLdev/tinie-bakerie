@@ -1,90 +1,111 @@
-<div {{ attributes }}>
-    {# Search Input #}
-    <div class="p-4 border-b border-gray-100">
-        <div class="relative">
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
-                 stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+<div data-controller="search live"
+     {{ attributes.defaults({
+         class: 'search',
+         role: 'dialog',
+         'aria-modal': 'true',
+         'aria-label': 'search.aria_label'|trans({}, 'layout'),
+     }).without('data-controller') }}
+     data-search-target="panel">
+    <header class="search__head">
+        <label class="search__input-wrap">
+            <twig:ux:icon name="lucide:search" class="search__icon" aria-hidden="true" />
+            <span class="sr-only">{{ 'search.label'|trans({}, 'layout') }}</span>
             <input type="search"
+                   class="search__input"
+                   data-search-target="input"
                    data-model="debounce(300)|query"
                    value="{{ query }}"
-                   placeholder="{{ 'app.search.placeholder'|trans }}"
+                   placeholder="{{ 'search.placeholder'|trans({}, 'messages') }}"
                    autocomplete="off"
-                   class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent text-sm">
-        </div>
-    </div>
-
-    {# Search Results #}
-    <div class="max-h-96 overflow-y-auto overscroll-contain">
-        {# Loading indicator #}
-        <div data-loading="show" class="hidden p-4 text-center">
-            <svg class="animate-spin h-5 w-5 mx-auto text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="text-sm text-gray-500 mt-2">{{ 'app.search.loading'|trans }}</p>
-        </div>
-
-        {% if query|length >= 2 %}
-            {% set results = this.results %}
-            {% if results|length > 0 %}
-                {# Results Header #}
-                <div class="px-4 py-2 border-b border-gray-100 bg-gray-50" data-loading="hide">
-                    <span class="text-xs font-medium text-gray-500">
-                        {{ 'app.search.results_count'|trans({'%count%': results|length}) }}
-                    </span>
-                </div>
-
-                {# Recipe Results #}
-                <div class="divide-y divide-gray-100" data-loading="hide">
-                    {% for result in results %}
-                        <a href="{{ path('app_post_show', {'postSlug': result.slug, 'categorySlug': result.categorySlug}) }}"
-                           class="flex items-center p-4 hover:bg-gray-50 transition-colors duration-150 group">
-                            <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-                                {% include 'partials/_media_thumbnail.html.twig' with {
-                                    path: result.mediaPath,
-                                    alt: result.title,
-                                    class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
-                                } only %}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="text-sm font-medium text-gray-900 truncate">{{ result.title }}</h4>
-                                <p class="text-xs text-gray-500 mt-0.5">{{ result.categoryTitle }}</p>
-                                {# Display highlighted snippet - raw filter allows <b> tags from ts_headline #}
-                                {% if result.headline %}
-                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2 [&>b]:font-semibold [&>b]:text-gray-900">
-                                        {{ result.headline|raw }}
-                                    </p>
-                                {% endif %}
-                            </div>
-                            <svg class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150 flex-shrink-0 ml-2"
-                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {# No Results State #}
-                <div class="p-8 text-center" data-loading="hide">
-                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <h3 class="text-sm font-medium text-gray-900 mb-2">{{ 'app.search.no_results'|trans }}</h3>
-                    <p class="text-xs text-gray-500">{{ 'app.search.no_results_hint'|trans }}</p>
-                </div>
+                   enterkeyhint="search">
+            {% if query is not empty %}
+                <button type="button"
+                        class="search__clear"
+                        data-action="live#action"
+                        data-live-action-param="clear"
+                        aria-label="{{ 'search.clear'|trans({}, 'layout') }}">
+                    <twig:ux:icon name="lucide:x" width="14" height="14" aria-hidden="true" />
+                </button>
             {% endif %}
-        {% else %}
-            {# Initial State #}
-            <div class="p-4">
-                <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">{{ 'app.search.popular'|trans }}</h3>
-                <div class="space-y-2">
-                    <p class="text-sm text-gray-500 italic">{{ 'app.search.type_to_search'|trans }}</p>
-                </div>
+        </label>
+        <button type="button"
+                class="search__close"
+                data-action="search#close"
+                aria-label="{{ 'search.close'|trans({}, 'layout') }}">
+            <span class="search__esc-key" aria-hidden="true">{{ 'search.esc_hint'|trans({}, 'layout') }}</span>
+            <twig:ux:icon name="lucide:x" class="search__close-icon" width="20" height="20" aria-hidden="true" />
+        </button>
+    </header>
+
+    <div class="search__body" data-loading="addClass(search__body--loading)">
+        {% if this.empty %}
+            <div class="search__empty">
+                <section class="search__suggest">
+                    <span class="kicker">{{ 'search.suggestions'|trans({}, 'messages') }}</span>
+                    <ul class="search__suggest-chips">
+                        {% for suggestion in this.suggestions %}
+                            <li>
+                                <button type="button"
+                                        class="search__sug-chip"
+                                        data-action="live#action"
+                                        data-live-action-param="fillQuery"
+                                        data-live-value-param="{{ suggestion }}">
+                                    {{ suggestion }}
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
             </div>
+        {% else %}
+            {% set results = computed.results %}
+            {% if results|length > 0 %}
+                <section class="search__results"
+                         aria-live="polite"
+                         aria-label="{{ 'search.results_aria'|trans({ '%count%': results|length }, 'messages') }}">
+                    <ul class="search__grid">
+                        {% for result in results %}
+                            {% set isHero = loop.first %}
+                            <li>
+                                <a href="{{ path('app_post_show', { postSlug: result.slug, categorySlug: result.categorySlug }) }}"
+                                   class="search__card{% if isHero %} search__card--hero{% endif %}"
+                                   data-action="search#close">
+                                    <div class="search__card-media">
+                                        <twig:Cover
+                                            :media="result.media"
+                                            variation="thumbnail"
+                                            alt=""
+                                            class="search__card-image"
+                                        />
+                                    </div>
+                                    <div class="search__card-body">
+                                        <h3 class="search__card-title">{{ result.title }}</h3>
+                                        {% if result.headline %}
+                                            <p class="search__card-desc">{{ result.headline|raw }}</p>
+                                        {% endif %}
+                                        <div class="search__card-foot">
+                                            <span class="search__card-meta">{{ result.categoryTitle }}</span>
+                                            <span class="search__card-arrow" aria-hidden="true">→</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% else %}
+                <section class="search__no-results" aria-live="polite">
+                    <div class="search__no-results-mark" aria-hidden="true">∅</div>
+                    <h3 class="search__no-results-title">
+                        {{ 'search.no_results_title_before'|trans({}, 'messages') }}
+                        <em>{{ query }}</em>
+                    </h3>
+                    <p class="search__no-results-hint">{{ 'search.no_results_hint'|trans({}, 'messages') }}</p>
+                    <twig:Button variant="soft" href="{{ path('app_post_index') }}">
+                        {{ 'search.no_results_cta'|trans({}, 'messages') }}
+                    </twig:Button>
+                </section>
+            {% endif %}
         {% endif %}
     </div>
 </div>

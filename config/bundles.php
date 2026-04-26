@@ -1,35 +1,33 @@
 <?php
 
-declare(strict_types=1);
-
-use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
-use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
-use JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle;
-use JoliCode\MediaBundle\JoliMediaBundle;
-use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Bundle\MakerBundle\MakerBundle;
-use Symfony\Bundle\MonologBundle\MonologBundle;
-use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
-use Symfony\UX\LiveComponent\LiveComponentBundle;
 use Symfony\UX\StimulusBundle\StimulusBundle;
-use Symfony\UX\Turbo\TurboBundle;
-use Symfony\UX\TwigComponent\TwigComponentBundle;
-use Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
+use Symfony\UX\Turbo\TurboBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 use Zenstruck\Foundry\ZenstruckFoundryBundle;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
+use JoliCode\MediaBundle\JoliMediaBundle;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\JoliMediaEasyAdminBundle;
+use Symfony\UX\LiveComponent\LiveComponentBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\UX\Toolkit\UXToolkitBundle;
+use Symfony\UX\Icons\UXIconsBundle;
 
 return [
     FrameworkBundle::class => ['all' => true],
     TwigBundle::class => ['all' => true],
     WebProfilerBundle::class => ['dev' => true, 'test' => true],
     StimulusBundle::class => ['all' => true],
-    SymfonycastsTailwindBundle::class => ['all' => true],
     DoctrineBundle::class => ['all' => true],
     DoctrineMigrationsBundle::class => ['all' => true],
     TwigExtraBundle::class => ['all' => true],
@@ -46,4 +44,6 @@ return [
     JoliMediaEasyAdminBundle::class => ['all' => true],
     LiveComponentBundle::class => ['all' => true],
     MonologBundle::class => ['all' => true],
+    UXToolkitBundle::class => ['dev' => true, 'test' => true],
+    UXIconsBundle::class => ['all' => true],
 ];

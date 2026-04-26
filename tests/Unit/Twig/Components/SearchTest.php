@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Twig\Components;
 
-use App\Services\Search\PostSearch;
+use App\Services\Search\PostSearchInterface;
 use App\Services\Search\PostSearchResult;
 use App\Twig\Components\Search;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -22,7 +22,7 @@ final class SearchTest extends TestCase
     #[DataProvider('provideShortQueries')]
     public function testReturnsEmptyForShortQuery(string $query): void
     {
-        $postSearch = $this->createMock(PostSearch::class);
+        $postSearch = $this->createMock(PostSearchInterface::class);
         $postSearch->expects(self::never())->method('search');
 
         $component = new Search($postSearch);
@@ -49,16 +49,16 @@ final class SearchTest extends TestCase
                 excerpt: 'A delicious cake',
                 categoryTitle: 'Desserts',
                 categorySlug: 'desserts',
-                mediaPath: null,
+                media: null,
                 rank: 1.0,
                 headline: null,
             ),
         ];
 
-        $postSearch = $this->createMock(PostSearch::class);
+        $postSearch = $this->createMock(PostSearchInterface::class);
         $postSearch->expects(self::once())
             ->method('search')
-            ->with('chocolate', 15)
+            ->with('chocolate', Search::RESULT_LIMIT)
             ->willReturn($expectedResults);
 
         $component = new Search($postSearch);
@@ -70,10 +70,10 @@ final class SearchTest extends TestCase
     #[TestDox('Handles multibyte characters correctly (2 chars = valid)')]
     public function testHandlesMultibyteCharacters(): void
     {
-        $postSearch = $this->createMock(PostSearch::class);
+        $postSearch = $this->createMock(PostSearchInterface::class);
         $postSearch->expects(self::once())
             ->method('search')
-            ->with('日本', 15)
+            ->with('日本', Search::RESULT_LIMIT)
             ->willReturn([]);
 
         $component = new Search($postSearch);
@@ -85,7 +85,7 @@ final class SearchTest extends TestCase
     #[TestDox('Single multibyte character is too short')]
     public function testSingleMultibyteCharacterIsTooShort(): void
     {
-        $postSearch = $this->createMock(PostSearch::class);
+        $postSearch = $this->createMock(PostSearchInterface::class);
         $postSearch->expects(self::never())->method('search');
 
         $component = new Search($postSearch);

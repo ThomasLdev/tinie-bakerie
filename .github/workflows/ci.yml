@@ -51,6 +51,13 @@ jobs:
           path: /tmp
       - name: Load Docker image
         run: zstd -d < /tmp/app-php.tar.zst | docker load
+      - name: Generate throwaway TLS certs for FrankenPHP
+        run: |
+          mkdir -p frankenphp/certs
+          openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
+            -subj "/CN=local.tinie-bakerie.com" \
+            -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
+            -out  frankenphp/certs/local.tinie-bakerie.com.pem
       - name: Start services (including Node.js for linting)
         run: docker compose --profile dev up --wait --no-build
       - name: Run PHPStan
@@ -63,7 +70,7 @@ jobs:
         run: make twig-linter
       - name: Install Node.js dependencies
         run: make node-install
-      - name: Run ESLint
+      - name: Run Biome (JS + CSS lint + format check)
         run: make lint
       - name: Run PHPUnit Unit Suite
         run: make test.unit
@@ -81,6 +88,13 @@ jobs:
           path: /tmp
       - name: Load Docker image
         run: zstd -d < /tmp/app-php.tar.zst | docker load
+      - name: Generate throwaway TLS certs for FrankenPHP
+        run: |
+          mkdir -p frankenphp/certs
+          openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
+            -subj "/CN=local.tinie-bakerie.com" \
+            -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
+            -out  frankenphp/certs/local.tinie-bakerie.com.pem
       - name: Start services (production mode - no Node.js needed for PHP tests)
         run: docker compose up --wait --no-build
       - name: Create Test Database
@@ -107,6 +121,13 @@ jobs:
           path: /tmp
       - name: Load Docker image
         run: zstd -d < /tmp/app-php.tar.zst | docker load
+      - name: Generate throwaway TLS certs for FrankenPHP
+        run: |
+          mkdir -p frankenphp/certs
+          openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
+            -subj "/CN=local.tinie-bakerie.com" \
+            -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
+            -out  frankenphp/certs/local.tinie-bakerie.com.pem
       - name: Start services (including Node.js for E2E)
         run: docker compose --profile dev up --wait --no-build
       - name: Create Test Database

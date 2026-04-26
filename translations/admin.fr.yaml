@@ -33,7 +33,10 @@ admin:
         title_placeholder: "Titre de l'article (doit être unique)"
         slug: 'Slug (crée automatiquement)'
         active: 'Actif'
+        is_featured: 'Mis en avant'
         cooking_time:
+            label: 'Temps de cuisson (en minutes)'
+        preparation_time:
             label: 'Temps de préparation (en minutes)'
         difficulty:
             label: 'Difficulté'
@@ -41,10 +44,7 @@ admin:
             label: 'Ingrédient & Notes'
             help: 'Séparer chaque ligne par un pipe (|). Exemple : 200g de farine|100g de sucre|2 œufs'
     tag:
-        background_color:
-            title: 'Couleur de fond'
-        text_color:
-            title: 'Couleur du texte'
+        is_featured: 'Mise en avant'
         dashboard:
             singular: 'Étiquette'
             plural: 'Étiquettes'
@@ -53,6 +53,7 @@ admin:
             edit: 'Modifier une étiquette'
             detail: "Détail de l'étiquette"
     category:
+        is_featured: 'Mise en avant'
         dashboard:
             singular: 'Catégorie'
             plural: 'Catégories'

@@ -13,25 +13,9 @@
                 <h1 class="text-4xl font-playfair font-bold text-gray-900 mb-4">{{ category.title }}</h1>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ category.description }}</p>
             </div>
-            {% if category.media is not empty %}
-                {% for medium in category.media %}
-                    {% set mediaObject = medium.media %}
-
-                    {% if mediaObject is not same as null %}
-                        {% if mediaObject.mimeType is same as 'image/jpeg' %}
-                            <twig:joli:Img
-                                path="{{ mediaObject.path }}"
-                                variation="thumbnail-webp"
-                                alt="{{ medium.alt }}"
-                            />
-                        {% else %}
-                            <video autoplay loop poster="{{ mediaObject.path }}" title="{{ medium.title }}" width="300">
-                                <source src="{{ mediaObject.path }}" type="video/mp4">
-                            </video>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            {% for medium in category.media %}
+                <twig:Cover :attachment="medium" variation="medium" autoplay />
+            {% endfor %}
         </div>
     </div>
 
@@ -46,28 +30,12 @@
                    href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
                 >
                     <div class="aspect-square overflow-hidden">
-                        {% set mediaObject = mainMedia.media %}
-
-                        {% if null is not same as mediaObject %}
-                            {% if mediaObject.mimeType is same as 'image/jpeg' %}
-                                <twig:joli:Img
-                                    path="{{ mediaObject.path }}"
-                                    variation="thumbnail-2x-webp"
-                                    alt="{{ mainMedia.alt }}"
-                                />
-                            {% else %}
-                                <video autoplay="autoplay" loop="loop" poster="{{ mediaObject.url }}" title="{{ mainMedia.title }}" width="300">
-                                    <source src="{{ mediaObject.url }}" type="video/mp4">
-                                </video>
-                            {% endif %}
-                        {% endif %}
+                        <twig:Cover :attachment="mainMedia" variation="thumbnail" autoplay />
                     </div>
                     <div class="p-4">
                         <div class="flex items-center gap-2 mb-2">
                             {% for tag in post.tags %}
-                                <span class="inline-block px-2 py-1 text-xs rounded-full"
-                                      style="background-color:{{ tag.backgroundColor }}; color:{{ tag.textColor }};"
-                                >
+                                <span class="inline-block px-2 py-1 text-xs rounded-full">
                                 {{ tag.title }}
                             </span>
                             {% endfor %}

@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale }}" data-palette="sage" data-density="aerated">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="turbo-prefetch" content="false">
-        <title> Tinie Bakerie - {% block title %}Welcome{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <title>Tinie Bakerie — {% block title %}Pâtisseries maison & douceurs de saison{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🥐</text></svg>">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap">
+
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
@@ -14,12 +19,15 @@
             {% block importmap %}{{ importmap() }}{% endblock %}
         {% endblock %}
 
-        {% block header %}
-        {% endblock %}
+        {% block header %}{% endblock %}
     </head>
-    <body class="min-h-screen">
-        {{ render(controller('App\\Controller\\HeaderController::renderHeader')) }}
-        {% block body %}{% endblock %}
-        {% include 'page/layout/footer.html.twig' %}
+    <body>
+        <a href="#main-content" class="skip-link">{{ 'header.skip_to_content'|trans({}, 'layout') }}</a>
+        <twig:Header />
+        <main id="main-content" tabindex="-1">
+            {% block body %}{% endblock %}
+        </main>
+        <twig:Footer />
+        <twig:Search id="search-panel" />
     </body>
 </html>

@@ -7,21 +7,18 @@
     "test:e2e:debug": "PWDEBUG=1 playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 9323",
-    "lint": "eslint assets/**/*.js",
-    "lint:fix": "eslint assets/**/*.js --fix",
-    "format": "prettier --write \"assets/**/*.js\"",
-    "format:check": "prettier --check \"assets/**/*.js\""
+    "lint": "biome check assets/",
+    "lint:fix": "biome check --write assets/",
+    "format": "biome format --write assets/",
+    "format:check": "biome format assets/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
+    "@biomejs/biome": "2.4.13",
     "@hotwired/stimulus": "^3.2.2",
     "@playwright/test": "^1.48.0",
-    "eslint": "^9.15.0",
-    "eslint-config-prettier": "^9.1.0",
-    "prettier": "^3.3.3",
     "swiper": "^11.1.15"
   }
 }

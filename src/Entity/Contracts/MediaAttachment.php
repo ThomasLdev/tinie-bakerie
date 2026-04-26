@@ -14,4 +14,8 @@ interface MediaAttachment
     public function getMedia(): ?Media;
 
     public function setMedia(?Media $media): self;
+
+    public function getAlt(): string;
+
+    public function getTitle(): string;
 }

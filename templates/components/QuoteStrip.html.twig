@@ -1,0 +1,13 @@
+{% props kicker = null, quote, author = null %}
+
+<figure {{ attributes.defaults({ class: 'quote-strip' }) }}>
+    {% if kicker %}
+        <span class="kicker">{{ kicker }}</span>
+    {% endif %}
+
+    <blockquote class="quote-strip__quote">{{ quote }}</blockquote>
+
+    {% if author %}
+        <figcaption class="quote-strip__author">{{ author }}</figcaption>
+    {% endif %}
+</figure>

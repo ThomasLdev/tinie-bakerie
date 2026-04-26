@@ -42,8 +42,6 @@ final class PostCrudTestStory extends Story
 
         // Create test tags with translations
         $this->addState('tag1', TagFactory::createOne([
-            'backgroundColor' => '#FF0000',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -57,8 +55,6 @@ final class PostCrudTestStory extends Story
         ]));
 
         $this->addState('tag2', TagFactory::createOne([
-            'backgroundColor' => '#00FF00',
-            'textColor' => '#000000',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -72,8 +68,6 @@ final class PostCrudTestStory extends Story
         ]));
 
         $this->addState('tag3', TagFactory::createOne([
-            'backgroundColor' => '#0000FF',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -89,22 +83,25 @@ final class PostCrudTestStory extends Story
 
     public function getCategory(): Category
     {
-        return self::get('category');
+        $category = self::get('category');
+        \assert($category instanceof Category);
+
+        return $category;
     }
 
     public function getTag1(): Tag
     {
-        return self::get('tag1');
+        return $this->getTag('tag1');
     }
 
     public function getTag2(): Tag
     {
-        return self::get('tag2');
+        return $this->getTag('tag2');
     }
 
     public function getTag3(): Tag
     {
-        return self::get('tag3');
+        return $this->getTag('tag3');
     }
 
     /**
@@ -117,5 +114,13 @@ final class PostCrudTestStory extends Story
             $this->getTag2(),
             $this->getTag3(),
         ];
+    }
+
+    private function getTag(string $key): Tag
+    {
+        $tag = self::get($key);
+        \assert($tag instanceof Tag);
+
+        return $tag;
     }
 }

@@ -48,6 +48,7 @@ final class SluggableEntityListenerTest extends TestCase
 
         $this->slugger->method('slugify')->with('Hello World')->willReturn('hello-world');
 
+        /** @var BeforeEntityPersistedEvent<object> $event */
         $event = new BeforeEntityPersistedEvent($entity);
 
         $this->listener->setTranslationSlugOnCreate($event);
@@ -65,6 +66,7 @@ final class SluggableEntityListenerTest extends TestCase
 
         $this->slugger->method('slugify')->with('Test Post')->willReturn('test-post');
 
+        /** @var BeforeEntityUpdatedEvent<object> $event */
         $event = new BeforeEntityUpdatedEvent($entity);
 
         $this->listener->setTranslationSlugOnUpdate($event);
@@ -77,6 +79,7 @@ final class SluggableEntityListenerTest extends TestCase
 
         $this->slugger->expects(self::never())->method('slugify');
 
+        /** @var BeforeEntityPersistedEvent<object> $event */
         $event = new BeforeEntityPersistedEvent($entity);
 
         $this->listener->setTranslationSlugOnCreate($event);
@@ -92,6 +95,7 @@ final class SluggableEntityListenerTest extends TestCase
 
         $this->slugger->expects(self::never())->method('slugify');
 
+        /** @var BeforeEntityPersistedEvent<object> $event */
         $event = new BeforeEntityPersistedEvent($entity);
 
         $this->listener->setTranslationSlugOnCreate($event);
@@ -110,6 +114,7 @@ final class SluggableEntityListenerTest extends TestCase
 
         $this->slugger->expects(self::once())->method('slugify')->with($title)->willReturn($expectedSlug);
 
+        /** @var BeforeEntityPersistedEvent<object> $event */
         $event = new BeforeEntityPersistedEvent($entity);
 
         $this->listener->setTranslationSlugOnCreate($event);

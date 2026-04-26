@@ -1,0 +1,14 @@
+<a {{ attributes.defaults({class: 'category-card'}) }} href="{{ this.href }}">
+    <div class="category-card__media">
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            variation="medium"
+            alt=""
+            class="category-card__image"
+        />
+    </div>
+    <div class="category-card__body">
+        <h3 class="category-card__name">{{ this.category.title }}</h3>
+        <span class="category-card__meta">{{ 'category.recipes_count'|trans({'%count%': this.recipeCount}, 'messages') }}</span>
+    </div>
+</a>

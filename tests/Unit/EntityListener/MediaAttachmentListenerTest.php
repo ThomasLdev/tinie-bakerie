@@ -38,6 +38,9 @@ final class MediaAttachmentListenerTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
     }
 
+    /**
+     * @param class-string<MediaAttachment> $entityClass
+     */
     #[TestDox('Deletes stored media when $entityClass is removed')]
     #[DataProvider('provideMediaAttachmentClasses')]
     public function testDeletesStoredMediaOnRemove(string $entityClass): void
@@ -46,7 +49,6 @@ final class MediaAttachmentListenerTest extends TestCase
         $media->expects(self::once())->method('isStored')->willReturn(true);
         $media->expects(self::once())->method('delete');
 
-        /** @var MediaAttachment&MockObject $entity */
         $entity = $this->createMock($entityClass);
         $entity->method('getMedia')->willReturn($media);
 
@@ -55,6 +57,9 @@ final class MediaAttachmentListenerTest extends TestCase
         $this->listener->preRemove($entity, $event);
     }
 
+    /**
+     * @return \Generator<string, array{class-string<MediaAttachment>}>
+     */
     public static function provideMediaAttachmentClasses(): \Generator
     {
         yield 'PostMedia' => [PostMedia::class];
@@ -85,10 +90,8 @@ final class MediaAttachmentListenerTest extends TestCase
 
         $event = new PreRemoveEventArgs($entity, $this->entityManager);
 
-        // Should not throw any exception
-        $this->listener->preRemove($entity, $event);
+        $this->expectNotToPerformAssertions();
 
-        // If we reach here without exception, the test passes
-        self::assertTrue(true);
+        $this->listener->preRemove($entity, $event);
     }
 }

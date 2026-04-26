@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile tailwind tailwind-watch watch node-install lint lint-fix format format-check type-check
+.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -97,29 +97,23 @@ doctrine-db-test-create:
 assets-install: ## Install assets in the public directory
 	@$(PHP_CONT) bin/console assets:install
 
-assets-compile: tailwind ## Compile all assets (Tailwind) for production
+assets-compile: ## Compile all assets for production
 	@$(PHP_CONT) bin/console asset-map:compile
-
-tailwind: ## Build Tailwind CSS
-	@$(PHP_CONT) bin/console tailwind:build
-
-tailwind-watch: ## Watch and rebuild Tailwind CSS on changes
-	@$(PHP_CONT) bin/console tailwind:build --watch
 
 ## —— Node.js 📦 ———————————————————————————————————————————————————————————————
 node-install: ## Install Node.js dependencies
 	@$(NPM) install
 
-lint: ## Lint JS files with ESLint
+lint: ## Lint JS + CSS with Biome
 	@$(NPM) run lint
 
-lint-fix: ## Lint and auto-fix JS files
+lint-fix: ## Lint + auto-fix JS + CSS with Biome
 	@$(NPM) run lint:fix
 
-format: ## Format code with Prettier
+format: ## Format JS + CSS with Biome
 	@$(NPM) run format
 
-format-check: ## Check code formatting with Prettier
+format-check: ## Check JS + CSS formatting with Biome
 	@$(NPM) run format:check
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————

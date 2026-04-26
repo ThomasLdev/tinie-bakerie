@@ -1,0 +1,67 @@
+<article {{ attributes.defaults({class: 'hero'}) }}>
+    <div class="hero__media">
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            variation="large"
+            :alt="this.post.title"
+            eager
+            autoplay
+            class="hero__cover"
+        />
+
+        <span class="hero__badge">{{ 'hero.featured'|trans({}, 'layout') }}</span>
+    </div>
+
+    <div class="hero__body">
+        <span class="kicker">
+            {{ 'home.featured_recipe_label'|trans }}
+        </span>
+
+        <h1 class="hero__title">{{ this.post.title }}</h1>
+
+        {% if this.post.excerpt %}
+            <p class="hero__desc">{{ this.post.excerpt }}</p>
+        {% endif %}
+
+        {% if this.preparationTimeFormatted or this.cookingTimeFormatted %}
+            <dl class="hero__meta">
+                {% if this.preparationTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:utensils-crossed" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.prep'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.preparationTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+
+                {% if this.cookingTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:flame" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.cook'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.cookingTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+
+                {% if this.preparationTimeFormatted and this.cookingTimeFormatted %}
+                    <div class="hero__meta-item">
+                        <twig:ux:icon name="lucide:clock" class="hero__meta-icon" aria-hidden="true" />
+                        <dt class="hero__meta-label">{{ 'recipe.total'|trans }}</dt>
+                        <dd class="hero__meta-value">{{ this.totalTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+            </dl>
+        {% endif %}
+
+        {% if this.tagTitles|length > 0 %}
+            <ul class="hero__tags">
+                {% for title in this.tagTitles %}
+                    <li><twig:Chip>{{ title }}</twig:Chip></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <twig:Button variant="primary" href="{{ this.ctaHref }}" class="hero__cta">
+            {{ 'recipe.view'|trans }}
+            <twig:ux:icon name="lucide:arrow-right" width="14" height="14" aria-hidden="true" />
+        </twig:Button>
+    </div>
+</article>
