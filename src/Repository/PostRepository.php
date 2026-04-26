@@ -124,7 +124,11 @@ class PostRepository extends ServiceEntityRepository
             ->setHint(Query::HINT_REFRESH, true)
             ->getResult();
 
-        return \is_array($result) ? array_values($result) : [];
+        if (!\is_array($result)) {
+            return [];
+        }
+
+        return array_values(array_filter($result, static fn ($row): bool => $row instanceof Post));
     }
 
     public function findOneActive(string $slug): ?Post

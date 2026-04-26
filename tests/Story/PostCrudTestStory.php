@@ -83,22 +83,25 @@ final class PostCrudTestStory extends Story
 
     public function getCategory(): Category
     {
-        return self::get('category');
+        $category = self::get('category');
+        \assert($category instanceof Category);
+
+        return $category;
     }
 
     public function getTag1(): Tag
     {
-        return self::get('tag1');
+        return $this->getTag('tag1');
     }
 
     public function getTag2(): Tag
     {
-        return self::get('tag2');
+        return $this->getTag('tag2');
     }
 
     public function getTag3(): Tag
     {
-        return self::get('tag3');
+        return $this->getTag('tag3');
     }
 
     /**
@@ -111,5 +114,13 @@ final class PostCrudTestStory extends Story
             $this->getTag2(),
             $this->getTag3(),
         ];
+    }
+
+    private function getTag(string $key): Tag
+    {
+        $tag = self::get($key);
+        \assert($tag instanceof Tag);
+
+        return $tag;
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use App\Services\Search\PostSearch;
+use App\Services\Search\PostSearchInterface;
 use App\Services\Search\PostSearchResult;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -36,7 +36,7 @@ final class Search
     public string $query = '';
 
     public function __construct(
-        private readonly PostSearch $postSearch,
+        private readonly PostSearchInterface $postSearch,
     ) {
     }
 

@@ -10,7 +10,7 @@ use App\Repository\PostSearchRepositoryInterface;
  * Orchestrates post search operations.
  * Delegates data access to repository and DTO creation to factory.
  */
-final readonly class PostSearch
+final readonly class PostSearch implements PostSearchInterface
 {
     public function __construct(
         private PostSearchRepositoryInterface $repository,

@@ -40,16 +40,21 @@ abstract class BaseControllerTestCase extends WebTestCase
         );
 
         $this->container = self::getContainer();
-        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        \assert($entityManager instanceof EntityManagerInterface);
+        $this->entityManager = $entityManager;
     }
 
     /**
      * Load a Foundry Story and clear the EntityManager identity map.
      * This ensures subsequent queries return fresh entities respecting filters.
      *
-     * @template T
+     * @template T of Story
      *
      * @param callable(): T $storyLoader
+     *
+     * @return T
      */
     protected function loadStory(callable $storyLoader): Story
     {

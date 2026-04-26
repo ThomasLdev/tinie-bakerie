@@ -312,6 +312,12 @@ final class ValidTranslationsValidatorTest extends TestCase
 
     /**
      * Creates a mock Translation object with the given locale.
+     *
+     * Translation/Translatable form a mutually recursive generic pair, so we
+     * cannot meaningfully pin both sides for a generic mock. The validator
+     * under test is itself generic, so this is fine in practice.
+     *
+     * @phpstan-ignore missingType.generics
      */
     private function createTranslationMock(string $locale): Translation&MockObject
     {

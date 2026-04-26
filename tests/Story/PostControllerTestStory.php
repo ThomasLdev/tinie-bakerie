@@ -169,11 +169,14 @@ final class PostControllerTestStory extends Story
         ]));
     }
 
+    /**
+     * @return list<Post>
+     */
     public function getActivePosts(): array
     {
         return [
-            self::get('activePost1'),
-            self::get('activePost2'),
+            $this->getPost('activePost1'),
+            $this->getPost('activePost2'),
         ];
     }
 
@@ -184,7 +187,7 @@ final class PostControllerTestStory extends Story
 
     public function getInactivePost(): Post
     {
-        return self::get('inactivePost');
+        return $this->getPost('inactivePost');
     }
 
     /**
@@ -201,5 +204,13 @@ final class PostControllerTestStory extends Story
     public function getPostSlug(Post $post, string $locale): string
     {
         return $post->getTranslationByLocale($locale)?->getSlug() ?? '';
+    }
+
+    private function getPost(string $key): Post
+    {
+        $post = self::get($key);
+        \assert($post instanceof Post);
+
+        return $post;
     }
 }

@@ -14,10 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
-use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Field\MediaChoiceField;
 use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
@@ -97,11 +96,8 @@ class TagCrudController extends AbstractCrudController
     {
         yield BooleanField::new('isFeatured', 'admin.tag.is_featured');
 
-        yield Field::new('image', 'admin.global.media.file')
-            ->setFormType(MediaChoiceType::class)
-            ->setFormTypeOptions([
-                'required' => false,
-            ])
+        yield MediaChoiceField::new('image', 'admin.global.media.file')
+            ->setFormTypeOptions(['required' => false])
             ->setColumns('col-12');
 
         yield CollectionField::new('translations', 'admin.global.translations')

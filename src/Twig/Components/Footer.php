@@ -17,7 +17,9 @@ final class Footer
     {
     }
 
-    /** @return list<Category> */
+    /**
+     * @return list<Category>
+     */
     public function getFeaturedCategories(): array
     {
         return $this->categoryRepository->findFeatured($this->featuredLimit);

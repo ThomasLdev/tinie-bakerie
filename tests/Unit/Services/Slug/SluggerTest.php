@@ -34,6 +34,9 @@ final class SluggerTest extends TestCase
         self::assertSame($expected, $this->slugger->slugify($input));
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideBasicSlugificationScenarios(): iterable
     {
         yield 'simple lowercase text returns as-is' => [
@@ -77,6 +80,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideSpecialCharacterScenarios(): iterable
     {
         yield 'text with exclamation marks converts to hyphens' => [
@@ -210,6 +216,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideAccentedCharacterScenarios(): iterable
     {
         yield 'text with French accents é è ê ë' => [
@@ -313,6 +322,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideNumberScenarios(): iterable
     {
         yield 'text with single digit numbers' => [
@@ -351,6 +363,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideEdgeCaseScenarios(): iterable
     {
         yield 'empty string returns empty string' => [
@@ -414,6 +429,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideUnicodeScenarios(): iterable
     {
         yield 'text with emoji heart' => [
@@ -502,6 +520,9 @@ final class SluggerTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{input: string, expected: string}>
+     */
     public static function provideRealWorldScenarios(): iterable
     {
         yield 'blog post title in English' => [

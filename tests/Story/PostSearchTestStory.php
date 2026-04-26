@@ -64,26 +64,22 @@ final class PostSearchTestStory extends Story
 
     public function getChocolateCake(): Post
     {
-        // @var Post $proxy
-        return self::get(self::POST_CHOCOLATE_CAKE);
+        return $this->getPost(self::POST_CHOCOLATE_CAKE);
     }
 
     public function getVeganCookies(): Post
     {
-        // @var Post $proxy
-        return self::get(self::POST_VEGAN_COOKIES);
+        return $this->getPost(self::POST_VEGAN_COOKIES);
     }
 
     public function getTiramisu(): Post
     {
-        // @var Post $proxy
-        return self::get(self::POST_TIRAMISU);
+        return $this->getPost(self::POST_TIRAMISU);
     }
 
     public function getInactivePost(): Post
     {
-        // @var Post $proxy
-        return self::get(self::POST_INACTIVE);
+        return $this->getPost(self::POST_INACTIVE);
     }
 
     /**
@@ -133,6 +129,14 @@ final class PostSearchTestStory extends Story
     public function getExpectedTitle(string $postKey, string $locale): string
     {
         return $this->getExpectedTitles()[$postKey][$locale];
+    }
+
+    private function getPost(string $key): Post
+    {
+        $post = self::get($key);
+        \assert($post instanceof Post);
+
+        return $post;
     }
 
     private function createTags(): void
