@@ -33,7 +33,7 @@ class PostRepository extends ServiceEntityRepository
             ->leftJoin('c.translations', 'ct')
             ->addSelect('PARTIAL ct.{id, title, slug, locale}')
             ->leftJoin('p.tags', 't')
-            ->addSelect('PARTIAL t.{id, backgroundColor, textColor}')
+            ->addSelect('PARTIAL t.{id}')
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title, locale}')
             ->leftJoin('p.media', 'm')

@@ -32,10 +32,20 @@ final class RecipeCard
         return $first instanceof PostMedia ? $first : null;
     }
 
-    public function getDurationFormatted(): ?string
+    public function getPreparationTimeFormatted(): ?string
+    {
+        return $this->durationFormatter->formatDuration($this->post->getPreparationTime());
+    }
+
+    public function getCookingTimeFormatted(): ?string
+    {
+        return $this->durationFormatter->formatDuration($this->post->getCookingTime());
+    }
+
+    public function getTotalTimeFormatted(): ?string
     {
         return $this->durationFormatter->formatDuration(
-            $this->post->getPreparationTime() + $this->post->getCookingTime(),
+            $this->post->getTotalRecipeTime(),
         );
     }
 

@@ -42,8 +42,6 @@ final class PostCrudTestStory extends Story
 
         // Create test tags with translations
         $this->addState('tag1', TagFactory::createOne([
-            'backgroundColor' => '#FF0000',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -57,8 +55,6 @@ final class PostCrudTestStory extends Story
         ]));
 
         $this->addState('tag2', TagFactory::createOne([
-            'backgroundColor' => '#00FF00',
-            'textColor' => '#000000',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -72,8 +68,6 @@ final class PostCrudTestStory extends Story
         ]));
 
         $this->addState('tag3', TagFactory::createOne([
-            'backgroundColor' => '#0000FF',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',

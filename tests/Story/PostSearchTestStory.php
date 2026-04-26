@@ -138,8 +138,6 @@ final class PostSearchTestStory extends Story
     private function createTags(): void
     {
         $this->addState(self::TAG_VEGAN, TagFactory::createOne([
-            'backgroundColor' => '#22c55e',
-            'textColor' => '#ffffff',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',
@@ -153,8 +151,6 @@ final class PostSearchTestStory extends Story
         ]));
 
         $this->addState(self::TAG_CHOCOLATE, TagFactory::createOne([
-            'backgroundColor' => '#78350f',
-            'textColor' => '#ffffff',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',

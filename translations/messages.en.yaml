@@ -28,14 +28,19 @@ recipe:
     cook: 'Cook time'
     total: 'Total'
     view: 'View recipe'
+    difficulty:
+        label: 'Difficulty'
+        easy: 'Easy'
+        medium: 'Medium'
+        advanced: 'Advanced'
 category:
     recipes_count: '{0} No recipes|{1} 1 recipe|]1,Inf] %count% recipes'
 home:
     featured_recipe_label: 'Featured recipe'
-    categories:
+    tags:
         kicker: 'By craving'
         title_before: 'Browse'
-        title_em: 'categories'
+        title_em: 'cravings'
         sub: 'From morning pastries to celebration desserts.'
     popular:
         kicker: 'This week'
@@ -43,6 +48,10 @@ home:
         title_em: 'loved'
         view_all: 'All recipes'
         badge_signature: 'Signature'
+    philosophy:
+        kicker: 'Philosophy'
+        quote: '“Pastry is loving precision.”'
+        author: '— Tinie, founder'
 search:
     placeholder: 'A recipe, an ingredient, a technique…'
     suggestions: 'Suggestions'

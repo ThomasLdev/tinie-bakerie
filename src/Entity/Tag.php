@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\Translatable;
+use App\Entity\Traits\Featurable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use JoliCode\MediaBundle\Doctrine\Types as JoliMediaTypes;
+use JoliCode\MediaBundle\Model\Media;
 
 /**
  * @implements Translatable<TagTranslation>
@@ -18,6 +20,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 class Tag implements Translatable, \Stringable
 {
+    use Featurable;
     use TimestampableEntity;
 
     /** @use TranslationAccessorTrait<TagTranslation> */
@@ -32,11 +35,8 @@ class Tag implements Translatable, \Stringable
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
     private Collection $posts;
 
-    #[ORM\Column(type: Types::STRING, options: ['default' => '#000000'])]
-    private string $backgroundColor = '#000000';
-
-    #[ORM\Column(type: Types::STRING, options: ['default' => '#FFFFFF'])]
-    private string $textColor = '#FFFFFF';
+    #[ORM\Column(type: JoliMediaTypes::MEDIA, nullable: true)]
+    private ?Media $image = null;
 
     /** @var Collection<int,TagTranslation> */
     #[ORM\OneToMany(
@@ -71,26 +71,14 @@ class Tag implements Translatable, \Stringable
         return $this->posts;
     }
 
-    public function getBackgroundColor(): string
+    public function getImage(): ?Media
     {
-        return $this->backgroundColor;
+        return $this->image;
     }
 
-    public function setBackgroundColor(string $backgroundColor): self
+    public function setImage(?Media $image): self
     {
-        $this->backgroundColor = $backgroundColor;
-
-        return $this;
-    }
-
-    public function getTextColor(): string
-    {
-        return $this->textColor;
-    }
-
-    public function setTextColor(string $textColor): self
-    {
-        $this->textColor = $textColor;
+        $this->image = $image;
 
         return $this;
     }

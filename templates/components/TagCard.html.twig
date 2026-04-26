@@ -1,0 +1,14 @@
+<div {{ attributes.defaults({class: 'tag-card'}) }}>
+    <div class="tag-card__media">
+        <twig:Cover
+            :media="this.image"
+            variation="medium"
+            alt=""
+            class="tag-card__image"
+        />
+    </div>
+    <div class="tag-card__body">
+        <h3 class="tag-card__name">{{ this.tag.title }}</h3>
+        <span class="tag-card__meta">{{ 'category.recipes_count'|trans({'%count%': this.recipeCount}, 'messages') }}</span>
+    </div>
+</div>

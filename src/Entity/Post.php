@@ -326,4 +326,9 @@ class Post implements Translatable
     {
         return $this->getCurrentTranslation()?->getExcerpt() ?? '';
     }
+
+    public function getTotalRecipeTime(): int
+    {
+        return $this->cookingTime + $this->preparationTime;
+    }
 }

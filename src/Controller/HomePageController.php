@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Post;
-use App\Repository\CategoryRepository;
+use App\Entity\Tag;
 use App\Repository\PostRepository;
+use App\Repository\TagRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -19,12 +19,12 @@ class HomePageController extends AbstractController
 {
     public function __construct(
         private readonly PostRepository $postRepository,
-        private readonly CategoryRepository $categoryRepository,
+        private readonly TagRepository $tagRepository,
     ) {
     }
 
     /**
-     * @return array{featuredPost: ?Post, featuredPosts: list<Post>, featuredCategories: list<Category>}
+     * @return array{featuredPost: ?Post, featuredPosts: list<Post>, featuredTags: list<Tag>}
      */
     #[Route('{_locale<%app.supported_locales%>}')]
     #[Template('page/home.html.twig')]
@@ -33,7 +33,7 @@ class HomePageController extends AbstractController
         return [
             'featuredPost' => $this->postRepository->findLatestActive(),
             'featuredPosts' => $this->postRepository->findFeatured(5),
-            'featuredCategories' => $this->categoryRepository->findFeatured(5),
+            'featuredTags' => $this->tagRepository->findFeatured(5),
         ];
     }
 

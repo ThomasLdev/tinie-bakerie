@@ -7,12 +7,19 @@ namespace App\Controller\Admin;
 use App\Entity\Tag;
 use App\Form\Type\TagTranslationType;
 use App\Services\Locale\Locales;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
 
 /**
  * @extends AbstractCrudController<Tag>
@@ -21,6 +28,21 @@ class TagCrudController extends AbstractCrudController
 {
     public function __construct(private readonly Locales $locales)
     {
+    }
+
+    #[\Override]
+    public function configureAssets(Assets $assets): Assets
+    {
+        // this should not be needed, but there is a bug in EA with assets in nested forms
+        // see https://github.com/EasyCorp/EasyAdminBundle/issues/6127
+        $package = new PathPackage(
+            '/bundles/jolimediaeasyadmin',
+            new JsonManifestVersionStrategy(__DIR__ . '/../../../public/bundles/jolimediaeasyadmin/manifest.json'),
+        );
+
+        return $assets
+            ->addCssFile($package->getUrl('joli-media-easy-admin.css'))
+            ->addJsFile($package->getUrl('joli-media-easy-admin.js'));
     }
 
     public static function getEntityFqcn(): string
@@ -47,12 +69,20 @@ class TagCrudController extends AbstractCrudController
             ->setPageTitle('index', 'admin.tag.dashboard.index')
             ->setPageTitle('new', 'admin.tag.dashboard.create')
             ->setPageTitle('edit', 'admin.tag.dashboard.edit')
-            ->setPageTitle('detail', 'admin.tag.dashboard.detail');
+            ->setPageTitle('detail', 'admin.tag.dashboard.detail')
+            ->addFormTheme('@JoliMediaEasyAdmin/form/form_theme.html.twig');
+    }
+
+    #[\Override]
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(BooleanFilter::new('isFeatured', 'admin.tag.is_featured'));
     }
 
     private function getIndexFields(): \Generator
     {
-        yield ColorField::new('backgroundColor', 'admin.tag.background_color.title');
+        yield BooleanField::new('isFeatured', 'admin.tag.is_featured');
 
         yield TextField::new('title', 'admin.global.title')
             ->setColumns(12)
@@ -65,9 +95,14 @@ class TagCrudController extends AbstractCrudController
 
     private function getFormFields(): \Generator
     {
-        yield ColorField::new('backgroundColor', 'admin.tag.background_color.title');
+        yield BooleanField::new('isFeatured', 'admin.tag.is_featured');
 
-        yield ColorField::new('textColor', 'admin.tag.text_color.title');
+        yield Field::new('image', 'admin.global.media.file')
+            ->setFormType(MediaChoiceType::class)
+            ->setFormTypeOptions([
+                'required' => false,
+            ])
+            ->setColumns('col-12');
 
         yield CollectionField::new('translations', 'admin.global.translations')
             ->setEntryType(TagTranslationType::class)

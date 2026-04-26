@@ -28,14 +28,19 @@ recipe:
     cook: 'Cuisson'
     total: 'Total'
     view: 'Voir la recette'
+    difficulty:
+        label: 'Difficulté'
+        easy: 'Facile'
+        medium: 'Moyen'
+        advanced: 'Avancé'
 category:
     recipes_count: '{0} Aucune recette|{1} 1 recette|]1,Inf] %count% recettes'
 home:
     featured_recipe_label: 'Recette à la une'
-    categories:
+    tags:
         kicker: 'Par envie'
         title_before: 'Parcourir les'
-        title_em: 'catégories'
+        title_em: 'envies'
         sub: 'De la viennoiserie du matin aux desserts de grande fête.'
     popular:
         kicker: 'Cette semaine'
@@ -43,6 +48,10 @@ home:
         title_em: 'aimées'
         view_all: 'Toutes les recettes'
         badge_signature: 'Signature'
+    philosophy:
+        kicker: 'La philosophie'
+        quote: '« La pâtisserie, c''est de la précision amoureuse. »'
+        author: '— Tinie, fondatrice'
 search:
     placeholder: 'Une recette, un ingrédient, une technique…'
     suggestions: 'Suggestions'

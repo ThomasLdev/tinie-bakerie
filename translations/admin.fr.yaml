@@ -44,10 +44,7 @@ admin:
             label: 'Ingrédient & Notes'
             help: 'Séparer chaque ligne par un pipe (|). Exemple : 200g de farine|100g de sucre|2 œufs'
     tag:
-        background_color:
-            title: 'Couleur de fond'
-        text_color:
-            title: 'Couleur du texte'
+        is_featured: 'Mise en avant'
         dashboard:
             singular: 'Étiquette'
             plural: 'Étiquettes'

@@ -7,22 +7,22 @@
         </section>
     {% endif %}
 
-    {% if featuredCategories|length > 0 %}
+    {% if featuredTags|length > 0 %}
         <section class="section">
             <div class="wrap">
                 <header class="section-head">
                     <div>
-                        <span class="kicker">{{ 'home.categories.kicker'|trans }}</span>
-                        <h2>{{ 'home.categories.title_before'|trans }} <em>{{ 'home.categories.title_em'|trans }}</em></h2>
+                        <span class="kicker">{{ 'home.tags.kicker'|trans }}</span>
+                        <h2>{{ 'home.tags.title_before'|trans }} <em>{{ 'home.tags.title_em'|trans }}</em></h2>
                     </div>
-                    <p class="sub">{{ 'home.categories.sub'|trans }}</p>
+                    <p class="sub">{{ 'home.tags.sub'|trans }}</p>
                 </header>
             </div>
             <div class="wrap">
-                <ul class="categories">
-                    {% for category in featuredCategories %}
+                <ul class="tags">
+                    {% for tag in featuredTags %}
                         <li>
-                            <twig:CategoryCard :category="category" />
+                            <twig:TagCard :tag="tag" />
                         </li>
                     {% endfor %}
                 </ul>
@@ -54,4 +54,14 @@
             </div>
         </section>
     {% endif %}
+
+    <section class="section">
+        <div class="wrap">
+            <twig:QuoteStrip
+                :kicker="'home.philosophy.kicker'|trans"
+                :quote="'home.philosophy.quote'|trans"
+                :author="'home.philosophy.author'|trans"
+            />
+        </div>
+    </section>
 {% endblock %}

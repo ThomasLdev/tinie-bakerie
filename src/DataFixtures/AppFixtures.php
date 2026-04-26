@@ -52,9 +52,16 @@ class AppFixtures extends Fixture
                 CategoryMediaFactory::createRange(1, 3, fn (): array => ['category' => $category, 'translations' => $this->createTranslations(CategoryMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
 
-            $tags = TagFactory::createMany(15, fn (): array => [
-                'translations' => $this->createTranslations(TagTranslationFactory::new()),
-            ]);
+            $tagIndex = 0;
+            $tags = TagFactory::createMany(15, function () use (&$tagIndex): array {
+                $isFeatured = $tagIndex++ < 5;
+
+                return [
+                    'translations' => $this->createTranslations(TagTranslationFactory::new()),
+                    'isFeatured' => $isFeatured,
+                    'image' => $this->mediaLoader->getRandomMedia(),
+                ];
+            });
 
             $postIndex = 0;
 

@@ -1,6 +1,4 @@
 {% set classes = ['recipe-card', this.featured ? 'recipe-card--featured' : null]|filter(c => c)|join(' ') %}
-{% set duration = this.durationFormatted %}
-{% set updatedAt = this.post.updatedAt %}
 
 <a {{ attributes.defaults({class: classes}) }} href="{{ this.href }}">
     <div class="recipe-card__media">
@@ -8,17 +6,42 @@
         <twig:Cover :attachment="this.coverAttachment" variation="medium" alt="" class="recipe-card__image" />
     </div>
     <div class="recipe-card__body">
-        {% if updatedAt or duration %}
-            <div class="recipe-card__meta">
-                {% if updatedAt %}
-                    <time class="recipe-card__date" datetime="{{ updatedAt|date('Y-m-d') }}">{{ updatedAt|format_datetime(pattern='d MMM') }}</time>
+        {% if this.preparationTimeFormatted or this.cookingTimeFormatted %}
+            <dl class="recipe-card__meta">
+                {% if this.preparationTimeFormatted %}
+                    <div class="recipe-card__meta-item">
+                        <twig:ux:icon name="lucide:utensils-crossed" class="recipe-card__meta-icon" aria-hidden="true" />
+                        <dt class="sr-only">{{ 'recipe.prep'|trans }}</dt>
+                        <dd class="recipe-card__meta-value">{{ this.preparationTimeFormatted }}</dd>
+                    </div>
                 {% endif %}
-                {% if duration %}
-                    <b class="recipe-card__duration">{{ duration }}</b>
+
+                {% if this.cookingTimeFormatted %}
+                    <div class="recipe-card__meta-item">
+                        <twig:ux:icon name="lucide:flame" class="recipe-card__meta-icon" aria-hidden="true" />
+                        <dt class="sr-only">{{ 'recipe.cook'|trans }}</dt>
+                        <dd class="recipe-card__meta-value">{{ this.cookingTimeFormatted }}</dd>
+                    </div>
                 {% endif %}
-            </div>
+
+                {% if this.preparationTimeFormatted and this.cookingTimeFormatted %}
+                    <div class="recipe-card__meta-item">
+                        <twig:ux:icon name="lucide:clock" class="recipe-card__meta-icon" aria-hidden="true" />
+                        <dt class="sr-only">{{ 'recipe.total'|trans }}</dt>
+                        <dd class="recipe-card__meta-value">{{ this.totalTimeFormatted }}</dd>
+                    </div>
+                {% endif %}
+
+                <div class="recipe-card__meta-item">
+                    <twig:ux:icon name="lucide:chef-hat" class="recipe-card__meta-icon" aria-hidden="true" />
+                    <dt class="sr-only">{{ 'recipe.difficulty.label'|trans }}</dt>
+                    <dd class="recipe-card__meta-value">{{ ('recipe.difficulty.' ~ this.post.difficulty.value)|trans }}</dd>
+                </div>
+            </dl>
         {% endif %}
+
         <h3 class="recipe-card__title">{{ this.post.title }}</h3>
+
         {% if this.featured and this.post.excerpt %}
             <p class="recipe-card__excerpt">{{ this.post.excerpt }}</p>
         {% endif %}

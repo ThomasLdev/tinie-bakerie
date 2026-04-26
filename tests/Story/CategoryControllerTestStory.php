@@ -27,8 +27,6 @@ final class CategoryControllerTestStory extends Story
     {
         // Create a test tag for posts
         $tag = TagFactory::createOne([
-            'backgroundColor' => '#FF5733',
-            'textColor' => '#FFFFFF',
             'translations' => [
                 TagTranslationFactory::new([
                     'locale' => 'fr',

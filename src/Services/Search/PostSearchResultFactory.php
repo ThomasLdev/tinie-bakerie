@@ -8,9 +8,6 @@ use JoliCode\MediaBundle\Exception\MediaNotFoundException;
 use JoliCode\MediaBundle\Model\Media;
 use JoliCode\MediaBundle\Resolver\Resolver;
 
-/**
- * Factory for creating PostSearchResult DTOs from raw database rows.
- */
 final readonly class PostSearchResultFactory
 {
     public function __construct(

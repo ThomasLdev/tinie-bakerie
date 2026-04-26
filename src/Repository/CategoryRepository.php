@@ -98,7 +98,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->leftJoin('pm.translations', 'pmt')
             ->addSelect('PARTIAL pmt.{id, title, alt, locale}')
             ->leftJoin('p.tags', 't')
-            ->addSelect('PARTIAL t.{id, backgroundColor, textColor}')
+            ->addSelect('PARTIAL t.{id}')
             ->leftJoin('t.translations', 'tt')
             ->addSelect('PARTIAL tt.{id, title, locale}')
             ->where('ct.slug = :slug')

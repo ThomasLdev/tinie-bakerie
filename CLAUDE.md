@@ -2,15 +2,6 @@
 
 Blog de recettes de pâtisserie. Symfony 8 + FrankenPHP (Docker, AssetMapper, Postgres). Front public en refonte autour de composants Twig + CSS pur ; EasyAdmin existant intact.
 
-## Communication
-
-Langue de travail : **français**.
-
-## Périmètre & branche
-
-- Refonte du front public en cours sur `DESIGN/redo-entire-design-system` (sortie de Tailwind, passage aux composants Twig + CSS pur dans `assets/styles/` orchestré par `@layer`).
-- **Ne pas toucher à EasyAdmin** (`templates/admin/**`, `src/Controller/Admin/**`, configs associées).
-
 ## Toujours déléguer aux skills spécialisés
 
 Avant d'écrire du code, identifier le skill qui couvre la tâche et l'invoquer. Préférer toujours un skill à l'improvisation. Routage rapide :

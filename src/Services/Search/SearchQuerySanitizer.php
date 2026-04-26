@@ -16,17 +16,11 @@ final readonly class SearchQuerySanitizer
      */
     public function sanitize(string $query, int $maxLength = 100): string
     {
-        // Trim and limit length
         $query = mb_substr(trim($query), 0, $maxLength);
-
-        // Remove characters that have special meaning in PostgreSQL FTS
-        // Keep alphanumeric, spaces, and common accented characters
         $query = preg_replace('/[&|!():*<>\'"\[\]{}\\\\@#$%^]+/', ' ', $query) ?? $query;
-
-        // Collapse multiple spaces into one
         $query = preg_replace('/\s+/', ' ', $query) ?? $query;
 
-        return trim(mb_strtolower($query));
+        return mb_strtolower(trim($query));
     }
 
     /**
