@@ -27,7 +27,6 @@
             <div class="recipe-head__lede">
                 <span class="kicker">
                     {% if recipe.isFeatured %}{{ 'home.popular.badge_signature'|trans }} · {% endif -%}
-                    {{ recipe.createdAt|format_date('long') }}
                 </span>
                 <h1 class="recipe-head__title" {{ test_id('recipe-show-title') }}>{{ recipe.title }}</h1>
 

@@ -29,6 +29,7 @@ class CategoryMediaTranslationType extends AbstractType
                 'choices' => $this->getLocales($options['supported_locales']),
                 'label' => 'admin.global.locale',
                 'required' => true,
+                'disabled' => true,
                 'attr' => [
                     'class' => 'form-control',
                 ],

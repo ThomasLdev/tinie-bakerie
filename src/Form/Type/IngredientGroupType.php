@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\IngredientGroup;
+use App\Entity\IngredientGroupTranslation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -33,10 +35,8 @@ class IngredientGroupType extends AbstractType
                 ],
                 'required' => true,
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
             ])
             ->add('ingredients', CollectionType::class, [
                 'label' => 'admin.ingredient.dashboard.plural',
@@ -59,6 +59,16 @@ class IngredientGroupType extends AbstractType
             'data_class' => IngredientGroup::class,
             'supported_locales' => [],
             'translation_domain' => 'admin',
+            'empty_data' => static function (FormInterface $form): IngredientGroup {
+                $entity = new IngredientGroup();
+                /** @var array<string> $locales */
+                $locales = $form->getConfig()->getOption('supported_locales');
+                foreach ($locales as $locale) {
+                    $entity->addTranslation(new IngredientGroupTranslation()->setLocale($locale));
+                }
+
+                return $entity;
+            },
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

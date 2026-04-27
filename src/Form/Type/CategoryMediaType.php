@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\CategoryMedia;
+use App\Entity\CategoryMediaTranslation;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -23,6 +25,8 @@ class CategoryMediaType extends AbstractType
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
                 'required' => true,
+                'attr' => ['min' => 0],
+                'empty_data' => '0',
             ])
             ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
@@ -37,10 +41,8 @@ class CategoryMediaType extends AbstractType
                 ],
                 'required' => true,
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
             ]);
     }
 
@@ -50,6 +52,16 @@ class CategoryMediaType extends AbstractType
             'data_class' => CategoryMedia::class,
             'supported_locales' => [],
             'translation_domain' => 'admin',
+            'empty_data' => static function (FormInterface $form): CategoryMedia {
+                $entity = new CategoryMedia();
+                /** @var array<string> $locales */
+                $locales = $form->getConfig()->getOption('supported_locales');
+                foreach ($locales as $locale) {
+                    $entity->addTranslation(new CategoryMediaTranslation()->setLocale($locale));
+                }
+
+                return $entity;
+            },
         ]);
     }
 }

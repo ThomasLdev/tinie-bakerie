@@ -47,16 +47,17 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
     public function testSubmitValidDataWithTranslations(): void
     {
+        // Translations cardinality is fixed (= supported locales) and the locale
+        // field is disabled. We must pre-populate the model with one translation
+        // per locale before submitting.
         $formData = [
             'position' => 1,
             'translations' => [
                 [
-                    'locale' => 'fr',
                     'title' => 'Image Title FR',
                     'alt' => 'Image Alt Text',
                 ],
                 [
-                    'locale' => 'en',
                     'title' => 'Image Title EN',
                     'alt' => 'Image Alt English',
                 ],
@@ -64,6 +65,9 @@ final class CategoryMediaTypeTest extends TypeTestCase
         ];
 
         $model = new CategoryMedia();
+        $model->addTranslation(new CategoryMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new CategoryMediaTranslation()->setLocale('en'));
+
         $form = $this->factory->create(CategoryMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -89,15 +93,15 @@ final class CategoryMediaTypeTest extends TypeTestCase
         $formData = [
             'position' => 0,
             'translations' => [
-                [
-                    'locale' => 'en',
-                    'title' => '',
-                    'alt' => '',
-                ],
+                ['title' => '', 'alt' => ''],
+                ['title' => '', 'alt' => ''],
             ],
         ];
 
         $model = new CategoryMedia();
+        $model->addTranslation(new CategoryMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new CategoryMediaTranslation()->setLocale('en'));
+
         $form = $this->factory->create(CategoryMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -152,19 +156,21 @@ final class CategoryMediaTypeTest extends TypeTestCase
         self::assertTrue($view['translations']->vars['required']);
     }
 
-    public function testTranslationsCollectionAllowsAddAndDelete(): void
+    public function testTranslationsCollectionLocksAddAndDelete(): void
     {
+        // Translations cardinality is fixed (= supported locales). The collection
+        // must not allow adding or deleting entries via the admin UI.
         $form = $this->factory->create(CategoryMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
         ]);
 
         $view = $form->createView();
 
-        self::assertTrue($view['translations']->vars['allow_add']);
-        self::assertTrue($view['translations']->vars['allow_delete']);
+        self::assertFalse($view['translations']->vars['allow_add']);
+        self::assertFalse($view['translations']->vars['allow_delete']);
     }
 
-    public function testTranslationsCollectionHasPrototype(): void
+    public function testTranslationsCollectionHasNoPrototype(): void
     {
         $form = $this->factory->create(CategoryMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -172,8 +178,7 @@ final class CategoryMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertArrayHasKey('prototype', $view['translations']->vars);
-        self::assertNotNull($view['translations']->vars['prototype']);
+        self::assertArrayNotHasKey('prototype', $view['translations']->vars);
     }
 
     #[\Override]

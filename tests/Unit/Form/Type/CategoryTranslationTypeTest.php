@@ -20,8 +20,9 @@ final class CategoryTranslationTypeTest extends TypeTestCase
 {
     public function testSubmitValidData(): void
     {
+        // The locale field is disabled in the form (locale is bound by the parent
+        // CRUD via createEntity()) — pre-set on the model and don't submit it.
         $formData = [
-            'locale' => 'fr',
             'title' => 'Test Category Title',
             'metaTitle' => 'Test Meta Title',
             'slug' => '', // disabled field, value should be ignored
@@ -30,7 +31,7 @@ final class CategoryTranslationTypeTest extends TypeTestCase
             'excerpt' => 'Test excerpt',
         ];
 
-        $model = new CategoryTranslation();
+        $model = new CategoryTranslation()->setLocale('fr');
         $form = $this->factory->create(CategoryTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -49,11 +50,10 @@ final class CategoryTranslationTypeTest extends TypeTestCase
     public function testSubmitMinimalData(): void
     {
         $formData = [
-            'locale' => 'en',
             'title' => 'Minimal Title',
         ];
 
-        $model = new CategoryTranslation();
+        $model = new CategoryTranslation()->setLocale('en');
         $form = $this->factory->create(CategoryTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);

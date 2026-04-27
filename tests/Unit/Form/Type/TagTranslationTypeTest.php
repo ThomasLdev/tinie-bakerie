@@ -21,11 +21,10 @@ final class TagTranslationTypeTest extends TypeTestCase
     public function testSubmitValidData(): void
     {
         $formData = [
-            'locale' => 'fr',
             'title' => 'Test Tag Title',
         ];
 
-        $model = new TagTranslation();
+        $model = new TagTranslation()->setLocale('fr');
         $form = $this->factory->create(TagTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -86,11 +85,10 @@ final class TagTranslationTypeTest extends TypeTestCase
     public function testFormStructureMatchesEntity(): void
     {
         $formData = [
-            'locale' => 'en',
             'title' => 'English Tag',
         ];
 
-        $model = new TagTranslation();
+        $model = new TagTranslation()->setLocale('en');
         $form = $this->factory->create(TagTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);

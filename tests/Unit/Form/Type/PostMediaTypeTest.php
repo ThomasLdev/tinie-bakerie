@@ -50,20 +50,15 @@ final class PostMediaTypeTest extends TypeTestCase
         $formData = [
             'position' => 2,
             'translations' => [
-                [
-                    'locale' => 'fr',
-                    'title' => 'Post Image Title FR',
-                    'alt' => 'Post Image Alt',
-                ],
-                [
-                    'locale' => 'en',
-                    'title' => 'Post Image Title EN',
-                    'alt' => 'Post Image Alt EN',
-                ],
+                ['title' => 'Post Image Title FR', 'alt' => 'Post Image Alt'],
+                ['title' => 'Post Image Title EN', 'alt' => 'Post Image Alt EN'],
             ],
         ];
 
         $model = new PostMedia();
+        $model->addTranslation(new PostMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new PostMediaTranslation()->setLocale('en'));
+
         $form = $this->factory->create(PostMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -163,7 +158,7 @@ final class PostMediaTypeTest extends TypeTestCase
         self::assertTrue($view['translations']->vars['required']);
     }
 
-    public function testTranslationsCollectionAllowsAddAndDelete(): void
+    public function testTranslationsCollectionLocksAddAndDelete(): void
     {
         $form = $this->factory->create(PostMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -171,11 +166,11 @@ final class PostMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertTrue($view['translations']->vars['allow_add']);
-        self::assertTrue($view['translations']->vars['allow_delete']);
+        self::assertFalse($view['translations']->vars['allow_add']);
+        self::assertFalse($view['translations']->vars['allow_delete']);
     }
 
-    public function testTranslationsCollectionHasPrototype(): void
+    public function testTranslationsCollectionHasNoPrototype(): void
     {
         $form = $this->factory->create(PostMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -183,8 +178,7 @@ final class PostMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertArrayHasKey('prototype', $view['translations']->vars);
-        self::assertNotNull($view['translations']->vars['prototype']);
+        self::assertArrayNotHasKey('prototype', $view['translations']->vars);
     }
 
     #[\Override]

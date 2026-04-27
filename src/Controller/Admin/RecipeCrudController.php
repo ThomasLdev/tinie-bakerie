@@ -175,37 +175,17 @@ class RecipeCrudController extends AbstractCrudController
             ->setEntryType(RecipeTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
                 'entry_options' => [
                     'supported_locales' => $this->locales->get(),
                 ],
             ])
-            ->allowAdd()
-            ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
 
         yield CollectionField::new('ingredientGroups', 'admin.ingredient_group.dashboard.plural')
             ->setEntryType(IngredientGroupType::class)
-            ->setFormTypeOptions([
-                'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
-            ])
-            ->allowAdd()
-            ->allowDelete()
-            ->renderExpanded(false)
-            ->setColumns('col-12');
-
-        yield CollectionField::new('narrativeSections', 'admin.post_section.title')
-            ->setEntryType(PostSectionType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
                 'allow_add' => true,

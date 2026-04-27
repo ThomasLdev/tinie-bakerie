@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\Ingredient;
+use App\Entity\IngredientTranslation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -40,10 +42,8 @@ class IngredientType extends AbstractType
                 ],
                 'required' => true,
                 'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
             ]);
     }
 
@@ -53,6 +53,16 @@ class IngredientType extends AbstractType
             'data_class' => Ingredient::class,
             'supported_locales' => [],
             'translation_domain' => 'admin',
+            'empty_data' => static function (FormInterface $form): Ingredient {
+                $entity = new Ingredient();
+                /** @var array<string> $locales */
+                $locales = $form->getConfig()->getOption('supported_locales');
+                foreach ($locales as $locale) {
+                    $entity->addTranslation(new IngredientTranslation()->setLocale($locale));
+                }
+
+                return $entity;
+            },
         ]);
 
         $resolver->setAllowedTypes('supported_locales', 'array');

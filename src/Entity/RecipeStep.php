@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class RecipeStep extends PostSection
 {
-    #[ORM\Column(enumType: StepTipType::class, nullable: true)]
+    #[ORM\Column(nullable: true, enumType: StepTipType::class)]
     private ?StepTipType $tipType = null;
 
     public function getTipType(): ?StepTipType

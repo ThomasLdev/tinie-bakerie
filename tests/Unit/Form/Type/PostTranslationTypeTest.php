@@ -23,7 +23,6 @@ final class PostTranslationTypeTest extends TypeTestCase
     public function testSubmitValidData(): void
     {
         $formData = [
-            'locale' => 'fr',
             'title' => 'Test Post Title',
             'metaTitle' => 'Test Meta Title',
             'slug' => '', // disabled field, value should be ignored
@@ -31,7 +30,7 @@ final class PostTranslationTypeTest extends TypeTestCase
             'excerpt' => str_repeat('B', 50),
         ];
 
-        $model = new PostTranslation();
+        $model = new PostTranslation()->setLocale('fr');
         $form = $this->factory->create(PostTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -49,11 +48,10 @@ final class PostTranslationTypeTest extends TypeTestCase
     public function testSubmitMinimalData(): void
     {
         $formData = [
-            'locale' => 'en',
             'title' => 'Minimal Title',
         ];
 
-        $model = new PostTranslation();
+        $model = new PostTranslation()->setLocale('en');
         $form = $this->factory->create(PostTranslationType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);

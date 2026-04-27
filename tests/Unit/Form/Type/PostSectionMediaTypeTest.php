@@ -50,20 +50,15 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $formData = [
             'position' => 3,
             'translations' => [
-                [
-                    'locale' => 'fr',
-                    'title' => 'Section Video Title FR',
-                    'alt' => 'Section Video Alt',
-                ],
-                [
-                    'locale' => 'en',
-                    'title' => 'Section Video Title EN',
-                    'alt' => 'Section Video Alt EN',
-                ],
+                ['title' => 'Section Video Title FR', 'alt' => 'Section Video Alt'],
+                ['title' => 'Section Video Title EN', 'alt' => 'Section Video Alt EN'],
             ],
         ];
 
         $model = new PostSectionMedia();
+        $model->addTranslation(new PostSectionMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new PostSectionMediaTranslation()->setLocale('en'));
+
         $form = $this->factory->create(PostSectionMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -88,15 +83,15 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         $formData = [
             'position' => 1,
             'translations' => [
-                [
-                    'locale' => 'en',
-                    'title' => '',
-                    'alt' => '',
-                ],
+                ['title' => '', 'alt' => ''],
+                ['title' => '', 'alt' => ''],
             ],
         ];
 
         $model = new PostSectionMedia();
+        $model->addTranslation(new PostSectionMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new PostSectionMediaTranslation()->setLocale('en'));
+
         $form = $this->factory->create(PostSectionMediaType::class, $model, [
             'supported_locales' => ['en', 'fr'],
         ]);
@@ -151,7 +146,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
         self::assertTrue($view['translations']->vars['required']);
     }
 
-    public function testTranslationsCollectionAllowsAddAndDelete(): void
+    public function testTranslationsCollectionLocksAddAndDelete(): void
     {
         $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -159,11 +154,11 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertTrue($view['translations']->vars['allow_add']);
-        self::assertTrue($view['translations']->vars['allow_delete']);
+        self::assertFalse($view['translations']->vars['allow_add']);
+        self::assertFalse($view['translations']->vars['allow_delete']);
     }
 
-    public function testTranslationsCollectionHasPrototype(): void
+    public function testTranslationsCollectionHasNoPrototype(): void
     {
         $form = $this->factory->create(PostSectionMediaType::class, null, [
             'supported_locales' => ['en', 'fr'],
@@ -171,8 +166,7 @@ final class PostSectionMediaTypeTest extends TypeTestCase
 
         $view = $form->createView();
 
-        self::assertArrayHasKey('prototype', $view['translations']->vars);
-        self::assertNotNull($view['translations']->vars['prototype']);
+        self::assertArrayNotHasKey('prototype', $view['translations']->vars);
     }
 
     #[\Override]

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Entity\CategoryTranslation;
 use App\Form\Type\CategoryMediaType;
 use App\Form\Type\CategoryTranslationType;
 use App\Services\Locale\Locales;
@@ -50,13 +51,25 @@ class CategoryCrudController extends AbstractCrudController
     }
 
     #[\Override]
+    public function createEntity(string $entityFqcn): Category
+    {
+        $category = new Category();
+
+        foreach ($this->locales->get() as $locale) {
+            $category->addTranslation(new CategoryTranslation()->setLocale($locale));
+        }
+
+        return $category;
+    }
+
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         if (Crud::PAGE_INDEX === $pageName) {
             return $this->getIndexFields();
         }
 
-        return $this->getFormFields($pageName);
+        return $this->getFormFields();
     }
 
     #[\Override]
@@ -92,7 +105,7 @@ class CategoryCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): \Generator
+    private function getFormFields(): \Generator
     {
         yield BooleanField::new('isFeatured', 'admin.category.is_featured');
 
@@ -116,15 +129,12 @@ class CategoryCrudController extends AbstractCrudController
             ->setEntryType(CategoryTranslationType::class)
             ->setFormTypeOptions([
                 'by_reference' => false,
-                'allow_add' => Crud::PAGE_EDIT !== $pageName,
-                'allow_delete' => Crud::PAGE_EDIT !== $pageName,
-                'prototype' => true,
+                'allow_add' => false,
+                'allow_delete' => false,
                 'entry_options' => [
                     'supported_locales' => $this->locales->get(),
                 ],
             ])
-            ->allowAdd()
-            ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
     }

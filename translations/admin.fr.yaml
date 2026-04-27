@@ -76,6 +76,11 @@ admin:
         title: 'Sections narratives'
         section_title: 'Titre de la section'
         content: 'Contenu'
+        layout:
+            default: 'Par défaut'
+            two_columns: 'Deux colonnes'
+            two_columns_media_left: 'Deux colonnes inversées'
+            label: 'Style du bloc'
     recipe_step:
         dashboard:
             plural: 'Étapes de recette'
