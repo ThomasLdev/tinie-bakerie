@@ -89,6 +89,19 @@ COPY --link frankenphp/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
 
+# Node CSS builder stage (Lightning CSS — bundle, transpile, minify)
+FROM node:24-bookworm AS node_builder
+
+WORKDIR /app
+
+COPY --link package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+COPY --link .browserslistrc ./
+COPY --link assets/styles/src ./assets/styles/src
+
+RUN npm run build:css
+
 # Prod FrankenPHP image
 FROM frankenphp_base AS frankenphp_prod
 
@@ -107,6 +120,8 @@ RUN set -eux; \
 
 # copy sources
 COPY --link . ./
+# inject the compiled CSS bundle (gitignored locally, built in node_builder stage)
+COPY --link --from=node_builder /app/assets/styles/app.css ./assets/styles/app.css
 RUN rm -Rf frankenphp/
 
 RUN set -eux; \

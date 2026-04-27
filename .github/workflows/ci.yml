@@ -72,8 +72,12 @@ jobs:
         run: make node-install
       - name: Run Biome (JS + CSS lint + format check)
         run: make lint
+      - name: Run TypeScript type check
+        run: make typecheck
       - name: Run PHPUnit Unit Suite
         run: make test.unit
+      - name: Run Vitest JS Unit Suite
+        run: make test.js
   functional_test:
     name: Functional Tests
     runs-on: ubuntu-latest

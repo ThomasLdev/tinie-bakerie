@@ -38,14 +38,16 @@
                         class="portions__btn"
                         data-action="recipe-portions#decrease"
                         data-recipe-portions-target="decreaseBtn"
+                        {{ test_id('portions-decrease') }}
                         aria-label="{{ 'recipe.show.servings.decrease'|trans }}">
                     <twig:ux:icon name="lucide:minus" aria-hidden="true" />
                 </button>
-                <output class="portions__value" data-recipe-portions-target="value">{{ this.recipe.servings }}</output>
+                <output class="portions__value" data-recipe-portions-target="value" {{ test_id('portions-value') }}>{{ this.recipe.servings }}</output>
                 <button type="button"
                         class="portions__btn"
                         data-action="recipe-portions#increase"
                         data-recipe-portions-target="increaseBtn"
+                        {{ test_id('portions-increase') }}
                         aria-label="{{ 'recipe.show.servings.increase'|trans }}">
                     <twig:ux:icon name="lucide:plus" aria-hidden="true" />
                 </button>

@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "description": "E2E tests for Tinie Bakerie",
   "scripts": {
+    "build:css": "lightningcss --bundle --minify --browserslist assets/styles/src/app.css -o assets/styles/app.css",
+    "watch:css": "lightningcss --bundle --minify --browserslist --watch assets/styles/src/app.css -o assets/styles/app.css",
     "test:e2e": "playwright test",
     "test:e2e:debug": "PWDEBUG=1 playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 9323",
+    "test:js": "vitest run",
+    "test:js:watch": "vitest",
+    "test:js:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
     "lint": "biome check assets/",
     "lint:fix": "biome check --write assets/",
     "format": "biome format --write assets/",
@@ -19,6 +25,12 @@
     "@biomejs/biome": "2.4.13",
     "@hotwired/stimulus": "^3.2.2",
     "@playwright/test": "^1.48.0",
-    "swiper": "^11.1.15"
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.5",
+    "jsdom": "^29.1.0",
+    "lightningcss-cli": "^1.32.0",
+    "swiper": "^11.1.15",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   }
 }

@@ -22,7 +22,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
@@ -31,33 +31,26 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'http://php:80',
-    
+
+    /* Project convention: data-test-id is rendered server-side by the Twig test_id() helper. */
+    testIdAttribute: 'data-test-id',
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Video on failure */
     video: 'retain-on-failure',
   },
 
-  /* Configure projects for major browsers */
+  /* Mobile-only Android suite by project decision. */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'android',
+      use: { ...devices['Pixel 7'] },
     },
-
-    // Uncomment if you need Firefox or WebKit
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
   ],
 
   /* Run your local dev server before starting the tests */

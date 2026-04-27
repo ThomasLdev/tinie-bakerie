@@ -35,13 +35,14 @@ final class TestExtensionTest extends TestCase
         self::assertSame('', $result);
     }
 
-    public function testRenderTestIdInDevEnvironmentReturnsEmpty(): void
+    public function testRenderTestIdInDevEnvironmentRendersAttribute(): void
     {
         $extension = new TestExtension('dev');
 
         $result = $extension->renderTestId('submit-button');
 
-        self::assertSame('', $result);
+        self::assertInstanceOf(Markup::class, $result);
+        self::assertSame('data-test-id="submit-button"', (string) $result);
     }
 
     public function testRenderTestIdEscapesHtmlSpecialChars(): void
@@ -130,12 +131,13 @@ final class TestExtensionTest extends TestCase
         self::assertSame('data-test-id="test-id"', (string) $markup);
     }
 
-    public function testRenderTestIdOnlyRendersInTestEnvironment(): void
+    public function testRenderTestIdRendersInAnyEnvironmentExceptProd(): void
     {
         $environments = [
             'test' => true,  // Should render
+            'dev' => true,   // Should render — needed for E2E browser against dev server
+            'staging' => true, // Any non-prod env renders
             'prod' => false, // Should not render
-            'dev' => false,  // Should not render
         ];
 
         foreach ($environments as $env => $shouldRender) {

@@ -1,10 +1,11 @@
 {% set stepId = 'step-' ~ this.step.id %}
-<article {{ attributes.defaults({class: 'step'}) }}>
+<article {{ attributes.defaults({class: 'step'}) }} {{ test_id('recipe-step-' ~ this.step.id) }}>
     <input type="checkbox"
            id="{{ stepId }}"
            class="step__check"
            data-recipe-checklist-target="item"
-           data-action="change->recipe-checklist#updateCount" />
+           data-action="change->recipe-checklist#updateCount"
+           {{ test_id('recipe-step-check-' ~ this.step.id) }} />
     <label for="{{ stepId }}" class="step__num" aria-label="{{ 'recipe.show.steps.mark_done'|trans }}">
         <span class="step__num-bullet" aria-hidden="true"></span>
         <span class="step__num-text">{{ this.number }}</span>
