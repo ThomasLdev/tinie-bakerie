@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\Positionable;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,7 +17,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translatable<IngredientGroupTranslation>
  */
 #[ORM\Entity]
-class IngredientGroup implements Translatable, \Stringable
+class IngredientGroup implements Translatable, Positionable, \Stringable
 {
     use TimestampableEntity;
 

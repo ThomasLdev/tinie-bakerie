@@ -12,9 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RecipeTranslationType extends PostTranslationType
 {
-    /**
-     * @param array{supported_locales: array<string>} $options
-     */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

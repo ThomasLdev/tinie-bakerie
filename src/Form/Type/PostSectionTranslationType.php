@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\PostSectionTranslation;
-use App\Form\Type\Trait\LocalizedFormType;
+use App\Services\Locale\Locales;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\TextEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,16 +18,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PostSectionTranslationType extends AbstractType
 {
-    use LocalizedFormType;
+    public function __construct(private readonly Locales $locales)
+    {
+    }
 
-    /**
-     * @param array{supported_locales: array<string>} $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $locales = $this->locales->get();
+
         $builder
             ->add('locale', ChoiceType::class, [
-                'choices' => $this->getLocales($options['supported_locales']),
+                'choices' => array_combine($locales, $locales),
                 'label' => 'admin.global.locale',
                 'required' => true,
                 'disabled' => true,
@@ -53,10 +54,7 @@ class PostSectionTranslationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSectionTranslation::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);
-
-        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

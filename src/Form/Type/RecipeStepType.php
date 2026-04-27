@@ -8,15 +8,11 @@ use App\Entity\RecipeStep;
 use App\Entity\RecipeStepTranslation;
 use App\Services\Recipe\Enum\StepTipType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RecipeStepType extends PostSectionType
 {
-    /**
-     * @param array{supported_locales: array<string>} $options
-     */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -35,16 +31,9 @@ final class RecipeStepType extends PostSectionType
                 'attr' => ['class' => 'form-control'],
             ])
             ->remove('translations')
-            ->add('translations', CollectionType::class, [
-                'label' => 'admin.global.translations',
+            ->add('translations', TranslationsCollectionType::class, [
                 'entry_type' => RecipeStepTranslationType::class,
-                'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
-                ],
-                'required' => true,
-                'by_reference' => false,
-                'allow_add' => false,
-                'allow_delete' => false,
+                'translation_class' => RecipeStepTranslation::class,
             ]);
     }
 
@@ -53,9 +42,6 @@ final class RecipeStepType extends PostSectionType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults([
-            'data_class' => RecipeStep::class,
-            'translation_class' => RecipeStepTranslation::class,
-        ]);
+        $resolver->setDefault('data_class', RecipeStep::class);
     }
 }

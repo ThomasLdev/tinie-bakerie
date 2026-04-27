@@ -12,7 +12,7 @@ trait Localized
     #[ORM\Column(type: Types::STRING)]
     private string $locale;
 
-    public function setLocale(string $locale): self
+    public function setLocale(string $locale): static
     {
         $this->locale = $locale;
 

@@ -107,6 +107,7 @@ class AppFixtures extends Fixture
                 $narrativeSections = array_merge($narrativeSections, $sections);
 
                 $stepCount = random_int(4, 8);
+
                 for ($position = 0; $position < $stepCount; ++$position) {
                     $step = RecipeStepFactory::createOne([
                         'post' => $recipe,
@@ -123,7 +124,7 @@ class AppFixtures extends Fixture
             }
 
             foreach ($recipeSteps as $step) {
-                if (self::flipCoin()) {
+                if ($this->flipCoin()) {
                     PostSectionMediaFactory::createOne([
                         'postSection' => $step,
                         'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
@@ -134,6 +135,7 @@ class AppFixtures extends Fixture
 
             foreach ($recipes as $recipe) {
                 $groupCount = random_int(1, 3);
+
                 for ($groupPosition = 0; $groupPosition < $groupCount; ++$groupPosition) {
                     $group = IngredientGroupFactory::createOne([
                         'recipe' => $recipe,
@@ -142,6 +144,7 @@ class AppFixtures extends Fixture
                     ]);
 
                     $ingredientCount = random_int(2, 6);
+
                     for ($ingredientPosition = 0; $ingredientPosition < $ingredientCount; ++$ingredientPosition) {
                         IngredientFactory::createOne([
                             'group' => $group,
@@ -174,7 +177,7 @@ class AppFixtures extends Fixture
         return $factory::createSequence($sequence);
     }
 
-    private static function flipCoin(): bool
+    private function flipCoin(): bool
     {
         return random_int(0, 1) === 1;
     }

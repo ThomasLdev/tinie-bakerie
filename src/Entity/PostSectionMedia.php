@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Contracts\MediaAttachment;
+use App\Entity\Contracts\Positionable;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,7 +20,7 @@ use JoliCode\MediaBundle\Model\Media;
  * @implements Translatable<PostSectionMediaTranslation>
  */
 #[ORM\Entity]
-class PostSectionMedia implements Translatable, MediaAttachment, \Stringable
+class PostSectionMedia implements Translatable, MediaAttachment, Positionable, \Stringable
 {
     use TimestampableEntity;
 

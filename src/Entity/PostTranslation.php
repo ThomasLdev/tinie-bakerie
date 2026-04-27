@@ -27,14 +27,14 @@ class PostTranslation implements Translation, Sluggable, \Stringable
     use SlugTrait;
     use TimestampableEntity;
 
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Post $translatable = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected ?Post $translatable = null;
 
     #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
     private string $title = '';

@@ -7,14 +7,14 @@ namespace App\Controller\Admin;
 use App\Entity\Tag;
 use App\Entity\TagTranslation;
 use App\Form\Type\TagTranslationType;
-use App\Services\Locale\Locales;
+use App\Form\Type\TranslationsCollectionType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Field\MediaChoiceField;
@@ -26,10 +26,6 @@ use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
  */
 class TagCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly Locales $locales)
-    {
-    }
-
     #[\Override]
     public function configureAssets(Assets $assets): Assets
     {
@@ -48,18 +44,6 @@ class TagCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Tag::class;
-    }
-
-    #[\Override]
-    public function createEntity(string $entityFqcn): Tag
-    {
-        $tag = new Tag();
-
-        foreach ($this->locales->get() as $locale) {
-            $tag->addTranslation(new TagTranslation()->setLocale($locale));
-        }
-
-        return $tag;
     }
 
     #[\Override]
@@ -113,17 +97,12 @@ class TagCrudController extends AbstractCrudController
             ->setFormTypeOptions(['required' => false])
             ->setColumns('col-12');
 
-        yield CollectionField::new('translations', 'admin.global.translations')
-            ->setEntryType(TagTranslationType::class)
+        yield Field::new('translations', 'admin.global.translations')
+            ->setFormType(TranslationsCollectionType::class)
             ->setFormTypeOptions([
-                'by_reference' => false,
-                'allow_add' => false,
-                'allow_delete' => false,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
+                'entry_type' => TagTranslationType::class,
+                'translation_class' => TagTranslation::class,
             ])
-            ->renderExpanded(false)
             ->setColumns('col-12');
     }
 }

@@ -9,10 +9,9 @@ use App\Entity\Recipe;
 use App\Entity\RecipeTranslation;
 use App\Form\Type\IngredientGroupType;
 use App\Form\Type\PostMediaType;
-use App\Form\Type\PostSectionType;
 use App\Form\Type\RecipeStepType;
 use App\Form\Type\RecipeTranslationType;
-use App\Services\Locale\Locales;
+use App\Form\Type\TranslationsCollectionType;
 use App\Services\Post\Enum\Difficulty;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -24,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
@@ -35,10 +35,6 @@ use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
  */
 class RecipeCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly Locales $locales)
-    {
-    }
-
     #[\Override]
     public function configureAssets(Assets $assets): Assets
     {
@@ -62,18 +58,6 @@ class RecipeCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Recipe::class;
-    }
-
-    #[\Override]
-    public function createEntity(string $entityFqcn): Recipe
-    {
-        $recipe = new Recipe();
-
-        foreach ($this->locales->get() as $locale) {
-            $recipe->addTranslation(new RecipeTranslation()->setLocale($locale));
-        }
-
-        return $recipe;
     }
 
     #[\Override]
@@ -162,26 +146,18 @@ class RecipeCrudController extends AbstractCrudController
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
             ])
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
 
-        yield CollectionField::new('translations', 'admin.global.translations')
-            ->setEntryType(RecipeTranslationType::class)
+        yield Field::new('translations', 'admin.global.translations')
+            ->setFormType(TranslationsCollectionType::class)
             ->setFormTypeOptions([
-                'by_reference' => false,
-                'allow_add' => false,
-                'allow_delete' => false,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
+                'entry_type' => RecipeTranslationType::class,
+                'translation_class' => RecipeTranslation::class,
             ])
-            ->renderExpanded(false)
             ->setColumns('col-12');
 
         yield CollectionField::new('ingredientGroups', 'admin.ingredient_group.dashboard.plural')
@@ -192,9 +168,6 @@ class RecipeCrudController extends AbstractCrudController
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
             ])
             ->allowAdd()
             ->allowDelete()
@@ -209,9 +182,6 @@ class RecipeCrudController extends AbstractCrudController
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
             ])
             ->allowAdd()
             ->allowDelete()

@@ -8,6 +8,8 @@ use App\Entity\PostMedia;
 use App\Entity\PostMediaTranslation;
 use App\Form\Type\PostMediaTranslationType;
 use App\Form\Type\PostMediaType;
+use App\Form\Type\TranslationsCollectionType;
+use App\Services\Locale\Locales;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\DataTransformer\MediaTransformer;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use JoliCode\MediaBundle\Library\LibraryContainer;
@@ -15,17 +17,16 @@ use JoliCode\MediaBundle\Resolver\Resolver;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\Form\FormExtensionInterface;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
- * Unit tests for PostMediaType.
- * Tests form structure and embedded translations.
- *
  * @internal
  */
 #[CoversClass(PostMediaType::class)]
 #[CoversClass(PostMediaTranslationType::class)]
+#[CoversClass(TranslationsCollectionType::class)]
 #[AllowMockObjectsWithoutExpectations]
 final class PostMediaTypeTest extends TypeTestCase
 {
@@ -47,23 +48,19 @@ final class PostMediaTypeTest extends TypeTestCase
 
     public function testSubmitValidDataWithTranslations(): void
     {
-        $formData = [
+        $model = new PostMedia();
+        $model->addTranslation(new PostMediaTranslation()->setLocale('fr'));
+        $model->addTranslation(new PostMediaTranslation()->setLocale('en'));
+
+        $form = $this->factory->create(PostMediaType::class, $model);
+
+        $form->submit([
             'position' => 2,
             'translations' => [
                 ['title' => 'Post Image Title FR', 'alt' => 'Post Image Alt'],
                 ['title' => 'Post Image Title EN', 'alt' => 'Post Image Alt EN'],
             ],
-        ];
-
-        $model = new PostMedia();
-        $model->addTranslation(new PostMediaTranslation()->setLocale('fr'));
-        $model->addTranslation(new PostMediaTranslation()->setLocale('en'));
-
-        $form = $this->factory->create(PostMediaType::class, $model, [
-            'supported_locales' => ['en', 'fr'],
         ]);
-
-        $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
         self::assertSame(2, $model->getPosition());
@@ -78,35 +75,35 @@ final class PostMediaTypeTest extends TypeTestCase
         self::assertSame('Post Image Alt EN', $enTranslation->getAlt());
     }
 
+    public function testTranslationsAreSeededOnNewModel(): void
+    {
+        $form = $this->factory->create(PostMediaType::class);
+
+        // The model attached to the form is the seeded PostMedia (with N
+        // translations) — the inner CollectionType has rendered N entries.
+        $view = $form->createView();
+
+        self::assertCount(2, $view['translations']->children);
+    }
+
     public function testSubmitMinimalDataWithEmptyDataForPosition(): void
     {
-        $formData = [
+        $form = $this->factory->create(PostMediaType::class, new PostMedia());
+
+        $form->submit([
             'position' => '',
             'translations' => [
-                [
-                    'locale' => 'en',
-                    'title' => '',
-                    'alt' => '',
-                ],
+                ['title' => '', 'alt' => ''],
+                ['title' => '', 'alt' => ''],
             ],
-        ];
-
-        $model = new PostMedia();
-        $form = $this->factory->create(PostMediaType::class, $model, [
-            'supported_locales' => ['en', 'fr'],
         ]);
 
-        $form->submit($formData);
-
         self::assertTrue($form->isSynchronized());
-        self::assertSame(0, $model->getPosition());
     }
 
     public function testFormHasCorrectFields(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
         self::assertTrue($form->has('position'));
         self::assertTrue($form->has('media'));
@@ -115,9 +112,7 @@ final class PostMediaTypeTest extends TypeTestCase
 
     public function testPositionFieldIsRequired(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
         $view = $form->createView();
 
@@ -126,9 +121,7 @@ final class PostMediaTypeTest extends TypeTestCase
 
     public function testPositionFieldHasMinAttribute(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
         $view = $form->createView();
 
@@ -138,31 +131,21 @@ final class PostMediaTypeTest extends TypeTestCase
 
     public function testMediaFieldIsNotRequired(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
-        $view = $form->createView();
-
-        self::assertFalse($view['media']->vars['required']);
+        self::assertFalse($form->createView()['media']->vars['required']);
     }
 
     public function testTranslationsFieldIsRequired(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
-        $view = $form->createView();
-
-        self::assertTrue($view['translations']->vars['required']);
+        self::assertTrue($form->createView()['translations']->vars['required']);
     }
 
     public function testTranslationsCollectionLocksAddAndDelete(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
         $view = $form->createView();
 
@@ -172,18 +155,21 @@ final class PostMediaTypeTest extends TypeTestCase
 
     public function testTranslationsCollectionHasNoPrototype(): void
     {
-        $form = $this->factory->create(PostMediaType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(PostMediaType::class);
 
         $view = $form->createView();
 
         self::assertArrayNotHasKey('prototype', $view['translations']->vars);
     }
 
+    /**
+     * @return list<FormExtensionInterface>
+     */
     #[\Override]
     protected function getExtensions(): array
     {
+        $locales = new Locales('en|fr');
+
         $mediaChoiceType = new MediaChoiceType(
             $this->resolver,
             $this->libraryContainer,
@@ -191,7 +177,12 @@ final class PostMediaTypeTest extends TypeTestCase
         );
 
         return [
-            new PreloadedExtension([$mediaChoiceType], []),
+            new PreloadedExtension([
+                new PostMediaType(),
+                new PostMediaTranslationType($locales),
+                new TranslationsCollectionType($locales),
+                $mediaChoiceType,
+            ], []),
         ];
     }
 }

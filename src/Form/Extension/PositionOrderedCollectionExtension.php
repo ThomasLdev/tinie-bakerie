@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Extension;
 
+use App\Entity\Contracts\Positionable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -19,11 +20,13 @@ use Symfony\Component\Form\FormEvents;
  */
 final class PositionOrderedCollectionExtension extends AbstractTypeExtension
 {
+    #[\Override]
     public static function getExtendedTypes(): iterable
     {
         return [CollectionType::class];
     }
 
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // by_reference=true means Symfony mutates the original collection in
@@ -38,6 +41,7 @@ final class PositionOrderedCollectionExtension extends AbstractTypeExtension
     private function sortByPosition(FormEvent $event): void
     {
         $data = $event->getData();
+
         if (null === $data) {
             return;
         }
@@ -47,18 +51,21 @@ final class PositionOrderedCollectionExtension extends AbstractTypeExtension
             \is_array($data) => $data,
             default => null,
         };
+
         if (null === $items || [] === $items) {
             return;
         }
 
+        $positionables = [];
         foreach ($items as $item) {
-            if (!\is_object($item) || !method_exists($item, 'getPosition')) {
+            if (!$item instanceof Positionable) {
                 return;
             }
+            $positionables[] = $item;
         }
 
-        usort($items, static fn (object $a, object $b): int => $a->getPosition() <=> $b->getPosition());
+        usort($positionables, static fn (Positionable $a, Positionable $b): int => $a->getPosition() <=> $b->getPosition());
 
-        $event->setData($data instanceof Collection ? new ArrayCollection($items) : $items);
+        $event->setData($data instanceof Collection ? new ArrayCollection($positionables) : $positionables);
     }
 }

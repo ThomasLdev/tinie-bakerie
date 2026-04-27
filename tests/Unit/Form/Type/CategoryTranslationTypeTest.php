@@ -6,13 +6,13 @@ namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\CategoryTranslation;
 use App\Form\Type\CategoryTranslationType;
+use App\Services\Locale\Locales;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use Symfony\Component\Form\FormExtensionInterface;
+use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
- * Unit tests for CategoryTranslationType.
- * Tests form structure, field configuration, and data transformation.
- *
  * @internal
  */
 #[AllowMockObjectsWithoutExpectations]
@@ -20,23 +20,20 @@ final class CategoryTranslationTypeTest extends TypeTestCase
 {
     public function testSubmitValidData(): void
     {
-        // The locale field is disabled in the form (locale is bound by the parent
-        // CRUD via createEntity()) — pre-set on the model and don't submit it.
-        $formData = [
+        // The locale field is disabled in the form (locale is bound by the
+        // parent CRUD via the seeded translations) — pre-set on the model
+        // and don't submit it.
+        $model = new CategoryTranslation()->setLocale('fr');
+        $form = $this->factory->create(CategoryTranslationType::class, $model);
+
+        $form->submit([
             'title' => 'Test Category Title',
             'metaTitle' => 'Test Meta Title',
             'slug' => '', // disabled field, value should be ignored
             'description' => 'Test description content',
             'metaDescription' => str_repeat('A', 120),
             'excerpt' => 'Test excerpt',
-        ];
-
-        $model = new CategoryTranslation()->setLocale('fr');
-        $form = $this->factory->create(CategoryTranslationType::class, $model, [
-            'supported_locales' => ['en', 'fr'],
         ]);
-
-        $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
         self::assertSame('fr', $model->getLocale());
@@ -49,16 +46,10 @@ final class CategoryTranslationTypeTest extends TypeTestCase
 
     public function testSubmitMinimalData(): void
     {
-        $formData = [
-            'title' => 'Minimal Title',
-        ];
-
         $model = new CategoryTranslation()->setLocale('en');
-        $form = $this->factory->create(CategoryTranslationType::class, $model, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class, $model);
 
-        $form->submit($formData);
+        $form->submit(['title' => 'Minimal Title']);
 
         self::assertTrue($form->isSynchronized());
         self::assertSame('en', $model->getLocale());
@@ -71,9 +62,7 @@ final class CategoryTranslationTypeTest extends TypeTestCase
 
     public function testFormHasCorrectFields(): void
     {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
         self::assertTrue($form->has('locale'));
         self::assertTrue($form->has('title'));
@@ -84,46 +73,30 @@ final class CategoryTranslationTypeTest extends TypeTestCase
         self::assertTrue($form->has('excerpt'));
     }
 
-    public function testLocaleFieldChoices(): void
+    public function testLocaleFieldChoicesMatchInjectedLocales(): void
     {
-        $supportedLocales = ['en', 'fr', 'de'];
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => $supportedLocales,
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
-        $view = $form->createView();
-        $localeChoices = $view['locale']->vars['choices'];
-
-        self::assertCount(3, $localeChoices);
+        self::assertCount(2, $form->createView()['locale']->vars['choices']);
     }
 
     public function testSlugFieldIsDisabled(): void
     {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
-        $view = $form->createView();
-
-        self::assertTrue($view['slug']->vars['disabled']);
+        self::assertTrue($form->createView()['slug']->vars['disabled']);
     }
 
     public function testTitleFieldIsRequired(): void
     {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
-        $view = $form->createView();
-
-        self::assertTrue($view['title']->vars['required']);
+        self::assertTrue($form->createView()['title']->vars['required']);
     }
 
     public function testOptionalFieldsAreNotRequired(): void
     {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
         $view = $form->createView();
 
@@ -135,21 +108,17 @@ final class CategoryTranslationTypeTest extends TypeTestCase
 
     public function testEmptyDataForTextFields(): void
     {
-        $formData = [
+        $model = new CategoryTranslation();
+        $form = $this->factory->create(CategoryTranslationType::class, $model);
+
+        $form->submit([
             'locale' => 'fr',
             'title' => 'Test',
             'metaTitle' => null,
             'description' => null,
             'metaDescription' => null,
             'excerpt' => null,
-        ];
-
-        $model = new CategoryTranslation();
-        $form = $this->factory->create(CategoryTranslationType::class, $model, [
-            'supported_locales' => ['en', 'fr'],
         ]);
-
-        $form->submit($formData);
 
         self::assertTrue($form->isSynchronized());
         self::assertSame('', $model->getMetaTitle());
@@ -158,29 +127,23 @@ final class CategoryTranslationTypeTest extends TypeTestCase
         self::assertSame('', $model->getExcerpt());
     }
 
-    public function testTextareaFieldsAreUsedForLongContent(): void
-    {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
-
-        $view = $form->createView();
-
-        // Verify that description, metaDescription, and excerpt use TextareaType
-        // by checking they don't have a 'type' attribute set to something else
-        self::assertArrayHasKey('attr', $view['description']->vars);
-        self::assertArrayHasKey('attr', $view['metaDescription']->vars);
-        self::assertArrayHasKey('attr', $view['excerpt']->vars);
-    }
-
     public function testLocaleFieldIsRequired(): void
     {
-        $form = $this->factory->create(CategoryTranslationType::class, null, [
-            'supported_locales' => ['en', 'fr'],
-        ]);
+        $form = $this->factory->create(CategoryTranslationType::class);
 
-        $view = $form->createView();
+        self::assertTrue($form->createView()['locale']->vars['required']);
+    }
 
-        self::assertTrue($view['locale']->vars['required']);
+    /**
+     * @return list<FormExtensionInterface>
+     */
+    #[\Override]
+    protected function getExtensions(): array
+    {
+        return [
+            new PreloadedExtension([
+                new CategoryTranslationType(new Locales('en|fr')),
+            ], []),
+        ];
     }
 }

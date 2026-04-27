@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller;
 
 use App\Controller\RecipeController;
-use App\Entity\Recipe;
 use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Repository\RecipeRepository;
 use App\Services\Filter\LocaleFilter;

@@ -145,6 +145,11 @@
     transition: color var(--transition-fast);
   }
 
+  & .ing-item__check:focus-visible + .ing-item__label::before {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
   &:has(.ing-item__check:checked) {
     & .ing-item__label::before {
       background-color: var(--accent);
@@ -157,10 +162,5 @@
       color: var(--ink-3);
       text-decoration: line-through;
     }
-  }
-
-  & .ing-item__check:focus-visible + .ing-item__label::before {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
   }
 }

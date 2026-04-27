@@ -7,13 +7,9 @@ namespace App\Form\Type;
 use App\Entity\Ingredient;
 use App\Entity\IngredientTranslation;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -23,9 +19,6 @@ class IngredientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var array<string> $supportedLocales */
-        $supportedLocales = $options['supported_locales'];
-
         $builder
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
@@ -39,54 +32,17 @@ class IngredientType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'help' => 'admin.ingredient.base_quantity.help',
             ])
-            ->add('translations', CollectionType::class, [
-                'label' => 'admin.global.translations',
+            ->add('translations', TranslationsCollectionType::class, [
                 'entry_type' => IngredientTranslationType::class,
-                'entry_options' => [
-                    'supported_locales' => $supportedLocales,
-                ],
-                'required' => true,
-                'by_reference' => false,
-                'allow_add' => false,
-                'allow_delete' => false,
+                'translation_class' => IngredientTranslation::class,
             ]);
-
-        // Seed an Ingredient with one translation per supported locale so the
-        // prototype (and any new collection entry) renders translation inputs.
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) use ($supportedLocales): void {
-            $data = $event->getData();
-
-            if (!$data instanceof Ingredient) {
-                $data = new Ingredient();
-                $event->setData($data);
-            }
-
-            if ($data->getTranslations()->isEmpty()) {
-                foreach ($supportedLocales as $locale) {
-                    $data->addTranslation(new IngredientTranslation()->setLocale($locale));
-                }
-            }
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Ingredient::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
-            'empty_data' => static function (FormInterface $form): Ingredient {
-                $entity = new Ingredient();
-                /** @var array<string> $locales */
-                $locales = $form->getConfig()->getOption('supported_locales');
-                foreach ($locales as $locale) {
-                    $entity->addTranslation(new IngredientTranslation()->setLocale($locale));
-                }
-
-                return $entity;
-            },
         ]);
-
-        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }
