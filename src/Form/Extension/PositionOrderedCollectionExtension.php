@@ -57,6 +57,7 @@ final class PositionOrderedCollectionExtension extends AbstractTypeExtension
         }
 
         $positionables = [];
+
         foreach ($items as $item) {
             if (!$item instanceof Positionable) {
                 return;
