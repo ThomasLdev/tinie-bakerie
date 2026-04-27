@@ -38,7 +38,7 @@ Classer chaque fichier modifié par **catégorie de surface** :
 | Form Type | `src/Form/**` | unit (TypeTestCase) |
 | Twig Component (PHP) | `src/Twig/Components/**` | unit léger sur la logique du composant |
 | Twig Component (anonymous) | `templates/components/**` | couvert via le test du controller qui le rend |
-| Stimulus controller | `assets/controllers/**` | E2E si comportement critique, sinon non testé |
+| Stimulus controller | `assets/controllers/**` | E2E si comportement critique (le JS *est* le test), sinon non testé |
 | Validator / EventSubscriber / EntityListener | `src/Validator/**`, `src/EventSubscriber/**`, `src/EntityListener/**` | unit + un cas d'intégration |
 | Entité | `src/Entity/**` | **non testé directement** (exclu coverage) — couvert via les surfaces qui les manipulent |
 | Migration | `migrations/**` | non testé (smoke `doctrine:migrations:migrate` en CI) |
@@ -58,7 +58,7 @@ Heuristiques :
 4. **Helper Twig / Component anonyme** sans branche conditionnelle → couvert via le test du controller hôte, pas de test dédié.
 5. **Form Type** → unit `TypeTestCase` (rapide, pas besoin de booter Symfony complet sauf si Type composé avec services).
 6. **EventSubscriber Doctrine / EntityListener** → unit avec mocks Doctrine **+** un test functional minimal qui vérifie que le subscriber est bien câblé sur un flux réel.
-7. **Parcours utilisateur multi-pages avec interactions JS** (drawer, search live, filtres dynamiques) → E2E Playwright. Tout le reste qui peut être testé en functional doit l'être en functional (10× plus rapide qu'un E2E).
+7. **E2E uniquement si du JavaScript est impliqué dans le parcours** — règle dure. Drawer Stimulus, search LiveComponent qui re-render côté client, filtres dynamiques, modal `<dialog>` piloté en JS, Turbo Frame/Stream, copy-to-clipboard, focus trap : **oui**, E2E. Lien `<a href>` qui amène sur une page rendue serveur, formulaire `<form method="POST">` natif, redirect, 404, contenu Twig statique : **non**, c'est du functional, même si le test "ressemble" à un parcours utilisateur. Avant de choisir E2E, faire le **test du JS** : *« sans JavaScript activé dans le navigateur, ce parcours change-t-il de comportement ? »*. Si la réponse est non → c'est un test functional Symfony (10× plus rapide à écrire et exécuter, plus stable). Hésiter entre E2E et functional sans JS dans le parcours = automatiquement functional.
 8. **Refactor sans changement de comportement** → pas de nouveau test, vérifier que les tests existants couvrent le chemin. S'ils ne couvrent pas, le combler **avant** le refactor (mais c'est un autre skill — `sc:improve`).
 
 **Test du retrait** (à faire mentalement avant chaque test proposé) : *« Si je n'écris pas ce test, quel bug ne sera pas attrapé ? »*. Si la réponse est « aucun, c'est déjà couvert par X » → ne pas l'écrire.
@@ -135,6 +135,7 @@ Le user peut interrompre ou rerouter avant le spawn.
 
 - ❌ Tester chaque service individuellement quand un controller-level fait le job en un seul fichier.
 - ❌ Écrire un E2E pour valider une logique qui peut être testée en unit ou functional.
+- ❌ Écrire un E2E pour un parcours **sans JavaScript** (page rendue serveur, lien `<a href>` natif, form classique, redirect, 404). Sans JS dans le chemin, c'est par définition un test functional Symfony. En cas d'hésitation E2E vs functional sans JS dans le parcours → **toujours functional**.
 - ❌ Mocker la DB ou les entités dans un test functional (cf. mémoire — interdiction projet).
 - ❌ Tester `src/Entity/**` directement — exclu de la couverture, sans valeur (getters/setters auto, validation testée via Form ou Validator).
 - ❌ Lancer `make test.coverage` avant que tous les sous-agents soient revenus — la mesure est trompeuse.
