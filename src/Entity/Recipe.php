@@ -160,6 +160,20 @@ class Recipe extends Post
         );
     }
 
+    public function addStep(RecipeStep $step): self
+    {
+        $this->addSection($step);
+
+        return $this;
+    }
+
+    public function removeStep(RecipeStep $step): self
+    {
+        $this->removeSection($step);
+
+        return $this;
+    }
+
     public function getStepCount(): int
     {
         return $this->getSteps()->count();

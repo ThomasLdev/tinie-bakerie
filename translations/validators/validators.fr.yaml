@@ -9,6 +9,8 @@ post:
   reading_time:
     gte: "Le temps de lecture ne peut pas être négatif."
     lte: "Le temps de lecture ne peut pas dépasser 300 minutes."
+
+recipe:
   cooking_time:
     gte: "Le temps de cuisson ne peut pas être négatif."
     lte: "Le temps de cuisson ne peut pas dépasser 24 heures (1440 minutes)."
@@ -53,3 +55,26 @@ post_media_translation:
     max_length: "Le texte alternatif ne peut pas dépasser {{ limit }} caractères pour les standards d'accessibilité."
   title:
     max_length: "Le titre du média ne peut pas dépasser {{ limit }} caractères."
+
+category_translation:
+  title:
+    not_blank: "Le titre de la catégorie ne peut pas être vide."
+    min_length: "Le titre de la catégorie doit contenir au moins {{ limit }} caractères."
+    max_length: "Le titre de la catégorie ne peut pas dépasser {{ limit }} caractères."
+
+category_media:
+  position:
+    gte: "La position ne peut pas être négative."
+
+category_media_translation:
+  alt:
+    min_length: "Le texte alternatif doit contenir au moins {{ limit }} caractères."
+    max_length: "Le texte alternatif ne peut pas dépasser {{ limit }} caractères pour les standards d'accessibilité."
+  title:
+    max_length: "Le titre du média ne peut pas dépasser {{ limit }} caractères."
+
+tag_translation:
+  title:
+    not_blank: "Le nom du tag ne peut pas être vide."
+    min_length: "Le nom du tag doit contenir au moins {{ limit }} caractères."
+    max_length: "Le nom du tag ne peut pas dépasser {{ limit }} caractères."

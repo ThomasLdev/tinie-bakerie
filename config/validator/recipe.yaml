@@ -1,0 +1,26 @@
+App\Entity\Recipe:
+    properties:
+        cookingTime:
+            - NotNull: ~
+            - Type:
+                type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'recipe.cooking_time.gte'
+            - LessThanOrEqual:
+                value: 1440
+                message: 'recipe.cooking_time.lte'
+        preparationTime:
+            - NotNull: ~
+            - Type:
+                type: integer
+            - GreaterThanOrEqual:
+                value: 0
+                message: 'recipe.preparation_time.gte'
+            - LessThanOrEqual:
+                value: 1440
+                message: 'recipe.preparation_time.lte'
+        difficulty:
+            - NotNull: ~
+        ingredientGroups:
+            - Valid: ~
