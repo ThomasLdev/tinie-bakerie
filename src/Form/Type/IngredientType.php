@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,6 +23,9 @@ class IngredientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var array<string> $supportedLocales */
+        $supportedLocales = $options['supported_locales'];
+
         $builder
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
@@ -38,13 +43,30 @@ class IngredientType extends AbstractType
                 'label' => 'admin.global.translations',
                 'entry_type' => IngredientTranslationType::class,
                 'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
+                    'supported_locales' => $supportedLocales,
                 ],
                 'required' => true,
                 'by_reference' => false,
                 'allow_add' => false,
                 'allow_delete' => false,
             ]);
+
+        // Seed an Ingredient with one translation per supported locale so the
+        // prototype (and any new collection entry) renders translation inputs.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) use ($supportedLocales): void {
+            $data = $event->getData();
+
+            if (!$data instanceof Ingredient) {
+                $data = new Ingredient();
+                $event->setData($data);
+            }
+
+            if ($data->getTranslations()->isEmpty()) {
+                foreach ($supportedLocales as $locale) {
+                    $data->addTranslation(new IngredientTranslation()->setLocale($locale));
+                }
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

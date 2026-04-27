@@ -10,7 +10,6 @@ use App\Services\Recipe\Enum\StepTipType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RecipeStepType extends PostSectionType
@@ -56,16 +55,7 @@ final class RecipeStepType extends PostSectionType
 
         $resolver->setDefaults([
             'data_class' => RecipeStep::class,
-            'empty_data' => static function (FormInterface $form): RecipeStep {
-                $entity = new RecipeStep();
-                /** @var array<string> $locales */
-                $locales = $form->getConfig()->getOption('supported_locales');
-                foreach ($locales as $locale) {
-                    $entity->addTranslation(new RecipeStepTranslation()->setLocale($locale));
-                }
-
-                return $entity;
-            },
+            'translation_class' => RecipeStepTranslation::class,
         ]);
     }
 }

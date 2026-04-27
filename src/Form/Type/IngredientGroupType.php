@@ -10,6 +10,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,6 +22,9 @@ class IngredientGroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var array<string> $supportedLocales */
+        $supportedLocales = $options['supported_locales'];
+
         $builder
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
@@ -31,7 +36,7 @@ class IngredientGroupType extends AbstractType
                 'label' => 'admin.global.translations',
                 'entry_type' => IngredientGroupTranslationType::class,
                 'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
+                    'supported_locales' => $supportedLocales,
                 ],
                 'required' => true,
                 'by_reference' => false,
@@ -42,7 +47,7 @@ class IngredientGroupType extends AbstractType
                 'label' => 'admin.ingredient.dashboard.plural',
                 'entry_type' => IngredientType::class,
                 'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
+                    'supported_locales' => $supportedLocales,
                 ],
                 'required' => false,
                 'by_reference' => false,
@@ -51,6 +56,24 @@ class IngredientGroupType extends AbstractType
                 'delete_empty' => true,
                 'prototype' => true,
             ]);
+
+        // Seed an IngredientGroup with one translation per supported locale so
+        // the prototype (and any new collection entry) renders translation
+        // inputs.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) use ($supportedLocales): void {
+            $data = $event->getData();
+
+            if (!$data instanceof IngredientGroup) {
+                $data = new IngredientGroup();
+                $event->setData($data);
+            }
+
+            if ($data->getTranslations()->isEmpty()) {
+                foreach ($supportedLocales as $locale) {
+                    $data->addTranslation(new IngredientGroupTranslation()->setLocale($locale));
+                }
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -31,11 +31,11 @@ final class TrigramIndexSchemaSubscriberTest extends TestCase
     public function testAddsTrigramIndexWhenTableExists(): void
     {
         $table = $this->createMock(Table::class);
-        $table->expects(self::once())
+        $table->expects($this->once())
             ->method('hasIndex')
             ->with('post_translation_title_trgm_idx')
             ->willReturn(false);
-        $table->expects(self::once())
+        $table->expects($this->once())
             ->method('addIndex')
             ->with(
                 ['title'],
@@ -57,11 +57,11 @@ final class TrigramIndexSchemaSubscriberTest extends TestCase
     public function testDoesNothingWhenTableDoesNotExist(): void
     {
         $schema = $this->createMock(Schema::class);
-        $schema->expects(self::once())
+        $schema->expects($this->once())
             ->method('hasTable')
             ->with('post_translation')
             ->willReturn(false);
-        $schema->expects(self::never())->method('getTable');
+        $schema->expects($this->never())->method('getTable');
 
         $event = $this->createEventArgs($schema);
 
@@ -72,11 +72,11 @@ final class TrigramIndexSchemaSubscriberTest extends TestCase
     public function testDoesNotAddIndexWhenAlreadyExists(): void
     {
         $table = $this->createMock(Table::class);
-        $table->expects(self::once())
+        $table->expects($this->once())
             ->method('hasIndex')
             ->with('post_translation_title_trgm_idx')
             ->willReturn(true);
-        $table->expects(self::never())->method('addIndex');
+        $table->expects($this->never())->method('addIndex');
 
         $schema = self::createStub(Schema::class);
         $schema->method('hasTable')->willReturn(true);
