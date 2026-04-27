@@ -7,12 +7,10 @@ namespace App\Entity\Contracts;
 /**
  * @template T of Translatable
  */
-interface Translation
+interface Translation extends Localized
 {
     /**
      * @return T
      */
     public function getTranslatable(): ?Translatable;
-
-    public function getLocale(): string;
 }

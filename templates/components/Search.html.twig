@@ -67,7 +67,7 @@
                         {% for result in results %}
                             {% set isHero = loop.first %}
                             <li>
-                                <a href="{{ path('app_post_show', { postSlug: result.slug, categorySlug: result.categorySlug }) }}"
+                                <a href="{{ path('app_recipe_show', { recipeSlug: result.slug, categorySlug: result.categorySlug }) }}"
                                    class="search__card{% if isHero %} search__card--hero{% endif %}"
                                    data-action="search#close">
                                     <div class="search__card-media">
@@ -101,7 +101,7 @@
                         <em>{{ query }}</em>
                     </h3>
                     <p class="search__no-results-hint">{{ 'search.no_results_hint'|trans({}, 'messages') }}</p>
-                    <twig:Button variant="soft" href="{{ path('app_post_index') }}">
+                    <twig:Button variant="soft" href="{{ path('app_recipe_index') }}">
                         {{ 'search.no_results_cta'|trans({}, 'messages') }}
                     </twig:Button>
                 </section>

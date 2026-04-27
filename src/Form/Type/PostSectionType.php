@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\PostSection;
+use App\Entity\PostSectionTranslation;
 use App\Services\PostSection\Enum\PostSectionType as PostSectionTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,7 +23,7 @@ class PostSectionType extends AbstractType
     {
         $builder
             ->add('position', IntegerType::class, [
-                'label' => 'Position',
+                'label' => 'admin.global.position',
                 'attr' => [
                     'min' => 0,
                     'class' => 'form-control',
@@ -31,13 +32,13 @@ class PostSectionType extends AbstractType
                 'required' => true,
             ])
             ->add('type', ChoiceType::class, [
-                'label' => 'Type',
+                'label' => 'admin.post_section.layout.label',
                 'choices' => [
-                    'Default' => PostSectionTypeEnum::Default,
-                    'Two Columns' => PostSectionTypeEnum::TwoColumns,
-                    'Two Columns Media Left' => PostSectionTypeEnum::TwoColumnsMediaLeft,
+                    'admin.post_section.layout.default' => PostSectionTypeEnum::Default,
+                    'admin.post_section.layout.two_columns' => PostSectionTypeEnum::TwoColumns,
+                    'admin.post_section.layout.two_columns_media_left' => PostSectionTypeEnum::TwoColumnsMediaLeft,
                 ],
-                'choice_value' => static fn (?PostSectionTypeEnum $type) => $type?->value,
+                'choice_value' => static fn (?PostSectionTypeEnum $type): ?string => $type?->value,
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -51,22 +52,10 @@ class PostSectionType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
-                ],
             ])
-            ->add('translations', CollectionType::class, [
-                'label' => 'admin.global.translations',
+            ->add('translations', TranslationsCollectionType::class, [
                 'entry_type' => PostSectionTranslationType::class,
-                'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
-                ],
-                'required' => true,
-                'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'translation_class' => PostSectionTranslation::class,
             ]);
     }
 
@@ -74,10 +63,7 @@ class PostSectionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSection::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);
-
-        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

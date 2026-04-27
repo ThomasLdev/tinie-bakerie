@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\Positionable;
 use App\Entity\Contracts\Translatable;
 use App\Entity\Traits\TranslationAccessorTrait;
 use App\Services\PostSection\Enum\PostSectionType;
@@ -17,7 +18,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  * @implements Translatable<PostSectionTranslation>
  */
 #[ORM\Entity]
-class PostSection implements Translatable, \Stringable
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'kind', type: 'string', length: 16)]
+#[ORM\DiscriminatorMap(['post_section' => PostSection::class, 'recipe_step' => RecipeStep::class])]
+class PostSection implements Translatable, Positionable, \Stringable
 {
     use TimestampableEntity;
 
@@ -90,7 +94,7 @@ class PostSection implements Translatable, \Stringable
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getPosition(): int
     {
         return $this->position;
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\CategoryTranslation;
-use App\Form\Type\Trait\LocalizedFormType;
+use App\Services\Locale\Locales;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,18 +18,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CategoryTranslationType extends AbstractType
 {
-    use LocalizedFormType;
+    public function __construct(private readonly Locales $locales)
+    {
+    }
 
-    /**
-     * @param array{supported_locales: array<string>} $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $locales = $this->locales->get();
+
         $builder
             ->add('locale', ChoiceType::class, [
-                'choices' => $this->getLocales($options['supported_locales']),
+                'choices' => array_combine($locales, $locales),
                 'label' => 'admin.global.locale',
                 'required' => true,
+                'disabled' => true,
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -76,10 +78,7 @@ class CategoryTranslationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CategoryTranslation::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);
-
-        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

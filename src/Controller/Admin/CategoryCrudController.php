@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Entity\CategoryTranslation;
 use App\Form\Type\CategoryMediaType;
 use App\Form\Type\CategoryTranslationType;
-use App\Services\Locale\Locales;
+use App\Form\Type\TranslationsCollectionType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -15,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use Symfony\Component\Asset\PathPackage;
@@ -25,10 +27,6 @@ use Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy;
  */
 class CategoryCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly Locales $locales)
-    {
-    }
-
     #[\Override]
     public function configureAssets(Assets $assets): Assets
     {
@@ -56,7 +54,7 @@ class CategoryCrudController extends AbstractCrudController
             return $this->getIndexFields();
         }
 
-        return $this->getFormFields($pageName);
+        return $this->getFormFields();
     }
 
     #[\Override]
@@ -92,7 +90,7 @@ class CategoryCrudController extends AbstractCrudController
         yield DateField::new('updatedAt', 'admin.global.updated_at');
     }
 
-    private function getFormFields(string $pageName): \Generator
+    private function getFormFields(): \Generator
     {
         yield BooleanField::new('isFeatured', 'admin.category.is_featured');
 
@@ -103,29 +101,18 @@ class CategoryCrudController extends AbstractCrudController
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
             ])
             ->allowAdd()
             ->allowDelete()
             ->renderExpanded(false)
             ->setColumns('col-12');
 
-        yield CollectionField::new('translations', 'admin.global.translations')
-            ->setEntryType(CategoryTranslationType::class)
+        yield Field::new('translations', 'admin.global.translations')
+            ->setFormType(TranslationsCollectionType::class)
             ->setFormTypeOptions([
-                'by_reference' => false,
-                'allow_add' => Crud::PAGE_EDIT !== $pageName,
-                'allow_delete' => Crud::PAGE_EDIT !== $pageName,
-                'prototype' => true,
-                'entry_options' => [
-                    'supported_locales' => $this->locales->get(),
-                ],
+                'entry_type' => CategoryTranslationType::class,
+                'translation_class' => CategoryTranslation::class,
             ])
-            ->allowAdd()
-            ->allowDelete()
-            ->renderExpanded(false)
             ->setColumns('col-12');
     }
 }

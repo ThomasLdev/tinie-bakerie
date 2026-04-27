@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Post;
+use App\Entity\Recipe;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
 use App\Factory\CategoryMediaTranslationFactory;
 use App\Factory\CategoryTranslationFactory;
-use App\Factory\PostFactory;
+use App\Factory\IngredientFactory;
+use App\Factory\IngredientGroupFactory;
+use App\Factory\IngredientGroupTranslationFactory;
+use App\Factory\IngredientTranslationFactory;
 use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
 use App\Factory\PostSectionFactory;
 use App\Factory\PostSectionMediaFactory;
 use App\Factory\PostSectionMediaTranslationFactory;
 use App\Factory\PostSectionTranslationFactory;
-use App\Factory\PostTranslationFactory;
+use App\Factory\RecipeFactory;
+use App\Factory\RecipeStepFactory;
+use App\Factory\RecipeStepTranslationFactory;
+use App\Factory\RecipeTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use App\Services\Locale\Locales;
@@ -63,45 +69,90 @@ class AppFixtures extends Fixture
                 ];
             });
 
-            $postIndex = 0;
+            $recipeIndex = 0;
 
-            /** @var Post[] $posts */
-            $posts = PostFactory::createMany(30, function () use ($categories, $tags, &$postIndex): array {
-                // Pick random category and tags from the already-created arrays
+            /** @var Recipe[] $recipes */
+            $recipes = RecipeFactory::createMany(30, function () use ($categories, $tags, &$recipeIndex): array {
                 $randomCategory = $categories[array_rand($categories)];
                 $randomTagCount = random_int(1, 3);
                 $randomTags = (array) array_rand(array_flip(array_keys($tags)), min($randomTagCount, \count($tags)));
                 $selectedTags = array_map(static fn (int $index) => $tags[$index], $randomTags);
 
-                $isFeatured = ($postIndex++ % 10) < 2;
+                $isFeatured = ($recipeIndex++ % 10) < 2;
 
                 return [
-                    'translations' => $this->createTranslations(PostTranslationFactory::new()),
+                    'translations' => $this->createTranslations(RecipeTranslationFactory::new()),
                     'category' => $randomCategory,
                     'tags' => $selectedTags,
                     'media' => [],
                     'sections' => [],
+                    'ingredientGroups' => [],
                     'isFeatured' => $isFeatured,
                 ];
             });
 
-            foreach ($posts as $post) {
-                PostMediaFactory::createRange(1, 3, fn (): array => ['post' => $post, 'translations' => $this->createTranslations(PostMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
+            foreach ($recipes as $recipe) {
+                PostMediaFactory::createRange(1, 3, fn (): array => ['post' => $recipe, 'translations' => $this->createTranslations(PostMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
             }
 
-            $sections = [];
+            $narrativeSections = [];
+            $recipeSteps = [];
 
-            foreach ($posts as $post) {
-                $postSections = PostSectionFactory::createRange(2, 5, fn (): array => [
-                    'post' => $post,
+            foreach ($recipes as $recipe) {
+                $sections = PostSectionFactory::createRange(1, 2, fn (): array => [
+                    'post' => $recipe,
                     'translations' => $this->createTranslations(PostSectionTranslationFactory::new()),
                     'media' => [],
                 ]);
-                $sections = array_merge($sections, $postSections);
+                $narrativeSections = array_merge($narrativeSections, $sections);
+
+                $stepCount = random_int(4, 8);
+
+                for ($position = 0; $position < $stepCount; ++$position) {
+                    $step = RecipeStepFactory::createOne([
+                        'post' => $recipe,
+                        'position' => $position,
+                        'translations' => $this->createTranslations(RecipeStepTranslationFactory::new()),
+                        'media' => [],
+                    ]);
+                    $recipeSteps[] = $step;
+                }
             }
 
-            foreach ($sections as $section) {
-                PostSectionMediaFactory::createRange(1, 3, fn (): array => ['postSection' => $section, 'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
+            foreach ($narrativeSections as $section) {
+                PostSectionMediaFactory::createRange(1, 2, fn (): array => ['postSection' => $section, 'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()), 'media' => $this->mediaLoader->getRandomMedia()]);
+            }
+
+            foreach ($recipeSteps as $step) {
+                if ($this->flipCoin()) {
+                    PostSectionMediaFactory::createOne([
+                        'postSection' => $step,
+                        'translations' => $this->createTranslations(PostSectionMediaTranslationFactory::new()),
+                        'media' => $this->mediaLoader->getRandomMedia(),
+                    ]);
+                }
+            }
+
+            foreach ($recipes as $recipe) {
+                $groupCount = random_int(1, 3);
+
+                for ($groupPosition = 0; $groupPosition < $groupCount; ++$groupPosition) {
+                    $group = IngredientGroupFactory::createOne([
+                        'recipe' => $recipe,
+                        'position' => $groupPosition,
+                        'translations' => $this->createTranslations(IngredientGroupTranslationFactory::new()),
+                    ]);
+
+                    $ingredientCount = random_int(2, 6);
+
+                    for ($ingredientPosition = 0; $ingredientPosition < $ingredientCount; ++$ingredientPosition) {
+                        IngredientFactory::createOne([
+                            'group' => $group,
+                            'position' => $ingredientPosition,
+                            'translations' => $this->createTranslations(IngredientTranslationFactory::new()),
+                        ]);
+                    }
+                }
             }
         });
     }
@@ -124,5 +175,10 @@ class AppFixtures extends Fixture
         }
 
         return $factory::createSequence($sequence);
+    }
+
+    private function flipCoin(): bool
+    {
+        return random_int(0, 1) === 1;
     }
 }

@@ -1,0 +1,15 @@
+{% props items = [], current = null %}
+
+<nav {{ attributes.defaults({class: 'breadcrumb'}) }} aria-label="Fil d'Ariane">
+    <ol class="breadcrumb__list">
+        {% for item in items %}
+            <li class="breadcrumb__item">
+                <a href="{{ item.href }}" class="breadcrumb__link">{{ item.label }}</a>
+                <span class="breadcrumb__sep" aria-hidden="true">/</span>
+            </li>
+        {% endfor %}
+        {% if current %}
+            <li class="breadcrumb__item breadcrumb__item--current" aria-current="page">{{ current }}</li>
+        {% endif %}
+    </ol>
+</nav>

@@ -17,6 +17,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string', length: 16)]
+#[ORM\DiscriminatorMap(['post' => PostTranslation::class, 'recipe' => RecipeTranslation::class])]
 #[ORM\UniqueConstraint(name: 'post_translation_lookup_unique_idx', columns: ['locale', 'title'])]
 class PostTranslation implements Translation, Sluggable, \Stringable
 {
@@ -24,14 +27,14 @@ class PostTranslation implements Translation, Sluggable, \Stringable
     use SlugTrait;
     use TimestampableEntity;
 
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
+    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Post $translatable = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'translations')]
-    #[ORM\JoinColumn(name: 'translatable_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?Post $translatable = null;
 
     #[ORM\Column(type: Types::STRING, options: ['default' => ''])]
     private string $title = '';
@@ -44,9 +47,6 @@ class PostTranslation implements Translation, Sluggable, \Stringable
 
     #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
     private string $excerpt = '';
-
-    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
-    private string $notes = '';
 
     public function __toString(): string
     {
@@ -114,18 +114,6 @@ class PostTranslation implements Translation, Sluggable, \Stringable
     public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
-
-        return $this;
-    }
-
-    public function getNotes(): string
-    {
-        return $this->notes;
-    }
-
-    public function setNotes(string $notes): self
-    {
-        $this->notes = $notes;
 
         return $this;
     }

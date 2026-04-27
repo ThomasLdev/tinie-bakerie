@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use App\Entity\Post;
 use App\Entity\PostMedia;
+use App\Entity\Recipe;
 use App\Twig\Extension\DurationExtension;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -13,7 +13,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 final class RecipeCard
 {
-    public Post $post;
+    public Recipe $recipe;
 
     public bool $featured = false;
 
@@ -27,33 +27,31 @@ final class RecipeCard
 
     public function getCoverAttachment(): ?PostMedia
     {
-        $first = $this->post->getMedia()->first();
+        $first = $this->recipe->getMedia()->first();
 
         return $first instanceof PostMedia ? $first : null;
     }
 
     public function getPreparationTimeFormatted(): ?string
     {
-        return $this->durationFormatter->formatDuration($this->post->getPreparationTime());
+        return $this->durationFormatter->formatDuration($this->recipe->getPreparationTime());
     }
 
     public function getCookingTimeFormatted(): ?string
     {
-        return $this->durationFormatter->formatDuration($this->post->getCookingTime());
+        return $this->durationFormatter->formatDuration($this->recipe->getCookingTime());
     }
 
     public function getTotalTimeFormatted(): ?string
     {
-        return $this->durationFormatter->formatDuration(
-            $this->post->getTotalRecipeTime(),
-        );
+        return $this->durationFormatter->formatDuration($this->recipe->getTotalRecipeTime());
     }
 
     public function getHref(): string
     {
-        return $this->urlGenerator->generate('app_post_show', [
-            'categorySlug' => $this->post->getCategory()?->getSlug() ?? '',
-            'postSlug' => $this->post->getSlug(),
+        return $this->urlGenerator->generate('app_recipe_show', [
+            'categorySlug' => $this->recipe->getCategory()?->getSlug() ?? '',
+            'recipeSlug' => $this->recipe->getSlug(),
         ]);
     }
 }

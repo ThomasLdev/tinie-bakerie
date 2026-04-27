@@ -1,6 +1,6 @@
 # Tinie Bakerie
 
-Blog de recettes de pâtisserie. Symfony 8 + FrankenPHP (Docker, AssetMapper, Postgres). Front public en refonte autour de composants Twig + CSS pur ; EasyAdmin existant intact.
+Blog de recettes de pâtisserie. Symfony 8 + FrankenPHP (Docker, AssetMapper, Postgres). Front public autour de composants Twig + CSS pur ; EasyAdmin pour back office.
 
 ## Toujours déléguer aux skills spécialisés
 

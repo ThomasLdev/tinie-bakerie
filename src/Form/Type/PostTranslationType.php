@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\PostTranslation;
-use App\Form\Type\Trait\LocalizedFormType;
+use App\Services\Locale\Locales;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,18 +18,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PostTranslationType extends AbstractType
 {
-    use LocalizedFormType;
+    public function __construct(private readonly Locales $locales)
+    {
+    }
 
-    /**
-     * @param array{supported_locales: array<string>} $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $locales = $this->locales->get();
+
         $builder
             ->add('locale', ChoiceType::class, [
-                'choices' => $this->getLocales($options['supported_locales']),
+                'choices' => array_combine($locales, $locales),
                 'label' => 'admin.global.locale',
                 'required' => true,
+                'disabled' => true,
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -65,13 +67,6 @@ class PostTranslationType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
                 'empty_data' => '',
-            ])
-            ->add('notes', TextareaType::class, [
-                'label' => 'admin.post.notes.label',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'help' => 'admin.post.notes.help',
-                'empty_data' => '',
             ]);
     }
 
@@ -79,10 +74,7 @@ class PostTranslationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostTranslation::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);
-
-        $resolver->setAllowedTypes('supported_locales', 'array');
     }
 }

@@ -1,0 +1,62 @@
+<aside {{ attributes.defaults({class: 'ingredients'}) }}
+    data-controller="recipe-checklist"
+    data-recipe-checklist-storage-key-value="recipe-{{ this.recipe.id }}-ingredients"
+    data-recipe-checklist-total-value="{{ this.totalCount }}"
+>
+    <span class="kicker">{{ 'recipe.show.ingredients.kicker'|trans }}</span>
+    <h2 class="ingredients__title">
+        {{ 'recipe.show.ingredients.title_before'|trans }}
+        <em>{{ 'recipe.show.ingredients.title_em'|trans }}</em>
+    </h2>
+    <p class="ingredients__sub">
+        <output data-recipe-portions-target="servingsLabel"
+                class="ingredients__sub-strong"
+                data-singular="{{ 'recipe.show.servings.for'|trans({'%count%': 1}) }}"
+                data-plural="{{ 'recipe.show.servings.for'|trans({'%count%': 99})|replace({'99': '%count%'}) }}">{{ 'recipe.show.servings.for'|trans({'%count%': this.recipe.servings}) }}</output>
+    </p>
+
+    {% for group in this.recipe.ingredientGroups %}
+        <div class="ing-group">
+            {% if group.label %}
+                <div class="ing-group__title">{{ group.label }}</div>
+            {% endif %}
+
+            <ul class="ing-group__list">
+                {% for ingredient in group.ingredients %}
+                    {% set inputId = 'ingredient-' ~ ingredient.id %}
+                    <li class="ing-item">
+                        <input type="checkbox"
+                               id="{{ inputId }}"
+                               class="ing-item__check"
+                               data-recipe-checklist-target="item"
+                               data-action="change->recipe-checklist#updateCount" />
+                        <label for="{{ inputId }}" class="ing-item__label">
+                            <span class="ing-item__qty">
+                                {% if ingredient.quantityDisplay %}
+                                    {{ ingredient.quantityDisplay }}
+                                {% elseif ingredient.baseQuantity is not null %}
+                                    <span data-recipe-portions-target="quantity"
+                                          data-base-quantity="{{ ingredient.baseQuantity }}">{{ ingredient.baseQuantity }}</span>{% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
+                                {% elseif ingredient.unit %}
+                                    {{ ingredient.unit }}
+                                {% endif %}
+                            </span>
+                            <span class="ing-item__name">{{ ingredient.name }}</span>
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    <footer class="ingredients__footer">
+        <span class="ingredients__footer-count" aria-live="polite">
+            <span data-recipe-checklist-target="count">0</span> / {{ this.totalCount }}
+        </span>
+        <button type="button"
+                class="ingredients__footer-reset"
+                data-action="recipe-checklist#reset">
+            {{ 'recipe.show.ingredients.reset'|trans }}
+        </button>
+    </footer>
+</aside>

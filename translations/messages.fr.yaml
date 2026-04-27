@@ -33,6 +33,42 @@ recipe:
         easy: 'Facile'
         medium: 'Moyen'
         advanced: 'Avancé'
+    show:
+        breadcrumb_home: 'Accueil'
+        breadcrumb_recipes: 'Recettes'
+        meta:
+            steps: '{0} 0 étape|{1} 1 étape|]1,Inf] %count% étapes'
+            ingredients: '{0} 0 ingrédient|{1} 1 ingrédient|]1,Inf] %count% ingrédients'
+        actions:
+            print: 'Imprimer la recette'
+            share: 'Partager la recette'
+            save: 'Sauvegarder la recette'
+        servings:
+            label: 'Portions'
+            decrease: 'Diminuer les portions'
+            increase: 'Augmenter les portions'
+            for: '{1}pour 1 personne|]1,Inf]pour %count% personnes'
+        progress:
+            label: 'Progression'
+            reset: 'Réinitialiser la progression'
+            timer: 'Lancer un minuteur'
+        ingredients:
+            kicker: 'Liste de courses'
+            title_before: 'Les'
+            title_em: 'ingrédients'
+            checked: '{0}0 / %total% cochés|{1}1 / %total% coché|]1,Inf]%count% / %total% cochés'
+            reset: 'Reset'
+        steps:
+            kicker: 'La méthode'
+            title_before: 'Les'
+            title_em: 'étapes'
+            intro: 'Cliquez sur le numéro pour marquer une étape comme faite.'
+            tip: 'Astuce.'
+            warning: 'Attention.'
+            mark_done: 'Marquer cette étape comme faite'
+        chef:
+            label: 'Le mot de la pâtissière'
+            avatar_initial: 'T'
 category:
     recipes_count: '{0} Aucune recette|{1} 1 recette|]1,Inf] %count% recettes'
 home:

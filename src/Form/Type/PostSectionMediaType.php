@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\PostSectionMedia;
+use App\Entity\PostSectionMediaTranslation;
 use JoliCode\MediaBundle\Bridge\EasyAdmin\Form\Type\MediaChoiceType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,24 +23,17 @@ class PostSectionMediaType extends AbstractType
             ->add('position', IntegerType::class, [
                 'label' => 'admin.global.position',
                 'required' => true,
+                'attr' => ['min' => 0],
+                'empty_data' => '0',
             ])
             ->add('media', MediaChoiceType::class, [
                 'label' => 'admin.global.media.file',
                 'required' => false,
                 'translation_domain' => 'admin',
             ])
-            ->add('translations', CollectionType::class, [
-                'label' => 'admin.global.translations',
+            ->add('translations', TranslationsCollectionType::class, [
                 'entry_type' => PostSectionMediaTranslationType::class,
-                'entry_options' => [
-                    'supported_locales' => $options['supported_locales'],
-                ],
-                'required' => true,
-                'by_reference' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'prototype' => true,
+                'translation_class' => PostSectionMediaTranslation::class,
             ]);
     }
 
@@ -48,7 +41,6 @@ class PostSectionMediaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostSectionMedia::class,
-            'supported_locales' => [],
             'translation_domain' => 'admin',
         ]);
     }

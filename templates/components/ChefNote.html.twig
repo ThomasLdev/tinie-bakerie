@@ -1,0 +1,16 @@
+{% props title = '', body = '', initial = 'T' %}
+
+<aside {{ attributes.defaults({class: 'chef-note'}) }}>
+    <div class="chef-note__head">
+        <div class="chef-note__avatar" aria-hidden="true">{{ initial }}</div>
+        <span class="chef-note__label">{{ 'recipe.show.chef.label'|trans }}</span>
+    </div>
+    <div class="chef-note__body">
+        {% if title %}
+            <h3 class="chef-note__title">{{ title|raw }}</h3>
+        {% endif %}
+        {% if body %}
+            <p class="chef-note__text">{{ body }}</p>
+        {% endif %}
+    </div>
+</aside>

@@ -34,15 +34,26 @@ admin:
         slug: 'Slug (crée automatiquement)'
         active: 'Actif'
         is_featured: 'Mis en avant'
+    recipe:
+        dashboard:
+            singular: 'Recette'
+            plural: 'Recettes'
+            index: 'Toutes les recettes'
+            create: 'Créer une recette'
+            edit: 'Modifier une recette'
+            detail: "Détail de la recette"
         cooking_time:
             label: 'Temps de cuisson (en minutes)'
         preparation_time:
             label: 'Temps de préparation (en minutes)'
         difficulty:
             label: 'Difficulté'
+        servings:
+            label: 'Portions'
+        chef_note_title:
+            label: 'Titre de la note du chef'
         notes:
-            label: 'Ingrédient & Notes'
-            help: 'Séparer chaque ligne par un pipe (|). Exemple : 200g de farine|100g de sucre|2 œufs'
+            label: 'Note du chef'
     tag:
         is_featured: 'Mise en avant'
         dashboard:
@@ -62,6 +73,42 @@ admin:
             edit: 'Modifier une catégorie'
             detail: "Détail de la catégorie"
     post_section:
-        title: 'Sections'
+        title: 'Sections narratives'
         section_title: 'Titre de la section'
         content: 'Contenu'
+        layout:
+            default: 'Par défaut'
+            two_columns: 'Deux colonnes'
+            two_columns_media_left: 'Deux colonnes inversées'
+            label: 'Style du bloc'
+    recipe_step:
+        dashboard:
+            plural: 'Étapes de recette'
+        tip_type:
+            label: 'Type d''astuce'
+            none: 'Aucune'
+            tip: 'Astuce'
+            warning: 'Attention'
+        tip_text:
+            label: 'Texte de l''astuce'
+            help: 'Affiché en encadré sous l''étape, accompagné de l''icône choisie.'
+    ingredient_group:
+        dashboard:
+            plural: 'Groupes d''ingrédients'
+        label:
+            title: 'Libellé du groupe'
+            help: 'Optionnel. Exemple : « Pour la pâte », « Pour la garniture ».'
+    ingredient:
+        dashboard:
+            plural: 'Ingrédients'
+        name:
+            label: 'Nom'
+        unit:
+            label: 'Unité'
+            help: 'Exemple : g, ml, gousse, pincée.'
+        base_quantity:
+            label: 'Quantité de base'
+            help: 'Quantité numérique recalculée automatiquement quand l''utilisateur change le nombre de portions. Laisser vide pour les ingrédients non quantifiables.'
+        quantity_display:
+            label: 'Affichage spécial'
+            help: 'Optionnel. Remplace la quantité affichée pour les cas non numériques (« ½ », « 1 zeste de »).'

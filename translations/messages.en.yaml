@@ -33,6 +33,42 @@ recipe:
         easy: 'Easy'
         medium: 'Medium'
         advanced: 'Advanced'
+    show:
+        breadcrumb_home: 'Home'
+        breadcrumb_recipes: 'Recipes'
+        meta:
+            steps: '{0} 0 steps|{1} 1 step|]1,Inf] %count% steps'
+            ingredients: '{0} 0 ingredients|{1} 1 ingredient|]1,Inf] %count% ingredients'
+        actions:
+            print: 'Print recipe'
+            share: 'Share recipe'
+            save: 'Save recipe'
+        servings:
+            label: 'Servings'
+            decrease: 'Decrease servings'
+            increase: 'Increase servings'
+            for: '{1}for 1 person|]1,Inf]for %count% people'
+        progress:
+            label: 'Progress'
+            reset: 'Reset progress'
+            timer: 'Start a timer'
+        ingredients:
+            kicker: 'Shopping list'
+            title_before: 'The'
+            title_em: 'ingredients'
+            checked: '{0}0 / %total% checked|{1}1 / %total% checked|]1,Inf]%count% / %total% checked'
+            reset: 'Reset'
+        steps:
+            kicker: 'The method'
+            title_before: 'The'
+            title_em: 'steps'
+            intro: 'Click a number to mark a step as done.'
+            tip: 'Tip.'
+            warning: 'Heads up.'
+            mark_done: 'Mark this step as done'
+        chef:
+            label: 'A word from the pastry chef'
+            avatar_initial: 'T'
 category:
     recipes_count: '{0} No recipes|{1} 1 recipe|]1,Inf] %count% recipes'
 home:

@@ -9,10 +9,10 @@ use App\Factory\CategoryFactory;
 use App\Factory\CategoryMediaFactory;
 use App\Factory\CategoryMediaTranslationFactory;
 use App\Factory\CategoryTranslationFactory;
-use App\Factory\PostFactory;
 use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
-use App\Factory\PostTranslationFactory;
+use App\Factory\RecipeFactory;
+use App\Factory\RecipeTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use Zenstruck\Foundry\Story;
@@ -81,19 +81,19 @@ final class CategoryControllerTestStory extends Story
         ]);
 
         // Add posts to category1
-        PostFactory::createOne([
+        RecipeFactory::createOne([
             'category' => $category1,
             'active' => true,
             'createdAt' => new \DateTimeImmutable('2024-01-01 11:00:00'),
             'tags' => [$tag],
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Post Test 1 FR',
                     'slug' => 'post-test-1-fr',
                     'excerpt' => 'Premier post de test',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Test Post 1 EN',
                     'slug' => 'test-post-1-en',
@@ -119,19 +119,19 @@ final class CategoryControllerTestStory extends Story
             ],
         ]);
 
-        PostFactory::createOne([
+        RecipeFactory::createOne([
             'category' => $category1,
             'active' => true,
             'createdAt' => new \DateTimeImmutable('2024-01-01 12:00:00'),
             'tags' => [$tag],
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Post Test 2 FR',
                     'slug' => 'post-test-2-fr',
                     'excerpt' => 'Deuxième post de test',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Test Post 2 EN',
                     'slug' => 'test-post-2-en',

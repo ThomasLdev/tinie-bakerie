@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if featuredPost %}
+    {% if featuredRecipe %}
         <section class="hero-wrap wrap">
-            <twig:Hero :post="featuredPost" />
+            <twig:Hero :recipe="featuredRecipe" />
         </section>
     {% endif %}
 
@@ -30,7 +30,7 @@
         </section>
     {% endif %}
 
-    {% if featuredPosts|length > 0 %}
+    {% if featuredRecipes|length > 0 %}
         <section class="section">
             <div class="wrap">
                 <header class="section-head">
@@ -43,9 +43,9 @@
             </div>
             <div class="wrap">
                 <div class="popular">
-                    {% for post in featuredPosts %}
+                    {% for recipe in featuredRecipes %}
                         <twig:RecipeCard
-                            :post="post"
+                            :recipe="recipe"
                             :featured="loop.first"
                             :badge="loop.first ? 'home.popular.badge_signature'|trans : null"
                         />

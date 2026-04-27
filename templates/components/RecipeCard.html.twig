@@ -35,15 +35,15 @@
                 <div class="recipe-card__meta-item">
                     <twig:ux:icon name="lucide:chef-hat" class="recipe-card__meta-icon" aria-hidden="true" />
                     <dt class="sr-only">{{ 'recipe.difficulty.label'|trans }}</dt>
-                    <dd class="recipe-card__meta-value">{{ ('recipe.difficulty.' ~ this.post.difficulty.value)|trans }}</dd>
+                    <dd class="recipe-card__meta-value">{{ ('recipe.difficulty.' ~ this.recipe.difficulty.value)|trans }}</dd>
                 </div>
             </dl>
         {% endif %}
 
-        <h3 class="recipe-card__title">{{ this.post.title }}</h3>
+        <h3 class="recipe-card__title">{{ this.recipe.title }}</h3>
 
-        {% if this.featured and this.post.excerpt %}
-            <p class="recipe-card__excerpt">{{ this.post.excerpt }}</p>
+        {% if this.featured and this.recipe.excerpt %}
+            <p class="recipe-card__excerpt">{{ this.recipe.excerpt }}</p>
         {% endif %}
     </div>
 </a>

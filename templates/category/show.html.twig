@@ -27,7 +27,7 @@
                 {% set mainMedia = post.media|first %}
 
                 <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
-                   href="{{ path('app_post_show', {'postSlug': post.slug, 'categorySlug': category.slug}) }}"
+                   href="{{ path('app_recipe_show', {'recipeSlug': post.slug, 'categorySlug': category.slug}) }}"
                 >
                     <div class="aspect-square overflow-hidden">
                         <twig:Cover :attachment="mainMedia" variation="thumbnail" autoplay />

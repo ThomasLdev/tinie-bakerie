@@ -7,12 +7,12 @@ namespace App\Tests\Story;
 use App\Entity\Post;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryTranslationFactory;
-use App\Factory\PostFactory;
 use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
 use App\Factory\PostSectionFactory;
 use App\Factory\PostSectionTranslationFactory;
-use App\Factory\PostTranslationFactory;
+use App\Factory\RecipeFactory;
+use App\Factory\RecipeTranslationFactory;
 use App\Factory\TagFactory;
 use App\Factory\TagTranslationFactory;
 use App\Services\Post\Enum\Difficulty;
@@ -193,21 +193,21 @@ final class PostSearchTestStory extends Story
     private function createPosts(): void
     {
         // Post 1: Chocolate cake - searchable by title, section content
-        $this->addState(self::POST_CHOCOLATE_CAKE, PostFactory::createOne([
+        $this->addState(self::POST_CHOCOLATE_CAKE, RecipeFactory::createOne([
             'active' => true,
             'category' => self::get(self::CATEGORY_DESSERTS),
             'cookingTime' => 45,
             'difficulty' => Difficulty::Medium,
             'tags' => [self::get(self::TAG_CHOCOLATE)],
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Gâteau au Chocolat Fondant',
                     'slug' => 'gateau-chocolat-fondant',
                     'metaDescription' => str_repeat('C', 120),
                     'excerpt' => 'Un délicieux gâteau moelleux au cacao',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Molten Chocolate Cake',
                     'slug' => 'molten-chocolate-cake',
@@ -245,21 +245,21 @@ final class PostSearchTestStory extends Story
         ]));
 
         // Post 2: Vegan cookies - searchable by tag, excerpt
-        $this->addState(self::POST_VEGAN_COOKIES, PostFactory::createOne([
+        $this->addState(self::POST_VEGAN_COOKIES, RecipeFactory::createOne([
             'active' => true,
             'category' => self::get(self::CATEGORY_DESSERTS),
             'cookingTime' => 25,
             'difficulty' => Difficulty::Easy,
             'tags' => [self::get(self::TAG_VEGAN)],
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Cookies aux Pépites',
                     'slug' => 'cookies-pepites',
                     'metaDescription' => str_repeat('E', 120),
                     'excerpt' => 'Des cookies croustillants végétaliens sans produits laitiers',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Chip Cookies',
                     'slug' => 'chip-cookies',
@@ -279,20 +279,20 @@ final class PostSearchTestStory extends Story
         ]));
 
         // Post 3: Tiramisu - searchable by title, section content (mascarpone)
-        $this->addState(self::POST_TIRAMISU, PostFactory::createOne([
+        $this->addState(self::POST_TIRAMISU, RecipeFactory::createOne([
             'active' => true,
             'category' => self::get(self::CATEGORY_DESSERTS),
             'cookingTime' => 30,
             'difficulty' => Difficulty::Medium,
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Tiramisu Classique',
                     'slug' => 'tiramisu-classique',
                     'metaDescription' => str_repeat('G', 120),
                     'excerpt' => 'Le dessert italien par excellence',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Classic Tiramisu',
                     'slug' => 'classic-tiramisu',
@@ -330,20 +330,20 @@ final class PostSearchTestStory extends Story
         ]));
 
         // Post 4: INACTIVE - should never appear in search results
-        $this->addState(self::POST_INACTIVE, PostFactory::createOne([
+        $this->addState(self::POST_INACTIVE, RecipeFactory::createOne([
             'active' => false,
             'category' => self::get(self::CATEGORY_DESSERTS),
             'cookingTime' => 60,
             'difficulty' => Difficulty::Advanced,
             'translations' => [
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'fr',
                     'title' => 'Recette Secrète Chocolat',
                     'slug' => 'recette-secrete-chocolat',
                     'metaDescription' => str_repeat('I', 120),
                     'excerpt' => 'Une recette au chocolat qui ne devrait pas apparaître',
                 ]),
-                PostTranslationFactory::new([
+                RecipeTranslationFactory::new([
                     'locale' => 'en',
                     'title' => 'Secret Chocolate Recipe',
                     'slug' => 'secret-chocolate-recipe',

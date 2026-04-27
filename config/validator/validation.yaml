@@ -3,6 +3,7 @@ imports:
     - { resource: 'post_translation.yaml' }
     - { resource: 'post_media.yaml' }
     - { resource: 'post_media_translation.yaml' }
+    - { resource: 'recipe.yaml' }
     - { resource: 'category.yaml' }
     - { resource: 'category_translation.yaml' }
     - { resource: 'category_media.yaml' }
