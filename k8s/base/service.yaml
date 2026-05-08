@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinie-bakerie
+  namespace: tinie-bakerie
+spec:
+  selector:
+    app: tinie-bakerie
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort

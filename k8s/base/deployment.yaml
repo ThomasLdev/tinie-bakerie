@@ -1,17 +1,3 @@
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: media-pvc
-  namespace: tinie-bakerie
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -49,8 +35,8 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: tinie-bakerie-secrets
-                  key: DATABASE_URL
+                  name: tinie-bakerie-db-app
+                  key: uri
             - name: TRUSTED_PROXIES
               value: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
             - name: TRUSTED_HOSTS
@@ -87,18 +73,3 @@ spec:
         - name: media-storage
           persistentVolumeClaim:
             claimName: media-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: tinie-bakerie
-  namespace: tinie-bakerie
-spec:
-  selector:
-    app: tinie-bakerie
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-      nodePort: 30080
-  type: NodePort
