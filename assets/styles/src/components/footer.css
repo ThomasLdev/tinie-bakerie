@@ -3,6 +3,7 @@
   background: var(--ink);
   color: var(--on-ink-soft);
   padding-block: var(--space-5) var(--space-3);
+  padding-bottom: 4.5rem;
 
   & .footer__top {
     padding-block-end: var(--space-4);

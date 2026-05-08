@@ -1,7 +1,11 @@
+.nav-wrapper {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+}
+
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
   background: color-mix(in oklab, var(--bg), transparent 6%);
   backdrop-filter: saturate(1.2) blur(10px);
   -webkit-backdrop-filter: saturate(1.2) blur(10px);
