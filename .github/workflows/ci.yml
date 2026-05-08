@@ -132,8 +132,8 @@ jobs:
             -subj "/CN=local.tinie-bakerie.com" \
             -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
             -out  frankenphp/certs/local.tinie-bakerie.com.pem
-      - name: Start services (including Node.js for E2E)
-        run: docker compose --profile dev up --wait --no-build
+      - name: Start services (E2E mode — APP_ENV=test on php so test_id() renders and the app_test DB is queried)
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile dev up --wait --no-build
       - name: Create Test Database
         run: make doctrine-db-test-create
       - name: Run Migrations
@@ -142,6 +142,8 @@ jobs:
         run: make fixtures-test
       - name: Install Node.js dependencies
         run: make node-install
+      - name: Build CSS bundle (lightningcss)
+        run: make build-css
       - name: Install Playwright Dependencies
         run: make e2e-install
       - name: Run E2E Tests
