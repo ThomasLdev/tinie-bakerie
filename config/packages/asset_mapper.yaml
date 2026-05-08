@@ -3,3 +3,13 @@ framework:
         # The paths to make available to the asset mapper.
         paths:
             - assets/
+        excluded_patterns:
+            - '*/styles/src/*'
+
+# In test env APP_DEBUG=false, which disables the asset_mapper dev server by default.
+# E2E (Playwright) needs assets served dynamically without a prior `asset-map:compile`,
+# so opt-in explicitly here.
+when@test:
+    framework:
+        asset_mapper:
+            server: true

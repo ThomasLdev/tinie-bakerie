@@ -10,6 +10,7 @@
       "assets/**/*.js",
       "assets/**/*.css",
       "!assets/vendor/**",
+      "!assets/styles/app.css",
       "!node_modules/**",
       "!var/**",
       "!vendor/**",

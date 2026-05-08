@@ -2,6 +2,7 @@
     data-controller="recipe-checklist"
     data-recipe-checklist-storage-key-value="recipe-{{ this.recipe.id }}-ingredients"
     data-recipe-checklist-total-value="{{ this.totalCount }}"
+    {{ test_id('recipe-ingredients') }}
 >
     <span class="kicker">{{ 'recipe.show.ingredients.kicker'|trans }}</span>
     <h2 class="ingredients__title">
@@ -24,19 +25,21 @@
             <ul class="ing-group__list">
                 {% for ingredient in group.ingredients %}
                     {% set inputId = 'ingredient-' ~ ingredient.id %}
-                    <li class="ing-item">
+                    <li class="ing-item" {{ test_id('recipe-ingredient-' ~ ingredient.id) }}>
                         <input type="checkbox"
                                id="{{ inputId }}"
                                class="ing-item__check"
                                data-recipe-checklist-target="item"
-                               data-action="change->recipe-checklist#updateCount" />
-                        <label for="{{ inputId }}" class="ing-item__label">
+                               data-action="change->recipe-checklist#updateCount"
+                               {{ test_id('recipe-ingredient-check-' ~ ingredient.id) }} />
+                        <label for="{{ inputId }}" class="ing-item__label" {{ test_id('recipe-ingredient-label-' ~ ingredient.id) }}>
                             <span class="ing-item__qty">
                                 {% if ingredient.quantityDisplay %}
                                     {{ ingredient.quantityDisplay }}
                                 {% elseif ingredient.baseQuantity is not null %}
                                     <span data-recipe-portions-target="quantity"
-                                          data-base-quantity="{{ ingredient.baseQuantity }}">{{ ingredient.baseQuantity }}</span>{% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
+                                          data-base-quantity="{{ ingredient.baseQuantity }}"
+                                          {{ test_id('recipe-ingredient-qty-' ~ ingredient.id) }}>{{ ingredient.baseQuantity }}</span>{% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
                                 {% elseif ingredient.unit %}
                                     {{ ingredient.unit }}
                                 {% endif %}
@@ -51,11 +54,12 @@
 
     <footer class="ingredients__footer">
         <span class="ingredients__footer-count" aria-live="polite">
-            <span data-recipe-checklist-target="count">0</span> / {{ this.totalCount }}
+            <span data-recipe-checklist-target="count" {{ test_id('recipe-ingredients-count') }}>0</span> / {{ this.totalCount }}
         </span>
         <button type="button"
                 class="ingredients__footer-reset"
-                data-action="recipe-checklist#reset">
+                data-action="recipe-checklist#reset"
+                {{ test_id('recipe-ingredients-reset') }}>
             {{ 'recipe.show.ingredients.reset'|trans }}
         </button>
     </footer>

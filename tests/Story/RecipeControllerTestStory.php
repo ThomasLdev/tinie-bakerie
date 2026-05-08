@@ -8,11 +8,18 @@ use App\Entity\Category;
 use App\Entity\Recipe;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryTranslationFactory;
+use App\Factory\IngredientFactory;
+use App\Factory\IngredientGroupFactory;
+use App\Factory\IngredientGroupTranslationFactory;
+use App\Factory\IngredientTranslationFactory;
 use App\Factory\PostMediaFactory;
 use App\Factory\PostMediaTranslationFactory;
 use App\Factory\RecipeFactory;
+use App\Factory\RecipeStepFactory;
+use App\Factory\RecipeStepTranslationFactory;
 use App\Factory\RecipeTranslationFactory;
 use App\Services\Post\Enum\Difficulty;
+use App\Services\PostSection\Enum\PostSectionType;
 use Zenstruck\Foundry\Story;
 
 /**
@@ -82,6 +89,58 @@ final class RecipeControllerTestStory extends Story
                 ]),
             ],
         ]));
+
+        $recipe1 = self::get('activeRecipe1');
+        \assert($recipe1 instanceof Recipe);
+
+        $group = IngredientGroupFactory::createOne([
+            'recipe' => $recipe1,
+            'position' => 0,
+            'translations' => [
+                IngredientGroupTranslationFactory::new(['locale' => 'fr', 'label' => 'Pour la pâte']),
+                IngredientGroupTranslationFactory::new(['locale' => 'en', 'label' => 'For the dough']),
+            ],
+        ]);
+
+        IngredientFactory::createOne([
+            'group' => $group,
+            'position' => 0,
+            'baseQuantity' => 200.0,
+            'translations' => [
+                IngredientTranslationFactory::new(['locale' => 'fr', 'name' => 'Farine', 'unit' => 'g']),
+                IngredientTranslationFactory::new(['locale' => 'en', 'name' => 'Flour', 'unit' => 'g']),
+            ],
+        ]);
+
+        IngredientFactory::createOne([
+            'group' => $group,
+            'position' => 1,
+            'baseQuantity' => 100.0,
+            'translations' => [
+                IngredientTranslationFactory::new(['locale' => 'fr', 'name' => 'Sucre', 'unit' => 'g']),
+                IngredientTranslationFactory::new(['locale' => 'en', 'name' => 'Sugar', 'unit' => 'g']),
+            ],
+        ]);
+
+        RecipeStepFactory::createOne([
+            'post' => $recipe1,
+            'position' => 0,
+            'type' => PostSectionType::Default,
+            'translations' => [
+                RecipeStepTranslationFactory::new(['locale' => 'fr', 'title' => 'Préparer la pâte', 'content' => 'Mélangez les ingrédients secs.']),
+                RecipeStepTranslationFactory::new(['locale' => 'en', 'title' => 'Prepare the dough', 'content' => 'Mix the dry ingredients.']),
+            ],
+        ]);
+
+        RecipeStepFactory::createOne([
+            'post' => $recipe1,
+            'position' => 1,
+            'type' => PostSectionType::Default,
+            'translations' => [
+                RecipeStepTranslationFactory::new(['locale' => 'fr', 'title' => 'Cuire au four', 'content' => 'Enfournez 30 minutes à 180°C.']),
+                RecipeStepTranslationFactory::new(['locale' => 'en', 'title' => 'Bake', 'content' => 'Bake for 30 minutes at 180°C.']),
+            ],
+        ]);
 
         $this->addState('activeRecipe2', RecipeFactory::createOne([
             'active' => true,
@@ -194,6 +253,21 @@ final class RecipeControllerTestStory extends Story
     public function getRecipeSlug(Recipe $recipe, string $locale): string
     {
         return $recipe->getTranslationByLocale($locale)?->getSlug() ?? '';
+    }
+
+    public function getRecipeWithIngredientsAndSteps(): Recipe
+    {
+        return $this->getRecipe('activeRecipe1');
+    }
+
+    public function getIngredientCount(): int
+    {
+        return 2;
+    }
+
+    public function getStepCount(): int
+    {
+        return 2;
     }
 
     private function getRecipe(string $key): Recipe

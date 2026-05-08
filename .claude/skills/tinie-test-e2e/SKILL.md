@@ -1,6 +1,6 @@
 ---
 name: tinie-test-e2e
-description: Skill d'écriture de tests end-to-end Playwright pour Tinie Bakerie. Suite **mobile-only Android**, en TypeScript, assertions web-first sans timeout en dur, sélecteurs via `data-test-id` (helper Twig `test_id()`). Un test = un parcours utilisateur attendu, en allant au plus direct (pas de re-navigation gratuite). Vérifie l'absence de flakiness en relançant le test plusieurs fois après écriture, puis lance `tsc --noEmit` une seule fois en fin de session. À activer pour tout fichier sous `tests/e2e/**`, ou quand `tinie-test-orchestrator` délègue un parcours navigateur (drawer, search live, JS critique, multi-pages). Ne PAS activer pour des assertions DOM serveur sans JS — c'est `tinie-test-functional`.
+description: Skill d'écriture de tests end-to-end Playwright pour Tinie Bakerie. Suite **mobile-only Android**, en TypeScript, **Page Object Model obligatoire** (un POM par page sous `tests/e2e/pages/`), assertions web-first sans timeout en dur, sélecteurs via `data-test-id` (helper Twig `test_id()`). Un test = un parcours utilisateur attendu, en allant au plus direct (pas de re-navigation gratuite). Vérifie l'absence de flakiness en relançant le test plusieurs fois après écriture, puis lance `tsc --noEmit` une seule fois en fin de session. À activer pour tout fichier sous `tests/e2e/**`, ou quand `tinie-test-orchestrator` délègue un parcours navigateur (drawer, search live, JS critique, multi-pages). Ne PAS activer pour des assertions DOM serveur sans JS — c'est `tinie-test-functional`.
 ---
 
 # Tinie Bakerie — End-to-End Tests (Playwright)
@@ -11,7 +11,7 @@ Skill **spécialiste**. Écrit des tests Playwright qui valident un **parcours u
 
 - **Playwright** (`@playwright/test`). TypeScript imposé — Playwright traite TS comme citoyen de première classe, ne pas tenter du JS pur.
 - **Mobile-only Android** : suite exécutée sur un device Android émulé (`devices['Pixel 7']` ou similaire). Pas de Desktop, pas d'iOS.
-- **Localisation** : `tests/e2e/<flow>.spec.ts`. Page Objects sous `tests/e2e/pages/<Name>Page.ts` quand un même parcours réutilise une séquence d'interactions.
+- **Localisation** : `tests/e2e/<flow>.spec.ts`. **Page Objects obligatoires** sous `tests/e2e/pages/<Name>Page.ts` — un POM par page du site (cf. section dédiée).
 - **Run** : `make test.e2e` (= `npm run test:e2e`). Variantes : `:debug`, `:headed`, `:report`.
 - **Base URL** : configurée dans `playwright.config.ts` (réseau Docker interne : `http://php:80`).
 
@@ -174,72 +174,168 @@ Web-first assertions courantes :
 
 Si tu ressens le besoin d'un `waitForTimeout`, c'est presque toujours le signal d'une assertion mal choisie. **Remonter au user** plutôt que de planquer la flakiness.
 
-## Page Object Model — quand l'utiliser
+## Page Object Model — obligatoire, une par page
 
-POM (cf. `tests/e2e/pages/EasyAdminPage.ts`) **seulement** quand la même séquence d'interactions est utilisée par 2+ tests. Autrement c'est de la cérémonie.
+**Règle ferme** : chaque page du site qui apparaît dans la suite E2E **doit** avoir son POM dédié sous `tests/e2e/pages/<Name>Page.ts`. Pas d'exception, pas de "trop tôt", pas de "juste un test pour cette page". Le POM est posé en même temps que le tout premier test qui touche la page. Référence canonique : [playwright.dev/docs/pom](https://playwright.dev/docs/pom).
 
-Patron :
+Pourquoi systématique :
+- Un sélecteur change → un seul fichier à mettre à jour, pas N tests à grep.
+- Le nom de méthode (`openDrawer()`, `searchFor(query)`) raconte l'intention utilisateur ; un test qui enchaîne `getByTestId().click().fill()` est illisible six mois plus tard.
+- Le POM matérialise le contrat de testabilité de la page : ce qui est cliquable, observable, modifiable.
+- L'investissement est marginal (10-20 lignes), le ROI démarre dès le 2ᵉ test sur la page.
+
+### Patron canonique (aligné Playwright officiel)
+
 ```ts
-// tests/e2e/pages/RecipePage.ts
-import type { Page, Locator } from '@playwright/test';
+// tests/e2e/pages/RecipeShowPage.ts
+import { expect, type Locator, type Page } from '@playwright/test';
 
-export class RecipePage {
+export class RecipeShowPage {
   readonly page: Page;
   readonly title: Locator;
-  readonly ingredientsToggle: Locator;
+  readonly ingredientsBlock: Locator;
+  readonly ingredientChecks: Locator;
+  readonly portionsValue: Locator;
+  readonly portionsDecrease: Locator;
+  readonly portionsIncrease: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.title = page.getByTestId('recipe-show-title');
-    this.ingredientsToggle = page.getByTestId('recipe-show-ingredients-toggle');
+    this.ingredientsBlock = page.getByTestId('recipe-ingredients');
+    this.ingredientChecks = page.getByTestId(/^recipe-ingredient-check-/);
+    this.portionsValue = page.getByTestId('portions-value');
+    this.portionsDecrease = page.getByTestId('portions-decrease');
+    this.portionsIncrease = page.getByTestId('portions-increase');
   }
 
-  async goto(slug: string) {
-    await this.page.goto(`/fr/recettes/${slug}`);
-    await this.title.waitFor();
+  async goto(categorySlug: string, recipeSlug: string) {
+    await this.page.goto(`/fr/recettes/${categorySlug}/${recipeSlug}`);
+    await expect(this.title).toBeVisible();
+  }
+
+  async increasePortions() {
+    await this.portionsIncrease.click();
+  }
+
+  async decreasePortions() {
+    await this.portionsDecrease.click();
+  }
+
+  async currentPortions(): Promise<number> {
+    const text = await this.portionsValue.textContent();
+    return Number(text);
   }
 }
 ```
 
-Règles :
-- Les Locators sont **initialisés dans le constructeur** (lazy, ils ne touchent pas le DOM avant utilisation).
-- Pas de méthode `getXxx()` qui retourne un Locator construit à la volée — ça duplique.
-- Une méthode = une action utilisateur (`openDrawer()`, `searchFor(query)`, `selectFirstResult()`). Pas de méthode trop fine (`clickOnButtonX`).
-- Le POM ne contient **aucune assertion**. Les assertions vivent dans les tests.
-- Si un POM dépasse ~80 lignes ou regroupe 3 surfaces différentes → splitter.
+Test consommateur :
 
-Pas de POM pour 1 test. C'est de l'over-engineering.
+```ts
+import { expect, test } from '@playwright/test';
+import { RecipeShowPage } from './pages/RecipeShowPage';
+
+test('increments portions when increase is tapped', async ({ page }) => {
+  const recipe = new RecipeShowPage(page);
+  await recipe.goto('desserts', 'tarte-au-chocolat');
+
+  const before = await recipe.currentPortions();
+  await recipe.increasePortions();
+
+  await expect(recipe.portionsValue).toHaveText(String(before + 1));
+});
+```
+
+### Règles strictes
+
+- **Une page web = un POM**. `RecipeShowPage`, `RecipeIndexPage`, `HomePage`, `CategoryShowPage`, `AdminLoginPage`, `AdminDashboardPage`, etc. Pas un POM pour "tout l'admin".
+- **Locators `readonly` initialisés dans le constructeur** (cf. doc officielle). Pas de getter à la volée (`get title() { return this.page.getByTestId(...) }`) — c'est mort, rebâtir le Locator à chaque accès dilue la lisibilité.
+- **Locators exposés en propriétés publiques**. Le test peut les utiliser pour ses propres `expect`. Pas tout cacher derrière des méthodes : un Locator est déjà une abstraction.
+- **Méthodes = intentions utilisateur** : `openDrawer()`, `searchFor(query)`, `submitNewsletterForm(email)`. Pas de `clickOnButtonX` ni `getElementY` — trop fin, on lit du DOM, pas un parcours.
+- **Sélecteurs via `getByTestId`** uniquement (sauf `getByRole`/`getByLabel` justifiés). Cohérent avec le reste du skill.
+- **Assertions autorisées dans les méthodes d'action** quand elles **stabilisent l'état** (`await expect(this.title).toBeVisible()` après `goto()` pour confirmer que la page est prête). C'est le pattern de la doc officielle. Les **assertions de vérification** (le résultat que le test veut prouver) restent dans le test, pas dans le POM.
+- **Pas de logique métier** dans le POM — il modélise la page, pas le domaine. Pas de calculs, pas de `if (admin) doX else doY`.
+- **Composition** quand une page a un sous-composant lourd partagé (header, drawer, footer) : extraire un POM dédié (`HeaderPage` ou `DrawerComponent`) et l'instancier dans le POM parent (`this.header = new HeaderComponent(page)`). Évite les POM monstres.
+- **Taille indicative** : si un POM dépasse ~120 lignes utiles, c'est probablement deux pages déguisées en une → splitter.
+- **Conventions de nommage** : `PascalCase` + suffixe `Page` (`RecipeShowPage`, pas `recipeShow` ni `RecipeShow`). Pour les sous-composants de page, suffixe `Component` (`DrawerComponent`).
+
+### Sous-composants partagés (drawer, header, modal, …)
+
+Modélisés par leur propre classe sous `tests/e2e/pages/components/<Name>Component.ts`, instanciés depuis chaque POM page qui les expose :
+
+```ts
+// tests/e2e/pages/components/HeaderComponent.ts
+export class HeaderComponent {
+  readonly burger: Locator;
+  readonly drawer: Locator;
+  constructor(readonly page: Page) {
+    this.burger = page.getByTestId('header-burger');
+    this.drawer = page.getByTestId('header-drawer');
+  }
+  async openDrawer() {
+    await this.burger.click();
+    await expect(this.drawer).toBeVisible();
+  }
+}
+
+// tests/e2e/pages/HomePage.ts
+export class HomePage {
+  readonly header: HeaderComponent;
+  constructor(readonly page: Page) {
+    this.header = new HeaderComponent(page);
+  }
+  // …
+}
+```
+
+Évite la duplication entre toutes les pages qui partagent le même chrome.
+
+### Co-évolution POM ↔ markup
+
+Quand le markup d'une page change (refonte design, nouveau bloc, nouveau bouton), le POM doit être mis à jour **dans la même PR**. Si le POM diverge du markup :
+- les tests rougissent → on remarque immédiatement.
+- les nouveaux tests basés sur l'ancien POM tournent en rond → on perd du temps.
+
+Inversement, si on touche un `data-test-id` côté Twig, on grep les POM qui le référencent et on synchronise.
 
 ## Squelette de référence
 
+Le test passe **toujours** par un POM. Aucun `page.getByTestId(...)` direct dans un fichier `*.spec.ts`.
+
 ```ts
-import { test, expect } from '@playwright/test';
+// tests/e2e/recipe-show.spec.ts
+import { expect, test } from '@playwright/test';
+import { RecipeShowPage } from './pages/RecipeShowPage';
 
 test.describe('Recipe show page', () => {
-  test('renders title and ingredients for an active recipe', async ({ page }) => {
-    await page.goto('/fr/recettes/tarte-au-chocolat');
+  test('renders title and ingredients block for an active recipe', async ({ page }) => {
+    const recipe = new RecipeShowPage(page);
+    await recipe.goto('desserts', 'tarte-au-chocolat');
 
-    await expect(page.getByTestId('recipe-show-title')).toHaveText('Tarte au chocolat');
-    await expect(page.getByTestId('recipe-show-ingredients')).toBeVisible();
-    await expect(page.getByTestId(/^recipe-show-ingredient-/)).toHaveCount(8);
+    await expect(recipe.title).toHaveText('Tarte au chocolat');
+    await expect(recipe.ingredientsBlock).toBeVisible();
+    await expect(recipe.ingredientChecks).toHaveCount(8);
   });
 
-  test('hides ingredients when user taps the toggle', async ({ page }) => {
-    await page.goto('/fr/recettes/tarte-au-chocolat');
+  test('disables decrease button when reaching minimum portions', async ({ page }) => {
+    const recipe = new RecipeShowPage(page);
+    await recipe.goto('desserts', 'tarte-au-chocolat');
 
-    const list = page.getByTestId('recipe-show-ingredients-list');
-    await expect(list).toBeVisible();
+    while ((await recipe.currentPortions()) > 1) {
+      await recipe.decreasePortions();
+    }
 
-    await page.getByTestId('recipe-show-ingredients-toggle').click();
-    await expect(list).toBeHidden();
+    await expect(recipe.portionsDecrease).toBeDisabled();
+    await expect(recipe.portionsValue).toHaveText('1');
   });
 });
 ```
 
 Notes :
-- Pas de `beforeEach` pour 2 tests qui font la même `goto` — ça marche mais ça obscurcit le start state. Si on l'utilise, le justifier.
-- `test.describe` regroupe par **page** ou par **flow**, pas par "ce qu'on testait il y a 6 mois".
-- Une seule assertion finale par test idéalement, ou une chaîne d'assertions qui décrit le **résultat attendu**, pas le chemin.
+- L'instanciation `new RecipeShowPage(page)` peut être déplacée dans un `beforeEach` si tous les tests du `describe` partagent la même page de départ. Sinon en début de chaque `test()` reste lisible.
+- `test.describe` regroupe par **page** (le POM correspondant) ou par **flow utilisateur**, jamais par typologie technique.
+- Le test ne contient pas de `getByTestId`. Si tu en écris un dans le `.spec.ts`, c'est un signal : ajoute le Locator au POM.
+- Les assertions de vérification (le résultat que le test prouve) restent dans le test ; les assertions stabilisantes (page prête, élément visible après navigation) sont dans les méthodes du POM (`goto()`, `openDrawer()`, etc.).
 
 ## Workflow d'écriture
 
@@ -373,7 +469,10 @@ Avant de considérer un test fini :
 - [ ] Aucun état partagé entre tests, aucune dépendance d'ordre
 - [ ] Si admin : auth via fixture `storageState` worker-scoped, **un user dédié par worker**
 - [ ] `tsc --noEmit` vert (lancé une fois en fin de session)
-- [ ] POM utilisé seulement si la séquence est partagée par 2+ tests
+- [ ] POM dédié sous `tests/e2e/pages/<Name>Page.ts` pour **chaque page** touchée par le test
+- [ ] Aucun `page.getByTestId(...)` ni `page.locator(...)` directement dans le `.spec.ts` (tout passe par le POM)
+- [ ] Locators du POM `readonly` initialisés dans le constructeur, exposés en propriétés publiques
+- [ ] Méthodes du POM nommées comme des intentions utilisateur (`openDrawer()`, `searchFor(query)`, `decreasePortions()`)
 
 ## Anti-patterns
 
@@ -385,7 +484,11 @@ Avant de considérer un test fini :
 - ❌ Augmenter `expect.timeout` ou `actionTimeout` pour faire passer un test flaky.
 - ❌ Garder Desktop Chrome dans `projects` : la suite est mobile-only Android.
 - ❌ Visual regression (`toHaveScreenshot`) — pas le rôle de cette suite.
-- ❌ POM créé pour un seul test.
+- ❌ Test qui interagit avec le DOM **sans** passer par un POM (`page.getByTestId(...)` ou `page.locator(...)` direct dans le `.spec.ts`).
+- ❌ Plusieurs pages mélangées dans un même POM (`SitePage` qui regroupe home + recipe + admin) — un POM = une page.
+- ❌ Locators construits à la volée via getter (`get title() { return page.getByTestId(...) }`) au lieu d'être initialisés `readonly` dans le constructeur.
+- ❌ Méthodes POM nommées techniquement (`clickOnButtonX`, `getElementY`) au lieu de l'intention utilisateur (`submitForm`, `openMenu`).
+- ❌ Logique métier dans le POM (calculs, branches conditionnelles métier) — le POM modélise la page, pas le domaine.
 - ❌ Lancer `tsc` après chaque test écrit. Une passe en fin de session suffit.
 - ❌ Accepter un test flaky parce que « ça passe sur la 2ème tentative ». Le retry CI est un filet de sécurité, pas une excuse.
 - ❌ État partagé entre tests (variable de module mutée, fichier réutilisé, entité réutilisée par slug). Casse l'isolation worker.

@@ -1,0 +1,9 @@
+# CI override for E2E tests.
+# Forces APP_ENV=test on the prebuilt prod image so that:
+#   - App\Twig\TestExtension renders data-test-id attributes (skipped in prod)
+#   - Symfony reads .env.test and connects to the app_test database
+#     (the same DB targeted by `make doctrine-migrate-test` and `make fixtures-test`)
+services:
+  php:
+    environment:
+      APP_ENV: test

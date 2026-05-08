@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check
+.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check build-css watch-css
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -97,7 +97,13 @@ doctrine-db-test-create:
 assets-install: ## Install assets in the public directory
 	@$(PHP_CONT) bin/console assets:install
 
-assets-compile: ## Compile all assets for production
+build-css: ## Compile CSS bundle via Lightning CSS (sources -> assets/styles/app.css)
+	@$(NPM) run build:css
+
+watch-css: ## Watch CSS sources and rebuild bundle on change (dev)
+	@$(NPM) run watch:css
+
+assets-compile: build-css ## Compile all assets for production (CSS bundle + AssetMapper)
 	@$(PHP_CONT) bin/console asset-map:compile
 
 ## —— Node.js 📦 ———————————————————————————————————————————————————————————————
@@ -168,6 +174,15 @@ test.unit:
 
 test.functional:
 	@$(PHP_CONT) vendor/bin/phpunit --testsuite FunctionalTests --no-results --testdox
+
+test.js: ## Run JS unit tests with Vitest
+	@$(NPM) run test:js
+
+test.js.coverage: ## Run JS unit tests with coverage report (HTML in coverage-js/)
+	@$(NPM) run test:js:coverage
+
+typecheck: ## Run TypeScript type checking on tests
+	@$(NPM) run typecheck
 
 ## —— E2E Tests (Playwright) 🎭 ——————————————————————————————————————————————
 

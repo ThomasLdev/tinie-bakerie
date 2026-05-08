@@ -26,9 +26,15 @@ docs/
 public/bundles/
 public/media/
 tests/
+node_modules/
+playwright-report/
+test-results/
+.playwright-mcp/
 # Ignore var except built assets
 var/*
 !var/tailwind/
+# Built CSS (gitignored, regenerated in node_builder stage)
+assets/styles/app.css
 vendor/
 .editorconfig
 .env.*.local

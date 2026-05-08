@@ -90,6 +90,37 @@ final class RecipeControllerTest extends BaseControllerTestCase
     }
 
     #[DataProvider('getRecipeControllerShowNotFoundData')]
+    public function testShowRendersIngredientsAndSteps(string $locale, string $baseUrl): void
+    {
+        /** @var RecipeControllerTestStory $story */
+        $story = $this->loadStory(static fn (): RecipeControllerTestStory => RecipeControllerTestStory::load());
+        $recipe = $story->getRecipeWithIngredientsAndSteps();
+        $recipeSlug = $story->getRecipeSlug($recipe, $locale);
+        $category = $recipe->getCategory();
+        self::assertNotNull($category, 'Recipe should have a category');
+        $categorySlug = $story->getCategorySlug($category, $locale);
+
+        $crawler = $this->client->request(
+            Request::METHOD_GET,
+            \sprintf('%s/%s/%s', $baseUrl, $categorySlug, $recipeSlug),
+        );
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $crawler->filter('[data-test-id="recipe-ingredients"]'));
+        self::assertCount(
+            $story->getIngredientCount(),
+            $crawler->filter('[data-test-id^="recipe-ingredient-check-"]'),
+        );
+        self::assertCount(
+            $story->getStepCount(),
+            $crawler->filter('[data-test-id^="recipe-step-check-"]'),
+        );
+        self::assertCount(1, $crawler->filter('[data-test-id="portions-decrease"]'));
+        self::assertCount(1, $crawler->filter('[data-test-id="portions-value"]'));
+        self::assertCount(1, $crawler->filter('[data-test-id="portions-increase"]'));
+    }
+
+    #[DataProvider('getRecipeControllerShowNotFoundData')]
     public function testShowWithInactiveRecipe(string $locale, string $baseUrl): void
     {
         /** @var RecipeControllerTestStory $story */

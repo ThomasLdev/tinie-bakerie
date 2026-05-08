@@ -6,7 +6,7 @@
     { label: 'header.nav.about'|trans({}, 'layout'),    href: '#',                        route: null },
 ] %}
 
-<div data-controller="drawer">
+<div data-controller="drawer" class="nav-wrapper">
     <nav {{ attributes.defaults({class: 'nav'}) }} aria-label="{{ 'header.nav.aria_label'|trans({}, 'layout') }}">
         <div class="nav__inner">
             <a href="{{ path('app_homepage_index') }}" class="logo">
