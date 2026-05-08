@@ -132,12 +132,22 @@ jobs:
             -subj "/CN=local.tinie-bakerie.com" \
             -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
             -out  frankenphp/certs/local.tinie-bakerie.com.pem
-      - name: Start services (E2E mode — APP_ENV=test on php so test_id() renders and the app_test DB is queried)
-        run: docker compose -f compose.yaml -f compose.ci.yaml --profile dev up --wait --no-build
-      - name: Create Test Database
-        run: make doctrine-db-test-create
-      - name: Run Migrations
-        run: make doctrine-migrate-test
+      # APP_ENV=test on php (from compose.ci.yaml) makes the docker-entrypoint wait for the
+      # app_test DB and run migrations on it automatically. We must create app_test BEFORE
+      # starting php, otherwise the entrypoint times out and the container goes unhealthy.
+      - name: Start database
+        run: docker compose -f compose.yaml -f compose.ci.yaml up -d --no-build database
+      - name: Wait for database (pg_isready)
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose exec -T database pg_isready -U app >/dev/null 2>&1; then exit 0; fi
+            sleep 1
+          done
+          echo "database never became ready" && exit 1
+      - name: Create app_test database
+        run: docker compose exec -T database createdb -U app app_test
+      - name: Start php + node (entrypoint waits for app_test then runs migrations)
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile dev up -d --wait --no-build
       - name: Run Fixtures
         run: make fixtures-test
       - name: Install Node.js dependencies
