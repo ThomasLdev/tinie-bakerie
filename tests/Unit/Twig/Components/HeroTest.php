@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[CoversClass(Hero::class)]
 final class HeroTest extends TestCase
 {
-    private const LOCALE = 'en';
+    private const string LOCALE = 'en';
 
     #[TestDox('getTagTitles() returns an empty array when the recipe has no tags')]
     public function testReturnsEmptyArrayWhenNoTags(): void
@@ -74,8 +74,8 @@ final class HeroTest extends TestCase
     private function buildComponent(Recipe $recipe): Hero
     {
         $component = new Hero(
-            $this->createStub(DurationExtension::class),
-            $this->createStub(UrlGeneratorInterface::class),
+            self::createStub(DurationExtension::class),
+            self::createStub(UrlGeneratorInterface::class),
         );
         $component->recipe = $recipe;
 

@@ -53,6 +53,7 @@ final class FooterTest extends KernelTestCase
 
         // 6 featured categories — id keyed by minutes offset for clarity.
         $featured = [];
+
         for ($i = 0; $i < 6; ++$i) {
             $featured[$i] = $this->createCategory(
                 titlePrefix: "Featured {$i}",
@@ -93,6 +94,7 @@ final class FooterTest extends KernelTestCase
         );
 
         $resultIds = array_map(static fn (Category $c): ?int => $c->getId(), $result);
+
         foreach ($excludedIds as $excludedId) {
             self::assertNotContains(
                 $excludedId,
@@ -108,6 +110,7 @@ final class FooterTest extends KernelTestCase
         $base = new \DateTimeImmutable('2026-01-01 12:00:00');
 
         $featured = [];
+
         for ($i = 0; $i < 6; ++$i) {
             $featured[$i] = $this->createCategory(
                 titlePrefix: "Featured {$i}",

@@ -21,10 +21,10 @@ final class CoverTest extends TestCase
     #[TestDox('postMount() keeps an explicit media even when an attachment is provided')]
     public function testPostMountKeepsExplicitMediaOverAttachment(): void
     {
-        $explicitMedia = $this->createStub(Media::class);
-        $attachmentMedia = $this->createStub(Media::class);
+        $explicitMedia = self::createStub(Media::class);
+        $attachmentMedia = self::createStub(Media::class);
 
-        $attachment = $this->createStub(MediaAttachment::class);
+        $attachment = self::createStub(MediaAttachment::class);
         $attachment->method('getMedia')->willReturn($attachmentMedia);
 
         $component = new Cover();
@@ -39,9 +39,9 @@ final class CoverTest extends TestCase
     #[TestDox('postMount() resolves media from attachment when media is null')]
     public function testPostMountResolvesMediaFromAttachment(): void
     {
-        $attachmentMedia = $this->createStub(Media::class);
+        $attachmentMedia = self::createStub(Media::class);
 
-        $attachment = $this->createStub(MediaAttachment::class);
+        $attachment = self::createStub(MediaAttachment::class);
         $attachment->method('getMedia')->willReturn($attachmentMedia);
 
         $component = new Cover();
@@ -56,7 +56,7 @@ final class CoverTest extends TestCase
     #[TestDox('postMount() leaves explicit media untouched when no attachment is provided')]
     public function testPostMountLeavesMediaWhenNoAttachment(): void
     {
-        $explicitMedia = $this->createStub(Media::class);
+        $explicitMedia = self::createStub(Media::class);
 
         $component = new Cover();
         $component->media = $explicitMedia;
@@ -86,7 +86,7 @@ final class CoverTest extends TestCase
         $component = new Cover();
 
         if ($fileType !== null) {
-            $media = $this->createStub(Media::class);
+            $media = self::createStub(Media::class);
             $media->method('getFileType')->willReturn($fileType);
             $component->media = $media;
         }
@@ -119,7 +119,7 @@ final class CoverTest extends TestCase
     #[TestDox('getResolvedAlt() falls back to the attachment alt when no prop is set')]
     public function testGetResolvedAltFallsBackToAttachment(): void
     {
-        $attachment = $this->createStub(MediaAttachment::class);
+        $attachment = self::createStub(MediaAttachment::class);
         $attachment->method('getAlt')->willReturn('Attachment alt');
 
         $component = new Cover();
@@ -155,7 +155,7 @@ final class CoverTest extends TestCase
     #[TestDox('getResolvedTitle() falls back to the attachment title when no prop is set')]
     public function testGetResolvedTitleFallsBackToAttachment(): void
     {
-        $attachment = $this->createStub(MediaAttachment::class);
+        $attachment = self::createStub(MediaAttachment::class);
         $attachment->method('getTitle')->willReturn('Attachment title');
 
         $component = new Cover();
