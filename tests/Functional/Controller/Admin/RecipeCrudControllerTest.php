@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Controller\Admin\RecipeCrudController;
+use App\Entity\Category;
 use App\Entity\Recipe;
 use App\EventSubscriber\LocaleFilterSubscriber;
 use App\Factory\CategoryFactory;
 use App\Factory\CategoryTranslationFactory;
 use App\Factory\RecipeFactory;
 use App\Factory\RecipeTranslationFactory;
-use App\Form\Type\IngredientGroupType;
 use App\Form\Type\IngredientGroupTranslationType;
+use App\Form\Type\IngredientGroupType;
 use App\Form\Type\IngredientTranslationType;
 use App\Form\Type\IngredientType;
-use App\Form\Type\PostMediaType;
 use App\Form\Type\PostMediaTranslationType;
+use App\Form\Type\PostMediaType;
 use App\Form\Type\RecipeStepTranslationType;
 use App\Form\Type\RecipeStepType;
 use App\Form\Type\RecipeTranslationType;
@@ -74,7 +75,7 @@ final class RecipeCrudControllerTest extends WebTestCase
     public function testIndexPageShowsMultipleRecipes(): void
     {
         $category = $this->createCategory();
-        RecipeFactory::createMany(3, fn () => [
+        RecipeFactory::createMany(3, fn (): array => [
             'category' => $category,
             'translations' => $this->createRecipeTranslations(),
         ]);
@@ -153,7 +154,7 @@ final class RecipeCrudControllerTest extends WebTestCase
         ]);
     }
 
-    private function createCategory(): \App\Entity\Category
+    private function createCategory(): Category
     {
         return CategoryFactory::createOne([
             'translations' => [

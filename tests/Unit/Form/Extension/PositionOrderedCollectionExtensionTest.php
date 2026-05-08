@@ -7,10 +7,10 @@ namespace App\Tests\Unit\Form\Extension;
 use App\Entity\Contracts\Positionable;
 use App\Form\Extension\PositionOrderedCollectionExtension;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -156,10 +156,8 @@ final class PositionOrderedCollectionExtensionTest extends TestCase
 
         $event->expects(self::once())
             ->method('setData')
-            ->with(self::callback(static function (mixed $value) use ($a, $b, $c): bool {
-                return $value instanceof ArrayCollection
-                    && [$b, $c, $a] === array_values($value->toArray());
-            }));
+            ->with(self::callback(static fn (mixed $value): bool => $value instanceof ArrayCollection
+                && [$b, $c, $a] === array_values($value->toArray())));
 
         $listener($event);
     }
@@ -231,11 +229,11 @@ final class PositionOrderedCollectionExtensionTest extends TestCase
     }
 
     /**
-     * @return FormEvent&\PHPUnit\Framework\MockObject\MockObject
+     * @return FormEvent&MockObject
      */
     private function createEvent(mixed $data): FormEvent
     {
-        $form = $this->createStub(FormInterface::class);
+        self::createStub(FormInterface::class);
         $event = $this->createMock(FormEvent::class);
         $event->method('getData')->willReturn($data);
 
@@ -244,8 +242,8 @@ final class PositionOrderedCollectionExtensionTest extends TestCase
 
     private function positionable(int $position): Positionable
     {
-        return new class($position) implements Positionable {
-            public function __construct(private readonly int $position)
+        return new readonly class($position) implements Positionable {
+            public function __construct(private int $position)
             {
             }
 
