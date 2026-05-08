@@ -136,7 +136,7 @@ jobs:
       # app_test DB and run migrations on it automatically. We must create app_test BEFORE
       # starting php, otherwise the entrypoint times out and the container goes unhealthy.
       - name: Start database
-        run: docker compose -f compose.yaml -f compose.ci.yaml up -d --no-build database
+        run: docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml up -d --no-build database
       - name: Wait for database (pg_isready)
         run: |
           for i in $(seq 1 30); do
@@ -147,7 +147,7 @@ jobs:
       - name: Create app_test database
         run: docker compose exec -T database createdb -U app app_test
       - name: Start php + node (entrypoint waits for app_test then runs migrations)
-        run: docker compose -f compose.yaml -f compose.ci.yaml --profile dev up -d --wait --no-build
+        run: docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml --profile dev up -d --wait --no-build
       - name: Run Fixtures
         run: make fixtures-test
       - name: Install Node.js dependencies
@@ -168,13 +168,13 @@ jobs:
           mkdir -p docker-diagnostics
           {
             echo "==== docker compose ps ===="
-            docker compose -f compose.yaml -f compose.ci.yaml --profile dev ps -a
+            docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml --profile dev ps -a
             echo
             echo "==== docker compose top ===="
-            docker compose -f compose.yaml -f compose.ci.yaml --profile dev top || true
+            docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml --profile dev top || true
           } > docker-diagnostics/state.txt 2>&1
           for svc in php database node; do
-            cid=$(docker compose -f compose.yaml -f compose.ci.yaml --profile dev ps -aq "$svc" || true)
+            cid=$(docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml --profile dev ps -aq "$svc" || true)
             if [ -n "$cid" ]; then
               docker logs --details --timestamps "$cid" > "docker-diagnostics/${svc}.logs.txt" 2>&1 || true
               docker inspect "$cid" > "docker-diagnostics/${svc}.inspect.json" 2>&1 || true
