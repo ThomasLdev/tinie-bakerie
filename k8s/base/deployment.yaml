@@ -19,7 +19,10 @@ spec:
         - name: ghcr-secret
       containers:
         - name: tinie-bakerie
-          image: ghcr.io/thomasldev/tinie-bakerie:20260508104526-41c64c9
+          # Tag here is a placeholder; the live tag is set by the
+          # `images:` transformer in k8s/overlays/<env>/kustomization.yaml,
+          # which Flux ImageUpdateAutomation rewrites on every new build.
+          image: ghcr.io/thomasldev/tinie-bakerie:placeholder
           imagePullPolicy: Always
           ports:
             - containerPort: 80

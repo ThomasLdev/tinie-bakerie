@@ -12,7 +12,10 @@ jobs:
   build-and-push:
     runs-on: ubuntu-24.04-arm
     permissions:
-      contents: write
+      # No `contents: write` — Flux ImageUpdateAutomation owns commits to
+      # k8s/overlays/staging/kustomization.yaml. CI only builds and pushes
+      # images.
+      contents: read
       packages: write
 
     steps:
@@ -35,6 +38,9 @@ jobs:
 
       - name: Generate image tag
         id: tag
+        # Flux ImagePolicy `tinie-bakerie-staging` matches `^\d{14}-[a-f0-9]+$`
+        # and picks the highest timestamp. Keep this format in sync with the
+        # ImagePolicy regex in tldev-infra/clusters/pi-staging/image-automation.yaml.
         run: echo "tag=$(date +%Y%m%d%H%M%S)-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Build and push ARM64 image
@@ -49,12 +55,3 @@ jobs:
             ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Update k8s manifest with new image tag
-        run: |
-          sed -i "s|image: .*tinie-bakerie.*|image: ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.tag.outputs.tag }}|" k8s/app.yaml
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add k8s/app.yaml
-          git commit -m "chore: update image to ${{ steps.tag.outputs.tag }}" || echo "No changes to commit"
-          git push
