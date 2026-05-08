@@ -160,6 +160,33 @@ jobs:
         run: make test.e2e
         env:
           CI: true
+      # Diagnostic dump on any failure in the job — surfaces the real reason behind
+      # an unhealthy container (HEALTHCHECK output is in `docker inspect` Health.Log).
+      - name: Capture Docker diagnostics on failure
+        if: failure()
+        run: |
+          mkdir -p docker-diagnostics
+          {
+            echo "==== docker compose ps ===="
+            docker compose -f compose.yaml -f compose.ci.yaml --profile dev ps -a
+            echo
+            echo "==== docker compose top ===="
+            docker compose -f compose.yaml -f compose.ci.yaml --profile dev top || true
+          } > docker-diagnostics/state.txt 2>&1
+          for svc in php database node; do
+            cid=$(docker compose -f compose.yaml -f compose.ci.yaml --profile dev ps -aq "$svc" || true)
+            if [ -n "$cid" ]; then
+              docker logs --details --timestamps "$cid" > "docker-diagnostics/${svc}.logs.txt" 2>&1 || true
+              docker inspect "$cid" > "docker-diagnostics/${svc}.inspect.json" 2>&1 || true
+            fi
+          done
+      - name: Upload Docker diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-diagnostics
+          path: docker-diagnostics/
+          retention-days: 30
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
