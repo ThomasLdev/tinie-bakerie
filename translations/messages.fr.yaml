@@ -32,9 +32,12 @@ recipes:
         lede: 'Classées par saison, par technique et par envie. Chaque recette est testée trois fois — rien ne sort du four s''il ne mérite pas le détour.'
         stats:
             total: 'Recettes'
-            season: 'Cette saison'
-            signature: 'Signatures'
         empty: 'Aucune recette pour le moment.'
+        section:
+            featured_before: 'À la'
+            featured_em: 'une'
+            recents_em: 'Récentes'
+            recents_after: 'publications'
     filters:
         aria_label: 'Filtres de recettes'
         categories_aria: 'Catégories'
@@ -44,6 +47,12 @@ recipes:
             recent: 'Plus récent'
             quickest: 'Temps court'
             easiest: 'Plus facile'
+
+pagination:
+    aria_label: 'Pagination'
+    previous: 'Page précédente'
+    next: 'Page suivante'
+    page: 'Page %page%'
 
 recipe:
     prep: 'Préparation'

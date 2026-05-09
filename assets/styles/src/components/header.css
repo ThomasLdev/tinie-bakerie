@@ -81,21 +81,39 @@
   white-space: nowrap;
 
   & .logo__mark {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 50%;
-    background: var(--accent-soft);
+    background: var(--surface);
+    color: var(--accent-ink);
     display: grid;
     place-items: center;
-    color: var(--accent-ink);
-    font-style: italic;
-    font-size: 1.0625rem;
     flex-shrink: 0;
+    overflow: hidden;
+
+    & svg {
+      width: 1.875rem;
+      height: 1.875rem;
+    }
 
     @media (min-width: 600px) {
-      width: 2.25rem;
-      height: 2.25rem;
-      font-size: 1.125rem;
+      width: 2.5rem;
+      height: 2.5rem;
+
+      & svg {
+        width: 2.125rem;
+        height: 2.125rem;
+      }
+    }
+
+    @media (min-width: 900px) {
+      width: 3rem;
+      height: 3rem;
+
+      & svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
     }
   }
 

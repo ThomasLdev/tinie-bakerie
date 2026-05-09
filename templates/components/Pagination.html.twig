@@ -1,0 +1,47 @@
+<nav {{ attributes.defaults({
+    class: 'pagination',
+    'aria-label': 'pagination.aria_label'|trans,
+}) }}>
+    <button
+        type="button"
+        class="pagination__btn pagination__btn--nav"
+        data-action="live#action"
+        data-live-action-param="goToPage"
+        data-live-page-param="{{ this.current - 1 }}"
+        {% if this.first %}disabled aria-disabled="true"{% endif %}
+        aria-label="{{ 'pagination.previous'|trans }}"
+    >
+        <twig:ux:icon name="lucide:chevron-left" width="14" height="14" aria-hidden="true" />
+    </button>
+
+    {% for page in this.pages %}
+        {% if page == '…' %}
+            <span class="pagination__dots" aria-hidden="true">···</span>
+        {% else %}
+            {% set isActive = page == this.current %}
+            <button
+                type="button"
+                class="pagination__btn{% if isActive %} pagination__btn--active{% endif %}"
+                data-action="live#action"
+                data-live-action-param="goToPage"
+                data-live-page-param="{{ page }}"
+                {% if isActive %}aria-current="page"{% endif %}
+                aria-label="{{ 'pagination.page'|trans({'%page%': page}) }}"
+            >
+                {{ page }}
+            </button>
+        {% endif %}
+    {% endfor %}
+
+    <button
+        type="button"
+        class="pagination__btn pagination__btn--nav"
+        data-action="live#action"
+        data-live-action-param="goToPage"
+        data-live-page-param="{{ this.current + 1 }}"
+        {% if this.last %}disabled aria-disabled="true"{% endif %}
+        aria-label="{{ 'pagination.next'|trans }}"
+    >
+        <twig:ux:icon name="lucide:chevron-right" width="14" height="14" aria-hidden="true" />
+    </button>
+</nav>

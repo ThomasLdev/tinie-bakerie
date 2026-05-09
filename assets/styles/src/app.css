@@ -19,7 +19,9 @@
 @import "./components/breadcrumb.css" layer(components);
 @import "./components/page-head.css" layer(components);
 @import "./components/recipes-filters.css" layer(components);
-@import "./components/recipes-index.css" layer(components);
+@import "./components/recipes-editorial.css" layer(components);
+@import "./components/recipe-card-inline.css" layer(components);
+@import "./components/pagination.css" layer(components);
 @import "./components/recipe-show.css" layer(components);
 @import "./components/recipe-stats.css" layer(components);
 @import "./components/ingredients.css" layer(components);

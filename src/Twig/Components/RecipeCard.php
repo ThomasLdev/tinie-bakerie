@@ -19,6 +19,8 @@ final class RecipeCard
 
     public ?string $badge = null;
 
+    public string $variant = 'default';
+
     public function __construct(
         private readonly DurationExtension $durationFormatter,
         private readonly UrlGeneratorInterface $urlGenerator,

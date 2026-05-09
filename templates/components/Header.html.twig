@@ -7,10 +7,7 @@
 <div class="nav-wrapper">
     <nav {{ attributes.defaults({class: 'nav'}) }} aria-label="{{ 'header.nav.aria_label'|trans({}, 'layout') }}">
         <div class="nav__inner">
-            <a href="{{ path('app_homepage_index') }}" class="logo">
-                <span class="logo__mark" aria-hidden="true">t</span>
-                <span class="logo__text">TINIE <span class="logo__brand">BAKERIE</span></span>
-            </a>
+            <twig:Logo />
 
             <ul class="nav__icons">
                 {% for item in items %}

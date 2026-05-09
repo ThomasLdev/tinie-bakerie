@@ -32,9 +32,12 @@ recipes:
         lede: 'Sorted by season, by technique and by craving. Every recipe is tested three times — nothing leaves the oven unless it''s worth the trip.'
         stats:
             total: 'Recipes'
-            season: 'This season'
-            signature: 'Signatures'
         empty: 'No recipes yet.'
+        section:
+            featured_before: 'In the'
+            featured_em: 'spotlight'
+            recents_em: 'Recent'
+            recents_after: 'publications'
     filters:
         aria_label: 'Recipe filters'
         categories_aria: 'Categories'
@@ -44,6 +47,12 @@ recipes:
             recent: 'Most recent'
             quickest: 'Quickest'
             easiest: 'Easiest'
+
+pagination:
+    aria_label: 'Pagination'
+    previous: 'Previous page'
+    next: 'Next page'
+    page: 'Page %page%'
 
 recipe:
     prep: 'Prep time'

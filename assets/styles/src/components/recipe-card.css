@@ -104,5 +104,17 @@
     &.recipe-card--featured .recipe-card__media {
       aspect-ratio: 4 / 5;
     }
+
+    &.recipe-card--wide .recipe-card__media {
+      aspect-ratio: 16 / 9;
+    }
+
+    &.recipe-card--tall .recipe-card__media {
+      aspect-ratio: 3 / 4;
+    }
+
+    &.recipe-card--half .recipe-card__media {
+      aspect-ratio: 16 / 10;
+    }
   }
 }

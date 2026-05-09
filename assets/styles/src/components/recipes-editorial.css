@@ -1,0 +1,81 @@
+.recipes-editorial {
+  padding-block: var(--space-4) var(--space-6);
+
+  & .recipes-editorial__head {
+    padding-block: var(--space-3) var(--space-2);
+  }
+
+  & .recipes-editorial__featured {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  & .recipes-editorial__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+  }
+
+  & .recipes-editorial__divider {
+    height: 1px;
+    background: var(--line);
+    border: 0;
+    margin-block: var(--space-4);
+  }
+
+  & .recipes-editorial__mosaic {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  & .recipes-editorial__empty {
+    text-align: center;
+    padding-block: var(--space-5);
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 720px) {
+    & .recipes-editorial__featured {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    & .recipes-editorial__side {
+      gap: 1.5rem;
+    }
+
+    & .recipes-editorial__hero.recipe-card--featured {
+      grid-row: auto;
+
+      & .recipe-card__media {
+        aspect-ratio: 16 / 11;
+      }
+    }
+
+    & .recipes-editorial__mosaic {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.75rem;
+
+      & .recipe-card--wide {
+        grid-column: span 8;
+      }
+
+      & .recipe-card--tall {
+        grid-column: span 4;
+      }
+
+      & .recipe-card--third {
+        grid-column: span 4;
+      }
+
+      & .recipe-card--half {
+        grid-column: span 6;
+      }
+    }
+  }
+}

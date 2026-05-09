@@ -1,0 +1,67 @@
+<div {{ attributes }}>
+    <twig:PageHead
+        :kicker="'recipes.index.kicker'|trans({'%count%': this.total})"
+        :titleBefore="'recipes.index.title_before'|trans"
+        :titleEm="'recipes.index.title_em'|trans"
+        :lede="'recipes.index.lede'|trans"
+        :stats="[{ value: this.total|number_format(0, '', ' '), label: 'recipes.index.stats.total'|trans }]"
+    />
+
+    {% include 'components/_recipes_filters.html.twig' with {
+        chips: this.chips,
+        sortOptions: this.sortOptions,
+        activeSort: sort,
+    } only %}
+
+    <section class="recipes-editorial">
+        <div class="wrap">
+            {% if this.featured|length > 0 %}
+                <header class="section-head recipes-editorial__head">
+                    <div>
+                        <h2>{{ 'recipes.index.section.featured_before'|trans }} <em>{{ 'recipes.index.section.featured_em'|trans }}</em></h2>
+                    </div>
+                </header>
+                <div class="recipes-editorial__featured">
+                    {% set heroRecipe = this.featured|first %}
+                    <twig:RecipeCard :recipe="heroRecipe" :featured="true" class="recipes-editorial__hero" />
+                    {% set sideRecipes = this.featured|slice(1) %}
+                    {% if sideRecipes|length > 0 %}
+                        <div class="recipes-editorial__side">
+                            {% for recipe in sideRecipes %}
+                                <twig:RecipeCardInline
+                                    :recipe="recipe"
+                                    :kicker="recipe.category ? recipe.category.title : null"
+                                />
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if this.recents|length > 0 %}
+                {% if this.featured|length > 0 %}
+                    <hr class="recipes-editorial__divider">
+                {% endif %}
+                <header class="section-head recipes-editorial__head">
+                    <div>
+                        <h2><em>{{ 'recipes.index.section.recents_em'|trans }}</em> {{ 'recipes.index.section.recents_after'|trans }}</h2>
+                    </div>
+                </header>
+                <div class="recipes-editorial__mosaic">
+                    {% set variants = ['wide', 'tall', 'third', 'third', 'third', 'half', 'half'] %}
+                    {% for recipe in this.recents %}
+                        <twig:RecipeCard :recipe="recipe" :variant="variants[loop.index0]" />
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if this.total == 0 %}
+                <p class="recipes-editorial__empty">{{ 'recipes.index.empty'|trans }}</p>
+            {% endif %}
+
+            {% if this.totalPages > 1 %}
+                <twig:Pagination :current="page" :total="this.totalPages" />
+            {% endif %}
+        </div>
+    </section>
+</div>

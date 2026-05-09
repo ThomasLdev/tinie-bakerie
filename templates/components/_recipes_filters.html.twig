@@ -1,18 +1,7 @@
-{# @var props {
-    chips: list<{label: string, slug: string|null, active: bool}>,
-    sortOptions: list<{value: string, label: string}>,
-    activeSort: string,
-} #}
-{% props
-    chips = [],
-    sortOptions = [],
-    activeSort = '',
-%}
-
-<aside {{ attributes.defaults({
-    class: 'recipes-filters',
-    'aria-label': 'recipes.filters.aria_label'|trans,
-}) }}>
+{# Sub-template included from RecipesIndex (LiveComponent context).
+   Receives: chips, sortOptions, activeSort.
+   data-action="live#action" calls bubble up to the parent RecipesIndex. #}
+<aside class="recipes-filters" aria-label="{{ 'recipes.filters.aria_label'|trans }}">
     <div class="wrap recipes-filters__row">
         <div class="recipes-filters__chips" role="tablist" aria-label="{{ 'recipes.filters.categories_aria'|trans }}">
             {% for chip in chips %}
@@ -21,6 +10,9 @@
                     role="tab"
                     class="recipes-filters__chip{% if chip.active %} recipes-filters__chip--active{% endif %}"
                     aria-selected="{{ chip.active ? 'true' : 'false' }}"
+                    data-action="live#action"
+                    data-live-action-param="selectCategory"
+                    data-live-slug-param="{{ chip.slug ?? '' }}"
                 >
                     {{ chip.label }}
                 </button>
@@ -31,7 +23,12 @@
             <label class="recipes-filters__sort">
                 <twig:ux:icon name="lucide:arrow-down-up" class="recipes-filters__sort-icon" aria-hidden="true" />
                 <span class="sr-only">{{ 'recipes.filters.sort_label'|trans }}</span>
-                <select class="recipes-filters__sort-select">
+                <select
+                    class="recipes-filters__sort-select"
+                    data-model="norender|sort"
+                    data-action="change->live#action"
+                    data-live-action-param="resetPage"
+                >
                     {% for option in sortOptions %}
                         <option value="{{ option.value }}"{% if option.value == activeSort %} selected{% endif %}>{{ option.label }}</option>
                     {% endfor %}

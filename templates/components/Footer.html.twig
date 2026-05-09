@@ -8,10 +8,7 @@
         <div class="footer__top">
             <div class="footer__grid">
                 <div class="footer__brand">
-                    <a href="{{ path('app_homepage_index') }}" class="logo footer__logo">
-                        <span class="logo__mark" aria-hidden="true">t</span>
-                        <span class="logo__text">TINIE <span class="logo__brand">BAKERIE</span></span>
-                    </a>
+                    <twig:Logo class="footer__logo" />
                     <p class="footer__tagline">{{ 'footer.tagline'|trans({}, 'layout') }}</p>
                 </div>
 

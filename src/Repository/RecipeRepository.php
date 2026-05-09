@@ -99,6 +99,108 @@ class RecipeRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param 'recent'|'quickest'|'easiest' $sort
+     *
+     * @return array{items: list<Recipe>, total: int}
+     */
+    public function findActivePaginated(
+        int $page,
+        int $perPage = 11,
+        ?string $categorySlug = null,
+        string $sort = 'recent',
+    ): array {
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+
+        $countQb = $this->createQueryBuilder('r')
+            ->select('COUNT(DISTINCT r.id)')
+            ->where('r.active = :active')
+            ->setParameter('active', true);
+
+        if ($categorySlug !== null && $categorySlug !== '') {
+            $countQb
+                ->leftJoin('r.category', 'c')
+                ->leftJoin('c.translations', 'ct')
+                ->andWhere('ct.slug = :categorySlug')
+                ->setParameter('categorySlug', $categorySlug);
+        }
+
+        $total = (int) $countQb->getQuery()->getSingleScalarResult();
+
+        if ($total === 0) {
+            return ['items' => [], 'total' => 0];
+        }
+
+        $idsQb = $this->createQueryBuilder('r')
+            ->select('r.id')
+            ->where('r.active = :active')
+            ->setParameter('active', true)
+            ->setMaxResults($perPage)
+            ->setFirstResult(($page - 1) * $perPage);
+
+        if ($categorySlug !== null && $categorySlug !== '') {
+            $idsQb
+                ->leftJoin('r.category', 'c')
+                ->leftJoin('c.translations', 'ct')
+                ->andWhere('ct.slug = :categorySlug')
+                ->setParameter('categorySlug', $categorySlug);
+        }
+
+        match ($sort) {
+            'quickest' => $idsQb->orderBy('r.preparationTime + r.cookingTime', 'ASC')->addOrderBy('r.createdAt', 'DESC'),
+            'easiest' => $idsQb->orderBy('r.difficulty', 'ASC')->addOrderBy('r.createdAt', 'DESC'),
+            default => $idsQb->orderBy('r.createdAt', 'DESC'),
+        };
+
+        $idsResult = $idsQb->getQuery()->getArrayResult();
+        $ids = array_column($idsResult, 'id');
+
+        if ([] === $ids) {
+            return ['items' => [], 'total' => $total];
+        }
+
+        $orderField = match ($sort) {
+            'quickest' => 'r.preparationTime + r.cookingTime',
+            'easiest' => 'r.difficulty',
+            default => 'r.createdAt',
+        };
+        $orderDir = $sort === 'recent' ? 'DESC' : 'ASC';
+
+        $qb = $this->createQueryBuilder('r')
+            ->select('PARTIAL r.{id, createdAt, updatedAt, cookingTime, preparationTime, difficulty, servings}')
+            ->leftJoin('r.translations', 'rt')
+            ->addSelect('PARTIAL rt.{id, title, slug, excerpt, locale}')
+            ->leftJoin('r.category', 'c2')
+            ->addSelect('PARTIAL c2.{id}')
+            ->leftJoin('c2.translations', 'c2t')
+            ->addSelect('PARTIAL c2t.{id, title, slug, locale}')
+            ->leftJoin('r.tags', 't')
+            ->addSelect('PARTIAL t.{id}')
+            ->leftJoin('t.translations', 'tt')
+            ->addSelect('PARTIAL tt.{id, title, locale}')
+            ->leftJoin('r.media', 'm')
+            ->addSelect('PARTIAL m.{id, media, position}')
+            ->leftJoin('m.translations', 'mt')
+            ->addSelect('PARTIAL mt.{id, title, alt, locale}')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy($orderField, $orderDir)
+            ->addOrderBy('r.createdAt', 'DESC');
+
+        $result = $qb->getQuery()
+            ->setHint(Query::HINT_REFRESH, true)
+            ->getResult();
+
+        if (!\is_array($result)) {
+            return ['items' => [], 'total' => $total];
+        }
+
+        $items = array_values(array_filter($result, static fn ($row): bool => $row instanceof Recipe));
+
+        return ['items' => $items, 'total' => $total];
+    }
+
+    /**
      * @return list<Recipe>
      */
     public function findAllActive(): array

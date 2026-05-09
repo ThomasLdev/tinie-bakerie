@@ -3,52 +3,5 @@
 {% block title %}{{ 'recipes.index.title'|trans }}{% endblock %}
 
 {% block body %}
-    {% set total = recipes|length %}
-
-    <twig:PageHead
-        :kicker="'recipes.index.kicker'|trans({'%count%': total})"
-        :titleBefore="'recipes.index.title_before'|trans"
-        :titleEm="'recipes.index.title_em'|trans"
-        :lede="'recipes.index.lede'|trans"
-        :stats="[
-            { value: total|number_format(0, '', ' '), label: 'recipes.index.stats.total'|trans },
-            { value: '24', label: 'recipes.index.stats.season'|trans },
-            { value: '06', label: 'recipes.index.stats.signature'|trans },
-        ]"
-    />
-
-    {% set chips = [{ label: 'recipes.filters.all'|trans, slug: null, active: true }] %}
-    {% for category in categories %}
-        {% set chips = chips|merge([{ label: category.title, slug: category.slug, active: false }]) %}
-    {% endfor %}
-
-    <twig:RecipesFilters
-        :chips="chips"
-        :sortOptions="[
-            { value: 'recent', label: 'recipes.filters.sort.recent'|trans },
-            { value: 'quickest', label: 'recipes.filters.sort.quickest'|trans },
-            { value: 'easiest', label: 'recipes.filters.sort.easiest'|trans },
-        ]"
-        activeSort="recent"
-    />
-
-    <section class="recipes-index">
-        <div class="wrap">
-            {% if recipes|length > 0 %}
-                <ul class="recipes-grid">
-                    {% for recipe in recipes %}
-                        {% set categoryTitle = recipe.category ? recipe.category.title : null %}
-                        <li>
-                            <twig:RecipeCard
-                                :recipe="recipe"
-                                :badge="categoryTitle"
-                            />
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="recipes-index__empty">{{ 'recipes.index.empty'|trans }}</p>
-            {% endif %}
-        </div>
-    </section>
+    <twig:RecipesIndex />
 {% endblock %}

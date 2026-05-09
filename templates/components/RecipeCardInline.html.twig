@@ -1,0 +1,23 @@
+<a {{ attributes.defaults({class: 'recipe-card-inline'}) }} href="{{ this.href }}" {{ test_id('recipe-card-inline-' ~ this.recipe.id) }}>
+    <div class="recipe-card-inline__media">
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            variation="small"
+            desktop="small"
+            alt=""
+            class="recipe-card-inline__image"
+        />
+    </div>
+    <div class="recipe-card-inline__body">
+        {% if this.kicker %}
+            <span class="kicker recipe-card-inline__kicker">{{ this.kicker }}</span>
+        {% endif %}
+        <h3 class="recipe-card-inline__title">{{ this.recipe.title }}</h3>
+        {% if this.totalTimeFormatted %}
+            <p class="recipe-card-inline__meta">
+                <twig:ux:icon name="lucide:clock" class="recipe-card-inline__meta-icon" aria-hidden="true" />
+                <span>{{ this.totalTimeFormatted }}</span>
+            </p>
+        {% endif %}
+    </div>
+</a>
