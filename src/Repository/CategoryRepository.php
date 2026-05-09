@@ -20,7 +20,7 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<array-key,mixed>
+     * @return list<Category>
      */
     public function findAllSlugs(): array
     {
@@ -34,7 +34,11 @@ class CategoryRepository extends ServiceEntityRepository
             ->setHint(Query::HINT_REFRESH, true)
             ->getResult();
 
-        return \is_array($result) ? $result : [];
+        if (!\is_array($result)) {
+            return [];
+        }
+
+        return array_values(array_filter($result, static fn ($row): bool => $row instanceof Category));
     }
 
     /**

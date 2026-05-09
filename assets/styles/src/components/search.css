@@ -1,15 +1,23 @@
+body[data-search="open"] {
+  overflow: hidden;
+}
+
 .search {
   position: fixed;
   inset: 0;
   z-index: 80;
   background: var(--bg);
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   visibility: hidden;
   opacity: 0;
   transition:
     opacity var(--transition-base),
     visibility var(--transition-base);
+
+  @media (min-width: 900px) {
+    flex-direction: column;
+  }
 
   body[data-search="open"] & {
     visibility: visible;
@@ -20,17 +28,25 @@
     display: flex;
     align-items: center;
     gap: 0.625rem;
-    padding: 0.875rem var(--gutter);
-    border-bottom: 1px solid var(--line);
+    padding-block: 0.875rem;
+    padding-inline: max(var(--gutter), calc((100% - var(--max-width-xl)) / 2));
+    border-block-start: 1px solid var(--line);
     background: var(--surface);
 
     @media (min-width: 720px) {
-      padding: 1.125rem var(--space-4);
+      padding-block: 1.125rem;
+      padding-inline: max(var(--space-4), calc((100% - var(--max-width-xl)) / 2));
+    }
+
+    @media (min-width: 900px) {
+      border-block-start: 0;
+      border-block-end: 1px solid var(--line);
     }
   }
 
   & .search__input-wrap {
     flex: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 0.625rem;
@@ -55,6 +71,7 @@
 
   & .search__input {
     flex: 1;
+    min-width: 0;
     border: 0;
     background: transparent;
     outline: none;
@@ -139,8 +156,19 @@
   & .search__body {
     flex: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: var(--space-4) var(--gutter) var(--space-5);
     transition: opacity var(--transition-base);
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+      margin-block-start: auto;
+    }
+
+    @media (min-width: 900px) {
+      display: block;
+    }
   }
 
   & .search__body--loading {
@@ -148,8 +176,11 @@
   }
 
   & .search__empty {
-    max-width: 68.75rem;
-    margin-inline: auto;
+    max-width: var(--max-width-xl);
+
+    @media (min-width: 900px) {
+      margin-inline: auto;
+    }
   }
 
   & .search__suggest {
@@ -188,8 +219,11 @@
   }
 
   & .search__results {
-    max-width: 80rem;
-    margin-inline: auto;
+    max-width: var(--max-width-xl);
+
+    @media (min-width: 900px) {
+      margin-inline: auto;
+    }
   }
 
   & .search__grid {
@@ -275,6 +309,8 @@
   }
 
   & .search__card-image {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -397,8 +433,11 @@
     flex-direction: column;
     align-items: center;
     gap: 0.875rem;
-    max-width: 30rem;
-    margin-inline: auto;
+    max-width: var(--max-width-xs);
+
+    @media (min-width: 900px) {
+      margin-inline: auto;
+    }
   }
 
   & .search__no-results-mark {

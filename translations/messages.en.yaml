@@ -23,6 +23,28 @@ app:
         index: 'All posts'
     category:
         index: 'All categories'
+recipes:
+    index:
+        title: 'All recipes'
+        kicker: '{0}The notebook|{1}The notebook · 1 recipe|]1,Inf]The notebook · %count% recipes'
+        title_before: 'All the'
+        title_em: 'recipes'
+        lede: 'Sorted by season, by technique and by craving. Every recipe is tested three times — nothing leaves the oven unless it''s worth the trip.'
+        stats:
+            total: 'Recipes'
+            season: 'This season'
+            signature: 'Signatures'
+        empty: 'No recipes yet.'
+    filters:
+        aria_label: 'Recipe filters'
+        categories_aria: 'Categories'
+        all: 'All'
+        sort_label: 'Sort by'
+        sort:
+            recent: 'Most recent'
+            quickest: 'Quickest'
+            easiest: 'Easiest'
+
 recipe:
     prep: 'Prep time'
     cook: 'Cook time'

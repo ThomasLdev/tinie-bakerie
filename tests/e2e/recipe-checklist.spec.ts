@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test';
-import { RecipeIndexPage } from './pages/RecipeIndexPage';
+import { E2E_FIXTURES } from './fixtures';
 import { RecipeShowPage } from './pages/RecipeShowPage';
 
 test.describe('Recipe ingredients checklist', () => {
   let recipe: RecipeShowPage;
 
   test.beforeEach(async ({ page }) => {
-    const index = new RecipeIndexPage(page);
-    await index.goto();
-    recipe = await index.openFirstRecipe();
+    recipe = new RecipeShowPage(page);
+    await recipe.goto(E2E_FIXTURES.category.fr, E2E_FIXTURES.recipeFull.fr);
+    await expect(recipe.ingredientChecks).toHaveCount(E2E_FIXTURES.recipeFull.ingredients);
   });
 
   test('updates the checked count when an ingredient is ticked', async () => {

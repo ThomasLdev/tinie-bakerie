@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check build-css watch-css
+.PHONY        : help build up up-dev up-ci up-prod-local start down logs verify-prod sh bash node-sh composer vendor sf cc refresh-prod test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check build-css watch-css
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -34,6 +34,11 @@ up-ci: ## Start services for CI environment (includes Node.js for testing)
 	@echo "🔧 Starting services for CI environment..."
 	@$(DOCKER_COMP_DEV) up --detach
 	@echo "✅ CI environment ready (Node.js available for linting/testing)"
+
+up-prod-local: ## Recreate the PHP container with APP_ENV=prod + FrankenPHP worker mode (debug prod locally)
+	@APP_ENV=prod APP_DEBUG=0 FRANKENPHP_CONFIG="import worker.Caddyfile" $(DOCKER_COMP) up --detach --force-recreate php
+	@$(PHP_CONT) bin/console cache:clear --env=prod
+	@$(PHP_CONT) bin/console asset-map:compile --env=prod
 
 start: up-dev assets-install ## Start development environment
 
@@ -139,6 +144,10 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 cc: c=c:c ## Clear the cache
 cc: sf
 
+refresh-prod: ## Clear prod cache and restart the FrankenPHP worker (needed after PHP/Twig/translation changes)
+	@$(PHP_CONT) bin/console cache:clear --env=prod
+	@$(DOCKER_COMP) restart php
+
 ## —— Tools 🎵 ———————————————————————————————————————————————————————————————
 
 phpstan:
@@ -156,7 +165,7 @@ twig-linter:
 quality: rector phpcs phpstan twig-linter lint format-check ## Run all quality checks (PHP + JS)
 
 doctrine-validate-schema:
-	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
+	@$(PHP_CONT) bin/console doctrine:schema:validate --env=test
 
 rector:
 	@$(PHP_CONT) vendor/bin/rector process
@@ -190,8 +199,29 @@ e2e-install: ## Install Playwright dependencies (included in node-install)
 	@echo "Installing Playwright browsers..."
 	@$(NODE_CONT) npx playwright install --with-deps
 
-test.e2e: ## Run E2E tests with Playwright
-	@$(NPM) run test:e2e
+e2e-up-test: ## Recreate php in APP_ENV=test (call e2e-up-dev to switch back)
+	@APP_ENV=test $(DOCKER_COMP) up --detach --force-recreate --no-deps php
+
+e2e-up-dev: ## Recreate php in APP_ENV=dev (used to restore dev after e2e debugging)
+	@APP_ENV=dev $(DOCKER_COMP) up --detach --force-recreate --no-deps php
+
+e2e-reset: ## Drop, migrate and seed app_test for the Playwright suite (assumes php is in APP_ENV=test)
+	@$(PHP_CONT) bin/console app:e2e:reset --env=test
+
+args ?=
+
+test.e2e: ## Run E2E tests with Playwright (switches php to APP_ENV=test for the run, restores dev on exit). Pass `args="--repeat-each=5"` to forward flags.
+	@set -e; \
+	current_env=$$($(DOCKER_COMP) exec -T php sh -c 'printf "%s" "$$APP_ENV"' 2>/dev/null || true); \
+	if [ "$$current_env" = "test" ]; then \
+		echo "🧪 php already in APP_ENV=test (CI override or manual e2e-up-test) — skipping recreate."; \
+	else \
+		trap 'echo "♻️  Restoring php to APP_ENV=dev..."; APP_ENV=dev $(DOCKER_COMP) up --detach --force-recreate --no-deps php >/dev/null 2>&1' EXIT INT TERM; \
+		echo "🧪 Booting php in APP_ENV=test..."; \
+		APP_ENV=test $(DOCKER_COMP) up --detach --force-recreate --no-deps php >/dev/null; \
+	fi; \
+	$(PHP_CONT) bin/console app:e2e:reset --env=test; \
+	$(NPM) run test:e2e -- $(args)
 
 e2e-headed: ## Run E2E tests with visible browser (requires X11)
 	@echo "Note: This requires X11 forwarding. For UI debugging, use 'make e2e-report' instead."

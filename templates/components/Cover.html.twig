@@ -1,13 +1,37 @@
 {%- if this.isImage -%}
-    <twig:joli:Img
-        :media="this.media"
-        :variation="this.variation"
-        :alt="this.resolvedAlt"
-        attributes="{{ attributes.defaults({
-            loading: this.eager ? 'eager' : 'lazy',
-            decoding: 'async',
-        }) }}"
-    />
+    {%- if this.isResponsive -%}
+        <picture>
+            <twig:joli:Source
+                :media="this.media"
+                mediaAttr="{{ this.desktopMediaQuery }}"
+                :srcset="this.getSrcset(this.desktop)"
+            />
+            <twig:joli:Source
+                :media="this.media"
+                mediaAttr="{{ this.mobileMediaQuery }}"
+                :srcset="this.getSrcset(this.variation)"
+            />
+            <twig:joli:Img
+                :media="this.media"
+                :variation="this.variation"
+                :alt="this.resolvedAlt"
+                attributes="{{ attributes.defaults({
+                    loading: this.eager ? 'eager' : 'lazy',
+                    decoding: 'async',
+                }) }}"
+            />
+        </picture>
+    {%- else -%}
+        <twig:joli:Img
+            :media="this.media"
+            :variation="this.variation"
+            :alt="this.resolvedAlt"
+            attributes="{{ attributes.defaults({
+                loading: this.eager ? 'eager' : 'lazy',
+                decoding: 'async',
+            }) }}"
+        />
+    {%- endif -%}
 {%- elseif this.isVideo -%}
     <video
         {{- attributes }}

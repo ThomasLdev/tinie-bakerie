@@ -3,6 +3,14 @@
   bottom: 0;
   width: 100%;
   z-index: 2;
+  border-top: 1px solid var(--ink);
+
+  @media (min-width: 1200px) {
+    bottom: unset;
+    top: 0;
+    position: static;
+    border-top: unset;
+  }
 }
 
 .nav {
@@ -18,58 +26,47 @@
     gap: 0.75rem;
     height: var(--nav-h);
     padding-inline: var(--gutter);
-    max-width: var(--max-width);
+    max-width: var(--max-width-xl);
     margin-inline: auto;
   }
 
-  & .nav__links {
-    display: none;
-    gap: 1.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-  }
+  & .nav__icons {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 
-  & .nav__link {
-    color: var(--ink-2);
-    padding-block: 0.375rem;
-    border-bottom: 1px solid transparent;
-    transition:
-      border-color var(--transition-base),
-      color var(--transition-base);
-
-    &:hover,
-    &.nav__link--active {
-      color: var(--ink);
-      border-color: var(--accent);
+    @media (min-width: 1200px) {
+      justify-content: end;
     }
   }
 
-  & .nav__right {
-    display: flex;
+  & .nav__icon {
+    display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-  }
+    min-height: 2.75rem;
+    padding-inline: 0.625rem;
+    border-radius: var(--radius-pill);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    transition:
+      color var(--transition-base),
+      background var(--transition-base);
 
-  & .nav__newsletter {
-    display: none;
+    &:hover,
+    &[aria-current="page"] {
+      color: var(--accent-ink);
+      background: var(--accent-bg);
+    }
   }
 
   @media (min-width: 900px) {
     & .nav__inner {
       height: 4.75rem;
-    }
-
-    & .nav__links {
-      display: flex;
-    }
-
-    & .nav__newsletter {
-      display: inline-flex;
-    }
-
-    & .nav__menu-btn {
-      display: none;
     }
   }
 }
@@ -106,6 +103,11 @@
     color: var(--ink-3);
     font-style: italic;
     font-weight: 400;
+    display: none;
+
+    @media (min-width: 900px) {
+      display: block;
+    }
   }
 
   & .logo__brand {

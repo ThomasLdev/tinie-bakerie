@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% set category = recipe.category %}
-{% set heroMedia = recipe.media|first %}
+{% set heroMedia = recipe.mainMedia %}
 {% set steps = recipe.steps %}
 {% set narrativeSections = recipe.narrativeSections %}
 {% set tags = recipe.tags %}
@@ -80,7 +80,7 @@
 
         {% if heroMedia %}
             <figure class="recipe-hero">
-                <twig:Cover :attachment="heroMedia" variation="large" :alt="recipe.title" eager class="recipe-hero__cover" />
+                <twig:Cover :attachment="heroMedia" variation="medium" desktop="xlarge" :alt="recipe.title" eager class="recipe-hero__cover" />
                 {% if heroMedia.title %}
                     <figcaption class="recipe-hero__caption">{{ heroMedia.title }}</figcaption>
                 {% endif %}

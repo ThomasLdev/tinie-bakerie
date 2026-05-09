@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'error.500.title_before'|trans({}, 'layout') }} {{ 'error.500.title_em'|trans({}, 'layout') }}{% endblock %}
+
+{% block body %}
+    <section class="section">
+        <div class="wrap">
+            <div class="error-page">
+                <twig:ux:icon name="lucide:flame" class="error-page__visual" aria-hidden="true" />
+                <h1>
+                    {{ 'error.500.title_before'|trans({}, 'layout') }}
+                    <em>{{ 'error.500.title_em'|trans({}, 'layout') }}</em>
+                </h1>
+                <p class="error-page__lede">{{ 'error.500.lede'|trans({}, 'layout') }}</p>
+                <div class="error-page__actions">
+                    <twig:Button href="{{ path('app_homepage_index') }}">
+                        {{ 'error.cta.home'|trans({}, 'layout') }}
+                    </twig:Button>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
