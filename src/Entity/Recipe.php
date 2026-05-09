@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Contracts\MediaAttachment;
 use App\Services\Post\Enum\Difficulty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -206,5 +207,10 @@ class Recipe extends Post
     public function getChefNoteTitle(): string
     {
         return $this->getCurrentTranslation()?->getChefNoteTitle() ?? '';
+    }
+
+    public function getMainMedia(): ?MediaAttachment
+    {
+        return $this->getMedia()->first() ?: null;
     }
 }

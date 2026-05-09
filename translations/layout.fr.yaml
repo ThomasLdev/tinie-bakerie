@@ -4,16 +4,7 @@ header:
         aria_label: 'Navigation principale'
         home: 'Accueil'
         recipes: 'Recettes'
-        notebook: 'Carnet'
-        about: 'À propos'
-    menu:
-        open: 'Ouvrir le menu'
-        close: 'Fermer le menu'
-        aria_label: 'Menu principal'
-        mobile_aria_label: 'Menu principal mobile'
     search: 'Recherche'
-    newsletter: 'Newsletter'
-    follow: 'Suivre Tinie'
 
 hero:
     featured: 'À la une'
@@ -48,3 +39,15 @@ footer:
         instagram: 'Instagram'
         pinterest: 'Pinterest'
         youtube: 'YouTube'
+
+error:
+    cta:
+        home: "Retour à l'accueil"
+    404:
+        title_before: 'Cette page'
+        title_em: "s'est envolée"
+        lede: "On a fouillé tous les tiroirs de la cuisine, rien à signaler. Peut-être un lien périmé, ou une recette qu'on a remisée au placard."
+    500:
+        title_before: 'Le four a'
+        title_em: 'surchauffé'
+        lede: 'Quelque chose a brûlé côté cuisine. On éteint le feu — réessaie dans un instant.'

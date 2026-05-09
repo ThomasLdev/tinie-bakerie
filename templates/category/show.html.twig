@@ -24,7 +24,7 @@
     {% if posts is not same as null and posts is not empty %}
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for post in posts %}
-                {% set mainMedia = post.media|first %}
+                {% set mainMedia = post.mainMedia %}
 
                 <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
                    href="{{ path('app_recipe_show', {'recipeSlug': post.slug, 'categorySlug': category.slug}) }}"

@@ -42,9 +42,12 @@
     0 24px 50px -28px color-mix(in oklab, var(--accent-ink) 18%, transparent),
     0 6px 18px -10px color-mix(in oklab, var(--accent-ink) 12%, transparent);
   --shadow-soft: 0 12px 28px -18px color-mix(in oklab, var(--accent-ink) 22%, transparent);
-  --shadow-drawer: -20px 0 50px -20px color-mix(in oklab, var(--ink) 25%, transparent);
 
-  --max-width: 80rem;
+  --max-width-xs: 30rem;
+  --max-width-sm: 34rem;
+  --max-width-md: 42rem;
+  --max-width-lg: 68rem;
+  --max-width-xl: 80rem;
   --gutter: clamp(1rem, 4vw, 2rem);
   --nav-h: 3.75rem;
 

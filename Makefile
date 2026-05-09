@@ -14,7 +14,7 @@ NPM      = $(NODE_CONT) npm
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up up-dev up-ci start down logs verify-prod sh bash node-sh composer vendor sf cc test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check build-css watch-css
+.PHONY        : help build up up-dev up-ci up-prod-local start down logs verify-prod sh bash node-sh composer vendor sf cc refresh-prod test fixtures quality phpmd phpcs phpstan assets-compile watch node-install lint lint-fix format format-check type-check build-css watch-css
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -34,6 +34,11 @@ up-ci: ## Start services for CI environment (includes Node.js for testing)
 	@echo "🔧 Starting services for CI environment..."
 	@$(DOCKER_COMP_DEV) up --detach
 	@echo "✅ CI environment ready (Node.js available for linting/testing)"
+
+up-prod-local: ## Recreate the PHP container with APP_ENV=prod + FrankenPHP worker mode (debug prod locally)
+	@APP_ENV=prod APP_DEBUG=0 FRANKENPHP_CONFIG="import worker.Caddyfile" $(DOCKER_COMP) up --detach --force-recreate php
+	@$(PHP_CONT) bin/console cache:clear --env=prod
+	@$(PHP_CONT) bin/console asset-map:compile --env=prod
 
 start: up-dev assets-install ## Start development environment
 
@@ -138,6 +143,10 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+refresh-prod: ## Clear prod cache and restart the FrankenPHP worker (needed after PHP/Twig/translation changes)
+	@$(PHP_CONT) bin/console cache:clear --env=prod
+	@$(DOCKER_COMP) restart php
 
 ## —— Tools 🎵 ———————————————————————————————————————————————————————————————
 

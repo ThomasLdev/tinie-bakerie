@@ -1,5 +1,5 @@
 .wrap {
-  max-width: var(--max-width);
+  max-width: var(--max-width-xl);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }

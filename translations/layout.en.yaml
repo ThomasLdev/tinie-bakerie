@@ -4,16 +4,7 @@ header:
         aria_label: 'Main navigation'
         home: 'Home'
         recipes: 'Recipes'
-        notebook: 'Journal'
-        about: 'About'
-    menu:
-        open: 'Open menu'
-        close: 'Close menu'
-        aria_label: 'Main menu'
-        mobile_aria_label: 'Mobile main menu'
     search: 'Search'
-    newsletter: 'Newsletter'
-    follow: 'Follow Tinie'
 
 hero:
     featured: 'Featured'
@@ -48,3 +39,15 @@ footer:
         instagram: 'Instagram'
         pinterest: 'Pinterest'
         youtube: 'YouTube'
+
+error:
+    cta:
+        home: 'Back to home'
+    404:
+        title_before: 'This page'
+        title_em: 'flew away'
+        lede: 'We searched every drawer in the kitchen — no luck. Maybe a stale link, or a recipe we tucked away.'
+    500:
+        title_before: 'The oven'
+        title_em: 'overheated'
+        lede: "Something burned on the kitchen side. We're putting the fire out — try again in a moment."

@@ -142,7 +142,7 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for recipe in recipes %}
             {% set category = recipe.category %}
-            {% set mainMedia = recipe.media|first %}
+            {% set mainMedia = recipe.mainMedia %}
 
             <a class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group cursor-pointer"
                href="{{ path('app_recipe_show', {'recipeSlug': recipe.slug, 'categorySlug': category.slug}) }}"

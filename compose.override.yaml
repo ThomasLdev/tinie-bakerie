@@ -10,6 +10,11 @@ services:
       - ./frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
       - ./var:/app/var
     environment:
+      # Defaults are dev + worker mode off; override via shell env to debug the prod build
+      # locally (see `make up-prod-local`).
+      APP_ENV: ${APP_ENV:-dev}
+      APP_DEBUG: ${APP_DEBUG:-1}
+      FRANKENPHP_CONFIG: ${FRANKENPHP_CONFIG-}
       SERVER_NAME: ${SERVER_NAME:-local.tinie-bakerie.com}, php:80
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-debug,coverage}"

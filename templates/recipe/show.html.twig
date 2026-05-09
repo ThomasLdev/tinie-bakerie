@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% set category = recipe.category %}
-{% set heroMedia = recipe.media|first %}
+{% set heroMedia = recipe.mainMedia %}
 {% set steps = recipe.steps %}
 {% set narrativeSections = recipe.narrativeSections %}
 {% set tags = recipe.tags %}
