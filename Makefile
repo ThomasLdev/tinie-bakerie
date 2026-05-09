@@ -165,7 +165,7 @@ twig-linter:
 quality: rector phpcs phpstan twig-linter lint format-check ## Run all quality checks (PHP + JS)
 
 doctrine-validate-schema:
-	@$(PHP_CONT) bin/console -e app doctrine:schema:validate
+	@$(PHP_CONT) bin/console doctrine:schema:validate --env=test
 
 rector:
 	@$(PHP_CONT) vendor/bin/rector process
