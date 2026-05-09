@@ -1,0 +1,39 @@
+{# @var props {
+    kicker: string|null,
+    titleBefore: string|null,
+    titleEm: string,
+    lede: string|null,
+    stats: list<{value: string, label: string}>,
+} #}
+{% props
+    kicker = null,
+    titleBefore = null,
+    titleEm,
+    lede = null,
+    stats = [],
+%}
+
+<header {{ attributes.defaults({class: 'page-head'}) }}>
+    <div class="wrap page-head__inner">
+        <div class="page-head__intro">
+            {% if kicker %}<span class="kicker page-head__kicker">{{ kicker }}</span>{% endif %}
+            <h1 class="page-head__title">
+                {%- if titleBefore %}{{ titleBefore }} {% endif -%}
+                <em>{{ titleEm }}</em>
+            </h1>
+        </div>
+        <div class="page-head__aside">
+            {% if lede %}<p class="page-head__lede">{{ lede }}</p>{% endif %}
+            {% if stats|length > 0 %}
+                <dl class="page-head__stats">
+                    {% for stat in stats %}
+                        <div class="page-head__stat">
+                            <dt class="page-head__stat-label">{{ stat.label }}</dt>
+                            <dd class="page-head__stat-value">{{ stat.value }}</dd>
+                        </div>
+                    {% endfor %}
+                </dl>
+            {% endif %}
+        </div>
+    </div>
+</header>

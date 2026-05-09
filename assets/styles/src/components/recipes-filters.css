@@ -1,0 +1,100 @@
+.recipes-filters {
+  position: sticky;
+  inset-block-start: 0;
+  background: color-mix(in oklab, var(--bg) 96%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--line);
+  z-index: 40;
+
+  & .recipes-filters__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  & .recipes-filters__chips {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-inline: var(--gutter);
+    margin-inline: calc(var(--gutter) * -1);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  & .recipes-filters__chip {
+    flex-shrink: 0;
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    padding-inline: 1rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    white-space: nowrap;
+    transition:
+      color var(--transition-base),
+      background var(--transition-base),
+      border-color var(--transition-base);
+
+    &:hover {
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+  }
+
+  & .recipes-filters__chip--active {
+    background: var(--ink);
+    color: var(--on-ink);
+    border-color: var(--ink);
+
+    &:hover {
+      color: var(--on-ink);
+      border-color: var(--ink);
+    }
+  }
+
+  & .recipes-filters__sort {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    color: var(--ink-3);
+  }
+
+  & .recipes-filters__sort-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  & .recipes-filters__sort-select {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding-block: 0.5rem;
+    padding-inline: 0.875rem;
+    cursor: pointer;
+  }
+
+  @media (min-width: 720px) {
+    & .recipes-filters__sort {
+      display: inline-flex;
+    }
+  }
+}

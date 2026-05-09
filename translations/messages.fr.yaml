@@ -23,6 +23,28 @@ app:
         index: 'Tous les articles'
     category:
         index: 'Toutes les catégories'
+recipes:
+    index:
+        title: 'Toutes les recettes'
+        kicker: '{0}Le carnet|{1}Le carnet · 1 recette|]1,Inf]Le carnet · %count% recettes'
+        title_before: 'Toutes les'
+        title_em: 'recettes'
+        lede: 'Classées par saison, par technique et par envie. Chaque recette est testée trois fois — rien ne sort du four s''il ne mérite pas le détour.'
+        stats:
+            total: 'Recettes'
+            season: 'Cette saison'
+            signature: 'Signatures'
+        empty: 'Aucune recette pour le moment.'
+    filters:
+        aria_label: 'Filtres de recettes'
+        categories_aria: 'Catégories'
+        all: 'Tout'
+        sort_label: 'Trier par'
+        sort:
+            recent: 'Plus récent'
+            quickest: 'Temps court'
+            easiest: 'Plus facile'
+
 recipe:
     prep: 'Préparation'
     cook: 'Cuisson'

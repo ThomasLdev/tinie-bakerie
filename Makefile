@@ -199,8 +199,29 @@ e2e-install: ## Install Playwright dependencies (included in node-install)
 	@echo "Installing Playwright browsers..."
 	@$(NODE_CONT) npx playwright install --with-deps
 
-test.e2e: ## Run E2E tests with Playwright
-	@$(NPM) run test:e2e
+e2e-up-test: ## Recreate php in APP_ENV=test (call e2e-up-dev to switch back)
+	@APP_ENV=test $(DOCKER_COMP) up --detach --force-recreate --no-deps php
+
+e2e-up-dev: ## Recreate php in APP_ENV=dev (used to restore dev after e2e debugging)
+	@APP_ENV=dev $(DOCKER_COMP) up --detach --force-recreate --no-deps php
+
+e2e-reset: ## Drop, migrate and seed app_test for the Playwright suite (assumes php is in APP_ENV=test)
+	@$(PHP_CONT) bin/console app:e2e:reset --env=test
+
+args ?=
+
+test.e2e: ## Run E2E tests with Playwright (switches php to APP_ENV=test for the run, restores dev on exit). Pass `args="--repeat-each=5"` to forward flags.
+	@set -e; \
+	current_env=$$($(DOCKER_COMP) exec -T php sh -c 'printf "%s" "$$APP_ENV"' 2>/dev/null || true); \
+	if [ "$$current_env" = "test" ]; then \
+		echo "🧪 php already in APP_ENV=test (CI override or manual e2e-up-test) — skipping recreate."; \
+	else \
+		trap 'echo "♻️  Restoring php to APP_ENV=dev..."; APP_ENV=dev $(DOCKER_COMP) up --detach --force-recreate --no-deps php >/dev/null 2>&1' EXIT INT TERM; \
+		echo "🧪 Booting php in APP_ENV=test..."; \
+		APP_ENV=test $(DOCKER_COMP) up --detach --force-recreate --no-deps php >/dev/null; \
+	fi; \
+	$(PHP_CONT) bin/console app:e2e:reset --env=test; \
+	$(NPM) run test:e2e -- $(args)
 
 e2e-headed: ## Run E2E tests with visible browser (requires X11)
 	@echo "Note: This requires X11 forwarding. For UI debugging, use 'make e2e-report' instead."

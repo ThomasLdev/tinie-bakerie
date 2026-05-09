@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Recipe;
+use App\Repository\CategoryRepository;
 use App\Repository\RecipeRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,17 +20,21 @@ final class RecipeController extends AbstractController
 {
     public function __construct(
         private readonly RecipeRepository $recipeRepository,
+        private readonly CategoryRepository $categoryRepository,
     ) {
     }
 
     /**
-     * @return array<'recipes', list<Recipe>>
+     * @return array{recipes: list<Recipe>, categories: list<Category>}
      */
     #[Route(methods: ['GET'])]
     #[Template('recipe/index.html.twig')]
     public function index(): array
     {
-        return ['recipes' => $this->recipeRepository->findAllActive()];
+        return [
+            'recipes' => $this->recipeRepository->findAllActive(),
+            'categories' => $this->categoryRepository->findAllSlugs(),
+        ];
     }
 
     /**

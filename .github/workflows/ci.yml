@@ -133,8 +133,10 @@ jobs:
             -keyout frankenphp/certs/local.tinie-bakerie.com-key.pem \
             -out  frankenphp/certs/local.tinie-bakerie.com.pem
       # APP_ENV=test on php (from compose.ci.yaml) makes the docker-entrypoint wait for the
-      # app_test DB and run migrations on it automatically. We must create app_test BEFORE
-      # starting php, otherwise the entrypoint times out and the container goes unhealthy.
+      # app_test DB to become reachable. We must create app_test BEFORE starting php,
+      # otherwise the entrypoint's wait loop times out and the container goes unhealthy.
+      # Migrations are no longer run by the entrypoint — `make test.e2e` calls
+      # `app:e2e:reset` which handles the schema and seeds the deterministic dataset.
       - name: Start database
         run: docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml up -d --no-build database
       - name: Wait for database (pg_isready)
@@ -146,10 +148,10 @@ jobs:
           echo "database never became ready" && exit 1
       - name: Create app_test database
         run: docker compose exec -T database createdb -U app app_test
-      - name: Start php + node (entrypoint waits for app_test then runs migrations)
+      - name: Start php + node (entrypoint waits for app_test to be reachable)
         run: docker compose -f compose.yaml -f compose.override.yaml -f compose.ci.yaml --profile dev up -d --wait --no-build
-      - name: Run Fixtures
-        run: make fixtures-test
+      # `make test.e2e` calls `app:e2e:reset` which drops/recreates app_test, runs
+      # migrations and loads the deterministic E2EFrontStory — no fixtures step needed.
       - name: Install Node.js dependencies
         run: make node-install
       - name: Build CSS bundle (lightningcss)

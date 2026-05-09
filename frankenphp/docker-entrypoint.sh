@@ -30,9 +30,13 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		else
 			echo "The database is now ready and reachable"
 		fi
-		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
-			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
-		fi
+		# Migrations are intentionally NOT run here. They are handled explicitly:
+		#   - local dev: `make doctrine-migrate` after pulling new migrations
+		#   - CI functional: `make doctrine-migrate-test` step
+		#   - CI e2e: `app:e2e:reset` drops/recreates/migrates app_test as part of `make test.e2e`
+		#   if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
+		#			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+		#		fi
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
