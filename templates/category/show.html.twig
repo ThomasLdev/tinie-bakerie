@@ -14,7 +14,7 @@
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ category.description }}</p>
             </div>
             {% for medium in category.media %}
-                <twig:Cover :attachment="medium" variation="medium" autoplay />
+                <twig:Cover :attachment="medium" variation="medium" desktop="large" autoplay />
             {% endfor %}
         </div>
     </div>
@@ -30,7 +30,7 @@
                    href="{{ path('app_recipe_show', {'recipeSlug': post.slug, 'categorySlug': category.slug}) }}"
                 >
                     <div class="aspect-square overflow-hidden">
-                        <twig:Cover :attachment="mainMedia" variation="thumbnail" autoplay />
+                        <twig:Cover :attachment="mainMedia" variation="small" desktop="medium" autoplay />
                     </div>
                     <div class="p-4">
                         <div class="flex items-center gap-2 mb-2">

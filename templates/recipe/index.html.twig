@@ -148,7 +148,7 @@
                href="{{ path('app_recipe_show', {'recipeSlug': recipe.slug, 'categorySlug': category.slug}) }}"
                {{ test_id('recipe-card-' ~ recipe.id) }}
             >
-                <twig:Cover :attachment="mainMedia" variation="thumbnail" autoplay />
+                <twig:Cover :attachment="mainMedia" variation="small" desktop="medium" autoplay />
                 <div class="p-4">
                     <div class="flex items-center gap-2 mb-2">
                         {% for tag in recipe.tags %}

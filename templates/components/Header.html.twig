@@ -12,19 +12,6 @@
                 <span class="logo__text">TINIE <span class="logo__brand">BAKERIE</span></span>
             </a>
 
-            <ul class="nav__links">
-                {% for item in items %}
-                    {% set isCurrent = item.route == currentRoute %}
-                    <li>
-                        <a href="{{ item.href }}"
-                           class="nav__link{% if isCurrent %} nav__link--active{% endif %}"
-                           {% if isCurrent %}aria-current="page"{% endif %}>
-                            {{ item.label }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-
             <ul class="nav__icons">
                 {% for item in items %}
                     {% set isCurrent = item.route == currentRoute %}
@@ -47,14 +34,6 @@
                     </button>
                 </li>
             </ul>
-
-            <div class="nav__right">
-                <twig:IconButton label="{{ 'header.search'|trans({}, 'layout') }}"
-                                 data-search-open
-                                 aria-controls="search-panel">
-                    <twig:ux:icon name="lucide:search" width="20" height="20" aria-hidden="true" />
-                </twig:IconButton>
-            </div>
         </div>
     </nav>
 </div>

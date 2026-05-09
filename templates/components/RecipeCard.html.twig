@@ -3,7 +3,13 @@
 <a {{ attributes.defaults({class: classes}) }} href="{{ this.href }}">
     <div class="recipe-card__media">
         {% if this.badge %}<span class="recipe-card__badge">{{ this.badge }}</span>{% endif %}
-        <twig:Cover :attachment="this.coverAttachment" variation="medium" alt="" class="recipe-card__image" />
+        <twig:Cover
+            :attachment="this.coverAttachment"
+            :variation="this.featured ? 'medium' : 'small'"
+            :desktop="this.featured ? 'large' : 'medium'"
+            alt=""
+            class="recipe-card__image"
+        />
     </div>
     <div class="recipe-card__body">
         {% if this.preparationTimeFormatted or this.cookingTimeFormatted %}

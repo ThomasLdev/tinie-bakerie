@@ -73,7 +73,8 @@
                                     <div class="search__card-media">
                                         <twig:Cover
                                             :media="result.media"
-                                            variation="thumbnail"
+                                            :variation="isHero ? 'medium' : 'small'"
+                                            :desktop="isHero ? 'large' : 'medium'"
                                             alt=""
                                             class="search__card-image"
                                         />

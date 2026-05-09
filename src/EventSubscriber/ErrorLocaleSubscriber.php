@@ -47,7 +47,7 @@ final readonly class ErrorLocaleSubscriber implements EventSubscriberInterface
         $locales = explode('|', $this->supportedLocales);
         $segment = explode('/', trim($request->getPathInfo(), '/'), 2)[0];
 
-        if ($segment !== '' && in_array($segment, $locales, true)) {
+        if ($segment !== '' && \in_array($segment, $locales, true)) {
             $request->attributes->set('_locale', $segment);
 
             return;
