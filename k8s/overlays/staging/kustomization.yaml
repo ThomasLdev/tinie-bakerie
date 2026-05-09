@@ -8,4 +8,4 @@ resources:
 # the automation which line to update — do not remove it.
 images:
   - name: ghcr.io/thomasldev/tinie-bakerie
-    newTag: 20260509163613-eeed157 # {"$imagepolicy": "flux-system:tinie-bakerie-staging:tag"}
+    newTag: 20260509171234-45f06e4 # {"$imagepolicy": "flux-system:tinie-bakerie-staging:tag"}
