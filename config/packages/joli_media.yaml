@@ -38,7 +38,12 @@ joli_media:
             # Cache for processed variations
             cache:
                 flysystem: "filesystem.cache.storage"
-                must_store_when_generating_url: true  # Generate variations immediately
+                # Variations are generated lazily on the first HTTP request to
+                # the cache URL. Setting this to true triggers Symfony\Process
+                # (cwebp/Imagine) synchronously during HTML rendering, which
+                # blows the 30s max_execution_time on cold caches with many
+                # responsive variations (1x/2x × JPG/WebP × variation/desktop).
+                must_store_when_generating_url: false
                 url_generator:
                     strategy: folder
                     path: /media/cache/
