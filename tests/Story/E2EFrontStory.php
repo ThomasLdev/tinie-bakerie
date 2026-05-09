@@ -29,15 +29,21 @@ use Zenstruck\Foundry\Story;
 final class E2EFrontStory extends Story
 {
     public const string CATEGORY_SLUG_FR = 'e2e-categorie';
+
     public const string CATEGORY_SLUG_EN = 'e2e-category';
 
     public const string RECIPE_FULL_SLUG_FR = 'e2e-recette-pleine';
+
     public const string RECIPE_FULL_SLUG_EN = 'e2e-recipe-full';
+
     public const int RECIPE_FULL_SERVINGS = 4;
+
     public const int RECIPE_FULL_INGREDIENTS = 8;
+
     public const int RECIPE_FULL_STEPS = 3;
 
     public const int PORTIONS_MIN = 1;
+
     public const int PORTIONS_MAX = 24;
 
     public function build(): void
@@ -95,7 +101,7 @@ final class E2EFrontStory extends Story
             ],
         ]);
 
-        for ($i = 0; $i < self::RECIPE_FULL_INGREDIENTS; $i++) {
+        for ($i = 0; $i < self::RECIPE_FULL_INGREDIENTS; ++$i) {
             IngredientFactory::createOne([
                 'group' => $group,
                 'position' => $i,
@@ -103,19 +109,19 @@ final class E2EFrontStory extends Story
                 'translations' => [
                     IngredientTranslationFactory::new([
                         'locale' => 'fr',
-                        'name' => sprintf('Ingrédient FR %d', $i + 1),
+                        'name' => \sprintf('Ingrédient FR %d', $i + 1),
                         'unit' => 'g',
                     ]),
                     IngredientTranslationFactory::new([
                         'locale' => 'en',
-                        'name' => sprintf('Ingredient EN %d', $i + 1),
+                        'name' => \sprintf('Ingredient EN %d', $i + 1),
                         'unit' => 'g',
                     ]),
                 ],
             ]);
         }
 
-        for ($i = 0; $i < self::RECIPE_FULL_STEPS; $i++) {
+        for ($i = 0; $i < self::RECIPE_FULL_STEPS; ++$i) {
             RecipeStepFactory::createOne([
                 'post' => $recipe,
                 'position' => $i,
@@ -123,13 +129,13 @@ final class E2EFrontStory extends Story
                 'translations' => [
                     RecipeStepTranslationFactory::new([
                         'locale' => 'fr',
-                        'title' => sprintf('Étape FR %d', $i + 1),
-                        'content' => sprintf('Contenu de l\'étape %d.', $i + 1),
+                        'title' => \sprintf('Étape FR %d', $i + 1),
+                        'content' => \sprintf('Contenu de l\'étape %d.', $i + 1),
                     ]),
                     RecipeStepTranslationFactory::new([
                         'locale' => 'en',
-                        'title' => sprintf('Step EN %d', $i + 1),
-                        'content' => sprintf('Step %d content.', $i + 1),
+                        'title' => \sprintf('Step EN %d', $i + 1),
+                        'content' => \sprintf('Step %d content.', $i + 1),
                     ]),
                 ],
             ]);

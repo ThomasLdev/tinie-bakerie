@@ -27,8 +27,10 @@ use Symfony\Component\Process\Process;
 final class E2EResetCommand extends Command
 {
     public function __construct(
-        #[Autowire('%kernel.environment%')] private readonly string $environment,
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
+        #[Autowire('%kernel.environment%')]
+        private readonly string $environment,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
     ) {
         parent::__construct();
     }
@@ -38,7 +40,7 @@ final class E2EResetCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         if ('test' !== $this->environment) {
-            $io->error(sprintf(
+            $io->error(\sprintf(
                 'app:e2e:reset must run with APP_ENV=test (got "%s"). Refusing to touch a non-test database.',
                 $this->environment,
             ));
