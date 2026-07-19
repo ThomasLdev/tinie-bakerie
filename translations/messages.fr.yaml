@@ -34,10 +34,10 @@ recipes:
             total: 'Recettes'
         empty: 'Aucune recette pour le moment.'
         section:
-            featured_before: 'À la'
-            featured_em: 'une'
-            recents_em: 'Récentes'
-            recents_after: 'publications'
+            featured_before: 'Première'
+            featured_em: 'fournée'
+            recents_before: 'Et la'
+            recents_em: 'suite'
     filters:
         aria_label: 'Filtres de recettes'
         categories_aria: 'Catégories'

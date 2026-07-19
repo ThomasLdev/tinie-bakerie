@@ -34,10 +34,10 @@ recipes:
             total: 'Recipes'
         empty: 'No recipes yet.'
         section:
-            featured_before: 'In the'
-            featured_em: 'spotlight'
-            recents_em: 'Recent'
-            recents_after: 'publications'
+            featured_before: 'First'
+            featured_em: 'batch'
+            recents_before: 'And'
+            recents_em: 'the rest'
     filters:
         aria_label: 'Recipe filters'
         categories_aria: 'Categories'

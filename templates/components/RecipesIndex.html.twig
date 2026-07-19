@@ -1,6 +1,5 @@
 <div {{ attributes }}>
     <twig:PageHead
-        :kicker="'recipes.index.kicker'|trans({'%count%': this.total})"
         :titleBefore="'recipes.index.title_before'|trans"
         :titleEm="'recipes.index.title_em'|trans"
         :lede="'recipes.index.lede'|trans"
@@ -44,7 +43,7 @@
                 {% endif %}
                 <header class="section-head recipes-editorial__head">
                     <div>
-                        <h2><em>{{ 'recipes.index.section.recents_em'|trans }}</em> {{ 'recipes.index.section.recents_after'|trans }}</h2>
+                        <h2>{{ 'recipes.index.section.recents_before'|trans }} <em>{{ 'recipes.index.section.recents_em'|trans }}</em></h2>
                     </div>
                 </header>
                 <div class="recipes-editorial__mosaic">
